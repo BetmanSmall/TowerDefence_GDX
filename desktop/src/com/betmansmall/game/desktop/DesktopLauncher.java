@@ -12,7 +12,7 @@ public class DesktopLauncher {
 		config.width = 1600;
 		config.height = 900;
 //		config.useGL30 = true;
-//		new LwjglApplication(new TowerDefence(), config);
-		new LwjglApplication(new OrthographicCameraController(), config);
+		new LwjglApplication(new TowerDefence(), config);
+//		new LwjglApplication(new OrthographicCameraController(), config);
 	}
 }

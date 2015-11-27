@@ -86,8 +86,8 @@ public class GameScreen implements Screen {
 		int sizeCell = 32;
 //        int sizeX = (int) (getWidth()/sizeCell); // 25; // 65, 120
 //        int sizeY = (int) (getHeight()/sizeCell); // 11; // 30, 60
-		int sizeX = 10; // 65, 120
-		int sizeY = 10; // 30, 60
+		int sizeX = 50; // 65, 120
+		int sizeY = 28; // 30, 60
 
 		field = new Field();
 		field.createField(sizeX, sizeY); // 65, 30
@@ -98,7 +98,7 @@ public class GameScreen implements Screen {
 
 		for(int y = 0; y < field.getSizeY(); y++)
 			for(int x = 0; x < field.getSizeX(); x++)
-				if(Math.random()*101 <= 10)
+				if(Math.random()*101 <= 30)
 					field.setBusy(x, y);
 
 //        for(int x = field.getSizeX(); x >= 0; x--)
@@ -110,7 +110,7 @@ public class GameScreen implements Screen {
 //        int numCreepsK = 0;
 //        for(int y = 0; y < field.getSizeY(); y++)
 //            for(int x = 0; x < field.getSizeX(); x++)
-//                if(Math.random()*101 <= 20)
+//                if(Math.random()*101 <= 30)
 //                    if(numCreepsK++ < defaultNumCreateCreeps)
 //                        field.setCreep(x, y);
 
@@ -152,6 +152,7 @@ public class GameScreen implements Screen {
 	}
 
 	public boolean whichCell(Integer mouseX, Integer mouseY) {
+		mouseY = Gdx.graphics.getHeight() - mouseY;
 		int mainCoorMapX = field.getMainCoorMapX();
 		int mainCoorMapY = field.getMainCoorMapY();
 		int spaceWidget = field.getSpaceWidget();
@@ -181,8 +182,49 @@ public class GameScreen implements Screen {
 //		lastDropTime = TimeUtils.nanoTime();
 //	}
 
+	private void handleInput() {
+//		Gdx.app.log("hadleInput()", "BEGIN");
+//		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+//			int x = Gdx.input.getX();
+//			int y = Gdx.input.getY();
+//			Gdx.app.log("hadleInput()", "isButtonPressed.LEFT");
+//			Gdx.app.log("hadleInput()", "x: " + x);
+//			Gdx.app.log("hadleInput()", "y: " + y);
+//
+//		}
+//		if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+//			Gdx.app.log("hadleInput()", "isButtonPressed.RIGHT");
+//		}
+		if(Gdx.input.justTouched()) {
+			int x = Gdx.input.getX();
+			int y = Gdx.input.getY();
+			Gdx.app.log("hadleInput()", "justTouched");
+			Gdx.app.log("hadleInput()", "x: " + x);
+			Gdx.app.log("hadleInput()", "y: " + y);
+			gameCoordXForWhichCell = x;
+			gameCoordYForWhichCell = y;
+			if(whichCell(gameCoordXForWhichCell, gameCoordYForWhichCell)) {
+				Gdx.app.log("TTW", "mousePressEvent() -- mouseX: " + gameCoordXForWhichCell + " mouseY: " + gameCoordYForWhichCell);
+//				if(MainActivity.inputMode) {
+//					field.createExitPoint(gameCoordXForWhichCell, gameCoordYForWhichCell);
+////                field.waveAlgorithm(gameCoordXForWhichCell, gameCoordYForWhichCell);
+//				} else {
+					if (field.containEmpty(gameCoordXForWhichCell, gameCoordYForWhichCell)) {
+						field.setBusy(gameCoordXForWhichCell, gameCoordYForWhichCell);
+					} else if (field.containBusy(gameCoordXForWhichCell, gameCoordYForWhichCell)) {
+						field.clearBusy(gameCoordXForWhichCell, gameCoordYForWhichCell);
+					}
+
+					field.waveAlgorithm();
+//				}
+//				invalidate();
+			}
+		}
+	}
+
 	@Override
 	public void render(float delta) {
+		handleInput();
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -190,11 +232,9 @@ public class GameScreen implements Screen {
 
 		batch.setProjectionMatrix(camera.combined);
 
-		batch.begin();
-
 //		shapeRenderer.setProjectionMatrix(camera.combined);
 //		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//		Gdx.gl.glLineWidth(1f);
+//		Gdx.gl.glLineWidth(3f);
 //		shapeRenderer.setColor(Color.BLACK); // 100, 60, 21, 255); // Color.BLUE);
 //		shapeRenderer.line(1f, 1f, 1f, 10f);
 //		shapeRenderer.line(1f, 1f, 10f, 1f);
@@ -203,19 +243,24 @@ public class GameScreen implements Screen {
 //		shapeRenderer.end();
 //
 //		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//		Gdx.gl.glLineWidth(1);
+//		Gdx.gl.glLineWidth(3f);
 //		shapeRenderer.setColor(Color.RED); // 100, 60, 21, 255); // Color.BLUE);
-//		shapeRenderer.rect(2f, 2f, 7f, 7f);
+//		shapeRenderer.rect(1f, 1f, 7f, 7f);
 //		shapeRenderer.end();
 
 		drawGrid(delta);
-//		drawRelief(delta);
-//		drawCreeps(delta);
-//		drawStepsAndMouse(delta);
+		drawRelief(delta);
+		drawCreeps(delta);
+		drawStepsAndMouse(delta);
 
 //		shapeRenderer.end();
 
-		batch.end();
+//		batch.begin();
+//
+//		font.setColor(Color.RED);
+//		font.draw(batch, "TEST", 200, 200);
+//
+//		batch.end();
 
 //		 Instruction ------------------------------------------------------
 //
@@ -326,124 +371,132 @@ public class GameScreen implements Screen {
 		shapeRenderer.end();
 	}
 
-//	public void drawCreeps(float delta) {
-////        Log.d("TTW", "drawCreeps(1);");
-//		int mainCoorMapX = field.getMainCoorMapX();
-//		int mainCoorMapY = field.getMainCoorMapY();
-//		int spaceWidget = field.getSpaceWidget();
-//		int sizeCell = field.getSizeCell();
-//
-//		int fieldX = field.getSizeX();
-//		int fieldY = field.getSizeY();
-//
-//		for(int y = 0; y < fieldY; y++) {
-////            Log.d("TTW", "drawCreeps(2);");
-//			for(int x = 0; x < fieldX; x++) {
-////                Log.d("TTW", "drawCreeps(3);");
-////                int num = field.containCreep(x, y);
-//				if(field.containCreep(x, y)) {
-////                    Log.d("TTW", "drawCreeps(4);");
-//					float pxlsX = mainCoorMapX + spaceWidget + x*sizeCell;//+1;
-//					float pxlsY = mainCoorMapY + spaceWidget + y*sizeCell;// - sizeCell/2;//+1;
-//					float localSizeCell = sizeCell;//-1;
-//					float localSpaceCell = sizeCell/5;
-//
-////                QColor color = QColor(num*10, num*10, num*10);
-////                p.fillRect(pxlsX+1 + localSpaceCell, pxlsY+1 + localSpaceCell, localSizeCell-1 - 2*(localSpaceCell), localSizeCell-1 - 2*(localSpaceCell), color);
-//
+	public void drawCreeps(float delta) {
+//        Log.d("TTW", "drawCreeps(1);");
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		int mainCoorMapX = field.getMainCoorMapX();
+		int mainCoorMapY = field.getMainCoorMapY();
+		int spaceWidget = field.getSpaceWidget();
+		int sizeCell = field.getSizeCell();
+
+		int fieldX = field.getSizeX();
+		int fieldY = field.getSizeY();
+
+		for(int y = 0; y < fieldY; y++) {
+//            Log.d("TTW", "drawCreeps(2);");
+			for(int x = 0; x < fieldX; x++) {
+//                Log.d("TTW", "drawCreeps(3);");
+//                int num = field.containCreep(x, y);
+				if(field.containCreep(x, y)) {
+//                    Log.d("TTW", "drawCreeps(4);");
+					float pxlsX = mainCoorMapX + spaceWidget + x*sizeCell;//+1;
+					float pxlsY = mainCoorMapY + spaceWidget + y*sizeCell;// - sizeCell/2;//+1;
+					float localSizeCell = sizeCell;//-1;
+					float localSpaceCell = sizeCell/5;
+
+//                QColor color = QColor(num*10, num*10, num*10);
+//                p.fillRect(pxlsX+1 + localSpaceCell, pxlsY+1 + localSpaceCell, localSizeCell-1 - 2*(localSpaceCell), localSizeCell-1 - 2*(localSpaceCell), color);
+
 //					paint.setColor(Color.RED);
-////                    canvas.drawRect(pxlsX+1 + localSpaceCell, pxlsY+1 + localSpaceCell, pxlsX + localSizeCell - localSpaceCell, pxlsY + localSizeCell - localSpaceCell, paint);
-////                    canvas.drawRect(pxlsX+1 + space, pxlsY+1 + space, pxlsX + sizeCell - space, pxlsY + sizeCell - space, paint);//QColor(0, 0, 0));
-////                    canvas.drawLine(pxlsX, pxlsY, pxlsX + localSizeCell, pxlsY + localSizeCell, paint);
-////                    canvas.drawLine(pxlsX + localSizeCell, pxlsY, pxlsX, pxlsY + localSizeCell, paint);
+					shapeRenderer.setColor(Color.RED); // 100, 60, 21, 255); // Color.BLUE);
+//                    canvas.drawRect(pxlsX+1 + localSpaceCell, pxlsY+1 + localSpaceCell, pxlsX + localSizeCell - localSpaceCell, pxlsY + localSizeCell - localSpaceCell, paint);
+//                    canvas.drawRect(pxlsX+1 + space, pxlsY+1 + space, pxlsX + sizeCell - space, pxlsY + sizeCell - space, paint);//QColor(0, 0, 0));
+//                    canvas.drawLine(pxlsX, pxlsY, pxlsX + localSizeCell, pxlsY + localSizeCell, paint);
+//                    canvas.drawLine(pxlsX + localSizeCell, pxlsY, pxlsX, pxlsY + localSizeCell, paint);
 //					canvas.drawCircle(pxlsX + localSizeCell/2, pxlsY + localSizeCell/2, localSpaceCell, paint);
+					shapeRenderer.circle(pxlsX + localSizeCell/2, pxlsY + localSizeCell/2, localSpaceCell);
+
+//                    std::vector<Creep*> creeps = field.getCreeps(x, y);
+//                    int size = creeps.size();
+//                    for(int k = 0; k < size; k++)
+//                    {
+//                        if(creeps[k]->alive || creeps[k]->preDeath) // fixed!!!
+//                        {
+//                            int lastX, lastY;
+//                            int animationCurrIter, animationMaxIter;
+//                            QPixmap pixmap = creeps[k]->getAnimationInformation(&lastX, &lastY, &animationCurrIter, &animationMaxIter);
 //
-////                    std::vector<Creep*> creeps = field.getCreeps(x, y);
-////                    int size = creeps.size();
-////                    for(int k = 0; k < size; k++)
-////                    {
-////                        if(creeps[k]->alive || creeps[k]->preDeath) // fixed!!!
-////                        {
-////                            int lastX, lastY;
-////                            int animationCurrIter, animationMaxIter;
-////                            QPixmap pixmap = creeps[k]->getAnimationInformation(&lastX, &lastY, &animationCurrIter, &animationMaxIter);
-////
-////                            pxlsX = mainCoorMapX + spaceWidget + x*sizeCell - localSpaceCell;
-////                            pxlsY = mainCoorMapY + spaceWidget + y*sizeCell - localSpaceCell;
-////
-////                            if(lastX < x)
-////                                pxlsX -= (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
-////                            if(lastX > x)
-////                                pxlsX += (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
-////                            if(lastY < y)
-////                                pxlsY -= (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
-////                            if(lastY > y)
-////                                pxlsY += (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
-////
-////                            p.drawPixmap(pxlsX, pxlsY, localSizeCell + localSpaceCell*2, localSizeCell + localSpaceCell*2, pixmap);
-////                            //                    p.drawRect(pxlsX, pxlsY, localSizeCell + localSpaceCell*2, localSizeCell + localSpaceCell*2);
-////
-////                            int maxHP = 100;
-////                            int hp = creeps[k]->hp;
-////                            float hpWidth = localSizeCell-5;
-////                            hpWidth = hpWidth/maxHP*hp;
-//////                        qDebug() << "hpWidth: " << hpWidth;
-////
-////                            p.drawRect(pxlsX + localSpaceCell+2, pxlsY, localSizeCell-4, 10);
-////                            p.fillRect(pxlsX + localSpaceCell+3, pxlsY+1, hpWidth, 9, QColor(Qt::green));
-////
-////                            // IT's NOT GOOD!!! Fixed!
-////                            creeps[k]->coorByMapX = pxlsX;
-////                            creeps[k]->coorByMapY = pxlsY;
-////                            // -----------------------
-////                        }
-////                    }
-//				}
-//			}
-//		}
-//	}
+//                            pxlsX = mainCoorMapX + spaceWidget + x*sizeCell - localSpaceCell;
+//                            pxlsY = mainCoorMapY + spaceWidget + y*sizeCell - localSpaceCell;
 //
-//	void drawStepsAndMouse(float delta) {
-//		int mainCoorMapX = field.getMainCoorMapX();
-//		int mainCoorMapY = field.getMainCoorMapY();
-//		int spaceWidget = field.getSpaceWidget();
-//		int sizeCell = field.getSizeCell();
+//                            if(lastX < x)
+//                                pxlsX -= (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
+//                            if(lastX > x)
+//                                pxlsX += (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
+//                            if(lastY < y)
+//                                pxlsY -= (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
+//                            if(lastY > y)
+//                                pxlsY += (sizeCell/animationMaxIter)*(animationMaxIter-animationCurrIter);
 //
-////        p.setPen(QColor(255,0,0));
-////        paint.setARGB(255, 255, 0, 0);
+//                            p.drawPixmap(pxlsX, pxlsY, localSizeCell + localSpaceCell*2, localSizeCell + localSpaceCell*2, pixmap);
+//                            //                    p.drawRect(pxlsX, pxlsY, localSizeCell + localSpaceCell*2, localSizeCell + localSpaceCell*2);
+//
+//                            int maxHP = 100;
+//                            int hp = creeps[k]->hp;
+//                            float hpWidth = localSizeCell-5;
+//                            hpWidth = hpWidth/maxHP*hp;
+////                        qDebug() << "hpWidth: " << hpWidth;
+//
+//                            p.drawRect(pxlsX + localSpaceCell+2, pxlsY, localSizeCell-4, 10);
+//                            p.fillRect(pxlsX + localSpaceCell+3, pxlsY+1, hpWidth, 9, QColor(Qt::green));
+//
+//                            // IT's NOT GOOD!!! Fixed!
+//                            creeps[k]->coorByMapX = pxlsX;
+//                            creeps[k]->coorByMapY = pxlsY;
+//                            // -----------------------
+//                        }
+//                    }
+				}
+			}
+		}
+		shapeRenderer.end();
+	}
+
+	void drawStepsAndMouse(float delta) {
+		batch.begin();
+		int mainCoorMapX = field.getMainCoorMapX();
+		int mainCoorMapY = field.getMainCoorMapY();
+		int spaceWidget = field.getSpaceWidget();
+		int sizeCell = field.getSizeCell();
+
+//        p.setPen(QColor(255,0,0));
+//        paint.setARGB(255, 255, 0, 0);
 //		paint.setColor(Color.RED);
-//
-//		int fieldX = field.getSizeX();
-//		int fieldY = field.getSizeY();
-//
-//		for(int y = 0; y < fieldY; y++)
-//		{
-//			for(int x = 0; x < fieldX; x++)
-//			{
-//				int pxlsX = mainCoorMapX + spaceWidget + x*sizeCell+1;
-//				int pxlsY = mainCoorMapY + spaceWidget + y*sizeCell+1;
-//				int localSizeCell = sizeCell-1;
-//				int localSpaceCell = sizeCell/4;
-//
-////                p.drawPixmap(sizeCell, 0, global_pixmap.width(), global_pixmap.height(), global_pixmap);
-//
-//				if(field.getStepCell(x, y) != 0) {
-////                    p.drawText(pxlsX + sizeCell / 2 - 5, pxlsY + sizeCell / 2 + 5, QString("%1").arg(field.getStepCell(x, y)));
-//					String str = String.valueOf(field.getStepCell(x, y));
+		font.setColor(Color.RED);
+
+		int fieldX = field.getSizeX();
+		int fieldY = field.getSizeY();
+
+		for(int y = 0; y < fieldY; y++)
+		{
+			for(int x = 0; x < fieldX; x++)
+			{
+				int pxlsX = mainCoorMapX + spaceWidget + x*sizeCell+1;
+				int pxlsY = mainCoorMapY + spaceWidget + y*sizeCell+1;
+				int localSizeCell = sizeCell-1;
+				int localSpaceCell = sizeCell/4;
+
+//                p.drawPixmap(sizeCell, 0, global_pixmap.width(), global_pixmap.height(), global_pixmap);
+
+				if(field.getStepCell(x, y) != 0) {
+//                    p.drawText(pxlsX + sizeCell / 2 - 5, pxlsY + sizeCell / 2 + 5, QString("%1").arg(field.getStepCell(x, y)));
+					String str = String.valueOf(field.getStepCell(x, y));
 //					canvas.drawText(str, pxlsX + sizeCell / 2 - 5, pxlsY + sizeCell / 2 + 5, paint);
-//				}
+//					Gdx.app.log("test", "x: " + x + " y: " + y + " str: " + str);
+					font.draw(batch, str, pxlsX + sizeCell / 2 - 5, pxlsY + sizeCell / 2 + 5);
+				}
+
+//                if(field.isSetSpawnPoint(x,y)) {
+//                    p.fillRect(pxlsX + localSpaceCell, pxlsY + localSpaceCell, localSizeCell - 2 * (localSpaceCell), localSizeCell - 2 * (localSpaceCell), QColor(255, 162, 0));
+//                }
 //
-////                if(field.isSetSpawnPoint(x,y)) {
-////                    p.fillRect(pxlsX + localSpaceCell, pxlsY + localSpaceCell, localSizeCell - 2 * (localSpaceCell), localSizeCell - 2 * (localSpaceCell), QColor(255, 162, 0));
-////                }
-////
-////                if(field.isSetExitPoint(x, y)) {
-////                    p.fillRect(pxlsX + localSpaceCell, pxlsY + localSpaceCell, localSizeCell - 2 * (localSpaceCell), localSizeCell - 2 * (localSpaceCell), QColor(0, 255, 0));
-////                }
-//			}
-//		}
-//	}
-//}
+//                if(field.isSetExitPoint(x, y)) {
+//                    p.fillRect(pxlsX + localSpaceCell, pxlsY + localSpaceCell, localSizeCell - 2 * (localSpaceCell), localSizeCell - 2 * (localSpaceCell), QColor(0, 255, 0));
+//                }
+			}
+		}
+		batch.end();
+	}
 
 	@Override
 	public void resize(int width, int height) {
