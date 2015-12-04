@@ -16,6 +16,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.betmansmall.game.map.Editor.LoadMap;
 import com.betmansmall.game.map.Editor.Map;
 
@@ -41,6 +43,7 @@ public class GameScreen implements Screen {
 //	int dropsGatchered;
 
 	final TowerDefence game;
+	boolean inputMode;
 
 	public Field field;
 	private int gameCoordXForWhichCell;
@@ -58,6 +61,7 @@ public class GameScreen implements Screen {
 		this.shapeRenderer = new ShapeRenderer();
 
 		this.game = gam;
+		this.inputMode = false;
 		init();
 
 //		dropImage = new Texture("droplet.png");
@@ -127,11 +131,21 @@ public class GameScreen implements Screen {
 		field.setCreep(0, 0);
 		field.setCreep(0, 0);
 		field.setCreep(0, 0);
+		field.setCreep(0, 0);
+
+		Timer.schedule(new Task() {
+						   @Override
+						   public void run() {
+							   timerEvent();
+						   }
+					   }
+				, 0f
+				, 1f
+		);
 
 //        LoadMap(TOWER_DEFENCE_PATH + "maps/arcticv1.tmx");
-		Map map1 = new Map();
-		new LoadMap("maps/arcticv1.tmx", map1);
-		
+//		Map map1 = new Map();
+//		new LoadMap("maps/arcticv1.tmx", map1);
 	}
 
 	public void mousePressEvent(float mouseX, float mouseY) {
@@ -210,10 +224,10 @@ public class GameScreen implements Screen {
 			gameCoordYForWhichCell = y;
 			if(whichCell(gameCoordXForWhichCell, gameCoordYForWhichCell)) {
 				Gdx.app.log("TTW", "mousePressEvent() -- mouseX: " + gameCoordXForWhichCell + " mouseY: " + gameCoordYForWhichCell);
-//				if(MainActivity.inputMode) {
-//					field.createExitPoint(gameCoordXForWhichCell, gameCoordYForWhichCell);
-////                field.waveAlgorithm(gameCoordXForWhichCell, gameCoordYForWhichCell);
-//				} else {
+				if(inputMode) {
+					field.createExitPoint(gameCoordXForWhichCell, gameCoordYForWhichCell);
+//                field.waveAlgorithm(gameCoordXForWhichCell, gameCoordYForWhichCell);
+				} else {
 					if (field.containEmpty(gameCoordXForWhichCell, gameCoordYForWhichCell)) {
 						field.setBusy(gameCoordXForWhichCell, gameCoordYForWhichCell);
 					} else if (field.containBusy(gameCoordXForWhichCell, gameCoordYForWhichCell)) {
@@ -221,15 +235,28 @@ public class GameScreen implements Screen {
 					}
 
 					field.waveAlgorithm();
-//				}
+				}
 //				invalidate();
 			}
 		}
+		if(Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+			Gdx.app.log("hadleInput()", "isKeyJustPressed(Input.Keys.A)");
+			inputMode = !inputMode;
+		}
+	}
+
+	private void timerEvent() {//float delta) {
+		field.stepAllCreeps();
 	}
 
 	@Override
 	public void render(float delta) {
+//		System.out.print("\nFPS: " + Gdx.graphics.getFramesPerSecond() + "\n");
+//		System.out.print("DeltaTime: " + Gdx.graphics.getDeltaTime() + " s\n");
+
 		handleInput();
+//		timerEvent(delta);
+
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
