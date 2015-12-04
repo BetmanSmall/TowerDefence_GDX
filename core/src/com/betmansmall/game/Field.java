@@ -1,5 +1,7 @@
 package com.betmansmall.game;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import java.util.ArrayList;
 
 /**
@@ -21,6 +23,9 @@ public class Field {
 
 //        QPixmap backgroundPixmap;
 //        QPixmap busyPixmap;
+
+        Texture backgrounTexture;
+        Texture busyTexture;
 
         Cell() {
             this.step = 0;

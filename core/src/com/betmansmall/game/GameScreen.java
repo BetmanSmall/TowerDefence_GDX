@@ -16,6 +16,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.betmansmall.game.map.Editor.LoadMap;
+import com.betmansmall.game.map.Editor.Map;
 
 import java.util.Iterator;
 
@@ -126,7 +128,10 @@ public class GameScreen implements Screen {
 		field.setCreep(0, 0);
 		field.setCreep(0, 0);
 
-//        loadMap(TOWER_DEFENCE_PATH + "maps/arcticv1.tmx");
+//        LoadMap(TOWER_DEFENCE_PATH + "maps/arcticv1.tmx");
+		Map map1 = new Map();
+		new LoadMap("maps/arcticv1.tmx", map1);
+		
 	}
 
 	public void mousePressEvent(float mouseX, float mouseY) {
