@@ -6,75 +6,118 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.betmansmall.game.map.Editor.TileSet;
+import com.badlogic.gdx.InputProcessor;
 
-import javafx.application.Application;
-
-/**
- * Created by Vitaly on 13.10.2015.
- */
 public class MainMenuScreen implements Screen {
-    final TowerDefence game;
-    OrthographicCamera camera;
-    SpriteBatch batch;
-    BitmapFont font;
 
-    public MainMenuScreen(final TowerDefence gam) {
-        this.game = gam;
+    private int dragX, dragY;
+    private TiledMap map;
+    private IsometricTiledMapRenderer renderer;
+    private OrthographicCamera cam;
 
-        this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        this.batch = new SpriteBatch();
-        this.font = new BitmapFont();
+    InputProcessor ip = new InputProcessor() {
+
+        @Override
+        public boolean keyDown(int keycode) {
+            return false;
+        }
+
+        @Override
+        public boolean keyUp(int keycode) {
+            return false;
+        }
+
+        @Override
+        public boolean keyTyped(char character) {
+            return false;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            dragX = screenX;
+            dragY = screenY;
+            return true;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            return false;
+        }
+
+        @Override
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
+            float dX = (float)(screenX-dragX)/(float)Gdx.graphics.getWidth();
+            float dY = (float)(dragY-screenY)/(float)Gdx.graphics.getHeight();
+            dragX = screenX;
+            dragY = screenY;
+            cam.position.add(dX * 10f, dY * 10f, 0f);
+            cam.lookAt(0,0,0);
+            cam.update();
+            return true;
+        }
+
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            return false;
+        }
+
+        @Override
+        public boolean scrolled(int amount) {
+            return false;
+        }
+    };
+    public MainMenuScreen(TowerDefence towerDefence) {
+        this.cam = new OrthographicCamera();
+        this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
+
 
     @Override
     public void show() {
+        map = new TmxMapLoader().load("isomap.tmx");
 
+        renderer = new IsometricTiledMapRenderer(map);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl20.glClearColor(0,0,0,1);
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        font.draw(batch, "Welcome to TowerDefence!", Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-        font.draw(batch, "Tap anywhere to begin!", Gdx.graphics.getWidth()/2+2, Gdx.graphics.getHeight()/2-12);
-        batch.end();
-
-        if (Gdx.input.isTouched()){
-            game.setScreen(new GameScreen(game));
-            dispose();
-        }
+        renderer.setView(cam);
+        renderer.render();
+        //dispose();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        cam.viewportWidth = width;
+        cam.viewportHeight = height;
+        cam.position.set(800f, 0f, 100f);
+        cam.update();
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        font.dispose();
+        map.dispose();
+        renderer.dispose();
     }
 }
