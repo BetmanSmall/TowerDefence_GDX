@@ -1,41 +1,29 @@
 package com.betmansmall.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Created by betmansmall on 22.09.2015.
  */
-public class Creep {
+public class Creep extends Sprite {
     int hp;
     boolean alive;
-    //    bool preDeath;
     int number;
-//    int speed;
-//    int type;
-
-    int coorByCellX, coorByCellY;
-//    int coorByMapX, coorByMapY;
-
-//    int lastX, lastY;
-
-//    Direction direction;
-
-//    int animationCurrIter;
-//    int animationMaxIter;
-
-//    QPixmap pixmap;
-//    std::vector<QPixmap> activePixmaps;
-
-//    DefaultUnit* defUnit;
-
-//    Creep() {
-//
-//    }
-
-    Creep(int number, int coorByCellX, int coorByCellY) {
-        this.number = number;
-        this.coorByCellX = coorByCellX;
-        this.coorByCellY = coorByCellY;
+    private Vector2 velocity = new Vector2();
+    public Creep(Sprite sprite){
+        super(sprite);
     }
 
-//    QPixmap getAnimationInformation(int *lastX, int *lastY, int *animationCurrIter, int *animationMaxIter);
-//    bool takeDamage(int damage);
+    @Override
+    public void draw(Batch batch) {
+        update(Gdx.graphics.getDeltaTime());
+        super.draw(batch);
+    }
+
+    public void update(float delta){
+
+    }
 }

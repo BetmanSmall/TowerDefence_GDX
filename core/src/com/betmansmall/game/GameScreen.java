@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -25,13 +26,14 @@ public class GameScreen implements Screen {
 	public GameScreen(TowerDefence towerDefence) {
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		background = new Texture(Gdx.files.internal("img/buttons.png"));
-		map = new TmxMapLoader().load("img/isomap.tmx");
-		renderer = new IsometricTiledMapRenderer(map);
 	}
 
 	@Override
 	public void show(){
+		background = new Texture(Gdx.files.internal("img/buttons.png"));
+		map = new TmxMapLoader().load("img/isomap.tmx");
+		renderer = new IsometricTiledMapRenderer(map);
+
 	}
 
 	@Override
@@ -47,6 +49,7 @@ public class GameScreen implements Screen {
 
 		renderer.setView(cam);
 		renderer.render();
+
 		//dispose();
 	}
 
