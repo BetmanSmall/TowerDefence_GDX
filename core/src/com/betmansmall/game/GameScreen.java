@@ -30,8 +30,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show(){
-		background = new Texture(Gdx.files.internal("img/buttons.png"));
-		map = new TmxMapLoader().load("img/isomap.tmx");
+		background = new Texture(Gdx.files.internal("buttons.png"));
+		map = new TmxMapLoader().load("isomap.tmx");
 		renderer = new IsometricTiledMapRenderer(map);
 
 	}
