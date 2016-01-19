@@ -12,37 +12,30 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 public class MainMenuScreen implements Screen {
 
-
-    GameScreen gs;
-    private OrthographicCamera camera = gs.cam;
-
-    private IsometricTiledMapRenderer renderer;
+    private OrthographicCamera camera;
     private Texture background;
     private SpriteBatch batch;
     private Creep creep;
 
 
     public MainMenuScreen(TowerDefence towerDefence){
+        this.camera = new OrthographicCamera();
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
-
     @Override
     public void show() {
         creep = new Creep(new Sprite(new Texture("img/creep.png")));
+        background = new Texture(Gdx.files.internal("img/buttons.png"));
     }
 
     @Override
     public void render(float delta) {
-        background = new Texture(Gdx.files.internal("img/buttons.png"));
-        Gdx.gl20.glClearColor(0,0,0,1);
+        Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch = new SpriteBatch();
         batch.begin();
         batch.draw(background, 10, 10);
         batch.end();
-        //dispose();
-        renderer.getBatch().begin();
-        creep.draw(renderer.getBatch());
-        renderer.getBatch().end();
         Gdx.app.log("GameScreen FPS", (1/delta) + "");
     }
 
