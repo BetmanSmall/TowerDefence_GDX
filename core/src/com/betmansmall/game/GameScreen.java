@@ -1,6 +1,7 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,32 +21,34 @@ public class GameScreen implements Screen {
 	private IsometricTiledMapRenderer renderer;
 	public OrthographicCamera cam;
 
-	private Texture background;
-	private SpriteBatch batch;
+	private SpriteBatch gamebatch;
 
 	public GameScreen(TowerDefence towerDefence) {
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				return false;
+			}
+		});
 	}
 
 	@Override
 	public void show(){
-		background = new Texture(Gdx.files.internal("buttons.png"));
-		map = new TmxMapLoader().load("isomap.tmx");
+		map = new TmxMapLoader().load("img/isomap.tmx");
 		renderer = new IsometricTiledMapRenderer(map);
-
+		gamebatch = new SpriteBatch();
 	}
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl20.glClearColor(0,0,0,1);
+		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-		batch = new SpriteBatch();
-		batch.begin();
-		batch.draw(background, 10, 10);
-		batch.end();
+		gamebatch.begin();
+		gamebatch.end();
 
 		renderer.setView(cam);
 		renderer.render();

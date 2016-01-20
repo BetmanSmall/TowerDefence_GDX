@@ -1,6 +1,7 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 
 
 /**
@@ -32,5 +33,9 @@ public class TowerDefence extends Game {
         super.dispose();
 //        batch.dispose();
 //        font.dispose();
+    }
+
+    public void closeApplication(){
+        Gdx.app.exit();
     }
 }
