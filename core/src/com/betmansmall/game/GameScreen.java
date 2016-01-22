@@ -20,6 +20,7 @@ public class GameScreen implements Screen {
 	private TiledMap map;
 	private IsometricTiledMapRenderer renderer;
 	public OrthographicCamera cam;
+	private Creep creep;
 
 	private SpriteBatch gamebatch;
 
@@ -29,7 +30,23 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				cam.zoom -= 1f;
 				return false;
+			}
+
+			@Override
+			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+				//cam.zoom += 10f;
+				return false;
+			}
+
+			@Override
+			public boolean touchDragged(int screenX, int screenY, int pointer) {
+				//cam.position.x = screenX;
+				//cam.position.y = screenY;
+				Gdx.app.log("Cam position", "x " + cam.position.x + "y " + cam.position.y);
+				cam.update();
+				return true;
 			}
 		});
 	}
@@ -39,6 +56,7 @@ public class GameScreen implements Screen {
 		map = new TmxMapLoader().load("img/isomap.tmx");
 		renderer = new IsometricTiledMapRenderer(map);
 		gamebatch = new SpriteBatch();
+		creep = new Creep(new Sprite(new Texture("img/grunt.png")));
 	}
 
 	@Override
@@ -46,22 +64,28 @@ public class GameScreen implements Screen {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
-		gamebatch.begin();
-		gamebatch.end();
-
 		renderer.setView(cam);
 		renderer.render();
 
+		//Draw creep
+		renderer.getBatch().begin();
+		for (int i = 0; i<10; i++){
+			creep.setPosition(i*64,i*32);
+			creep.draw(renderer.getBatch());
+		}
+
+
+		renderer.getBatch().end();
 		//dispose();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		cam.viewportWidth = width;
 		cam.viewportHeight = height;
+		cam.viewportWidth = width;
 		cam.position.set(800f, 0f, 100f);
 		cam.update();
+		Gdx.app.log("Screen size", "width "+ width + "height "+ height );
 	}
 
 	@Override

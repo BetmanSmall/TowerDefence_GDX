@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by betmansmall on 22.09.2015.
  */
-public class Creep extends Sprite {
+public class  Creep extends Sprite {
     int hp;
     boolean alive;
     int number;
