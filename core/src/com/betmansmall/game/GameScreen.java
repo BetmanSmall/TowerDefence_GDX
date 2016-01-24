@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
 
@@ -21,6 +22,8 @@ public class GameScreen implements Screen {
 	private IsometricTiledMapRenderer renderer;
 	public OrthographicCamera cam;
 	private Creep creep;
+	private int moveToX, moveToY;
+	private Array<Creep> creeps;
 
 	private SpriteBatch gamebatch;
 
@@ -30,7 +33,9 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				cam.zoom -= 1f;
+				//cam.zoom -= 1f;
+				moveToX = screenX;
+				moveToY = screenY;
 				return false;
 			}
 
@@ -42,8 +47,8 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				//cam.position.x = screenX;
-				//cam.position.y = screenY;
+				cam.position.x = screenX;
+				cam.position.y = screenY;
 				Gdx.app.log("Cam position", "x " + cam.position.x + "y " + cam.position.y);
 				cam.update();
 				return true;

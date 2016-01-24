@@ -13,6 +13,7 @@ public class  Creep extends Sprite {
     boolean alive;
     int number;
     private Vector2 velocity = new Vector2();
+    private Vector2 position = new Vector2();
     public Creep(Sprite sprite){
         super(sprite);
     }
