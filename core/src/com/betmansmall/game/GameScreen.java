@@ -9,19 +9,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
 
 	private int dragX, dragY;
 	private TiledMap map;
+	private TiledMapTileLayer collisionLayer;
 	private IsometricTiledMapRenderer renderer;
 	public OrthographicCamera cam;
-	private Creep creep;
 	private int moveToX, moveToY;
 	private Array<Creep> creeps;
 
@@ -36,6 +39,11 @@ public class GameScreen implements Screen {
 				//cam.zoom -= 1f;
 				moveToX = screenX;
 				moveToY = screenY;
+				Vector2 point =creeps.get(1).coordinatesConverter(
+						(int)(moveToX/creeps.get(1).getCollisionLayer().getTileWidth()),
+						(int)(moveToY/creeps.get(1).getCollisionLayer().getTileHeight()));
+				creeps.get(1).setPosition(point.x, point.y);
+				Gdx.app.log("Point", (int)(moveToX/creeps.get(1).getCollisionLayer().getTileWidth())+" "+moveToX);
 				return false;
 			}
 
@@ -54,6 +62,7 @@ public class GameScreen implements Screen {
 				return true;
 			}
 		});
+		creeps = new Array<Creep>();
 	}
 
 	@Override
@@ -61,7 +70,13 @@ public class GameScreen implements Screen {
 		map = new TmxMapLoader().load("img/isomap.tmx");
 		renderer = new IsometricTiledMapRenderer(map);
 		gamebatch = new SpriteBatch();
-		creep = new Creep(new Sprite(new Texture("img/grunt.png")));
+		for(int i=0;i<5;i++) {
+			creeps.add(new Creep(new Sprite(new Texture("img/grunt.png")),
+					(TiledMapTileLayer) map.getLayers().get(0)));
+			Vector2 point = creeps.get(i).coordinatesConverter(i,i);
+			creeps.get(i).setPosition(point.x, point.y);
+		}
+
 	}
 
 	@Override
@@ -74,9 +89,8 @@ public class GameScreen implements Screen {
 
 		//Draw creep
 		renderer.getBatch().begin();
-		for (int i = 0; i<10; i++){
-			creep.setPosition(i*64,i*32);
-			creep.draw(renderer.getBatch());
+		for (int i = 0; i<creeps.size; i++){
+			creeps.get(i).draw(renderer.getBatch());
 		}
 
 
