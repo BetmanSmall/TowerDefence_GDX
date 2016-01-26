@@ -9,13 +9,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-<<<<<<< HEAD
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-=======
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
->>>>>>> origin/develope
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
@@ -43,6 +40,11 @@ public class GameScreen implements Screen {
 	private TiledMapTileSet creepSet;
 	private TiledMapTileLayer.Cell creepCell;
 
+	ArrayList<TiledMapTileLayer.Cell> waterCellsInScene;
+	private Map<String,TiledMapTile> waterTiles;
+	float elapsedSinceAnimation = 0.0f;
+
+	private int count,count2;
 
 	public GameScreen(TowerDefence towerDefence) {
 		this.cam = new OrthographicCamera();
@@ -83,31 +85,33 @@ public class GameScreen implements Screen {
 	public void show(){
 		map = new TmxMapLoader().load("img/arena.tmx");
 		renderer = new IsometricTiledMapRenderer(map);
-<<<<<<< HEAD
-		creep = new Creep(new Sprite(new Texture("img/grunt.png")));
 
-		creepSet = map.getTileSets().getTileSet("creep");
-		creepLayer = (TiledMapTileLayer)map.getLayers().get("Foreground");
 
-		for(int x = 0; x < creepLayer.getWidth();x++) {
-			for (int y = 0; y < creepLayer.getHeight(); y++) {
-				TiledMapTileLayer.Cell cell = creepLayer.getCell(x,y);
+		//Create tile set
+		TiledMapTileSet tileset =  map.getTileSets().getTileSet("creep");
+		waterTiles = new HashMap<String,TiledMapTile>();
+
+		//Search in tileset objects with property "creep" and put them in waterTiles
+		for(TiledMapTile tile:tileset){
+			Object property = tile.getProperties().get("creep");
+			if(property != null)
+				waterTiles.put((String)property,tile);
+		}
+
+		//Create an array of cells
+		waterCellsInScene = new ArrayList<TiledMapTileLayer.Cell>();
+		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("Background");
+		for(int x = 0; x < layer.getWidth();x++){
+			for(int y = 0; y < layer.getHeight();y++){
+				TiledMapTileLayer.Cell cell = layer.getCell(x,y);
 				Object property = cell.getTile().getProperties().get("wrong");
 				if(property != null){
-					creepCell.
+					waterCellsInScene.add(cell);
+					count2++;
 				}
 			}
 		}
-=======
-		gamebatch = new SpriteBatch();
-		for(int i=0;i<5;i++) {
-			creeps.add(new Creep(new Sprite(new Texture("img/grunt.png")),
-					(TiledMapTileLayer) map.getLayers().get(0)));
-			Vector2 point = creeps.get(i).coordinatesConverter(i,i);
-			creeps.get(i).setPosition(point.x, point.y);
-		}
-
->>>>>>> origin/develope
+		Gdx.app.log("W: " + layer.getWidth(), "H: " + layer.getHeight() + "Count: " + count2);
 	}
 
 
@@ -119,8 +123,13 @@ public class GameScreen implements Screen {
 		renderer.setView(cam);
 		renderer.render();
 
+		elapsedSinceAnimation += Gdx.graphics.getDeltaTime();
+		if(elapsedSinceAnimation > 0.5f){
+			updateWaterAnimations();
+			elapsedSinceAnimation = 0.0f;
+		}
+
 		//Draw creep
-<<<<<<< HEAD
 //		renderer.getBatch().begin();
 //		for (int i = 0; i<10; i++){
 //			creep.setPosition(i*64,i*32);
@@ -128,16 +137,33 @@ public class GameScreen implements Screen {
 //		}
 //
 //		renderer.getBatch().end();
-=======
-		renderer.getBatch().begin();
-		for (int i = 0; i<creeps.size; i++){
-			creeps.get(i).draw(renderer.getBatch());
-		}
+//		renderer.getBatch().begin();
+//		for (int i = 0; i<creeps.size; i++){
+//			creeps.get(i).draw(renderer.getBatch());
+//		}
 
 
-		renderer.getBatch().end();
->>>>>>> origin/develope
+		//renderer.getBatch().end();
 		//dispose();
+	}
+
+	private void updateWaterAnimations(){
+
+		for(int x = 0; x<waterCellsInScene.size()-2; x++){
+			TiledMapTileLayer.Cell cell = waterCellsInScene.get(x);
+			String property = (String) cell.getTile().getProperties().get("wrong");
+			count++;
+			Gdx.app.log("Property" + property,"Count" + count);
+
+			Integer currentAnimationFrame = Integer.parseInt(property);
+
+			currentAnimationFrame++;
+			if(currentAnimationFrame > waterTiles.size())
+				currentAnimationFrame = 1;
+
+			TiledMapTile newTile = waterTiles.get(currentAnimationFrame.toString());
+			cell.setTile(newTile);
+		}
 	}
 
 	@Override
