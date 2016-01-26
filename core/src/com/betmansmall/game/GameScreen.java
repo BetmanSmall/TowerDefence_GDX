@@ -9,13 +9,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+<<<<<<< HEAD
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+=======
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+>>>>>>> origin/develope
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +32,11 @@ public class GameScreen implements Screen {
 
 	private int dragX, dragY;
 	private TiledMap map;
+	private TiledMapTileLayer collisionLayer;
 	private IsometricTiledMapRenderer renderer;
 	public OrthographicCamera cam;
-	private Creep creep;
+	private int moveToX, moveToY;
+	private Array<Creep> creeps;
 
 	private TiledMapTileLayer creepLayer;
 	private TiledMapTile creepTile;
@@ -41,7 +50,14 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				cam.zoom -= 1f;
+				//cam.zoom -= 1f;
+				moveToX = screenX;
+				moveToY = screenY;
+				Vector2 point =creeps.get(1).coordinatesConverter(
+						(int)(moveToX/creeps.get(1).getCollisionLayer().getTileWidth()),
+						(int)(moveToY/creeps.get(1).getCollisionLayer().getTileHeight()));
+				creeps.get(1).setPosition(point.x, point.y);
+				Gdx.app.log("Point", (int)(moveToX/creeps.get(1).getCollisionLayer().getTileWidth())+" "+moveToX);
 				return false;
 			}
 
@@ -53,19 +69,21 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				//cam.position.x = screenX;
-				//cam.position.y = screenY;
+				cam.position.x = screenX;
+				cam.position.y = screenY;
 				Gdx.app.log("Cam position", "x " + cam.position.x + "y " + cam.position.y);
 				cam.update();
 				return true;
 			}
 		});
+		creeps = new Array<Creep>();
 	}
 
 	@Override
 	public void show(){
 		map = new TmxMapLoader().load("img/arena.tmx");
 		renderer = new IsometricTiledMapRenderer(map);
+<<<<<<< HEAD
 		creep = new Creep(new Sprite(new Texture("img/grunt.png")));
 
 		creepSet = map.getTileSets().getTileSet("creep");
@@ -80,6 +98,16 @@ public class GameScreen implements Screen {
 				}
 			}
 		}
+=======
+		gamebatch = new SpriteBatch();
+		for(int i=0;i<5;i++) {
+			creeps.add(new Creep(new Sprite(new Texture("img/grunt.png")),
+					(TiledMapTileLayer) map.getLayers().get(0)));
+			Vector2 point = creeps.get(i).coordinatesConverter(i,i);
+			creeps.get(i).setPosition(point.x, point.y);
+		}
+
+>>>>>>> origin/develope
 	}
 
 
@@ -92,6 +120,7 @@ public class GameScreen implements Screen {
 		renderer.render();
 
 		//Draw creep
+<<<<<<< HEAD
 //		renderer.getBatch().begin();
 //		for (int i = 0; i<10; i++){
 //			creep.setPosition(i*64,i*32);
@@ -99,6 +128,15 @@ public class GameScreen implements Screen {
 //		}
 //
 //		renderer.getBatch().end();
+=======
+		renderer.getBatch().begin();
+		for (int i = 0; i<creeps.size; i++){
+			creeps.get(i).draw(renderer.getBatch());
+		}
+
+
+		renderer.getBatch().end();
+>>>>>>> origin/develope
 		//dispose();
 	}
 
