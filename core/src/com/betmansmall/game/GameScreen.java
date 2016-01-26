@@ -44,7 +44,7 @@ public class GameScreen implements Screen {
 	private Map<String,TiledMapTile> waterTiles;
 	float elapsedSinceAnimation = 0.0f;
 
-	private int count,count2;
+	private int count2, global = 0;
 
 	public GameScreen(TowerDefence towerDefence) {
 		this.cam = new OrthographicCamera();
@@ -107,11 +107,11 @@ public class GameScreen implements Screen {
 				Object property = cell.getTile().getProperties().get("wrong");
 				if(property != null){
 					waterCellsInScene.add(cell);
+					Gdx.app.log("Property : " + property, "Count2: " + count2);
 					count2++;
 				}
 			}
 		}
-		Gdx.app.log("W: " + layer.getWidth(), "H: " + layer.getHeight() + "Count: " + count2);
 	}
 
 
@@ -125,7 +125,9 @@ public class GameScreen implements Screen {
 
 		elapsedSinceAnimation += Gdx.graphics.getDeltaTime();
 		if(elapsedSinceAnimation > 0.5f){
+			Gdx.app.log("Count global " + global, "Hello");
 			updateWaterAnimations();
+			global++;
 			elapsedSinceAnimation = 0.0f;
 		}
 
@@ -148,21 +150,18 @@ public class GameScreen implements Screen {
 	}
 
 	private void updateWaterAnimations(){
+			for (int x = 1; x < waterCellsInScene.size(); x++) {
+				TiledMapTileLayer.Cell cell = waterCellsInScene.get(x);
+				String property = (String) cell.getTile().getProperties().get("wrong");
+				Integer currentAnimationFrame = Integer.parseInt(property);
 
-		for(int x = 0; x<waterCellsInScene.size()-2; x++){
-			TiledMapTileLayer.Cell cell = waterCellsInScene.get(x);
-			String property = (String) cell.getTile().getProperties().get("wrong");
-			count++;
-			Gdx.app.log("Property" + property,"Count" + count);
+				currentAnimationFrame++;
+				if (currentAnimationFrame > waterTiles.size())
+					currentAnimationFrame = 1;
 
-			Integer currentAnimationFrame = Integer.parseInt(property);
+				TiledMapTile newTile = waterTiles.get(currentAnimationFrame.toString());
+				cell.setTile(newTile);
 
-			currentAnimationFrame++;
-			if(currentAnimationFrame > waterTiles.size())
-				currentAnimationFrame = 1;
-
-			TiledMapTile newTile = waterTiles.get(currentAnimationFrame.toString());
-			cell.setTile(newTile);
 		}
 	}
 
