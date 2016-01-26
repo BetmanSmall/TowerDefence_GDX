@@ -9,10 +9,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.InputProcessor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameScreen implements Screen {
 
@@ -22,7 +29,11 @@ public class GameScreen implements Screen {
 	public OrthographicCamera cam;
 	private Creep creep;
 
-	private SpriteBatch gamebatch;
+	private TiledMapTileLayer creepLayer;
+	private TiledMapTile creepTile;
+	private TiledMapTileSet creepSet;
+	private TiledMapTileLayer.Cell creepCell;
+
 
 	public GameScreen(TowerDefence towerDefence) {
 		this.cam = new OrthographicCamera();
@@ -53,11 +64,24 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show(){
-		map = new TmxMapLoader().load("img/isomap.tmx");
+		map = new TmxMapLoader().load("img/arena.tmx");
 		renderer = new IsometricTiledMapRenderer(map);
-		gamebatch = new SpriteBatch();
 		creep = new Creep(new Sprite(new Texture("img/grunt.png")));
+
+		creepSet = map.getTileSets().getTileSet("creep");
+		creepLayer = (TiledMapTileLayer)map.getLayers().get("Foreground");
+
+		for(int x = 0; x < creepLayer.getWidth();x++) {
+			for (int y = 0; y < creepLayer.getHeight(); y++) {
+				TiledMapTileLayer.Cell cell = creepLayer.getCell(x,y);
+				Object property = cell.getTile().getProperties().get("wrong");
+				if(property != null){
+					creepCell.
+				}
+			}
+		}
 	}
+
 
 	@Override
 	public void render(float delta) {
@@ -68,14 +92,13 @@ public class GameScreen implements Screen {
 		renderer.render();
 
 		//Draw creep
-		renderer.getBatch().begin();
-		for (int i = 0; i<10; i++){
-			creep.setPosition(i*64,i*32);
-			creep.draw(renderer.getBatch());
-		}
-
-
-		renderer.getBatch().end();
+//		renderer.getBatch().begin();
+//		for (int i = 0; i<10; i++){
+//			creep.setPosition(i*64,i*32);
+//			creep.draw(renderer.getBatch());
+//		}
+//
+//		renderer.getBatch().end();
 		//dispose();
 	}
 
