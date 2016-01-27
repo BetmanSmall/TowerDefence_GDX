@@ -107,7 +107,7 @@ public class GameScreen implements Screen {
 				Object property = cell.getTile().getProperties().get("wrong");
 				if(property != null){
 					waterCellsInScene.add(cell);
-					Gdx.app.log("Property : " + property, "Count2: " + count2);
+					Gdx.app.log("Property : " + property, "Count2: " + count2 + " watah " + waterCellsInScene.size());
 					count2++;
 				}
 			}
@@ -150,8 +150,10 @@ public class GameScreen implements Screen {
 	}
 
 	private void updateWaterAnimations(){
-			for (int x = 1; x < waterCellsInScene.size(); x++) {
+			for (int x = 0; x < waterCellsInScene.size(); x++) {
 				TiledMapTileLayer.Cell cell = waterCellsInScene.get(x);
+				if (!cell.getTile().getProperties().containsKey("wrong"))
+					continue;
 				String property = (String) cell.getTile().getProperties().get("wrong");
 				Integer currentAnimationFrame = Integer.parseInt(property);
 
