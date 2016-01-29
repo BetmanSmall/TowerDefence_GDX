@@ -5,17 +5,21 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
@@ -37,23 +41,52 @@ public class GameScreen implements Screen {
 	private TiledMapTileSet creepSet;
 	private TiledMapTileLayer.Cell creepCell;
 
+	private Batch spriteBatch = new SpriteBatch(10);
+	private Image returnButton;
+
 	ArrayList<TiledMapTileLayer.Cell> creepCellsInScene;
 	private Map<String,TiledMapTile> waterTiles;
 
-	public GameScreen(TowerDefence towerDefence) {
+	private TowerDefence towerDefence;
+	private GameScreen gs;
+	private float getNormalCoordX(float x) {
+		return x;
+	}
+
+	private float getNormalCoordY(float y) {
+		return (float) Gdx.graphics.getHeight() - y;
+	}
+
+	public GameScreen(final TowerDefence towerDefence) {
+		this.gs = this;
+		this.towerDefence = towerDefence;
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		returnButton = new Image(new Texture(Gdx.files.internal("img/return.png")));
+		returnButton.setSize(55, 55);
+		returnButton.setPosition(0, Gdx.graphics.getHeight() - returnButton.getHeight());
+
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+				System.out.println("x=" + screenX + " y=" + getNormalCoordY(screenY) + " getY=" + returnButton.getY()
+						+ " getyw" + (returnButton.getY() + returnButton.getHeight()));
+				if(returnButton.getX() < getNormalCoordX(screenX) && getNormalCoordX(screenX) < returnButton.getX() + returnButton.getWidth() &&
+						returnButton.getY() < getNormalCoordY(screenY) && getNormalCoordY(screenY) < returnButton.getY() + returnButton.getHeight() ) {
+					towerDefence.setMainMenu(gs);
+					return true;
+				}
+
 				//cam.zoom -= 1f;
 				moveToX = screenX;
 				moveToY = screenY;
-				Vector2 point =creeps.get(1).coordinatesConverter(
-						(int)(moveToX/creeps.get(1).getCollisionLayer().getTileWidth()),
-						(int)(moveToY/creeps.get(1).getCollisionLayer().getTileHeight()));
+				Vector2 point = creeps.get(1).coordinatesConverter(
+						(int) (moveToX / creeps.get(1).getCollisionLayer().getTileWidth()),
+						(int) (moveToY / creeps.get(1).getCollisionLayer().getTileHeight()));
 				creeps.get(1).setPosition(point.x, point.y);
-				Gdx.app.log("Point", (int)(moveToX/creeps.get(1).getCollisionLayer().getTileWidth())+" "+moveToX);
+				Gdx.app.log("Point", (int) (moveToX / creeps.get(1).getCollisionLayer().getTileWidth()) + " " + moveToX);
 				return false;
 			}
 
@@ -74,6 +107,7 @@ public class GameScreen implements Screen {
 		});
 		creeps = new Array<Creep>();
 	}
+
 
 	@Override
 	public void show(){
@@ -120,6 +154,9 @@ public class GameScreen implements Screen {
 
 		renderer.setView(cam);
 		renderer.render();
+		spriteBatch.begin();
+		returnButton.draw(spriteBatch, 1);
+		spriteBatch.end();
 	}
 
 
@@ -148,6 +185,6 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		map.dispose();
-		renderer.dispose();
+		renderer = null;
 	}
 }

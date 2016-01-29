@@ -1,33 +1,26 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MainMenuScreen implements Screen {
 
-    private Texture background;
+    private Image background;
     private Texture buttons;
     private TextureRegion menuButton;
-    private Texture settingsTexture;
-    private Skin settingsSkin;
 
-    private SpriteBatch mainmenubatch;
     private TowerDefence towerDefence;
     MenuButtons menuButtons;
     private Stage mmStage;
@@ -36,6 +29,7 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(TowerDefence towerDefence){
         this.towerDefence = towerDefence;
+        create();
     }
 
     class MenuButtons extends Actor{
@@ -45,23 +39,17 @@ public class MainMenuScreen implements Screen {
         }
     }
 
-    @Override
-    public void show() {
-        background = new Texture(Gdx.files.internal("img/background.jpg"));
-        buttons = new Texture(Gdx.files.internal("img/buttons.png"));
-        settingsTexture = new Texture((Gdx.files.internal("img/setting.png")));
-        settingsSkin = new Skin();
-        settingsSkin.getAtlas().getTextures().
-        menuButton = new TextureRegion(buttons, 0, 0, 360, 600);
-        mainmenubatch = new SpriteBatch();
-        mmStage = new Stage(new ScreenViewport());
-        mmStage.clear();
-        Gdx.input.setInputProcessor(mmStage);
+    private void create() {
+        background = new Image(new Texture(Gdx.files.internal("img/background.jpg")));
+        background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        background.setPosition(0f, 0f);
 
+        buttons = new Texture(Gdx.files.internal("img/buttons.png"));
+        menuButton = new TextureRegion(buttons, 0, 0, 360, 600);
+        mmStage = new Stage(new ScreenViewport());
         menuButtons = new MenuButtons();
         menuButtons.setPosition(mmStage.getWidth() / 2 - buttons.getWidth() / 2, 0);
         menuButtons.setSize(buttons.getWidth(), buttons.getHeight());
-        mmStage.addActor(menuButtons);
 
         menuButtons.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -70,29 +58,46 @@ public class MainMenuScreen implements Screen {
                 return true;
             }
         });
-        settings = new ImageButton(settingsSkin);
-        settings.clear();
-        settings.setPosition(Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 200);
+        settings = new ImageButton(new Image(new Texture(Gdx.files.internal("img/settings.png"))).getDrawable());
+        settings.setSize(175, 175);
+        settings.setPosition(Gdx.graphics.getWidth() - settings.getWidth() , 0);
+        settings.addListener(new ClickListener() {
+            @Override
+            public void clicked (InputEvent event, float x, float y) {
+                Gdx.app.log("MainScreen", "Settings");
+            }
+        });
+
+
+        mmStage.addActor(background);
+        mmStage.addActor(menuButtons);
+        mmStage.addActor(settings);
+    }
+
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(mmStage);
         }
 
     private void touchDownAnalizer(float x, float y){
-        if(true){
+        if(y > 73 * menuButtons.getHeight()/600f && y < 231 * menuButtons.getHeight()/600f ){
+            Gdx.app.log("MainScreen", "Exit");
+            towerDefence.closeApplication();
+        }else if(y > 259 * menuButtons.getHeight()/600f && y < 417 * menuButtons.getHeight()/600f ) {
+            Gdx.app.log("MainScreen", "About");
+        } else if(y > 442 * menuButtons.getHeight()/600f && y < 600 * menuButtons.getHeight()/600f ) {
+            Gdx.app.log("MainScreen","Play");
             towerDefence.setScreen(new GameScreen(towerDefence));
+        } else {
+            Gdx.app.log("MainScreen","Unknown analyzer");
         }
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        menuButtons.setPosition(mmStage.getWidth() / 2 - buttons.getWidth() / 2, 0);
-        mmStage.getBatch().begin();
-        mmStage.getBatch().draw(background, 0, 0);
-        mmStage.getBatch().end();
-        mmStage.draw();
         mmStage.act(delta);
-
-
+        mmStage.draw();
         //Gdx.app.log("GameScreen FPS", (1/delta) + "");
     }
 
@@ -111,7 +116,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+        //Should not be here!
+        //dispose();
     }
 
     @Override
