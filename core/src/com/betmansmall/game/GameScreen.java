@@ -16,10 +16,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
@@ -27,6 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameScreen implements Screen {
+
+	private static final float MAX_ZOOM = 1f; //normal size
+	private static final float MIN_ZOOM = 0.5f; // 2x zoom
+	private static final float SPEED_ZOOM = 0.02f;
+
+	private Vector2 dragOld, dragNew;
+
 
 	private int dragX, dragY;
 	private TiledMap map;
@@ -49,6 +54,7 @@ public class GameScreen implements Screen {
 
 	private TowerDefence towerDefence;
 	private GameScreen gs;
+
 	private float getNormalCoordX(float x) {
 		return x;
 	}
@@ -70,14 +76,15 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-				System.out.println("x=" + screenX + " y=" + getNormalCoordY(screenY) + " getY=" + returnButton.getY()
-						+ " getyw" + (returnButton.getY() + returnButton.getHeight()));
-				if(returnButton.getX() < getNormalCoordX(screenX) && getNormalCoordX(screenX) < returnButton.getX() + returnButton.getWidth() &&
-						returnButton.getY() < getNormalCoordY(screenY) && getNormalCoordY(screenY) < returnButton.getY() + returnButton.getHeight() ) {
+				dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+				dragOld = dragNew;
+				if (returnButton.getX() < getNormalCoordX(screenX) && getNormalCoordX(screenX) < returnButton.getX() + returnButton.getWidth() &&
+						returnButton.getY() < getNormalCoordY(screenY) && getNormalCoordY(screenY) < returnButton.getY() + returnButton.getHeight()) {
 					towerDefence.setMainMenu(gs);
 					return true;
 				}
+
+				if (true) return true; //workaround
 
 				//cam.zoom -= 1f;
 				moveToX = screenX;
@@ -97,15 +104,32 @@ public class GameScreen implements Screen {
 			}
 
 			@Override
-			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				cam.position.x = screenX;
-				cam.position.y = screenY;
-				Gdx.app.log("Cam position", "x " + cam.position.x + "y " + cam.position.y);
+			public boolean scrolled(int amount) {
+				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += SPEED_ZOOM;
+				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom -= SPEED_ZOOM;
 				cam.update();
+				return false;
+			}
+
+			@Override
+			public boolean touchDragged(int screenX, int screenY, int pointer) {
+				moveCamera();
 				return true;
 			}
+
 		});
 		creeps = new Array<Creep>();
+	}
+
+
+	private void moveCamera() {
+		dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+		if (!dragNew.equals(dragOld) && dragOld != null)
+		{
+			cam.translate(dragOld.x - dragNew.x, dragNew.y - dragOld.y); //Translate by subtracting the vectors
+			cam.update();
+		}
+		dragOld = dragNew; //Drag old becomes drag new.
 	}
 
 
@@ -179,12 +203,14 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void hide() {
-		dispose();
+	//	dispose();
 	}
 
 	@Override
 	public void dispose() {
 		map.dispose();
+		map = null;
+		renderer.dispose();
 		renderer = null;
 	}
 }
