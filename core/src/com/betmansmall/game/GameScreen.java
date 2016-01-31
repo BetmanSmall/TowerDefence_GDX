@@ -17,6 +17,8 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
@@ -32,19 +34,10 @@ public class GameScreen implements Screen {
 
 	private Vector2 dragOld, dragNew;
 
-
-	private int dragX, dragY;
-	private TiledMap map;
-	private TiledMapTileLayer collisionLayer;
+	private TiledMap _map;
 	private IsometricTiledMapRenderer renderer;
 	public OrthographicCamera cam;
-	private int moveToX, moveToY;
 	private Array<Creep> creeps;
-
-	private TiledMapTileLayer creepLayer;
-	private TiledMapTile creepTile;
-	private TiledMapTileSet creepSet;
-	private TiledMapTileLayer.Cell creepCell;
 
 	private Batch spriteBatch = new SpriteBatch(10);
 	private Image returnButton;
@@ -76,24 +69,38 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-				dragOld = dragNew;
-				if (returnButton.getX() < getNormalCoordX(screenX) && getNormalCoordX(screenX) < returnButton.getX() + returnButton.getWidth() &&
-						returnButton.getY() < getNormalCoordY(screenY) && getNormalCoordY(screenY) < returnButton.getY() + returnButton.getHeight()) {
-					towerDefence.setMainMenu(gs);
-					return true;
+				Vector3 touch = new Vector3(screenX, screenY, 0);
+				cam.unproject(touch);
+				Gdx.app.log("Cam" + touch.x + " " + touch.y, "");
+
+				for (int x = 0; x < 25; x++){
+					for(int y = 0; y < 25; y++){
+						float x_pos = (x * 64 /2.0f ) + (y * 64 / 2.0f);
+						float y_pos = - (x * 32 / 2.0f) + (y * 32 /2.0f) + 16;
+						ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
+						tilePoints.add(new Vector2(x_pos,y_pos));
+						tilePoints.add(new Vector2(x_pos+32, y_pos+16));
+						tilePoints.add(new Vector2(x_pos+64, y_pos));
+						tilePoints.add(new Vector2(x_pos+32,y_pos-16));
+						if(estimation(tilePoints, touch))
+							Gdx.app.log("Tile", "X" + x + " Y" + y);
+					}
 				}
 
-				if (true) return true; //workaround
+				if (button == 0) {
+					dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
-				//cam.zoom -= 1f;
-				moveToX = screenX;
-				moveToY = screenY;
-				Vector2 point = creeps.get(1).coordinatesConverter(
-						(int) (moveToX / creeps.get(1).getCollisionLayer().getTileWidth()),
-						(int) (moveToY / creeps.get(1).getCollisionLayer().getTileHeight()));
-				creeps.get(1).setPosition(point.x, point.y);
-				Gdx.app.log("Point", (int) (moveToX / creeps.get(1).getCollisionLayer().getTileWidth()) + " " + moveToX);
+					dragOld = dragNew;
+					if (returnButton.getX() < getNormalCoordX(screenX) && getNormalCoordX(screenX) < returnButton.getX() + returnButton.getWidth() &&
+							returnButton.getY() < getNormalCoordY(screenY) && getNormalCoordY(screenY) < returnButton.getY() + returnButton.getHeight()) {
+						towerDefence.setMainMenu(gs);
+						return true;
+					}
+
+					if (true) return true; //workaround
+				} else if (button == 1) {
+					setCreep();
+				}
 				return false;
 			}
 
@@ -132,15 +139,89 @@ public class GameScreen implements Screen {
 		dragOld = dragNew; //Drag old becomes drag new.
 	}
 
+	public boolean estimation(ArrayList<Vector2> mapPoints, Vector3 touch) {
+		int res = 0;
+		for(int i=0;i<mapPoints.size()-1;i++)
+			res += getDelta(mapPoints.get(i).x, mapPoints.get(i).y, mapPoints.get(i + 1).x, mapPoints.get(i + 1).y, touch);
+		res += getDelta(mapPoints.get(3).x,mapPoints.get(3).y, mapPoints.get(0).x, mapPoints.get(0).y, touch);
+		if (res == 0) {
+			return false;
+		}
+		else
+			return true;
+	}
+	float getDelta(float q,float w, float e, float r, Vector3 touch) {
+		int j = getOktant(q - touch.x, touch.y - w);
+		int h = getOktant(e - touch.x, touch.y - r);
+		if ((h - j) > 4)
+			return  h-j - 8;
+		else if ((h-j) < -4)
+			return  h-j + 8;
+		else if ((h-j) == 4 || (h-j) == -4){
+			int f = correlation(q, w, e, r, touch);
+			if(f == 0)
+				Gdx.app.log("Точка находится на границе полигона","");
+			return f;
+		}
+		return h-j;
+	}
+
+	int correlation(float q,float w, float e, float r, Vector3 touch) {
+		float result = opredelitel(r,w,1,1)*touch.x + opredelitel(1, 1, e, q)*touch.y + opredelitel(w,q,r,e);
+		Gdx.app.log("Функция прямой равна", result + "");
+		if(result == 0){
+			return 0;
+		} else if(result < 0){
+			return -4;
+		} else if(result > 0)
+			return 4;
+		return 0;
+	}
+
+	int getOktant(float X, float Y) {
+		if(0 <= Y && Y < X) {
+		return 1;
+		}
+		else if(0 < X && X <= Y) {
+		return 2;
+		}
+		else if(-Y < X && X <= 0) {
+		return 3;
+		}
+		else if(0 < Y && Y <= -X) {
+		return 4;
+		}
+		else if(X < Y && Y <= 0) {
+		return 5;
+		}
+		else if(Y <= X && X < 0) {
+		return 6;
+		}
+		else if(0 <= X && X < -Y) {
+		return 7;
+		}
+		else if(-X <= Y && Y < 0) {
+		return 8;
+		}
+		return 0;
+		}
+
+		float opredelitel(float x, float s, float t, float f) {
+		return x*f - s*t;
+		}
 
 	@Override
 	public void show(){
-		map = new TmxMapLoader().load("img/arena.tmx");
-		renderer = new IsometricTiledMapRenderer(map);
+		_map = new TmxMapLoader().load("img/arena.tmx");
+		renderer = new IsometricTiledMapRenderer(_map);
 
+		showCreeps();
 
+	}
+
+	public void showCreeps() {
 		//Create tile set
-		TiledMapTileSet tileset =  map.getTileSets().getTileSet("creep");
+		TiledMapTileSet tileset =  _map.getTileSets().getTileSet("creep");
 		waterTiles = new HashMap<String,TiledMapTile>();
 
 		//Search in tileset objects with property "creep" and put them in waterTiles
@@ -154,13 +235,21 @@ public class GameScreen implements Screen {
 
 		//Create an array of cells
 		creepCellsInScene = new ArrayList<TiledMapTileLayer.Cell>();
-		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("Foreground");
+		TiledMapTileLayer layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
+		TiledMapTileLayer layerB = (TiledMapTileLayer) _map.getLayers().get("Background");
 		for(int x = 0; x < layer.getWidth();x++){
 			for(int y = 0; y < layer.getHeight();y++){
-				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+				TiledMapTileLayer.Cell cell = layerB.getCell(x, y);
 
 				//If there is no Foregroung cells, create a new one with creep in it
-				if(cell == null) {
+				/*if(cell == null) {
+					cell = new TiledMapTileLayer.Cell();
+					layer.setCell(x,y,cell);
+					cell.setTile(waterTiles.get("1"));
+					creepCellsInScene.add(cell);
+				}*/
+				if(cell.getTile().getProperties().get("spawn") != null && cell.getTile().getProperties().get("spawn").equals("1")) {
+					Gdx.app.log("spawn", "" + cell.getTile().getProperties().get("spawn"));
 					cell = new TiledMapTileLayer.Cell();
 					layer.setCell(x,y,cell);
 					cell.setTile(waterTiles.get("1"));
@@ -170,11 +259,15 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	public void setCreep() {
+
+	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 
 		renderer.setView(cam);
 		renderer.render();
@@ -208,8 +301,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		map.dispose();
-		map = null;
+		_map.dispose();
+		_map = null;
 		renderer.dispose();
 		renderer = null;
 	}
