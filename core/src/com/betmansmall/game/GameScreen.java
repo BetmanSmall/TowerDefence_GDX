@@ -19,12 +19,9 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 
 import java.util.ArrayList;
@@ -75,23 +72,7 @@ public class GameScreen implements Screen {
 		im.addProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				Vector3 touch = new Vector3(screenX, screenY, 0);
-				cam.unproject(touch);
-				Gdx.app.log("Cam" + touch.x + " " + touch.y, "");
 
-				for (int x = 0; x < 25; x++){
-					for(int y = 0; y < 25; y++){
-						float x_pos = (x * 64 /2.0f ) + (y * 64 / 2.0f);
-						float y_pos = - (x * 32 / 2.0f) + (y * 32 /2.0f) + 16;
-						ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
-						tilePoints.add(new Vector2(x_pos,y_pos));
-						tilePoints.add(new Vector2(x_pos+32, y_pos+16));
-						tilePoints.add(new Vector2(x_pos+64, y_pos));
-						tilePoints.add(new Vector2(x_pos+32,y_pos-16));
-						if(estimation(tilePoints, touch))
-							Gdx.app.log("Tile", "X" + x + " Y" + y);
-					}
-				}
 
 				if (button == 0) {
 					dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
@@ -103,8 +84,28 @@ public class GameScreen implements Screen {
 						return true;
 					}
 
-					if (true) return true; //workaround
+					return true; //workaround
 				} else if (button == 1) {
+					Vector3 touch = new Vector3(screenX, screenY, 0);
+					cam.unproject(touch);
+					Gdx.app.log("Coordinates" + touch.x + " " + touch.y, "");
+					TiledMapTileLayer layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
+					for (int x = 0; x < layer.getWidth(); x++){
+						for(int y = 0; y < layer.getHeight(); y++){
+							float x_pos = (x * layer.getTileWidth() / 2.0f ) + (y * layer.getTileWidth() / 2.0f);
+							float y_pos = - (x * layer.getTileHeight() / 2.0f) + (y * layer.getTileHeight() / 2.0f) + layer.getTileHeight();
+							ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
+							tilePoints.add(new Vector2(x_pos,y_pos));
+							tilePoints.add(new Vector2(x_pos + layer.getTileWidth() / 2.0f,
+									y_pos + layer.getTileHeight() / 2.0f));
+							tilePoints.add(new Vector2(x_pos + layer.getTileWidth(), y_pos));
+							tilePoints.add(new Vector2(x_pos + layer.getTileWidth() / 2.0f,
+									y_pos - layer.getTileHeight() / 2.0f));
+							CollisionDetection cl = new CollisionDetection();
+							if(cl.estimation(tilePoints, touch))
+								Gdx.app.log("Tile", "X" + x + " Y" + y);
+						}
+					}
 					setCreep();
 				}
 				return false;
@@ -191,77 +192,6 @@ public class GameScreen implements Screen {
 		}
 		dragOld = dragNew; //Drag old becomes drag new.
 	}
-
-	public boolean estimation(ArrayList<Vector2> mapPoints, Vector3 touch) {
-		int res = 0;
-		for(int i=0;i<mapPoints.size()-1;i++)
-			res += getDelta(mapPoints.get(i).x, mapPoints.get(i).y, mapPoints.get(i + 1).x, mapPoints.get(i + 1).y, touch);
-		res += getDelta(mapPoints.get(3).x,mapPoints.get(3).y, mapPoints.get(0).x, mapPoints.get(0).y, touch);
-		if (res == 0) {
-			return false;
-		}
-		else
-			return true;
-	}
-	float getDelta(float q,float w, float e, float r, Vector3 touch) {
-		int j = getOktant(q - touch.x, touch.y - w);
-		int h = getOktant(e - touch.x, touch.y - r);
-		if ((h - j) > 4)
-			return  h-j - 8;
-		else if ((h-j) < -4)
-			return  h-j + 8;
-		else if ((h-j) == 4 || (h-j) == -4){
-			int f = correlation(q, w, e, r, touch);
-			if(f == 0)
-				Gdx.app.log("Точка находится на границе полигона","");
-			return f;
-		}
-		return h-j;
-	}
-
-	int correlation(float q,float w, float e, float r, Vector3 touch) {
-		float result = opredelitel(r,w,1,1)*touch.x + opredelitel(1, 1, e, q)*touch.y + opredelitel(w,q,r,e);
-		Gdx.app.log("Функция прямой равна", result + "");
-		if(result == 0){
-			return 0;
-		} else if(result < 0){
-			return -4;
-		} else if(result > 0)
-			return 4;
-		return 0;
-	}
-
-	int getOktant(float X, float Y) {
-		if(0 <= Y && Y < X) {
-		return 1;
-		}
-		else if(0 < X && X <= Y) {
-		return 2;
-		}
-		else if(-Y < X && X <= 0) {
-		return 3;
-		}
-		else if(0 < Y && Y <= -X) {
-		return 4;
-		}
-		else if(X < Y && Y <= 0) {
-		return 5;
-		}
-		else if(Y <= X && X < 0) {
-		return 6;
-		}
-		else if(0 <= X && X < -Y) {
-		return 7;
-		}
-		else if(-X <= Y && Y < 0) {
-		return 8;
-		}
-		return 0;
-		}
-
-		float opredelitel(float x, float s, float t, float f) {
-		return x*f - s*t;
-		}
 
 	@Override
 	public void show(){
