@@ -2,12 +2,14 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -21,6 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
+
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +71,8 @@ public class GameScreen implements Screen {
 		returnButton.setSize(55, 55);
 		returnButton.setPosition(0, Gdx.graphics.getHeight() - returnButton.getHeight());
 
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		InputMultiplexer im = new InputMultiplexer();
+		im.addProcessor(new InputAdapter() {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				Vector3 touch = new Vector3(screenX, screenY, 0);
@@ -125,6 +131,53 @@ public class GameScreen implements Screen {
 			}
 
 		});
+		GestureListener gestureListener = new GestureListener() {
+
+			@Override
+			public boolean touchDown(float x, float y, int pointer, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean tap(float x, float y, int count, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean longPress(float x, float y) {
+				return false;
+			}
+
+			@Override
+			public boolean fling(float velocityX, float velocityY, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean pan(float x, float y, float deltaX, float deltaY) {
+				return false;
+			}
+
+			@Override
+			public boolean panStop(float x, float y, int pointer, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean zoom(float initialDistance, float distance) {
+				cam.zoom += initialDistance - distance;
+				cam.update();
+				return false;
+			}
+
+			@Override
+			public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+				return false;
+			}
+		};
+		im.addProcessor(new GestureDetector(gestureListener));
+
+		Gdx.input.setInputProcessor(im);
 		creeps = new Array<Creep>();
 	}
 
