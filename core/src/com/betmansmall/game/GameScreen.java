@@ -69,31 +69,92 @@ public class GameScreen implements Screen {
 		returnButton.setPosition(0, Gdx.graphics.getHeight() - returnButton.getHeight());
 
 		InputMultiplexer im = new InputMultiplexer();
-		im.addProcessor(new InputAdapter() {
+//		im.addProcessor(new InputAdapter() {
+//			@Override
+//			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+//
+//
+////				if (button == 0) {
+////					dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+////
+////					dragOld = dragNew;
+////					if (returnButton.getX() < getNormalCoordX(screenX) && getNormalCoordX(screenX) < returnButton.getX() + returnButton.getWidth() &&
+////							returnButton.getY() < getNormalCoordY(screenY) && getNormalCoordY(screenY) < returnButton.getY() + returnButton.getHeight()) {
+////						towerDefence.setMainMenu(gs);
+////						return true;
+////					}
+////
+////					return true; //workaround
+////				} else if (button == 1) {
+////					Vector3 touch = new Vector3(screenX, screenY, 0);
+////					cam.unproject(touch);
+////					Gdx.app.log("Coordinates" + touch.x + " " + touch.y, "");
+////					TiledMapTileLayer layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
+////					for (int x = 0; x < layer.getWidth(); x++){
+////						for(int y = 0; y < layer.getHeight(); y++){
+////							float x_pos = (x * layer.getTileWidth() / 2.0f ) + (y * layer.getTileWidth() / 2.0f);
+////							float y_pos = - (x * layer.getTileHeight() / 2.0f) + (y * layer.getTileHeight() / 2.0f) + layer.getTileHeight();
+////							ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
+////							tilePoints.add(new Vector2(x_pos,y_pos));
+////							tilePoints.add(new Vector2(x_pos + layer.getTileWidth() / 2.0f,
+////									y_pos + layer.getTileHeight() / 2.0f));
+////							tilePoints.add(new Vector2(x_pos + layer.getTileWidth(), y_pos));
+////							tilePoints.add(new Vector2(x_pos + layer.getTileWidth() / 2.0f,
+////									y_pos - layer.getTileHeight() / 2.0f));
+////							CollisionDetection cl = new CollisionDetection();
+////							if(cl.estimation(tilePoints, touch))
+////								Gdx.app.log("Tile", "X" + x + " Y" + y);
+////						}
+////					}
+////					setCreep();
+////				}
+//				return false;
+//			}
+//
+//			@Override
+//			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+//				//cam.zoom += 10f;
+//				return false;
+//			}
+//
+//			@Override
+//			public boolean scrolled(int amount) {
+//				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += SPEED_ZOOM;
+//				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom -= SPEED_ZOOM;
+//				cam.update();
+//				return false;
+//			}
+//
+//			@Override
+//			public boolean touchDragged(int screenX, int screenY, int pointer) {
+//				return true;
+//			}
+//
+//		});
+		GestureListener gestureListener = new GestureListener() {
+
 			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-
+			public boolean touchDown(float x, float y, int pointer, int button) {
 				if (button == 0) {
 					dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
 					dragOld = dragNew;
-					if (returnButton.getX() < getNormalCoordX(screenX) && getNormalCoordX(screenX) < returnButton.getX() + returnButton.getWidth() &&
-							returnButton.getY() < getNormalCoordY(screenY) && getNormalCoordY(screenY) < returnButton.getY() + returnButton.getHeight()) {
+					if (returnButton.getX() < getNormalCoordX(x) && getNormalCoordX(x) < returnButton.getX() + returnButton.getWidth() &&
+							returnButton.getY() < getNormalCoordY(y) && getNormalCoordY(y) < returnButton.getY() + returnButton.getHeight()) {
 						towerDefence.setMainMenu(gs);
 						return true;
 					}
 
 					return true; //workaround
 				} else if (button == 1) {
-					Vector3 touch = new Vector3(screenX, screenY, 0);
+					Vector3 touch = new Vector3(x, y, 0);
 					cam.unproject(touch);
 					Gdx.app.log("Coordinates" + touch.x + " " + touch.y, "");
 					TiledMapTileLayer layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
-					for (int x = 0; x < layer.getWidth(); x++){
-						for(int y = 0; y < layer.getHeight(); y++){
-							float x_pos = (x * layer.getTileWidth() / 2.0f ) + (y * layer.getTileWidth() / 2.0f);
-							float y_pos = - (x * layer.getTileHeight() / 2.0f) + (y * layer.getTileHeight() / 2.0f) + layer.getTileHeight();
+					for (int i = 0; i < layer.getWidth(); i++){
+						for(int j = 0; j < layer.getHeight(); j++){
+							float x_pos = (i * layer.getTileWidth() / 2.0f ) + (j * layer.getTileWidth() / 2.0f);
+							float y_pos = - (i * layer.getTileHeight() / 2.0f) + (j * layer.getTileHeight() / 2.0f) + layer.getTileHeight();
 							ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
 							tilePoints.add(new Vector2(x_pos,y_pos));
 							tilePoints.add(new Vector2(x_pos + layer.getTileWidth() / 2.0f,
@@ -103,39 +164,11 @@ public class GameScreen implements Screen {
 									y_pos - layer.getTileHeight() / 2.0f));
 							CollisionDetection cl = new CollisionDetection();
 							if(cl.estimation(tilePoints, touch))
-								Gdx.app.log("Tile", "X" + x + " Y" + y);
+								Gdx.app.log("Tile", "X" + i + " Y" + j);
 						}
 					}
 					setCreep();
 				}
-				return false;
-			}
-
-			@Override
-			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-				//cam.zoom += 10f;
-				return false;
-			}
-
-			@Override
-			public boolean scrolled(int amount) {
-				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += SPEED_ZOOM;
-				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom -= SPEED_ZOOM;
-				cam.update();
-				return false;
-			}
-
-			@Override
-			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				moveCamera();
-				return true;
-			}
-
-		});
-		GestureListener gestureListener = new GestureListener() {
-
-			@Override
-			public boolean touchDown(float x, float y, int pointer, int button) {
 				return false;
 			}
 
@@ -156,17 +189,22 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean pan(float x, float y, float deltaX, float deltaY) {
+				moveCamera();
 				return false;
 			}
 
 			@Override
 			public boolean panStop(float x, float y, int pointer, int button) {
+
 				return false;
 			}
 
 			@Override
 			public boolean zoom(float initialDistance, float distance) {
-				cam.zoom += initialDistance - distance;
+
+				int amount= ((int)initialDistance - (int)distance)/(int)5f;
+				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += SPEED_ZOOM;
+				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom -= SPEED_ZOOM;
 				cam.update();
 				return false;
 			}
