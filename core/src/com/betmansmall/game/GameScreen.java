@@ -203,8 +203,9 @@ public class GameScreen implements Screen {
 			public boolean zoom(float initialDistance, float distance) {
 
 				int amount= ((int)initialDistance - (int)distance)/(int)5f;
-				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += SPEED_ZOOM;
-				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom -= SPEED_ZOOM;
+				Gdx.app.log("Aount"," "+amount +" distance "+ distance+" inintD "+initialDistance);
+				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += amount/10000f;
+				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom += amount/10000f;
 				cam.update();
 				return false;
 			}
