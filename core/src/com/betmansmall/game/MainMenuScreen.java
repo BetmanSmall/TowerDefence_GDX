@@ -45,7 +45,7 @@ public class MainMenuScreen implements Screen {
         background.setPosition(0f, 0f);
 
         buttons = new Texture(Gdx.files.internal("img/buttons.png"));
-        menuButton = new TextureRegion(buttons, 0, 0, 360, 600);
+        menuButton = new TextureRegion(buttons, 0, 0, buttons.getWidth(), buttons.getHeight());
         mmStage = new Stage(new ScreenViewport());
         menuButtons = new MenuButtons();
         menuButtons.setPosition(mmStage.getWidth() / 2 - buttons.getWidth() / 2, 0);

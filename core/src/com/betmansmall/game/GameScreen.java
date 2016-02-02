@@ -201,9 +201,8 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean zoom(float initialDistance, float distance) {
-
 				int amount= ((int)initialDistance - (int)distance)/(int)5f;
-				Gdx.app.log("Aount"," "+amount +" distance "+ distance+" inintD "+initialDistance);
+				Gdx.app.log("Amount"," "+amount +" distance "+ distance+" inintD "+initialDistance);
 				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += amount/10000f;
 				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom += amount/10000f;
 				cam.update();
@@ -282,7 +281,6 @@ public class GameScreen implements Screen {
 	}
 
 	public void setCreep() {
-
 	}
 
 	@Override
