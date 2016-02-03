@@ -3,103 +3,107 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
-import com.betmansmall.game.map.Editor.TileSet;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MainMenuScreen implements Screen {
 
-    private int dragX, dragY;
-    private TiledMap map;
-    private IsometricTiledMapRenderer renderer;
-    private OrthographicCamera cam;
+    private Image background;
+    private Texture buttons;
+    private TextureRegion menuButton;
+
+    private TowerDefence towerDefence;
+    MenuButtons menuButtons;
+    private Stage mmStage;
+    private ImageButton settings;
 
 
-    InputProcessor ip = new InputProcessor() {
-
-        @Override
-        public boolean keyDown(int keycode) {
-            return false;
-        }
-
-        @Override
-        public boolean keyUp(int keycode) {
-            return false;
-        }
-
-        @Override
-        public boolean keyTyped(char character) {
-            return false;
-        }
-
-        @Override
-        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            dragX = screenX;
-            dragY = screenY;
-            return true;
-        }
-
-        @Override
-        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-            return false;
-        }
-
-        @Override
-        public boolean touchDragged(int screenX, int screenY, int pointer) {
-            float dX = (float)(screenX-dragX)/(float)Gdx.graphics.getWidth();
-            float dY = (float)(dragY-screenY)/(float)Gdx.graphics.getHeight();
-            dragX = screenX;
-            dragY = screenY;
-            cam.position.add(dX * 10f, dY * 10f, 0f);
-            cam.lookAt(0,0,0);
-            cam.update();
-            return true;
-        }
-
-        @Override
-        public boolean mouseMoved(int screenX, int screenY) {
-            return false;
-        }
-
-        @Override
-        public boolean scrolled(int amount) {
-            return false;
-        }
-    };
-    public MainMenuScreen(TowerDefence towerDefence) {
-        this.cam = new OrthographicCamera();
-        this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    public MainMenuScreen(TowerDefence towerDefence){
+        this.towerDefence = towerDefence;
+        create();
     }
 
+    class MenuButtons extends Actor{
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            batch.draw(menuButton,getX(),getY(),getWidth(),getHeight());
+        }
+    }
+
+    private void create() {
+        background = new Image(new Texture(Gdx.files.internal("img/background.jpg")));
+        background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        background.setPosition(0f, 0f);
+
+        buttons = new Texture(Gdx.files.internal("img/buttons.png"));
+        menuButton = new TextureRegion(buttons, 0, 0, buttons.getWidth(), buttons.getHeight());
+        mmStage = new Stage(new ScreenViewport());
+        menuButtons = new MenuButtons();
+        menuButtons.setPosition(mmStage.getWidth() / 2 - buttons.getWidth() / 2, 0);
+        menuButtons.setSize(buttons.getWidth(), buttons.getHeight());
+
+        menuButtons.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("down");
+                touchDownAnalizer(x, y);
+                return true;
+            }
+        });
+        settings = new ImageButton(new Image(new Texture(Gdx.files.internal("img/settings.png"))).getDrawable());
+        settings.setSize(175, 175);
+        settings.setPosition(Gdx.graphics.getWidth() - settings.getWidth() , 0);
+        settings.addListener(new ClickListener() {
+            @Override
+            public void clicked (InputEvent event, float x, float y) {
+                Gdx.app.log("MainScreen", "Settings");
+            }
+        });
+
+
+        mmStage.addActor(background);
+        mmStage.addActor(menuButtons);
+        mmStage.addActor(settings);
+    }
 
     @Override
     public void show() {
-        map = new TmxMapLoader().load("isomap.tmx");
+        Gdx.input.setInputProcessor(mmStage);
+        }
 
-        renderer = new IsometricTiledMapRenderer(map);
+    private void touchDownAnalizer(float x, float y){
+        if(y > 73 * menuButtons.getHeight()/600f && y < 231 * menuButtons.getHeight()/600f ){
+            Gdx.app.log("MainScreen", "Exit");
+            towerDefence.closeApplication();
+        }else if(y > 259 * menuButtons.getHeight()/600f && y < 417 * menuButtons.getHeight()/600f ) {
+            Gdx.app.log("MainScreen", "About");
+        } else if(y > 442 * menuButtons.getHeight()/600f && y < 600 * menuButtons.getHeight()/600f ) {
+            Gdx.app.log("MainScreen","Play");
+            towerDefence.setScreen(new GameScreen(towerDefence));
+        } else {
+            Gdx.app.log("MainScreen","Unknown analyzer");
+        }
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl20.glClearColor(0,0,0,1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        renderer.setView(cam);
-        renderer.render();
-        //dispose();
+        mmStage.act(delta);
+        mmStage.draw();
+        //Gdx.app.log("GameScreen FPS", (1/delta) + "");
     }
 
     @Override
     public void resize(int width, int height) {
-        cam.viewportWidth = width;
-        cam.viewportHeight = height;
-        cam.position.set(800f, 0f, 100f);
-        cam.update();
+        mmStage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -112,12 +116,13 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+        //Should not be here!
+        //dispose();
     }
 
     @Override
     public void dispose() {
-        map.dispose();
-        renderer.dispose();
+        mmStage.dispose();
+        mmStage = null;
     }
 }
