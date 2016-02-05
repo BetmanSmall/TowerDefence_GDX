@@ -139,7 +139,6 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean touchDown(float x, float y, int pointer, int button) {
-				if (button == 0) {
 					dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
 					dragOld = dragNew;
@@ -150,35 +149,32 @@ public class GameScreen implements Screen {
 					}
 
 					return true; //workaround
-				} else if (button == 1) {
-					Vector3 touch = new Vector3(x, y, 0);
-					Vector2 clickedCell = new Vector2();
-					cam.unproject(touch);
-					for (int i = 0; i < _layer.getWidth(); i++){
-						for(int j = 0; j < _layer.getHeight(); j++){
-							float x_pos = (i * _layer.getTileWidth() / 2.0f ) + (j * _layer.getTileWidth() / 2.0f);
-							float y_pos = - (i * _layer.getTileHeight() / 2.0f) + (j * _layer.getTileHeight() / 2.0f) + _layer.getTileHeight() / 2.0f;
-							ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
-							tilePoints.add(new Vector2(x_pos,y_pos));
-							tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
-									y_pos + _layer.getTileHeight() / 2.0f));
-							tilePoints.add(new Vector2(x_pos + _layer.getTileWidth(), y_pos));
-							tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
-									y_pos - _layer.getTileHeight() / 2.0f));
-							CollisionDetection cl = new CollisionDetection();
-							if(cl.estimation(tilePoints, touch)) {
-								Gdx.app.log("Tile", "X" + i + " Y" + j);
-								clickedCell = new Vector2(i,j);
-							}
-						}
-					}
-					setTower((int)clickedCell.x,(int) clickedCell.y);
-				}
-				return false;
 			}
 
 			@Override
 			public boolean tap(float x, float y, int count, int button) {
+				Vector3 touch = new Vector3(x, y, 0);
+				Vector2 clickedCell = new Vector2();
+				cam.unproject(touch);
+				for (int i = 0; i < _layer.getWidth(); i++){
+					for(int j = 0; j < _layer.getHeight(); j++){
+						float x_pos = (i * _layer.getTileWidth() / 2.0f ) + (j * _layer.getTileWidth() / 2.0f);
+						float y_pos = - (i * _layer.getTileHeight() / 2.0f) + (j * _layer.getTileHeight() / 2.0f) + _layer.getTileHeight() / 2.0f;
+						ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
+						tilePoints.add(new Vector2(x_pos,y_pos));
+						tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
+								y_pos + _layer.getTileHeight() / 2.0f));
+						tilePoints.add(new Vector2(x_pos + _layer.getTileWidth(), y_pos));
+						tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
+								y_pos - _layer.getTileHeight() / 2.0f));
+						CollisionDetection cl = new CollisionDetection();
+						if(cl.estimation(tilePoints, touch)) {
+							Gdx.app.log("Tile", "X" + i + " Y" + j);
+							clickedCell = new Vector2(i,j);
+						}
+					}
+				}
+				setTower((int)clickedCell.x,(int) clickedCell.y);
 				return false;
 			}
 
