@@ -116,6 +116,14 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="162" name="tower" tilewidth="64" tileheight="64" tilecount="1">
+  <tile id="0">
+   <properties>
+    <property name="tower" value="2"/>
+   </properties>
+   <image width="64" height="64" source="canon1_64px.png"/>
+  </tile>
+ </tileset>
  <layer name="Background" width="25" height="25">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,

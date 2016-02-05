@@ -45,7 +45,8 @@ public class GameScreen implements Screen {
 	private Image returnButton;
 
 	ArrayList<TiledMapTileLayer.Cell> creepCellsInScene;
-	private Map<String,TiledMapTile> waterTiles;
+	private Map<String,TiledMapTile> waterTiles, towerTiles;
+	private TiledMapTileLayer _layer, _layerB;
 
 	private TowerDefence towerDefence;
 	private GameScreen gs;
@@ -68,6 +69,9 @@ public class GameScreen implements Screen {
 		returnButton.setSize(55, 55);
 		returnButton.setPosition(0, Gdx.graphics.getHeight() - returnButton.getHeight());
 
+		_map = new TmxMapLoader().load("img/arena.tmx");
+		_layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
+		_layerB = (TiledMapTileLayer) _map.getLayers().get("Background");
 		InputMultiplexer im = new InputMultiplexer();
 //		im.addProcessor(new InputAdapter() {
 //			@Override
@@ -148,26 +152,27 @@ public class GameScreen implements Screen {
 					return true; //workaround
 				} else if (button == 1) {
 					Vector3 touch = new Vector3(x, y, 0);
+					Vector2 clickedCell = new Vector2();
 					cam.unproject(touch);
-					Gdx.app.log("Coordinates" + touch.x + " " + touch.y, "");
-					TiledMapTileLayer layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
-					for (int i = 0; i < layer.getWidth(); i++){
-						for(int j = 0; j < layer.getHeight(); j++){
-							float x_pos = (i * layer.getTileWidth() / 2.0f ) + (j * layer.getTileWidth() / 2.0f);
-							float y_pos = - (i * layer.getTileHeight() / 2.0f) + (j * layer.getTileHeight() / 2.0f) + layer.getTileHeight();
+					for (int i = 0; i < _layer.getWidth(); i++){
+						for(int j = 0; j < _layer.getHeight(); j++){
+							float x_pos = (i * _layer.getTileWidth() / 2.0f ) + (j * _layer.getTileWidth() / 2.0f);
+							float y_pos = - (i * _layer.getTileHeight() / 2.0f) + (j * _layer.getTileHeight() / 2.0f) + _layer.getTileHeight() / 2.0f;
 							ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
 							tilePoints.add(new Vector2(x_pos,y_pos));
-							tilePoints.add(new Vector2(x_pos + layer.getTileWidth() / 2.0f,
-									y_pos + layer.getTileHeight() / 2.0f));
-							tilePoints.add(new Vector2(x_pos + layer.getTileWidth(), y_pos));
-							tilePoints.add(new Vector2(x_pos + layer.getTileWidth() / 2.0f,
-									y_pos - layer.getTileHeight() / 2.0f));
+							tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
+									y_pos + _layer.getTileHeight() / 2.0f));
+							tilePoints.add(new Vector2(x_pos + _layer.getTileWidth(), y_pos));
+							tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
+									y_pos - _layer.getTileHeight() / 2.0f));
 							CollisionDetection cl = new CollisionDetection();
-							if(cl.estimation(tilePoints, touch))
+							if(cl.estimation(tilePoints, touch)) {
 								Gdx.app.log("Tile", "X" + i + " Y" + j);
+								clickedCell = new Vector2(i,j);
+							}
 						}
 					}
-					setCreep();
+					setTower((int)clickedCell.x,(int) clickedCell.y);
 				}
 				return false;
 			}
@@ -232,8 +237,7 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void show(){
-		_map = new TmxMapLoader().load("img/arena.tmx");
+	public void show() {
 		renderer = new IsometricTiledMapRenderer(_map);
 
 		showCreeps();
@@ -244,6 +248,7 @@ public class GameScreen implements Screen {
 		//Create tile set
 		TiledMapTileSet tileset =  _map.getTileSets().getTileSet("creep");
 		waterTiles = new HashMap<String,TiledMapTile>();
+		towerTiles = new HashMap<String,TiledMapTile>();
 
 		//Search in tileset objects with property "creep" and put them in waterTiles
 		for(TiledMapTile tile:tileset){
@@ -253,14 +258,21 @@ public class GameScreen implements Screen {
 				Gdx.app.log("Tile for tileset", " = " + tile);
 			}
 		}
+		tileset =  _map.getTileSets().getTileSet("tower");
+		for(TiledMapTile tile:tileset){
+			Object property = tile.getProperties().get("tower");
+			if(property != null) {
+				towerTiles.put((String) property, tile);
+				Gdx.app.log("Tile for tileset", " = " + tile);
+			}
+		}
+
 
 		//Create an array of cells
 		creepCellsInScene = new ArrayList<TiledMapTileLayer.Cell>();
-		TiledMapTileLayer layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
-		TiledMapTileLayer layerB = (TiledMapTileLayer) _map.getLayers().get("Background");
-		for(int x = 0; x < layer.getWidth();x++){
-			for(int y = 0; y < layer.getHeight();y++){
-				TiledMapTileLayer.Cell cell = layerB.getCell(x, y);
+		for(int x = 0; x < _layer.getWidth();x++){
+			for(int y = 0; y < _layer.getHeight();y++){
+				TiledMapTileLayer.Cell cell = _layerB.getCell(x, y);
 
 				//If there is no Foregroung cells, create a new one with creep in it
 				/*if(cell == null) {
@@ -272,7 +284,7 @@ public class GameScreen implements Screen {
 				if(cell.getTile().getProperties().get("spawn") != null && cell.getTile().getProperties().get("spawn").equals("1")) {
 					Gdx.app.log("spawn", "" + cell.getTile().getProperties().get("spawn"));
 					cell = new TiledMapTileLayer.Cell();
-					layer.setCell(x,y,cell);
+					_layer.setCell(x,y,cell);
 					cell.setTile(waterTiles.get("1"));
 					creepCellsInScene.add(cell);
 				}
@@ -283,6 +295,24 @@ public class GameScreen implements Screen {
 	public void setCreep() {
 	}
 
+	private void setTower(int x, int y) {
+		if(cellIsEmpty(x, y) && cellIsEmpty(x-1, y)) {
+			TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+			TiledMapTileLayer.Cell cellEmpty = new TiledMapTileLayer.Cell();
+			_layer.setCell(x, y, cell);
+			_layer.setCell(x-1, y, cellEmpty);
+			cell.setTile(towerTiles.get("2"));
+		} else {
+			Gdx.app.log("Cell is not Empty", "");
+		}
+	}
+	private boolean cellIsEmpty(int x, int y) {
+		if(_layer.getCell(x, y) == null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	@Override
 	public void render(float delta) {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
