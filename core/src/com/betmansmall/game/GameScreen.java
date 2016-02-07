@@ -18,9 +18,11 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 
 import java.awt.Point;
@@ -44,6 +46,7 @@ public class GameScreen implements Screen {
 
 	private Batch spriteBatch = new SpriteBatch(10);
 	private Image returnButton;
+	private Image gameStartButton;
 
 	private Map<String,TiledMapTile> waterTiles, towerTiles;
 	private Map<Point, Integer> stepsForWaveAlgorithm;
@@ -74,6 +77,11 @@ public class GameScreen implements Screen {
 		returnButton.setSize(55, 55);
 		returnButton.setPosition(0, Gdx.graphics.getHeight() - returnButton.getHeight());
 
+		gameStartButton = new Image(new Texture((Gdx.files.internal("img/startgamebutton.PNG"))));
+		gameStartButton.setSize(140, 42);
+		gameStartButton.setPosition((Gdx.graphics.getWidth() / 2) - (gameStartButton.getWidth() / 2), Gdx.graphics.getHeight() - gameStartButton.getHeight());
+
+
 		_map = new TmxMapLoader().load("img/arena.tmx");
 		_layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
 		_layerFB = (TiledMapTileLayer) _map.getLayers().get("ForegroundBehind");
@@ -103,12 +111,17 @@ public class GameScreen implements Screen {
 						return true;
 					}
 
-					return true; //workaround
+					if (gameStartButton.getX() < getNormalCoordX(x) && getNormalCoordX(x) < gameStartButton.getX() + gameStartButton.getWidth() &&
+							gameStartButton.getY() < getNormalCoordY(y) && getNormalCoordY(y) < gameStartButton.getY() + gameStartButton.getHeight()) {
+					createTimerForCreeps();
+					return true;
+				}
+				return true; //workaround
 			}
 
 			@Override
 			public boolean tap(float x, float y, int count, int button) {
-				stepAllCreeps();
+				//stepAllCreeps();
 
 				Vector3 touch = new Vector3(x, y, 0);
 				Point clickedCell = new Point();
@@ -343,7 +356,7 @@ public class GameScreen implements Screen {
 		stepsForWaveAlgorithm = new HashMap<Point, Integer>();
 		waveAlgorithm();
 
-		createTimerForCreeps();
+		//createTimerForCreeps();
 	}
 
 	private void createTimerForCreeps(){
@@ -407,6 +420,7 @@ public class GameScreen implements Screen {
 		renderer.render();
 		spriteBatch.begin();
 		returnButton.draw(spriteBatch, 1);
+		gameStartButton.draw(spriteBatch,1);
 		spriteBatch.end();
 	}
 
