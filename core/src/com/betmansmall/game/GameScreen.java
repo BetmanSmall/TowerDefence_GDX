@@ -375,6 +375,7 @@ public class GameScreen implements Screen {
 //		timerForCreeps.cancel();
 //	}
 
+
 	public void showCreeps() {
 		//Create tile set
 		TiledMapTileSet tileset =  _map.getTileSets().getTileSet("creep");
