@@ -1,13 +1,17 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -52,6 +56,7 @@ public class GameScreen implements Screen {
 	private TowerDefence towerDefence;
 	private GameScreen gs;
 
+	private int intervalForTimerCreeps = 1;
 	private Timer.Task timerForCreeps;
 
 	private final GameInterface gameInterface = new GameInterface();
@@ -71,6 +76,7 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean touchDown(float x, float y, int pointer, int button) {
+				Gdx.app.log("Call function", "touchDown(" + x + ", " + y + ", " + pointer+ ", " + button);
 				dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
 				dragOld = dragNew;
@@ -84,10 +90,10 @@ public class GameScreen implements Screen {
 				Vector3 touch = new Vector3(x, y, 0);
 				Point clickedCell = new Point();
 				cam.unproject(touch);
-				for (int i = 0; i < _layer.getWidth(); i++){
-					for(int j = 0; j < _layer.getHeight(); j++){
-						float x_pos = (i * _layer.getTileWidth() / 2.0f ) + (j * _layer.getTileWidth() / 2.0f);
-						float y_pos = - (i * _layer.getTileHeight() / 2.0f) + (j * _layer.getTileHeight() / 2.0f) + _layer.getTileHeight() / 2.0f;
+				for (int tileX = 0; tileX < _layer.getWidth(); tileX++){
+					for(int tileY = 0; tileY < _layer.getHeight(); tileY++){
+						float x_pos = (tileX * _layer.getTileWidth() / 2.0f ) + (tileY * _layer.getTileWidth() / 2.0f);
+						float y_pos = - (tileX * _layer.getTileHeight() / 2.0f) + (tileY * _layer.getTileHeight() / 2.0f) + _layer.getTileHeight() / 2.0f;
 						ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
 						tilePoints.add(new Vector2(x_pos,y_pos));
 						tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
@@ -97,13 +103,14 @@ public class GameScreen implements Screen {
 								y_pos - _layer.getTileHeight() / 2.0f));
 						CollisionDetection cl = new CollisionDetection();
 						if(cl.estimation(tilePoints, touch)) {
-							Gdx.app.log("Tile", "X" + i + " Y" + j);
-							clickedCell = new Point(i,j);
+							Gdx.app.log("Click tile", "x=" + tileX + " y=" + tileY);
+							clickedCell = new Point(tileX,tileY);
 						}
 					}
 				}
 				if(CollisionDetection.cellIsEmpty(clickedCell.x, clickedCell.y, _layer)) {
 					towers.add(new Tower(_layer, towerTiles.get("2"), new Point(clickedCell.x, clickedCell.y)));
+//					waveAlgorithm();
 				}
 				return false;
 			}
@@ -132,8 +139,8 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean zoom(float initialDistance, float distance) {
-				int amount= ((int)initialDistance - (int)distance)/(int)5f;
-				Gdx.app.log("Amount"," "+amount +" distance "+ distance+" inintD "+initialDistance);
+				int amount = ((int)initialDistance - (int)distance) / (int)5f;
+				Gdx.app.log("Zoom", "Amount: " + amount + ", distance: " + distance + ", inintD: " + initialDistance);
 				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += amount/10000f;
 				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom += amount/10000f;
 				cam.update();
@@ -157,6 +164,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void waveAlgorithm(int x, int y) {
+		Gdx.app.log("WaveAlgorim", "x=" + x + ",y=" + y);
 		if(x == -1 && y == -1) {
 			if (exitPoint != null) {
 				waveAlgorithm(exitPoint.x, exitPoint.y);
@@ -275,8 +283,8 @@ public class GameScreen implements Screen {
 
 			if(exitX != currX || exitY != currY)
 			{
-				Gdx.app.log("Point", exitX + exitY + "");
-				creeps.get(creepId).moveTo(new Point(exitX,exitY));
+				Gdx.app.log("Creep", "move to: x=" + exitX + " y=" + exitY);
+				creeps.get(creepId).moveTo(new Point(exitX, exitY));
 			} else {
 				return 0;
 			}
@@ -311,27 +319,24 @@ public class GameScreen implements Screen {
 		renderer = new IsometricTiledMapRenderer(_map);
 		showCreeps();
 		stepsForWaveAlgorithm = new HashMap<Point, Integer>();
-		//waveAlgorithm();
-
-		//createTimerForCreeps();
 	}
 
 	private void createTimerForCreeps(){
-		float delay = 1; // seconds
-
-		Timer.schedule(new Timer.Task(){
-			@Override
-			public void run() {
-				stepAllCreeps();
-				createTimerForCreeps();
-			}
-		}, delay);
+		if(timerForCreeps == null) {
+			timerForCreeps = Timer.schedule(new Timer.Task() {
+				@Override
+				public void run() {
+					Gdx.app.log("Timer", "for Creeps!");
+					stepAllCreeps();
+				}
+			}, 0, intervalForTimerCreeps);
+		}
 	}
 
-//	private void stopTimerForCreeps() {
-//		timerForCreeps.cancel();
-//	}
-
+	private void stopTimerForCreeps() {
+		timerForCreeps.cancel();
+		timerForCreeps = null;
+	}
 
 	public void showCreeps() {
 		//Create tile set
@@ -369,15 +374,7 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	@Override
-	public void render(float delta) {
-		Gdx.gl20.glClearColor(0, 0, 0, 1);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		renderer.setView(cam);
-		renderer.render();
-		gameInterface.draw();
-
+	private void inputHandler(float delta) {
 		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
 			waveAlgorithm();
 			createTimerForCreeps();
@@ -386,16 +383,99 @@ public class GameScreen implements Screen {
 		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.RETURN_BUTTON)) {
 			towerDefence.setMainMenu(null);
 		}
+
+		if(Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+			Gdx.app.log("inputHandler", "Pressed MINUS");
+
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
+			Gdx.app.log("inputHandler", "Pressed PLUS");
+		}
+	}
+	
+	@Override
+	public void render(float delta) {
+		inputHandler(delta);
+
+		Gdx.gl20.glClearColor(0, 0, 0, 1);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		renderer.setView(cam);
+		renderer.render();
+
+		drawGrid();
+//		drawStepsAndMouse();
+
+		gameInterface.draw();
 	}
 
+	private void drawGrid() {
+		ShapeRenderer sr = new ShapeRenderer();
+		int tileWidth = _map.getProperties().get("tilewidth", Integer.class);
+		int tileHeight = _map.getProperties().get("tileheight", Integer.class);
+		int halfTileWidth = tileWidth/2;
+		int halfTileHeight = tileHeight/2;
+
+		int fieldX = _map.getProperties().get("width", Integer.class);
+		int fieldY = _map.getProperties().get("height", Integer.class);
+		int mapWidth = fieldX * tileWidth;
+		int mapHeight = fieldY * tileHeight;
+
+		sr.setProjectionMatrix(cam.combined);
+		sr.begin(ShapeRenderer.ShapeType.Line);
+		sr.setColor(Color.BROWN); // (100, 60, 21, 1f);
+		for(int x = 0; x <= fieldX; x++)
+			sr.line(x*halfTileWidth, halfTileHeight - x*halfTileHeight, mapWidth/2 + x*halfTileWidth, halfTileHeight + mapHeight/2 - x*halfTileHeight);
+		for(int y = 0; y <= fieldY; y++)
+			sr.line(y*halfTileWidth, halfTileHeight + y*halfTileHeight, mapWidth/2 + y*halfTileWidth, halfTileHeight -(mapHeight/2) + y*halfTileHeight);
+		sr.end();
+	}
+
+	private void drawStepsAndMouse() {
+		if(!stepsForWaveAlgorithm.isEmpty()) {
+
+//			Gdx.app.log("tag", stepsForWaveAlgorithm.toString());
+//			return;
+			SpriteBatch batch = new SpriteBatch();
+			BitmapFont font = new BitmapFont();
+			int tileWidth = _map.getProperties().get("tilewidth", Integer.class);
+			int tileHeight = _map.getProperties().get("tileheight", Integer.class);
+			int halfTileWidth = tileWidth / 2;
+			int halfTileHeight = tileHeight / 2;
+
+			int fieldX = _map.getProperties().get("width", Integer.class);
+			int fieldY = _map.getProperties().get("height", Integer.class);
+			int mapWidth = fieldX * tileWidth;
+			int mapHeight = fieldY * tileHeight;
+
+			int isometricCoorX = 0;
+			int isometricCoorY = halfTileHeight;
+
+			batch.begin();
+			font.setColor(Color.BROWN); // (100, 60, 21, 1f);
+			for (int y = 0; y <= fieldY; y++) {
+				for (int x = 0; x <= fieldX; x++) {
+					float x1 = isometricCoorX + x * (tileWidth / 2);
+					float y1 = isometricCoorY + (tileHeight / 2) + x * (tileHeight / 2);
+//				p.drawText(pxlsX + sizeCell/2-5, pxlsY + sizeCell/2+5, QString("%1").arg(field.getStepCell(x, y)));
+					CharSequence str = (CharSequence) stepsForWaveAlgorithm.get(new Point(x, y)).toString();
+					font.draw(batch, str, x1, y1);
+//				sr.line(x * halfTileWidth, halfTileHeight - x * halfTileHeight, mapWidth / 2 + x * halfTileWidth, halfTileHeight + mapHeight / 2 - x * halfTileHeight);
+//				sr.line(y*halfTileWidth, halfTileHeight + y*halfTileHeight, mapWidth/2 + y*halfTileWidth, halfTileHeight -(mapHeight/2) + y*halfTileHeight);
+				}
+				isometricCoorX = (tileWidth / 2) * (fieldY - (y + 1));
+				isometricCoorY = (tileHeight / 4) * (y + 1);
+			}
+			batch.end();
+		}
+	}
 
 	@Override
 	public void resize(int width, int height) {
 		cam.viewportHeight = height;
 		cam.viewportWidth = width;
-		cam.position.set(800f, 0f, 100f);
+//		cam.position.set(800f, 0f, 100f);
 		cam.update();
-		Gdx.app.log("Screen size", "width "+ width + "height "+ height );
+		Gdx.app.log("Screen resize", "width "+ width + "height "+ height );
 	}
 
 	@Override

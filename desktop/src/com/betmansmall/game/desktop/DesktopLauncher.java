@@ -8,9 +8,11 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Tower Defence";
-		config.width = 800;
-		config.height = 600;
+		config.width = 1024;
+		config.height = 720;
 		config.useGL30 = true;
+//		config.fullscreen = true;
+//		config.vSyncEnabled = true;
 		new LwjglApplication(new TowerDefence(), config);
 //		new LwjglApplication(new OrthographicCameraController(), config);
 	}
