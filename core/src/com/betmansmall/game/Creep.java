@@ -1,37 +1,44 @@
 package com.betmansmall.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+
+import java.awt.Point;
 
 /**
  * Created by betmansmall on 22.09.2015.
  */
-public class  Creep extends Sprite {
+public class  Creep {
     int hp;
     boolean alive;
     int number;
     private TiledMapTileLayer collisionLayer;
+    private TiledMapTile tile;
     private Vector2 velocity = new Vector2();
-    private Vector2 position = new Vector2();
-    public Creep(Sprite sprite, TiledMapTileLayer collisionLayer){
-        super(sprite);
+
+    private Point position;
+    public Creep(TiledMapTileLayer collisionLayer, TiledMapTile tile){
         setCollisionLayer(collisionLayer);
-
+        this.tile = tile;
+        this.alive = true;
+    }
+    public Creep(TiledMapTileLayer collisionLayer, TiledMapTile tile, Point position){
+        setCollisionLayer(collisionLayer);
+        this.tile = tile;
+        this.alive = true;
+        this.position = position;
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+        getCollisionLayer().setCell((int) position.x, (int) position.y, cell);
+        cell.setTile(tile);
     }
 
-    @Override
-    public void draw(Batch batch) {
-        update(Gdx.graphics.getDeltaTime());
-        super.draw(batch);
-    }
-
-    public void update(float delta){
-
+    public void moveTo(Point position) {
+        getCollisionLayer().setCell((int) this.position.x, (int) this.position.y, null);
+        this.position = position;
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+        getCollisionLayer().setCell((int) position.x, (int) position.y, cell);
+        cell.setTile(this.tile);
     }
 
     public TiledMapTileLayer getCollisionLayer() {
@@ -41,10 +48,12 @@ public class  Creep extends Sprite {
     public void setCollisionLayer(TiledMapTileLayer collisionLayer) {
         this.collisionLayer = collisionLayer;
     }
-    public Vector2 coordinatesConverter(int x, int y) {
-        Vector2 point = new Vector2();
-        point.add((x * getCollisionLayer().getTileWidth() /2.0f ) + (y * getCollisionLayer().getTileWidth() / 2.0f),
-         - (x * getCollisionLayer().getTileHeight() / 2.0f) + (y * getCollisionLayer().getTileHeight() /2.0f));
-        return point;
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
     }
 }

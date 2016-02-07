@@ -1,33 +1,30 @@
 package com.betmansmall.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector2;
+
+import java.awt.Point;
 
 /**
  * Created by Андрей on 24.01.2016.
  */
-public class Tower extends Sprite{
+public class Tower {
     int hp;
-    boolean alive;
-    int number;
+    int id;
     private TiledMapTileLayer collisionLayer;
-    public Tower(Sprite sprite, TiledMapTileLayer collisionLayer){
-        super(sprite);
+    private TiledMapTile tile;
+
+    private Point position;
+
+    public Tower(TiledMapTileLayer collisionLayer, TiledMapTile tile, Point position){
         setCollisionLayer(collisionLayer);
-
-    }
-
-    @Override
-    public void draw(Batch batch) {
-        update(Gdx.graphics.getDeltaTime());
-        super.draw(batch);
-    }
-
-    public void update(float delta){
-
+        this.tile = tile;
+        this.position = position;
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+        TiledMapTileLayer.Cell cellEmpty = new TiledMapTileLayer.Cell();
+        getCollisionLayer().setCell(position.x, position.y, cell);
+        getCollisionLayer().setCell(position.x-1, position.y, cellEmpty);
+        cell.setTile(tile);
     }
 
     public TiledMapTileLayer getCollisionLayer() {
@@ -36,11 +33,5 @@ public class Tower extends Sprite{
 
     public void setCollisionLayer(TiledMapTileLayer collisionLayer) {
         this.collisionLayer = collisionLayer;
-    }
-    public Vector2 coordinatesConverter(int x, int y) {
-        Vector2 point = new Vector2();
-        point.add((x * getCollisionLayer().getTileWidth() /2.0f ) + (y * getCollisionLayer().getTileWidth() / 2.0f),
-                - (x * getCollisionLayer().getTileHeight() / 2.0f) + (y * getCollisionLayer().getTileHeight() /2.0f));
-        return point;
     }
 }

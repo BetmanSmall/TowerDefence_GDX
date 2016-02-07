@@ -1,6 +1,7 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -82,4 +83,25 @@ public class CollisionDetection {
         return x*f - s*t;
     }
 
+    public static boolean cellIsEmpty(int x, int y, TiledMapTileLayer layer) {
+        if(layer.getCell(x, y) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static boolean cellIsEmpty(int x, int y, TiledMapTileLayer layer, TiledMapTileLayer layer2) {
+        if(layer.getCell(x, y) == null && layer2.getCell(x, y) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static boolean cellIsEmpty(int x, int y, TiledMapTileLayer layer, TiledMapTileLayer layer2, TiledMapTileLayer layer3) {
+        if(layer.getCell(x, y) == null && layer2.getCell(x, y) == null && layer3.getCell(x, y) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
