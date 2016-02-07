@@ -102,7 +102,9 @@ public class GameScreen implements Screen {
 
 					if (gameStartButton.getX() < getNormalCoordX(x) && getNormalCoordX(x) < gameStartButton.getX() + gameStartButton.getWidth() &&
 							gameStartButton.getY() < getNormalCoordY(y) && getNormalCoordY(y) < gameStartButton.getY() + gameStartButton.getHeight()) {
-					createTimerForCreeps();
+						waveAlgorithm();
+						createTimerForCreeps();
+						gameStartButton.remove();
 					return true;
 				}
 				return true; //workaround
@@ -342,7 +344,7 @@ public class GameScreen implements Screen {
 		renderer = new IsometricTiledMapRenderer(_map);
 		showCreeps();
 		stepsForWaveAlgorithm = new HashMap<Point, Integer>();
-		waveAlgorithm();
+		//waveAlgorithm();
 
 		//createTimerForCreeps();
 	}
