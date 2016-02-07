@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
 
 	private Map<String,TiledMapTile> waterTiles, towerTiles;
 	private Map<Point, Integer> stepsForWaveAlgorithm;
-	private TiledMapTileLayer _layer, _layerB,  _layerFB, _layerCreeps, _layerTowers;
+	private TiledMapTileLayer _layer, _layerB;
 	private Point exitPoint;
 	private int currentFinishedCreeps, gameOverLimitCreeps;
 
@@ -84,18 +84,7 @@ public class GameScreen implements Screen {
 
 		_map = new TmxMapLoader().load("img/arena.tmx");
 		_layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
-		_layerFB = (TiledMapTileLayer) _map.getLayers().get("ForegroundBehind");
 		_layerB = (TiledMapTileLayer) _map.getLayers().get("Background");
-		_layerCreeps = new TiledMapTileLayer(_layer.getWidth(), _layer.getHeight(),
-											(int) _layer.getTileWidth(),(int) _layer.getTileHeight());
-		_layerTowers = new TiledMapTileLayer(_layer.getWidth(), _layer.getHeight(),
-				(int) _layer.getTileWidth(),(int) _layer.getTileHeight());
-
-
-		_map.getLayers().remove(_layer);
-		_map.getLayers().add(_layerCreeps);
-		_map.getLayers().add(_layerTowers);
-		_map.getLayers().add(_layer);
 
 		InputMultiplexer im = new InputMultiplexer();
 		GestureListener gestureListener = new GestureListener() {
@@ -144,9 +133,8 @@ public class GameScreen implements Screen {
 						}
 					}
 				}
-				if(CollisionDetection.cellIsEmpty(clickedCell.x, clickedCell.y, _layer, _layerFB, _layerTowers) &&
-						CollisionDetection.cellIsEmpty(clickedCell.x-1, clickedCell.y, _layer, _layerFB, _layerTowers)) {
-					towers.add(new Tower(_layerTowers, towerTiles.get("2"), new Point(clickedCell.x, clickedCell.y)));
+				if(CollisionDetection.cellIsEmpty(clickedCell.x, clickedCell.y, _layer)) {
+					towers.add(new Tower(_layer, towerTiles.get("2"), new Point(clickedCell.x, clickedCell.y)));
 				}
 				return false;
 			}
@@ -238,7 +226,7 @@ public class GameScreen implements Screen {
 	boolean setNumOfCell(int x, int y, int step) {
 		if(x >= 0 && x < _layerB.getWidth()) {
 			if(y >= 0 && y < _layerB.getHeight()) {
-				if(CollisionDetection.cellIsEmpty(x, y, _layer, _layerFB, _layerTowers)) {
+				if(CollisionDetection.cellIsEmpty(x, y, _layer)) {
 					if(getStepCell(x, y) > step || getStepCell(x, y) == 0) {
 						setStepCell(x, y, step);
 						return true;
@@ -331,7 +319,7 @@ public class GameScreen implements Screen {
 	int getNumStep(int x, int y) {
 		if(x >= 0 && x < _layerB.getWidth()) {
 			if(y >= 0 && y < _layerB.getHeight()) {
-				if(CollisionDetection.cellIsEmpty(x, y, _layer, _layerFB, _layerTowers)) {
+				if(CollisionDetection.cellIsEmpty(x, y, _layer)) {
 					return getStepCell(x, y);
 				}
 			}
@@ -397,13 +385,13 @@ public class GameScreen implements Screen {
 			}
 		}
 
-		creeps.add(new Creep(_layerCreeps, waterTiles.get("1"), new Point(3,4)));
+		creeps.add(new Creep(_layer, waterTiles.get("1"), new Point(3,4)));
 
 		for(int x = 0; x < _layer.getWidth();x++){
 			for(int y = 0; y < _layer.getHeight();y++){
 				TiledMapTileLayer.Cell cell = _layerB.getCell(x, y);
 				if(cell.getTile().getProperties().get("spawn") != null && cell.getTile().getProperties().get("spawn").equals("1")) {
-					creeps.add(new Creep(_layerCreeps, waterTiles.get("1"), new Point(x, y)));
+					creeps.add(new Creep(_layer, waterTiles.get("1"), new Point(x, y)));
 				}
 				if(cell.getTile().getProperties().get("exitPoint") != null && cell.getTile().getProperties().get("exitPoint").equals("1")) {
 					exitPoint = new Point(x, y);

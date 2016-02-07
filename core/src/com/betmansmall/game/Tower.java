@@ -21,9 +21,7 @@ public class Tower {
         this.tile = tile;
         this.position = position;
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        TiledMapTileLayer.Cell cellEmpty = new TiledMapTileLayer.Cell();
         getCollisionLayer().setCell(position.x, position.y, cell);
-        getCollisionLayer().setCell(position.x-1, position.y, cellEmpty);
         cell.setTile(tile);
     }
 
