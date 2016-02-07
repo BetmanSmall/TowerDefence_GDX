@@ -14,6 +14,18 @@ public class TowerDefence extends Game {
 
     private Screen mainMenu;
 
+    private static TowerDefence instance;
+    public static TowerDefence getInstance() {
+        if(instance == null) {
+            synchronized (TowerDefence.class) {
+                if(instance == null) {
+                    instance = new TowerDefence();
+                }
+            }
+        }
+        return instance;
+    }
+
     @Override
     public void create() {
 //        batch = new SpriteBatch();

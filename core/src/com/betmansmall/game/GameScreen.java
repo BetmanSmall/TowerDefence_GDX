@@ -34,7 +34,6 @@ public class GameScreen implements Screen {
 
 	private static final float MAX_ZOOM = 1f; //normal size
 	private static final float MIN_ZOOM = 0.5f; // 2x zoom
-	private static final float SPEED_ZOOM = 0.02f;
 
 	private Vector2 dragOld, dragNew;
 
@@ -43,10 +42,6 @@ public class GameScreen implements Screen {
 	public OrthographicCamera cam;
 	private ArrayList<Creep> creeps;
 	private ArrayList<Tower> towers;
-
-	private Batch spriteBatch = new SpriteBatch(10);
-	private Image returnButton;
-	private Image gameStartButton;
 
 	private Map<String,TiledMapTile> waterTiles, towerTiles;
 	private Map<Point, Integer> stepsForWaveAlgorithm;
@@ -59,28 +54,13 @@ public class GameScreen implements Screen {
 
 	private Timer.Task timerForCreeps;
 
-	private float getNormalCoordX(float x) {
-		return x;
-	}
-
-	private float getNormalCoordY(float y) {
-		return (float) Gdx.graphics.getHeight() - y;
-	}
+	private final GameInterface gameInterface = new GameInterface();
 
 	public GameScreen(final TowerDefence towerDefence) {
 		this.gs = this;
 		this.towerDefence = towerDefence;
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		returnButton = new Image(new Texture(Gdx.files.internal("img/return.png")));
-		returnButton.setSize(55, 55);
-		returnButton.setPosition(0, Gdx.graphics.getHeight() - returnButton.getHeight());
-
-		gameStartButton = new Image(new Texture((Gdx.files.internal("img/startgamebutton.PNG"))));
-		gameStartButton.setSize(140, 42);
-		gameStartButton.setPosition((Gdx.graphics.getWidth() / 2) - (gameStartButton.getWidth() / 2), Gdx.graphics.getHeight() - gameStartButton.getHeight());
-
 
 		_map = new TmxMapLoader().load("img/arena.tmx");
 		_layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
@@ -91,22 +71,9 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean touchDown(float x, float y, int pointer, int button) {
-					dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+				dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
-					dragOld = dragNew;
-					if (returnButton.getX() < getNormalCoordX(x) && getNormalCoordX(x) < returnButton.getX() + returnButton.getWidth() &&
-							returnButton.getY() < getNormalCoordY(y) && getNormalCoordY(y) < returnButton.getY() + returnButton.getHeight()) {
-						towerDefence.setMainMenu(gs);
-						return true;
-					}
-
-					if (gameStartButton.getX() < getNormalCoordX(x) && getNormalCoordX(x) < gameStartButton.getX() + gameStartButton.getWidth() &&
-							gameStartButton.getY() < getNormalCoordY(y) && getNormalCoordY(y) < gameStartButton.getY() + gameStartButton.getHeight()) {
-						waveAlgorithm();
-						createTimerForCreeps();
-						gameStartButton.remove();
-					return true;
-				}
+				dragOld = dragNew;
 				return true; //workaround
 			}
 
@@ -409,10 +376,16 @@ public class GameScreen implements Screen {
 
 		renderer.setView(cam);
 		renderer.render();
-		spriteBatch.begin();
-		returnButton.draw(spriteBatch, 1);
-		gameStartButton.draw(spriteBatch,1);
-		spriteBatch.end();
+		gameInterface.draw();
+
+		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
+			waveAlgorithm();
+			createTimerForCreeps();
+			gameInterface.setVisible(false,GameInterface.GameInterfaceElements.START_WAVE_BUTTON);
+		}
+		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.RETURN_BUTTON)) {
+			towerDefence.setMainMenu(null);
+		}
 	}
 
 
@@ -435,7 +408,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void hide() {
-	//	dispose();
+		//	dispose();
 	}
 
 	@Override
