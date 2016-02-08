@@ -246,7 +246,7 @@ public class GameScreen implements Screen {
 
 	int stepOneCreep(int creepId) {
 		Creep tmpCreep = creeps.get(creepId);
-		if(tmpCreep.alive) {
+		if(tmpCreep.isAlive()) {
 			int currX = tmpCreep.getPosition().x;
 			int currY = tmpCreep.getPosition().y;
 

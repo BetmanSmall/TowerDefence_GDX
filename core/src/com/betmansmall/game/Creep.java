@@ -2,7 +2,6 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector2;
 
 import java.awt.Point;
 
@@ -10,34 +9,28 @@ import java.awt.Point;
  * Created by betmansmall on 22.09.2015.
  */
 public class  Creep {
-    int hp;
-    boolean alive;
-    int number;
+    private int hp;
+    private boolean alive;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTile tile;
-    private Vector2 velocity = new Vector2();
 
     private Point position;
-    public Creep(TiledMapTileLayer collisionLayer, TiledMapTile tile){
-        setCollisionLayer(collisionLayer);
-        this.tile = tile;
-        this.alive = true;
-    }
     public Creep(TiledMapTileLayer collisionLayer, TiledMapTile tile, Point position){
         setCollisionLayer(collisionLayer);
         this.tile = tile;
-        this.alive = true;
-        this.position = position;
+        setAlive(true);
+        setHp(100);
+        setPosition(position);
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        getCollisionLayer().setCell((int) position.x, (int) position.y, cell);
+        getCollisionLayer().setCell(position.x, position.y, cell);
         cell.setTile(tile);
     }
 
     public void moveTo(Point position) {
-        getCollisionLayer().setCell((int) this.position.x, (int) this.position.y, null);
+        getCollisionLayer().setCell(this.position.x, this.position.y, null);
         this.position = position;
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        getCollisionLayer().setCell((int) position.x, (int) position.y, cell);
+        getCollisionLayer().setCell(position.x, position.y, cell);
         cell.setTile(this.tile);
     }
 
@@ -56,4 +49,21 @@ public class  Creep {
     public void setPosition(Point position) {
         this.position = position;
     }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
 }
