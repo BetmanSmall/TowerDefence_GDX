@@ -1,7 +1,8 @@
-package com.betmansmall.game;
+package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.GridPoint2;
 
 import java.awt.Point;
 
@@ -14,9 +15,9 @@ public class Tower {
     private TiledMapTileLayer collisionLayer;
     private TiledMapTile tile;
 
-    private Point position;
+    private GridPoint2 position;
 
-    public Tower(TiledMapTileLayer collisionLayer, TiledMapTile tile, Point position){
+    public Tower(TiledMapTileLayer collisionLayer, TiledMapTile tile, GridPoint2 position){
         setCollisionLayer(collisionLayer);
         this.tile = tile;
         this.position = position;

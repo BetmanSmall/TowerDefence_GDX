@@ -1,7 +1,8 @@
-package com.betmansmall.game;
+package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.GridPoint2;
 
 import java.awt.Point;
 
@@ -14,8 +15,13 @@ public class  Creep {
     private TiledMapTileLayer collisionLayer;
     private TiledMapTile tile;
 
-    private Point position;
-    public Creep(TiledMapTileLayer collisionLayer, TiledMapTile tile, Point position){
+    private GridPoint2 position;
+
+    public Creep() {
+
+    }
+
+    public Creep(TiledMapTileLayer collisionLayer, TiledMapTile tile, GridPoint2 position){
         setCollisionLayer(collisionLayer);
         this.tile = tile;
         setAlive(true);
@@ -26,7 +32,7 @@ public class  Creep {
         cell.setTile(tile);
     }
 
-    public void moveTo(Point position) {
+    public void moveTo(GridPoint2 position) {
         getCollisionLayer().setCell(this.position.x, this.position.y, null);
         this.position = position;
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -42,11 +48,11 @@ public class  Creep {
         this.collisionLayer = collisionLayer;
     }
 
-    public Point getPosition() {
+    public GridPoint2 getPosition() {
         return position;
     }
 
-    public void setPosition(Point position) {
+    public void setPosition(GridPoint2 position) {
         this.position = position;
     }
 
