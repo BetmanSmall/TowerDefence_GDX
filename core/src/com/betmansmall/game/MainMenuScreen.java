@@ -18,7 +18,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MainMenuScreen implements Screen {
 
     private Image background;
+    private Image returnButton;
+    private Image aboutScreen;
+
     private Texture buttons;
+
     private TextureRegion menuButton;
 
     private TowerDefence towerDefence;
@@ -26,6 +30,7 @@ public class MainMenuScreen implements Screen {
     private Stage mmStage;
     private ImageButton settings;
 
+    private boolean isShowAbout = false;
 
     public MainMenuScreen(TowerDefence towerDefence){
         this.towerDefence = towerDefence;
@@ -40,13 +45,28 @@ public class MainMenuScreen implements Screen {
     }
 
     private void create() {
+        //Creating background
         background = new Image(new Texture(Gdx.files.internal("img/background.jpg")));
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         background.setPosition(0f, 0f);
 
+        //Adding the return button
+        returnButton = new Image(new Texture(Gdx.files.internal("img/backbutton.png")));
+        returnButton.setSize(100, 100);
+        returnButton.setPosition(0, 0);
+        returnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("Return button ", "clicked");
+            }
+        });
+
+
+
         buttons = new Texture(Gdx.files.internal("img/buttons.png"));
         menuButton = new TextureRegion(buttons, 0, 0, buttons.getWidth(), buttons.getHeight());
         mmStage = new Stage(new ScreenViewport());
+
         menuButtons = new MenuButtons();
         menuButtons.setPosition(mmStage.getWidth() / 2 - buttons.getWidth() / 2, 0);
         menuButtons.setSize(buttons.getWidth(), buttons.getHeight());
@@ -60,11 +80,20 @@ public class MainMenuScreen implements Screen {
         });
         settings = new ImageButton(new Image(new Texture(Gdx.files.internal("img/settings.png"))).getDrawable());
         settings.setSize(175, 175);
-        settings.setPosition(Gdx.graphics.getWidth() - settings.getWidth() , 0);
+        settings.setPosition(Gdx.graphics.getWidth() - settings.getWidth(), 0);
         settings.addListener(new ClickListener() {
             @Override
-            public void clicked (InputEvent event, float x, float y) {
+            public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("MainScreen", "Settings");
+            }
+        });
+
+        aboutScreen = new Image(new Texture(Gdx.files.internal("img/about.png")));
+        aboutScreen.setPosition(Gdx.graphics.getWidth() / 2 - 250, 0);
+        aboutScreen.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                aboutScreen.remove();
             }
         });
 
@@ -72,6 +101,8 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(background);
         mmStage.addActor(menuButtons);
         mmStage.addActor(settings);
+        mmStage.addActor(returnButton);
+
     }
 
     @Override
@@ -85,6 +116,8 @@ public class MainMenuScreen implements Screen {
             towerDefence.closeApplication();
         }else if(y > 259 * menuButtons.getHeight()/600f && y < 417 * menuButtons.getHeight()/600f ) {
             Gdx.app.log("MainScreen", "About");
+            mmStage.addActor(aboutScreen);
+            isShowAbout = true;
         } else if(y > 442 * menuButtons.getHeight()/600f && y < 600 * menuButtons.getHeight()/600f ) {
             Gdx.app.log("MainScreen","Play");
             towerDefence.setScreen(new GameScreen(towerDefence));
