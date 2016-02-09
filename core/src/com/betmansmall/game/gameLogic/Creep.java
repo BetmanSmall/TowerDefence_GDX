@@ -71,5 +71,4 @@ public class  Creep {
     public void setHp(int hp) {
         this.hp = hp;
     }
-
 }

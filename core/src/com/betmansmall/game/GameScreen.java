@@ -377,6 +377,9 @@ public class GameScreen implements Screen {
 		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
 			gameField.waveAlgorithm();
 			gameField.createTimerForCreeps();
+			for(int i=0;i<gameField.getTowers().size;i++) {
+				gameField.getTowers().get(i).createTimerForTowers();
+			}
 			gameInterface.setVisible(false,GameInterface.GameInterfaceElements.START_WAVE_BUTTON);
 		}
 		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.RETURN_BUTTON)) {

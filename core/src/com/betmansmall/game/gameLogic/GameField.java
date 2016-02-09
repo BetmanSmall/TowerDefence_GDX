@@ -35,17 +35,17 @@ public class GameField {
     int sizeCellX, sizeCellY;
 
     GridPoint2 spawnPoint, exitPoint;
-    TiledMapTileLayer layerBackGround, layerForeGround;
+    static TiledMapTileLayer layerBackGround, layerForeGround;
 
 //    Creeps creeps;
 
     TiledMapTile defaultTileForCreeps;
-    Array<Creep> creeps;
+     static Array<Creep> creeps;
     Array<Tower> towers;
 
     Array<Integer> stepsForWaveAlgorithm;
 //    int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
-    int defaultNumCreateCreeps = 30;
+    int defaultNumCreateCreeps = 3;
 
     float intervalForTimerCreeps = 1f;
     Timer.Task timerForCreeps;
@@ -383,5 +383,63 @@ public class GameField {
 
     public HashMap<String, TiledMapTile> getTowerTiles() {
         return towerTiles;
+    }
+    public static Creep getCreep(GridPoint2 position) {
+        for(int i=0;i<creeps.size;i++) {
+            if(creeps.get(i).getPosition().x == position.x &&
+               creeps.get(i).getPosition().y == position.y) {
+                return creeps.get(i);
+            }
+        }
+        return null;
+    }
+    public static void attackCreep(GridPoint2 position) {
+        if(CollisionDetection.cellIsCreep(position.x-1,position.y-1, layerForeGround)) {
+            getCreep(new GridPoint2(position.x-1,position.y-1)).setHp(0);
+            if(getCreep(new GridPoint2(position.x-1,position.y-1)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x-1,position.y-1)).setAlive(false);
+            }
+        } else if(CollisionDetection.cellIsCreep(position.x,position.y-1, layerForeGround)) {
+            getCreep(new GridPoint2(position.x,position.y-1)).setHp(0);
+            if(getCreep(new GridPoint2(position.x,position.y-1)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x,position.y-1)).setAlive(false);
+            }
+
+        } else if(CollisionDetection.cellIsCreep(position.x+1,position.y-1, layerForeGround)) {
+            getCreep(new GridPoint2(position.x+1,position.y-1)).setHp(0);
+            if(getCreep(new GridPoint2(position.x+1,position.y-1)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x+1,position.y-1)).setAlive(false);
+            }
+
+        } else if(CollisionDetection.cellIsCreep(position.x+1,position.y, layerForeGround)) {
+            getCreep(new GridPoint2(position.x+1,position.y)).setHp(0);
+            if(getCreep(new GridPoint2(position.x+1,position.y)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x+1,position.y)).setAlive(false);
+            }
+
+        } else if(CollisionDetection.cellIsCreep(position.x+1,position.y+1, layerForeGround)) {
+            getCreep(new GridPoint2(position.x+1,position.y+1)).setHp(0);
+            if(getCreep(new GridPoint2(position.x+1,position.y+1)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x+1,position.y+1)).setAlive(false);
+            }
+
+        } else if(CollisionDetection.cellIsCreep(position.x,position.y+1, layerForeGround)) {
+            getCreep(new GridPoint2(position.x,position.y+1)).setHp(0);
+            if(getCreep(new GridPoint2(position.x,position.y+1)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x,position.y+1)).setAlive(false);
+            }
+
+        } else if(CollisionDetection.cellIsCreep(position.x-1,position.y+1, layerForeGround)) {
+            getCreep(new GridPoint2(position.x-1,position.y+1)).setHp(0);
+            if(getCreep(new GridPoint2(position.x-1,position.y+1)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x-1,position.y+1)).setAlive(false);
+            }
+
+        } else if(CollisionDetection.cellIsCreep(position.x-1,position.y, layerForeGround)) {
+            getCreep(new GridPoint2(position.x-1,position.y)).setHp(0);
+            if(getCreep(new GridPoint2(position.x-1,position.y)).getHp() <= 0) {
+                getCreep(new GridPoint2(position.x-1,position.y)).setAlive(false);
+            }
+        }
     }
 }

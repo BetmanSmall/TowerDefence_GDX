@@ -97,4 +97,17 @@ public class CollisionDetection {
             return true;
         }
     }
+    public static boolean cellIsCreep(int x, int y, TiledMapTileLayer layer) {
+        if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile() != null) {
+            Object property = layer.getCell(x, y).getTile().getProperties().get("busy");
+            if(property != null) {
+                if (property.equals("creep")) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
 }
