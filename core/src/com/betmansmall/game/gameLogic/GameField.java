@@ -161,7 +161,7 @@ public class GameField {
                     float x1 = isometricCoorX + x * (sizeCellX / 2);
                     float y1 = isometricCoorY + halfSizeCellY + x * halfSizeCellY;
                     String str = stepsForWaveAlgorithm.get(sizeFieldX * y + x).toString();
-                    Gdx.app.log("drawStepsAndMouse", "x1=" + x1 + " y1=" + y1 + " step=" + str);
+                    //Gdx.app.log("drawStepsAndMouse", "x1=" + x1 + " y1=" + y1 + " step=" + str);
                     font.draw(batch, str, x1, y1);
 //            sr.line(x * halfSizeCellX, halfSizeCellY - x * halfSizeCellY, mapWidth / 2 + x * halfSizeCellX, halfSizeCellY + mapHeight / 2 - x * halfSizeCellY);
 //            sr.line(y * halfSizeCellX, halfSizeCellY + y * halfSizeCellY, mapWidth / 2 + y * halfSizeCellX, halfSizeCellY - (mapHeight / 2) + y * halfSizeCellY);

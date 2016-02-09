@@ -52,7 +52,6 @@ public class GameInterface {
 
     public void setVisible(boolean visible, GameInterfaceElements element) {
         getElement(element).setVisible(visible);
-        Gdx.app.log("TAAAAAAAAAG","set " + visible + " but" + element.name());
     }
 
     private Actor getElement(GameInterfaceElements element) {
@@ -83,22 +82,16 @@ public class GameInterface {
         return false;
     }
 
-    public boolean update()
+    public boolean update(float x, float y)
     {
-        if(Gdx.input.justTouched())
-        {
-            float x = Gdx.input.getX();
-            float y = Gdx.input.getY();
+        if (isActorTouched(returnButton,x,y)) {
+            isReturnButtonTouched = true;
+            return true;
+        }
 
-            if (isActorTouched(returnButton,x,y)) {
-                isReturnButtonTouched = true;
-                return true;
-            }
-
-            if (isActorTouched(startWaveButton,x,y)) {
-                isStartWaveButtonTouched = true;
-                return true;
-            }
+        if (isActorTouched(startWaveButton,x,y)) {
+            isStartWaveButtonTouched = true;
+            return true;
         }
         return false;
     }
@@ -112,7 +105,6 @@ public class GameInterface {
     }
 
     public void draw() {
-        update();
         spriteBatch.begin();
         if(returnButton.isVisible()) {
             returnButton.draw(spriteBatch, 1);

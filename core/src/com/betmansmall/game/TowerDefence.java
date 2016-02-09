@@ -14,16 +14,19 @@ public class TowerDefence extends Game {
 
     private Screen mainMenu;
 
-    private static TowerDefence instance;
+    private static volatile TowerDefence instance;
+
     public static TowerDefence getInstance() {
-        if(instance == null) {
+        TowerDefence localInstance = instance;
+        if (localInstance == null) {
             synchronized (TowerDefence.class) {
-                if(instance == null) {
-                    instance = new TowerDefence();
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new TowerDefence();
                 }
             }
         }
-        return instance;
+        return localInstance;
     }
 
     @Override

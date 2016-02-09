@@ -72,9 +72,7 @@ public class GameScreen implements Screen {
 			@Override
 			public boolean touchDown(float x, float y, int pointer, int button) {
 				Gdx.app.log("Call function", "touchDown(" + x + ", " + y + ", " + pointer + ", " + button + ");");
-				dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-
-				dragOld = dragNew;
+				dragOld = dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 				return true; //workaround
 			}
 
@@ -82,6 +80,20 @@ public class GameScreen implements Screen {
 			public boolean tap(float x, float y, int count, int button) {
 				Gdx.app.log("Call function", "tap(" + x + ", " + y + ", " + count + ", " + button + ");");
 				//stepAllCreeps();
+				if(gameInterface.update(x,y)) {
+					if(gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
+						gameField.waveAlgorithm();
+						gameField.createTimerForCreeps();
+						for(int i=0;i<gameField.getTowers().size;i++) {
+							gameField.getTowers().get(i).createTimerForTowers();
+						}
+						gameInterface.setVisible(false,GameInterface.GameInterfaceElements.START_WAVE_BUTTON);
+					}
+					if(gameInterface.isTouched(GameInterface.GameInterfaceElements.RETURN_BUTTON)) {
+						towerDefence.setMainMenu(null);
+					}
+					return true;
+				}
 
 				Vector3 touch = new Vector3(x, y, 0);
 				GridPoint2 clickedCell = new GridPoint2();
@@ -374,18 +386,6 @@ public class GameScreen implements Screen {
 //	}
 
 	private void inputHandler(float delta) {
-		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
-			gameField.waveAlgorithm();
-			gameField.createTimerForCreeps();
-			for(int i=0;i<gameField.getTowers().size;i++) {
-				gameField.getTowers().get(i).createTimerForTowers();
-			}
-			gameInterface.setVisible(false,GameInterface.GameInterfaceElements.START_WAVE_BUTTON);
-		}
-		if(gameInterface.isTouched(GameInterface.GameInterfaceElements.RETURN_BUTTON)) {
-			towerDefence.setMainMenu(null);
-		}
-
 		if(Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
 			Gdx.app.log("inputHandler", "Pressed MINUS");
 			if(cam.zoom <= MAX_ZOOM)
