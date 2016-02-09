@@ -67,14 +67,16 @@ public class GameField {
 		for(int x = 0; x < sizeFieldX; x++) {
 			for(int y = 0; y < sizeFieldY; y++){
 				TiledMapTileLayer.Cell cell = layerBackGround.getCell(x, y);
-				if(cell.getTile().getProperties().get("spawnPoint") != null && cell.getTile().getProperties().get("spawnPoint").equals("1")) {
-                    Gdx.app.log("spawnPoint", "set! " + new GridPoint2(x, y));
-                    spawnPoint = new GridPoint2(x, y);
-				}
-				if(cell.getTile().getProperties().get("exitPoint") != null && cell.getTile().getProperties().get("exitPoint").equals("1")) {
-                    Gdx.app.log("exitPoint", "set! " + new GridPoint2(x, y));
-					exitPoint = new GridPoint2(x, y);
-				}
+                if(cell != null) {
+                    if (cell.getTile().getProperties().get("spawnPoint") != null && cell.getTile().getProperties().get("spawnPoint").equals("1")) {
+                        Gdx.app.log("spawnPoint", "set! " + new GridPoint2(x, y));
+                        spawnPoint = new GridPoint2(x, y);
+                    }
+                    if (cell.getTile().getProperties().get("exitPoint") != null && cell.getTile().getProperties().get("exitPoint").equals("1")) {
+                        Gdx.app.log("exitPoint", "set! " + new GridPoint2(x, y));
+                        exitPoint = new GridPoint2(x, y);
+                    }
+                }
 			}
 		}
 
@@ -156,15 +158,14 @@ public class GameField {
             batch.setProjectionMatrix(camera.combined);
             batch.begin();
 
+//            font.draw(batch, "2", 0, 0);
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    float x1 = isometricCoorX + x * (sizeCellX / 2);
-                    float y1 = isometricCoorY + halfSizeCellY + x * halfSizeCellY;
+                    float x1 = isometricCoorX + halfSizeCellX + x * (sizeCellX / 2);
+                    float y1 = isometricCoorY + halfSizeCellY - x * halfSizeCellY;
                     String str = stepsForWaveAlgorithm.get(sizeFieldX * y + x).toString();
-                    Gdx.app.log("drawStepsAndMouse", "x1=" + x1 + " y1=" + y1 + " step=" + str);
+//                    Gdx.app.log("drawStepsAndMouse", "x1=" + x1 + " y1=" + y1 + " step=" + str);
                     font.draw(batch, str, x1, y1);
-//            sr.line(x * halfSizeCellX, halfSizeCellY - x * halfSizeCellY, mapWidth / 2 + x * halfSizeCellX, halfSizeCellY + mapHeight / 2 - x * halfSizeCellY);
-//            sr.line(y * halfSizeCellX, halfSizeCellY + y * halfSizeCellY, mapWidth / 2 + y * halfSizeCellX, halfSizeCellY - (mapHeight / 2) + y * halfSizeCellY);
                 }
                 isometricCoorX = halfSizeCellX * (sizeFieldY - (y + 1));
                 isometricCoorY = (halfSizeCellY / 2) * (y + 1);
@@ -205,12 +206,15 @@ public class GameField {
     public void waveAlgorithm(int x, int y) {
         Gdx.app.log("WaveAlgorim", "x=" + x + ",y=" + y);
         if(x == -1 && y == -1) {
-            if (exitPoint != null) {
+            if(exitPoint != null) {
                 waveAlgorithm(exitPoint.x, exitPoint.y);
                 return;
+            } else {
+                Gdx.app.log("waveAlgorithm", "not set exitPoint!");
+                return;
             }
-        }
 
+        }
 
         for(int tmpX = 0; tmpX < sizeFieldX; tmpX++) {
             for(int tmpY = 0; tmpY < sizeFieldY; tmpY++) {
@@ -259,7 +263,7 @@ public class GameField {
     }
 
     void setStepCell(int x, int y, int step) {
-//        Gdx.app.log("setStepCell", "x=" + x + " y=" + y + " step=" + step + " sum=" + (sizeFieldX*y + x));
+        Gdx.app.log("setStepCell", "x=" + x + " y=" + y + " step=" + step + " sum=" + (sizeFieldX*y + x));
         stepsForWaveAlgorithm.set(sizeFieldX*y + x, step);
     }
 
