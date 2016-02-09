@@ -47,8 +47,10 @@ public class GameField {
 //    int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
     int defaultNumCreateCreeps = 30;
 
-    float intervalForTimerCreeps = 0.1f;
+    float intervalForTimerCreeps = 1f;
     Timer.Task timerForCreeps;
+
+    HashMap<String, TiledMapTile> creepTiles, towerTiles;
 
     public GameField(String mapName) {
         map = new TmxMapLoader().load(mapName);
@@ -83,7 +85,6 @@ public class GameField {
 
         stepsForWaveAlgorithm = new Array<Integer>(sizeFieldX*sizeFieldY);
 
-        HashMap<String, TiledMapTile> creepTiles, towerTiles;
 		TiledMapTileSet tileset = map.getTileSets().getTileSet("creep");
         creepTiles = new HashMap<String,TiledMapTile>();
 		towerTiles = new HashMap<String,TiledMapTile>();
@@ -348,4 +349,39 @@ public class GameField {
         return 0;
     }
 
+    public int getSizeFieldX() {
+        return sizeFieldX;
+    }
+
+    public int getSizeFieldY() {
+        return sizeFieldY;
+    }
+
+    public int getSizeCellX() {
+        return sizeCellX;
+    }
+
+    public int getSizeCellY() {
+        return sizeCellY;
+    }
+
+    public TiledMapTileLayer getLayerBackGround() {
+        return layerBackGround;
+    }
+
+    public TiledMapTileLayer getLayerForeGround() {
+        return layerForeGround;
+    }
+
+    public Array<Creep> getCreeps() {
+        return creeps;
+    }
+
+    public Array<Tower> getTowers() {
+        return towers;
+    }
+
+    public HashMap<String, TiledMapTile> getTowerTiles() {
+        return towerTiles;
+    }
 }

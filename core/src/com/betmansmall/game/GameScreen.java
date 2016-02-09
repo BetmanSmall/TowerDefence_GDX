@@ -87,28 +87,28 @@ public class GameScreen implements Screen {
 				GridPoint2 clickedCell = new GridPoint2();
 				cam.unproject(touch);
 
-//				for (int tileX = 0; tileX < _layer.getWidth(); tileX++){
-//					for(int tileY = 0; tileY < _layer.getHeight(); tileY++){
-//						float x_pos = (tileX * _layer.getTileWidth() / 2.0f ) + (tileY * _layer.getTileWidth() / 2.0f);
-//						float y_pos = - (tileX * _layer.getTileHeight() / 2.0f) + (tileY * _layer.getTileHeight() / 2.0f) + _layer.getTileHeight() / 2.0f;
-//						ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
-//						tilePoints.add(new Vector2(x_pos,y_pos));
-//						tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
-//								y_pos + _layer.getTileHeight() / 2.0f));
-//						tilePoints.add(new Vector2(x_pos + _layer.getTileWidth(), y_pos));
-//						tilePoints.add(new Vector2(x_pos + _layer.getTileWidth() / 2.0f,
-//								y_pos - _layer.getTileHeight() / 2.0f));
-//						CollisionDetection cl = new CollisionDetection();
-//						if(cl.estimation(tilePoints, touch)) {
-//							Gdx.app.log("Click tile", "x=" + tileX + " y=" + tileY);
-//							clickedCell = new GridPoint2(tileX,tileY);
-//						}
-//					}
-//				}
-//				if(CollisionDetection.cellIsEmpty(clickedCell.x, clickedCell.y, _layer)) {
-//					towers.add(new com.betmansmall.game.gameLogic.Tower(_layer, towerTiles.get("2"), clickedCell));
-////					waveAlgorithm();
-//				}
+				for (int tileX = 0; tileX < gameField.getSizeFieldX(); tileX++){
+					for(int tileY = 0; tileY < gameField.getSizeFieldY(); tileY++){
+						float x_pos = (tileX * gameField.getSizeCellX() / 2.0f ) + (tileY * gameField.getSizeCellX() / 2.0f);
+						float y_pos = - (tileX * gameField.getSizeCellY() / 2.0f) + (tileY * gameField.getSizeCellY() / 2.0f) + gameField.getSizeCellY() / 2.0f;
+						ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
+						tilePoints.add(new Vector2(x_pos,y_pos));
+						tilePoints.add(new Vector2(x_pos + gameField.getSizeCellX() / 2.0f,
+								y_pos + gameField.getSizeCellY() / 2.0f));
+						tilePoints.add(new Vector2(x_pos + gameField.getSizeCellX(), y_pos));
+						tilePoints.add(new Vector2(x_pos + gameField.getSizeCellX() / 2.0f,
+								y_pos - gameField.getSizeCellY() / 2.0f));
+						CollisionDetection cl = new CollisionDetection();
+						if(cl.estimation(tilePoints, touch)) {
+							Gdx.app.log("Click tile", "x=" + tileX + " y=" + tileY);
+							clickedCell = new GridPoint2(tileX,tileY);
+						}
+					}
+				}
+				if(CollisionDetection.cellIsEmpty(clickedCell.x, clickedCell.y, gameField.getLayerForeGround())) {
+					gameField.getTowers().add(new com.betmansmall.game.gameLogic.Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("2"), clickedCell));
+//					waveAlgorithm();
+				}
 				return false;
 			}
 
