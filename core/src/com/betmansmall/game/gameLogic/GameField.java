@@ -153,22 +153,23 @@ public class GameField {
             int halfSizeCellY = sizeCellY / 2;
 
             int isometricCoorX = 0;
-            int isometricCoorY = halfSizeCellY;
+            int isometricCoorY = 0;
 
             batch.setProjectionMatrix(camera.combined);
             batch.begin();
 
-//            font.draw(batch, "2", 0, 0);
+//            TiledMapTileLayer.Cell cell = layerBackGround.getCell(1, 1).`
+            font.draw(batch, "0", 0, 0);
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    float x1 = isometricCoorX + halfSizeCellX + x * (sizeCellX / 2);
-                    float y1 = isometricCoorY + halfSizeCellY - x * halfSizeCellY;
+                    float x1 = isometricCoorX + (halfSizeCellX-5) + x * halfSizeCellX;
+                    float y1 = isometricCoorY + (halfSizeCellY+5) - x * halfSizeCellY;
                     String str = stepsForWaveAlgorithm.get(sizeFieldX * y + x).toString();
 //                    Gdx.app.log("drawStepsAndMouse", "x1=" + x1 + " y1=" + y1 + " step=" + str);
                     font.draw(batch, str, x1, y1);
                 }
-                isometricCoorX = halfSizeCellX * (sizeFieldY - (y + 1));
-                isometricCoorY = (halfSizeCellY / 2) * (y + 1);
+                isometricCoorX = halfSizeCellX * (y + 1);
+                isometricCoorY = halfSizeCellY * (y + 1);
             }
 
             batch.end();
@@ -216,11 +217,8 @@ public class GameField {
 
         }
 
-        for(int tmpX = 0; tmpX < sizeFieldX; tmpX++) {
-            for(int tmpY = 0; tmpY < sizeFieldY; tmpY++) {
-                stepsForWaveAlgorithm.add(0); // КОСТЫЛЬ МАТЬ ЕГО!!!!!
-            }
-        }
+        clearStepsOnWaveAlgorithm();
+
         Gdx.app.log("waveAlgorithm", "stepsForWaveAlgorithm: " + stepsForWaveAlgorithm.size);
 
         setStepCell(x, y, 1);
@@ -267,8 +265,13 @@ public class GameField {
         stepsForWaveAlgorithm.set(sizeFieldX*y + x, step);
     }
 
-    void clearStepCell(int x, int y) {
-        stepsForWaveAlgorithm.set(sizeFieldX*y + x, 0);
+    void clearStepsOnWaveAlgorithm() {
+        stepsForWaveAlgorithm.clear();
+        for(int tmpX = 0; tmpX < sizeFieldX; tmpX++) {
+            for(int tmpY = 0; tmpY < sizeFieldY; tmpY++) {
+                stepsForWaveAlgorithm.add(0); // КОСТЫЛЬ МАТЬ ЕГО!!!!!
+            }
+        }
     }
 
     int stepAllCreeps() {
