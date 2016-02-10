@@ -37,6 +37,9 @@ public class GameField {
     GridPoint2 spawnPoint, exitPoint;
     static TiledMapTileLayer layerBackGround, layerForeGround;
 
+    public boolean isDrawableGrid = true;
+    public boolean isDrawableSteps = false;
+
 //    Creeps creeps;
 
     TiledMapTile defaultTileForCreeps;
@@ -119,8 +122,10 @@ public class GameField {
         renderer.setView(camera);
         renderer.render();
 
-        drawGrid(camera);
-        drawStepsAndMouse(camera);
+        if(isDrawableGrid)
+            drawGrid(camera);
+        if(isDrawableSteps)
+            drawStepsAndMouse(camera);
 
 //        batch.begin();
 //        font.draw(batch, "test", 50, 50);
@@ -181,7 +186,7 @@ public class GameField {
             timerForCreeps = Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    Gdx.app.log("Timer", "for Creeps!");
+                    Gdx.app.log("Timer", "for Creeps! Delta: " + timerForCreeps.getExecuteTimeMillis());
 
                     if(spawnPoint != null) {
                         if(creeps.size < defaultNumCreateCreeps) {
@@ -202,10 +207,10 @@ public class GameField {
     public void waveAlgorithm() {
         waveAlgorithm(-1, -1);
         Gdx.app.log("waveAlgorithm", "stop work!");
+
     }
 
     public void waveAlgorithm(int x, int y) {
-        Gdx.app.log("WaveAlgorim", "x=" + x + ",y=" + y);
         if(x == -1 && y == -1) {
             if(exitPoint != null) {
                 waveAlgorithm(exitPoint.x, exitPoint.y);
@@ -219,7 +224,7 @@ public class GameField {
 
         clearStepsOnWaveAlgorithm();
 
-        Gdx.app.log("waveAlgorithm", "stepsForWaveAlgorithm: " + stepsForWaveAlgorithm.size);
+//        Gdx.app.log("waveAlgorithm", "stepsForWaveAlgorithm: " + stepsForWaveAlgorithm.size);
 
         setStepCell(x, y, 1);
 
@@ -227,6 +232,7 @@ public class GameField {
     }
 
     void waveStep(int x, int y, int step) {
+//        Gdx.app.log("waveCount","wave = ");
         //------------3*3----------------
         boolean mass[][] = new boolean[3][3];
         int nextStep = step + 1;
@@ -239,7 +245,6 @@ public class GameField {
             for (int tmpX = -1; tmpX < 2; tmpX++)
                 if (mass[tmpX + 1][tmpY + 1])
                     waveStep(x + tmpX, y + tmpY, nextStep);
-
     }
 
     boolean setNumOfCell(int x, int y, int step) {
@@ -261,7 +266,7 @@ public class GameField {
     }
 
     void setStepCell(int x, int y, int step) {
-        Gdx.app.log("setStepCell", "x=" + x + " y=" + y + " step=" + step + " sum=" + (sizeFieldX*y + x));
+//        Gdx.app.log("setStepCell", "x=" + x + " y=" + y + " step=" + step + " sum=" + (sizeFieldX*y + x));
         stepsForWaveAlgorithm.set(sizeFieldX*y + x, step);
     }
 
@@ -297,7 +302,7 @@ public class GameField {
     }
 
     int stepOneCreep(int creepId) {
-        com.betmansmall.game.gameLogic.Creep tmpCreep = creeps.get(creepId);
+        Creep tmpCreep = creeps.get(creepId);
         if(tmpCreep.isAlive()) {
             int currX = tmpCreep.getPosition().x;
             int currY = tmpCreep.getPosition().y;

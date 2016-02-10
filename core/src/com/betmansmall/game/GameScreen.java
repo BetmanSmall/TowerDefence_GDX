@@ -196,6 +196,10 @@ public class GameScreen implements Screen {
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
 			gameField.waveAlgorithm();
 			gameField.createTimerForCreeps();
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+			gameField.isDrawableGrid = !gameField.isDrawableGrid;
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+			gameField.isDrawableSteps = !gameField.isDrawableSteps;
 		}
 	}
 	
