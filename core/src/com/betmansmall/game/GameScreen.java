@@ -4,32 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.Tower;
 
-//import java.awt.Point;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GameScreen implements Screen {
 	private static final float MAX_ZOOM = 2f; //normal size
@@ -44,27 +31,11 @@ public class GameScreen implements Screen {
 	private final GameInterface gameInterface = new GameInterface();
 	private GameField gameField;
 
-//	private TiledMap _map;
-//	private IsometricTiledMapRenderer renderer;
-//	private ArrayList<com.betmansmall.game.gameLogic.Creep> creeps;
-//	private ArrayList<com.betmansmall.game.gameLogic.Tower> towers;
-//	private Map<String,TiledMapTile> waterTiles, towerTiles;
-//	private Map<GridPoint2, Integer> stepsForWaveAlgorithm;
-//	private TiledMapTileLayer _layer, _layerB;
-//	private GridPoint2 exitPoint;
-//	private int currentFinishedCreeps, gameOverLimitCreeps;
-//	private int intervalForTimerCreeps = 1;
-//	private Timer.Task timerForCreeps;
-
 	public GameScreen(final TowerDefence towerDefence) {
 		this.gs = this;
 		this.towerDefence = towerDefence;
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-//		_map = new TmxMapLoader().load("img/arena.tmx");
-//		_layer = (TiledMapTileLayer) _map.getLayers().get("Foreground");
-//		_layerB = (TiledMapTileLayer) _map.getLayers().get("Background");
 
 		InputMultiplexer im = new InputMultiplexer();
 		GestureListener gestureListener = new GestureListener() {
@@ -79,17 +50,17 @@ public class GameScreen implements Screen {
 			@Override
 			public boolean tap(float x, float y, int count, int button) {
 				Gdx.app.log("Call function", "tap(" + x + ", " + y + ", " + count + ", " + button + ");");
-				
-				if(gameInterface.update(x,y)) {
-					if(gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
+
+				if (gameInterface.update(x, y)) {
+					if (gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
 						gameField.waveAlgorithm();
 						gameField.createTimerForCreeps();
-						for(int i=0;i<gameField.getTowers().size;i++) {
+						for (int i = 0; i < gameField.getTowers().size; i++) {
 							gameField.getTowers().get(i).createTimerForTowers();
 						}
-						gameInterface.setVisible(false,GameInterface.GameInterfaceElements.START_WAVE_BUTTON);
+						gameInterface.setVisible(false, GameInterface.GameInterfaceElements.START_WAVE_BUTTON);
 					}
-					if(gameInterface.isTouched(GameInterface.GameInterfaceElements.RETURN_BUTTON)) {
+					if (gameInterface.isTouched(GameInterface.GameInterfaceElements.RETURN_BUTTON)) {
 						towerDefence.setMainMenu(null);
 					}
 					return true;
@@ -118,8 +89,13 @@ public class GameScreen implements Screen {
 					}
 				}
 				if(CollisionDetection.cellIsEmpty(clickedCell.x, clickedCell.y, gameField.getLayerForeGround())) {
-					gameField.getTowers().add(new com.betmansmall.game.gameLogic.Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("2"), clickedCell));
-					gameField.waveAlgorithm();
+					if(button == 0) {
+						gameField.getTowers().add(new Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("2"), clickedCell));
+						gameField.waveAlgorithm();
+					} else if(button == 1) {
+//						Gdx.app.log("tap", "button(1) x:" + clickedCell.x + " y:" + clickedCell.y);
+						gameField.waveAlgorithm(clickedCell.x, clickedCell.y);
+					}
 				}
 				return false;
 			}
@@ -142,7 +118,6 @@ public class GameScreen implements Screen {
 
 			@Override
 			public boolean panStop(float x, float y, int pointer, int button) {
-
 				return false;
 			}
 
