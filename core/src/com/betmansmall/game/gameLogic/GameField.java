@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -19,7 +18,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.CollisionDetection;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by betmansmall on 08.02.2016.
@@ -42,8 +40,9 @@ public class GameField {
 
 //    Creeps creeps;
 
+    boolean CIRCLET8 = true;
     TiledMapTile defaultTileForCreeps;
-     static Array<Creep> creeps;
+    static Array<Creep> creeps;
     Array<Tower> towers;
 
     Array<Integer> stepsForWaveAlgorithm;
@@ -210,7 +209,7 @@ public class GameField {
 
     }
 
-    public void waveAlgorithm(int x, int y) {
+    public void waveAlgorithm(final int x, final int y) {
         if(x == -1 && y == -1) {
             if(exitPoint != null) {
                 waveAlgorithm(exitPoint.x, exitPoint.y);
@@ -228,23 +227,63 @@ public class GameField {
 
         setStepCell(x, y, 1);
 
-        waveStep(x, y, 1);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Gdx.app.log("Thread1", "start waveStep!");
+                waveStep(x, y, 1);
+                Gdx.app.log("Thread1", "stop waveStep!");
+//                            // do something important here, asynchronously to the rendering thread
+//                            final Result result = createResult();
+//                            // post a Runnable to the rendering thread that processes the result
+//                            Gdx.app.postRunnable(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    // process the result, e.g. add it to an Array<Result> field of the ApplicationListener.
+//                                    results.add(result);
+//                                }
+//                            });
+            }
+        }).start();
+//        waveStep(x, y, 1);
     }
 
     void waveStep(int x, int y, int step) {
 //        Gdx.app.log("waveCount","wave = ");
         //------------3*3----------------
-        boolean mass[][] = new boolean[3][3];
-        int nextStep = step + 1;
+        if(CIRCLET8) {
+            boolean mass[][] = new boolean[3][3];
+            int nextStep = step + 1;
 
-        for (int tmpY = -1; tmpY < 2; tmpY++)
-            for (int tmpX = -1; tmpX < 2; tmpX++)
-                mass[tmpX + 1][tmpY + 1] = setNumOfCell(x + tmpX, y + tmpY, nextStep);
+            for (int tmpY = -1; tmpY < 2; tmpY++)
+                for (int tmpX = -1; tmpX < 2; tmpX++)
+                    mass[tmpX + 1][tmpY + 1] = setNumOfCell(x + tmpX, y + tmpY, nextStep);
 
-        for (int tmpY = -1; tmpY < 2; tmpY++)
-            for (int tmpX = -1; tmpX < 2; tmpX++)
-                if (mass[tmpX + 1][tmpY + 1])
-                    waveStep(x + tmpX, y + tmpY, nextStep);
+            for (int tmpY = -1; tmpY < 2; tmpY++)
+                for (int tmpX = -1; tmpX < 2; tmpX++)
+                    if (mass[tmpX + 1][tmpY + 1])
+                        waveStep(x + tmpX, y + tmpY, nextStep);
+        } else {
+            //------------2*2-----------------
+            boolean mass[] = new boolean[4];
+            int nextStep = step + 1;
+            int x1 = x - 1, x2 = x, x3 = x + 1;
+            int y1 = y - 1, y2 = y, y3 = y + 1;
+
+            mass[0] = setNumOfCell(x1, y2, nextStep);
+            mass[1] = setNumOfCell(x2, y1, nextStep);
+            mass[2] = setNumOfCell(x2, y3, nextStep);
+            mass[3] = setNumOfCell(x3, y2, nextStep);
+
+            if (mass[0])
+                waveStep(x1, y2, nextStep);
+            if (mass[1])
+                waveStep(x2, y1, nextStep);
+            if (mass[2])
+                waveStep(x2, y3, nextStep);
+            if (mass[3])
+                waveStep(x3, y2, nextStep);
+        }
     }
 
     boolean setNumOfCell(int x, int y, int step) {
