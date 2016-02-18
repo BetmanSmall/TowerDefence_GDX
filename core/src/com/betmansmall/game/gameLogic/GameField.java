@@ -13,10 +13,14 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.CollisionDetection;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.WaveAlgorithm;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -32,20 +36,17 @@ public class GameField {
     int sizeFieldX, sizeFieldY;
     int sizeCellX, sizeCellY;
 
+    public WaveAlgorithm waveAlgorithm;
     GridPoint2 spawnPoint, exitPoint;
     static TiledMapTileLayer layerBackGround, layerForeGround;
 
     public boolean isDrawableGrid = true;
     public boolean isDrawableSteps = false;
 
-//    Creeps creeps;
-
-    boolean CIRCLET8 = true;
     TiledMapTile defaultTileForCreeps;
     static Array<Creep> creeps;
     Array<Tower> towers;
 
-    Array<Integer> stepsForWaveAlgorithm;
 //    int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
     int defaultNumCreateCreeps = 3;
 
@@ -71,23 +72,21 @@ public class GameField {
 				TiledMapTileLayer.Cell cell = layerBackGround.getCell(x, y);
                 if(cell != null) {
                     if (cell.getTile().getProperties().get("spawnPoint") != null && cell.getTile().getProperties().get("spawnPoint").equals("1")) {
-                        Gdx.app.log("spawnPoint", "set! " + new GridPoint2(x, y));
                         spawnPoint = new GridPoint2(x, y);
+                        Gdx.app.log("GameField::GameField()", "-- Set spawnPoint:" + spawnPoint);
                     }
                     if (cell.getTile().getProperties().get("exitPoint") != null && cell.getTile().getProperties().get("exitPoint").equals("1")) {
-                        Gdx.app.log("exitPoint", "set! " + new GridPoint2(x, y));
                         exitPoint = new GridPoint2(x, y);
+                        Gdx.app.log("GameField::GameField()", "-- Set exitPoint:" + exitPoint);
                     }
                 }
 			}
 		}
 
-//        creeps = new Creeps(1);
-
         creeps = new Array<Creep>();
         towers = new Array<Tower>();
 
-        stepsForWaveAlgorithm = new Array<Integer>(sizeFieldX*sizeFieldY);
+        waveAlgorithm = new WaveAlgorithm(sizeFieldX, sizeFieldY, exitPoint.x, exitPoint.y, layerForeGround);
 
 		TiledMapTileSet tileset = map.getTileSets().getTileSet("creep");
         creepTiles = new HashMap<String,TiledMapTile>();
@@ -111,6 +110,7 @@ public class GameField {
     }
 
     public void dispose() {
+        stopTimerForCreeps();
 		map.dispose();
 		map = null;
 		renderer.dispose();
@@ -125,10 +125,6 @@ public class GameField {
             drawGrid(camera);
         if(isDrawableSteps)
             drawStepsAndMouse(camera);
-
-//        batch.begin();
-//        font.draw(batch, "test", 50, 50);
-//        batch.end();
     }
 
 	private void drawGrid(OrthographicCamera camera) {
@@ -151,8 +147,7 @@ public class GameField {
 	}
 
     private void drawStepsAndMouse(OrthographicCamera camera) {
-        if(stepsForWaveAlgorithm.size != 0) {
-
+        if(waveAlgorithm.isFound()) {
             int halfSizeCellX = sizeCellX / 2;
             int halfSizeCellY = sizeCellY / 2;
 
@@ -162,14 +157,12 @@ public class GameField {
             batch.setProjectionMatrix(camera.combined);
             batch.begin();
 
-//            TiledMapTileLayer.Cell cell = layerBackGround.getCell(1, 1).`
-            font.draw(batch, "0", 0, 0);
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
                     float x1 = isometricCoorX + (halfSizeCellX-5) + x * halfSizeCellX;
                     float y1 = isometricCoorY + (halfSizeCellY+5) - x * halfSizeCellY;
-                    String str = stepsForWaveAlgorithm.get(sizeFieldX * y + x).toString();
-//                    Gdx.app.log("drawStepsAndMouse", "x1=" + x1 + " y1=" + y1 + " step=" + str);
+                    String str = String.valueOf(waveAlgorithm.getStepCell(x, y));
+//                    Gdx.app.log("GameField::drawStepsAndMouse()", "-- x1:" + x1 + " y1:" + y1 + " step:" + str);
                     font.draw(batch, str, x1, y1);
                 }
                 isometricCoorX = halfSizeCellX * (y + 1);
@@ -185,8 +178,7 @@ public class GameField {
             timerForCreeps = Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    Gdx.app.log("Timer", "for Creeps! Delta: " + timerForCreeps.getExecuteTimeMillis());
-
+//                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
                     if(spawnPoint != null) {
                         if(creeps.size < defaultNumCreateCreeps) {
                             creeps.add(new Creep(layerForeGround, defaultTileForCreeps, new GridPoint2(spawnPoint.x, spawnPoint.y)));
@@ -199,125 +191,51 @@ public class GameField {
     }
 
     private void stopTimerForCreeps() {
+        Gdx.app.log("GameField::stopTimerForCreeps()", "Stop timer for creeps!");
         timerForCreeps.cancel();
         timerForCreeps = null;
     }
 
-    public void waveAlgorithm() {
-        waveAlgorithm(-1, -1);
-        Gdx.app.log("waveAlgorithm", "stop work!");
+    public GridPoint2 whichCell(GridPoint2 gameCoor) {
+        int sizeFieldX = getSizeFieldX();
+        int sizeFieldY = getSizeFieldY();
+        int sizeCellX = getSizeCellX();
+        int sizeCellY = getSizeCellY();
+        int halfSizeCellX = sizeCellX/2;
+        int halfSizeCellY = sizeCellY/2;
 
-    }
+        for(int tileX = 0; tileX < sizeFieldX; tileX++) {
+            for(int tileY = 0; tileY < sizeFieldY; tileY++) {
+                float posX = (tileX*halfSizeCellX) + (tileY*halfSizeCellX);
+                float posY = -(tileX*halfSizeCellY) + (tileY*halfSizeCellY) + halfSizeCellY;
 
-    public void waveAlgorithm(final int x, final int y) {
-        if(x == -1 && y == -1) {
-            if(exitPoint != null) {
-                waveAlgorithm(exitPoint.x, exitPoint.y);
-                return;
-            } else {
-                Gdx.app.log("waveAlgorithm", "not set exitPoint!");
-                return;
-            }
-
-        }
-
-        clearStepsOnWaveAlgorithm();
-
-//        Gdx.app.log("waveAlgorithm", "stepsForWaveAlgorithm: " + stepsForWaveAlgorithm.size);
-
-        setStepCell(x, y, 1);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Gdx.app.log("Thread1", "start waveStep!");
-                waveStep(x, y, 1);
-                Gdx.app.log("Thread1", "stop waveStep!");
-//                            // do something important here, asynchronously to the rendering thread
-//                            final Result result = createResult();
-//                            // post a Runnable to the rendering thread that processes the result
-//                            Gdx.app.postRunnable(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    // process the result, e.g. add it to an Array<Result> field of the ApplicationListener.
-//                                    results.add(result);
-//                                }
-//                            });
-            }
-        }).start();
-//        waveStep(x, y, 1);
-    }
-
-    void waveStep(int x, int y, int step) {
-//        Gdx.app.log("waveCount","wave = ");
-        //------------3*3----------------
-        if(CIRCLET8) {
-            boolean mass[][] = new boolean[3][3];
-            int nextStep = step + 1;
-
-            for (int tmpY = -1; tmpY < 2; tmpY++)
-                for (int tmpX = -1; tmpX < 2; tmpX++)
-                    mass[tmpX + 1][tmpY + 1] = setNumOfCell(x + tmpX, y + tmpY, nextStep);
-
-            for (int tmpY = -1; tmpY < 2; tmpY++)
-                for (int tmpX = -1; tmpX < 2; tmpX++)
-                    if (mass[tmpX + 1][tmpY + 1])
-                        waveStep(x + tmpX, y + tmpY, nextStep);
-        } else {
-            //------------2*2-----------------
-            boolean mass[] = new boolean[4];
-            int nextStep = step + 1;
-            int x1 = x - 1, x2 = x, x3 = x + 1;
-            int y1 = y - 1, y2 = y, y3 = y + 1;
-
-            mass[0] = setNumOfCell(x1, y2, nextStep);
-            mass[1] = setNumOfCell(x2, y1, nextStep);
-            mass[2] = setNumOfCell(x2, y3, nextStep);
-            mass[3] = setNumOfCell(x3, y2, nextStep);
-
-            if (mass[0])
-                waveStep(x1, y2, nextStep);
-            if (mass[1])
-                waveStep(x2, y1, nextStep);
-            if (mass[2])
-                waveStep(x2, y3, nextStep);
-            if (mass[3])
-                waveStep(x3, y2, nextStep);
-        }
-    }
-
-    boolean setNumOfCell(int x, int y, int step) {
-        if(x >= 0 && x < sizeFieldX) {
-            if(y >= 0 && y < sizeFieldY) {
-                if(CollisionDetection.cellIsEmpty(x, y, layerForeGround)) {
-                    if(getStepCell(x, y) > step || getStepCell(x, y) == 0) {
-                        setStepCell(x, y, step);
-                        return true;
-                    }
+                ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
+                tilePoints.add(new Vector2(posX, posY));
+                tilePoints.add(new Vector2(posX + halfSizeCellX, posY + halfSizeCellY));
+                tilePoints.add(new Vector2(posX + sizeCellX, posY));
+                tilePoints.add(new Vector2(posX + halfSizeCellX, posY - halfSizeCellY));
+                if(CollisionDetection.estimation(tilePoints, gameCoor)) {
+//                    Gdx.app.log("GameField::whichCell()", "-- posX:" + posX + " posY:" + posY);
+//                    Gdx.app.log("GameField::whichCell()", "-- tilePoints:" + tilePoints.toString());
+//                    Gdx.app.log("GameField::whichCell()", "-- x:" + tileX + " y:" + tileY);
+                    return new GridPoint2(tileX, tileY);
                 }
             }
         }
-        return false;
+        return null;
     }
 
-    int getStepCell(int x, int y) {
-        return stepsForWaveAlgorithm.get(sizeFieldX*y + x);
-    }
+//    public void searhPath() {
+//        waveAlgorithm.searh();
+//    }
 
-    void setStepCell(int x, int y, int step) {
-//        Gdx.app.log("setStepCell", "x=" + x + " y=" + y + " step=" + step + " sum=" + (sizeFieldX*y + x));
-        stepsForWaveAlgorithm.set(sizeFieldX*y + x, step);
-    }
-
-    void clearStepsOnWaveAlgorithm() {
-        stepsForWaveAlgorithm.clear();
-        for(int tmpX = 0; tmpX < sizeFieldX; tmpX++) {
-            for(int tmpY = 0; tmpY < sizeFieldY; tmpY++) {
-                stepsForWaveAlgorithm.add(0); // КОСТЫЛЬ МАТЬ ЕГО!!!!!
-            }
-        }
-    }
-
+    /**
+     * @brief Говорит всем криппам ходить
+     * @return 2 - Все криппы мертвы
+     * @return 1 - Eсли колличество криппов в точке @exitPoint превышено $gameOverLimitCreeps
+     * @return 0 - Все криппы сходили успешно
+     * @return -1 - Какому-либо криппу перекрыли путь до $exitPoint
+     */
     int stepAllCreeps() {
         boolean allDead = true;
         for(int k = 0; k < creeps.size; k++) {
@@ -361,7 +279,7 @@ public class GameField {
                 for(int tmpX = -1; tmpX < 2; tmpX++)
                     if(!(tmpX == 0 && tmpY == 0)) {
                         int num = getNumStep(currX + tmpX, currY + tmpY);
-//                            Log.d("TTW", "stepOneCreep() -- num: " + num);
+//                        Gdx.app.log("GameField::stepOneCreep()", "-- num:" + num);
                         if(num <= min && num != 0) {
                             if(num == min) {
                                 if( ((int) (Math.random()*2)) == 1) {
@@ -379,12 +297,11 @@ public class GameField {
 
             if(exitX != currX || exitY != currY)
             {
-                Gdx.app.log("Creep", "move to: x=" + exitX + " y=" + exitY);
+                Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
                 creeps.get(creepId).moveTo(new GridPoint2(exitX, exitY));
             } else {
                 return 0;
             }
-//            }
         }
         return 0;
     }
@@ -392,8 +309,8 @@ public class GameField {
     int getNumStep(int x, int y) {
         if(x >= 0 && x < sizeFieldX) {
             if(y >= 0 && y < sizeFieldY) {
-                if(CollisionDetection.cellIsEmpty(x, y, layerForeGround)) {
-                    return getStepCell(x, y);
+                if(cellIsEmpty(x, y)) {
+                    return waveAlgorithm.getStepCell(x, y);
                 }
             }
         }
@@ -416,6 +333,51 @@ public class GameField {
         return sizeCellY;
     }
 
+    public boolean cellIsEmpty(int x, int y) {
+        TiledMapTileLayer layer = layerForeGround;
+        if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile() != null) {
+            Object property = layer.getCell(x, y).getTile().getProperties().get("busy");
+            if(property != null) {
+                if (property.equals("tower") || property.equals("flora")) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean cellIsCreep(int x, int y) {
+        TiledMapTileLayer layer = layerForeGround;
+        if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile() != null) {
+            Object property = layer.getCell(x, y).getTile().getProperties().get("busy");
+            if(property != null) {
+                if (property.equals("creep")) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean cellIsTower(int x, int y) {
+        TiledMapTileLayer layer = layerForeGround;
+        if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile() != null) {
+            Object property = layer.getCell(x, y).getTile().getProperties().get("busy");
+            if(property != null) {
+                if (property.equals("tower")) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
     public TiledMapTileLayer getLayerBackGround() {
         return layerBackGround;
     }
@@ -435,6 +397,7 @@ public class GameField {
     public HashMap<String, TiledMapTile> getTowerTiles() {
         return towerTiles;
     }
+
     public static Creep getCreep(GridPoint2 position) {
         for(int i=0;i<creeps.size;i++) {
             if(creeps.get(i).getPosition().x == position.x &&
@@ -444,49 +407,50 @@ public class GameField {
         }
         return null;
     }
+
     public static void attackCreep(GridPoint2 position) {
-        if(CollisionDetection.cellIsCreep(position.x-1,position.y-1, layerForeGround)) {
+        if(cellIsCreep(position.x - 1, position.y - 1)) {
             getCreep(new GridPoint2(position.x-1,position.y-1)).setHp(0);
             if(getCreep(new GridPoint2(position.x-1,position.y-1)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x-1,position.y-1)).setAlive(false);
             }
-        } else if(CollisionDetection.cellIsCreep(position.x,position.y-1, layerForeGround)) {
+        } else if(cellIsCreep(position.x, position.y - 1)) {
             getCreep(new GridPoint2(position.x,position.y-1)).setHp(0);
             if(getCreep(new GridPoint2(position.x,position.y-1)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x,position.y-1)).setAlive(false);
             }
 
-        } else if(CollisionDetection.cellIsCreep(position.x+1,position.y-1, layerForeGround)) {
+        } else if(cellIsCreep(position.x + 1, position.y - 1)) {
             getCreep(new GridPoint2(position.x+1,position.y-1)).setHp(0);
             if(getCreep(new GridPoint2(position.x+1,position.y-1)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x+1,position.y-1)).setAlive(false);
             }
 
-        } else if(CollisionDetection.cellIsCreep(position.x+1,position.y, layerForeGround)) {
+        } else if(cellIsCreep(position.x + 1, position.y)) {
             getCreep(new GridPoint2(position.x+1,position.y)).setHp(0);
             if(getCreep(new GridPoint2(position.x+1,position.y)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x+1,position.y)).setAlive(false);
             }
 
-        } else if(CollisionDetection.cellIsCreep(position.x+1,position.y+1, layerForeGround)) {
+        } else if(cellIsCreep(position.x + 1, position.y + 1)) {
             getCreep(new GridPoint2(position.x+1,position.y+1)).setHp(0);
             if(getCreep(new GridPoint2(position.x+1,position.y+1)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x+1,position.y+1)).setAlive(false);
             }
 
-        } else if(CollisionDetection.cellIsCreep(position.x,position.y+1, layerForeGround)) {
+        } else if(cellIsCreep(position.x, position.y + 1)) {
             getCreep(new GridPoint2(position.x,position.y+1)).setHp(0);
             if(getCreep(new GridPoint2(position.x,position.y+1)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x,position.y+1)).setAlive(false);
             }
 
-        } else if(CollisionDetection.cellIsCreep(position.x-1,position.y+1, layerForeGround)) {
+        } else if(cellIsCreep(position.x - 1, position.y + 1)) {
             getCreep(new GridPoint2(position.x-1,position.y+1)).setHp(0);
             if(getCreep(new GridPoint2(position.x-1,position.y+1)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x-1,position.y+1)).setAlive(false);
             }
 
-        } else if(CollisionDetection.cellIsCreep(position.x-1,position.y, layerForeGround)) {
+        } else if(cellIsCreep(position.x - 1, position.y)) {
             getCreep(new GridPoint2(position.x-1,position.y)).setHp(0);
             if(getCreep(new GridPoint2(position.x-1,position.y)).getHp() <= 0) {
                 getCreep(new GridPoint2(position.x-1,position.y)).setAlive(false);

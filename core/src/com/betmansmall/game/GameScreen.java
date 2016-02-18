@@ -39,21 +39,20 @@ public class GameScreen implements Screen {
 
 		InputMultiplexer im = new InputMultiplexer();
 		GestureListener gestureListener = new GestureListener() {
-
 			@Override
 			public boolean touchDown(float x, float y, int pointer, int button) {
-				Gdx.app.log("Call function", "touchDown(" + x + ", " + y + ", " + pointer + ", " + button + ");");
+//				Gdx.app.log("GameScreen::GestureListener::touchDown()", "-- (" + x + ", " + y + ", " + pointer + ", " + button + ");");
 				dragOld = dragNew = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 				return true; //workaround
 			}
 
 			@Override
 			public boolean tap(float x, float y, int count, int button) {
-				Gdx.app.log("Call function", "tap(" + x + ", " + y + ", " + count + ", " + button + ");");
+//				Gdx.app.log("GameScreen::GestureListener::tap()", "-- (" + x + ", " + y + ", " + count + ", " + button + ");");
 
 				if (gameInterface.update(x, y)) {
 					if (gameInterface.isTouched(GameInterface.GameInterfaceElements.START_WAVE_BUTTON)) {
-						gameField.waveAlgorithm();
+						gameField.waveAlgorithm.searh();
 						gameField.createTimerForCreeps();
 						for (int i = 0; i < gameField.getTowers().size; i++) {
 							gameField.getTowers().get(i).createTimerForTowers();
@@ -67,34 +66,22 @@ public class GameScreen implements Screen {
 				}
 				
 				Vector3 touch = new Vector3(x, y, 0);
-				GridPoint2 clickedCell = new GridPoint2();
 				cam.unproject(touch);
 
-				for (int tileX = 0; tileX < gameField.getSizeFieldX(); tileX++){
-					for(int tileY = 0; tileY < gameField.getSizeFieldY(); tileY++){
-						float x_pos = (tileX * gameField.getSizeCellX() / 2.0f ) + (tileY * gameField.getSizeCellX() / 2.0f);
-						float y_pos = - (tileX * gameField.getSizeCellY() / 2.0f) + (tileY * gameField.getSizeCellY() / 2.0f) + gameField.getSizeCellY() / 2.0f;
-						ArrayList<Vector2> tilePoints = new ArrayList<Vector2>();
-						tilePoints.add(new Vector2(x_pos,y_pos));
-						tilePoints.add(new Vector2(x_pos + gameField.getSizeCellX() / 2.0f,
-								y_pos + gameField.getSizeCellY() / 2.0f));
-						tilePoints.add(new Vector2(x_pos + gameField.getSizeCellX(), y_pos));
-						tilePoints.add(new Vector2(x_pos + gameField.getSizeCellX() / 2.0f,
-								y_pos - gameField.getSizeCellY() / 2.0f));
-						CollisionDetection cl = new CollisionDetection();
-						if(cl.estimation(tilePoints, touch)) {
-							Gdx.app.log("Click tile", "x=" + tileX + " y=" + tileY);
-							clickedCell = new GridPoint2(tileX,tileY);
+				GridPoint2 gameCoor = new GridPoint2((int) touch.x, (int) touch.y);
+//				Gdx.app.log("GameScreen::GestureListener::tap()", "-- gameCoorX:" + gameCoor.x + " gameCoorY:" + gameCoor.y);
+
+				GridPoint2 tileCoor = gameField.whichCell(gameCoor);
+//				Gdx.app.log("GameScreen::GestureListener::tap()", "-- tileCoorX:" + tileCoor.x + " tileCoorY:" + tileCoor.y);
+
+				if(tileCoor != null) {
+					if(gameField.cellIsEmpty(tileCoor.x, tileCoor.y)) {
+						if(button == 0) {
+							gameField.getTowers().add(new Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("1"), tileCoor));
+							gameField.waveAlgorithm.searh();
+						} else if(button == 1) {
+							gameField.waveAlgorithm.searh(tileCoor.x, tileCoor.y);
 						}
-					}
-				}
-				if(CollisionDetection.cellIsEmpty(clickedCell.x, clickedCell.y, gameField.getLayerForeGround())) {
-					if(button == 0) {
-						gameField.getTowers().add(new Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("2"), clickedCell));
-						gameField.waveAlgorithm();
-					} else if(button == 1) {
-//						Gdx.app.log("tap", "button(1) x:" + clickedCell.x + " y:" + clickedCell.y);
-						gameField.waveAlgorithm(clickedCell.x, clickedCell.y);
 					}
 				}
 				return false;
@@ -124,9 +111,9 @@ public class GameScreen implements Screen {
 			@Override
 			public boolean zoom(float initialDistance, float distance) {
 				int amount = ((int)initialDistance - (int)distance) / (int)5f;
-				Gdx.app.log("Zoom", "Amount: " + amount + ", distance: " + distance + ", inintD: " + initialDistance);
-				if (amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += amount/10000f;
-				if (amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom += amount/10000f;
+				Gdx.app.log("GameScreen::GestureListener::Zoom()", "-- amount:" + amount + " distance:" + distance + " inintD:" + initialDistance);
+				if(amount > 0 && cam.zoom < MAX_ZOOM) cam.zoom += amount/10000f;
+				if(amount < 0 && cam.zoom > MIN_ZOOM) cam.zoom += amount/10000f;
 				cam.update();
 				return false;
 			}
@@ -140,7 +127,7 @@ public class GameScreen implements Screen {
 
 		Gdx.input.setInputProcessor(im);
 
-		gameField = new GameField("img/arena.tmx");
+		gameField = new GameField("maps/arena.tmx");
 	}
 
 	private void moveCamera() {
@@ -159,22 +146,25 @@ public class GameScreen implements Screen {
 
 	private void inputHandler(float delta) {
 		if(Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
-			Gdx.app.log("inputHandler", "Pressed MINUS");
 			if(cam.zoom <= MAX_ZOOM)
 				cam.zoom += 0.1f;
 			cam.update();
+			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed MINUS");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
-			Gdx.app.log("inputHandler", "Pressed PLUS");
 			if(cam.zoom >= MIN_ZOOM)
 				cam.zoom -= 0.1f;
 			cam.update();
+			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
-			gameField.waveAlgorithm();
+			gameField.waveAlgorithm.searh();
 			gameField.createTimerForCreeps();
+			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUMPAD_0");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			gameField.isDrawableGrid = !gameField.isDrawableGrid;
+			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
 			gameField.isDrawableSteps = !gameField.isDrawableSteps;
+			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableSteps:" + gameField.isDrawableSteps);
 		}
 	}
 	
@@ -196,7 +186,7 @@ public class GameScreen implements Screen {
 		cam.viewportWidth = width;
 //		cam.position.set(800f, 0f, 100f);
 		cam.update();
-		Gdx.app.log("Screen resize", "width "+ width + "height "+ height );
+		Gdx.app.log("GameScreen::resize()", "-- New width:" + width + " height:" + height);
 	}
 
 	@Override
