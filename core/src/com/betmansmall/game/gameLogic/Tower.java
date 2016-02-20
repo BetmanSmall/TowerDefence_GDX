@@ -16,8 +16,8 @@ public class Tower {
     private int damage;
     private int radius;
     private float attackSpeed;
-    int hp;
-    int id;
+//    int hp;
+//    int id;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTile tile;
     private Timer.Task timerForCreeps;
@@ -92,5 +92,10 @@ public class Tower {
     public void stopTimerForTowers() {
         timerForCreeps.cancel();
         timerForCreeps = null;
+    }
+
+    public boolean deleteTower() {
+        getCollisionLayer().setCell(getPosition().x, getPosition().y, null);
+        return true;
     }
 }

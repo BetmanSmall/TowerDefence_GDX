@@ -44,10 +44,10 @@ public class GameField {
     public boolean isDrawableSteps = false;
 
     TiledMapTile defaultTileForCreeps;
-    static Array<Creep> creeps;
     Array<Tower> towers;
 
 //    int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
+    CreepsManager creepsManager;
     int defaultNumCreateCreeps = 3;
 
     float intervalForTimerCreeps = 1f;
@@ -83,7 +83,7 @@ public class GameField {
 			}
 		}
 
-        creeps = new Array<Creep>();
+        creepsManager = new CreepsManager(defaultNumCreateCreeps);
         towers = new Array<Tower>();
 
         waveAlgorithm = new WaveAlgorithm(sizeFieldX, sizeFieldY, exitPoint.x, exitPoint.y, layerForeGround);
@@ -180,8 +180,8 @@ public class GameField {
                 public void run() {
 //                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
                     if(spawnPoint != null) {
-                        if(creeps.size < defaultNumCreateCreeps) {
-                            creeps.add(new Creep(layerForeGround, defaultTileForCreeps, new GridPoint2(spawnPoint.x, spawnPoint.y)));
+                        if(creepsManager.amountCreeps() < defaultNumCreateCreeps) {
+//                            CreepsManager.addCreeps(new Creep(layerForeGround, defaultTileForCreeps, new GridPoint2(spawnPoint.x, spawnPoint.y)));
                         }
                     }
                     stepAllCreeps();
@@ -238,7 +238,7 @@ public class GameField {
      */
     int stepAllCreeps() {
         boolean allDead = true;
-        for(int k = 0; k < creeps.size; k++) {
+        for(int k = 0; k < creepsManager.amountCreeps(); k++) {
             int result = stepOneCreep(k);
             if(result != -2)
                 allDead = false;
@@ -259,7 +259,7 @@ public class GameField {
     }
 
     int stepOneCreep(int creepId) {
-        Creep tmpCreep = creeps.get(creepId);
+        Creep tmpCreep = creepsManager.getCreep(creepId);
         if(tmpCreep.isAlive()) {
             int currX = tmpCreep.getPosition().x;
             int currY = tmpCreep.getPosition().y;
@@ -298,7 +298,7 @@ public class GameField {
             if(exitX != currX || exitY != currY)
             {
                 Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
-                creeps.get(creepId).moveTo(new GridPoint2(exitX, exitY));
+                creepsManager.getCreep(creepId).moveTo(new GridPoint2(exitX, exitY));
             } else {
                 return 0;
             }
@@ -386,10 +386,6 @@ public class GameField {
         return layerForeGround;
     }
 
-    public Array<Creep> getCreeps() {
-        return creeps;
-    }
-
     public Array<Tower> getTowers() {
         return towers;
     }
@@ -398,62 +394,15 @@ public class GameField {
         return towerTiles;
     }
 
-    public static Creep getCreep(GridPoint2 position) {
-        for(int i=0;i<creeps.size;i++) {
-            if(creeps.get(i).getPosition().x == position.x &&
-               creeps.get(i).getPosition().y == position.y) {
-                return creeps.get(i);
-            }
-        }
-        return null;
-    }
-
-    public static void attackCreep(GridPoint2 position) {
-        if(cellIsCreep(position.x - 1, position.y - 1)) {
-            getCreep(new GridPoint2(position.x-1,position.y-1)).setHp(0);
-            if(getCreep(new GridPoint2(position.x-1,position.y-1)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x-1,position.y-1)).setAlive(false);
-            }
-        } else if(cellIsCreep(position.x, position.y - 1)) {
-            getCreep(new GridPoint2(position.x,position.y-1)).setHp(0);
-            if(getCreep(new GridPoint2(position.x,position.y-1)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x,position.y-1)).setAlive(false);
-            }
-
-        } else if(cellIsCreep(position.x + 1, position.y - 1)) {
-            getCreep(new GridPoint2(position.x+1,position.y-1)).setHp(0);
-            if(getCreep(new GridPoint2(position.x+1,position.y-1)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x+1,position.y-1)).setAlive(false);
-            }
-
-        } else if(cellIsCreep(position.x + 1, position.y)) {
-            getCreep(new GridPoint2(position.x+1,position.y)).setHp(0);
-            if(getCreep(new GridPoint2(position.x+1,position.y)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x+1,position.y)).setAlive(false);
-            }
-
-        } else if(cellIsCreep(position.x + 1, position.y + 1)) {
-            getCreep(new GridPoint2(position.x+1,position.y+1)).setHp(0);
-            if(getCreep(new GridPoint2(position.x+1,position.y+1)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x+1,position.y+1)).setAlive(false);
-            }
-
-        } else if(cellIsCreep(position.x, position.y + 1)) {
-            getCreep(new GridPoint2(position.x,position.y+1)).setHp(0);
-            if(getCreep(new GridPoint2(position.x,position.y+1)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x,position.y+1)).setAlive(false);
-            }
-
-        } else if(cellIsCreep(position.x - 1, position.y + 1)) {
-            getCreep(new GridPoint2(position.x-1,position.y+1)).setHp(0);
-            if(getCreep(new GridPoint2(position.x-1,position.y+1)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x-1,position.y+1)).setAlive(false);
-            }
-
-        } else if(cellIsCreep(position.x - 1, position.y)) {
-            getCreep(new GridPoint2(position.x-1,position.y)).setHp(0);
-            if(getCreep(new GridPoint2(position.x-1,position.y)).getHp() <= 0) {
-                getCreep(new GridPoint2(position.x-1,position.y)).setAlive(false);
+    public void attackCreep(GridPoint2 position) {
+        for(int i=-1;i<=1;i++) {
+            for(int j=-1;j<=1;j++) {
+                if(cellIsCreep(position.x + i, position.y + j)) {
+                    creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setHp(0);
+                    if (creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).getHp() <= 0) {
+                        creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setAlive(false);
+                    }
+                }
             }
         }
     }

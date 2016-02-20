@@ -73,11 +73,23 @@ public class GameScreen implements Screen {
 			return false;
 		}
 
-		@Override
-		public boolean pan(float x, float y, float deltaX, float deltaY) {
-			cam.position.add(-deltaX * cam.zoom, deltaY * cam.zoom, 0);
-			return false;
-		}
+				if(tileCoor != null) {
+					if(gameField.cellIsEmpty(tileCoor.x, tileCoor.y)) {
+						if(button == 0) {
+							gameField.getTowers().add(new Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("1"), tileCoor));
+							gameField.waveAlgorithm.searh();
+						} else if (button == 1) {
+							gameField.waveAlgorithm.searh(tileCoor.x, tileCoor.y);
+						}
+					} else if(gameField.cellIsTower(tileCoor.x, tileCoor.y)) {
+						if(button == 0) {
+//							gameField.getTowers().get
+							Gdx.app.log("GameScreen::GestureListener::tap()", "Delete tower from:" + tileCoor);
+						}
+					}
+				}
+				return false;
+			}
 
 		@Override
 		public boolean panStop(float x, float y, int pointer, int button) {

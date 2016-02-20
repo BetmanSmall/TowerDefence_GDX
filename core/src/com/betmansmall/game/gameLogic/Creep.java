@@ -13,7 +13,7 @@ public class  Creep {
     private int hp;
     private boolean alive;
     private TiledMapTileLayer collisionLayer;
-    private TiledMapTile tile;
+    private TemplateForUnit template;
 
     private GridPoint2 position;
 
@@ -21,15 +21,14 @@ public class  Creep {
 
     }
 
-    public Creep(TiledMapTileLayer collisionLayer, TiledMapTile tile, GridPoint2 position){
+    public Creep(GridPoint2 position, TiledMapTileLayer collisionLayer, TemplateForUnit unit) {
+        setTemplate(unit);
         setCollisionLayer(collisionLayer);
-        this.tile = tile;
         setAlive(true);
-        setHp(100);
+        setHp(unit.getHp());
         setPosition(position);
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         getCollisionLayer().setCell(position.x, position.y, cell);
-        cell.setTile(tile);
     }
 
     public void moveTo(GridPoint2 position) {
@@ -37,7 +36,7 @@ public class  Creep {
         this.position = position;
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         getCollisionLayer().setCell(position.x, position.y, cell);
-        cell.setTile(this.tile);
+        cell.setTile(getTemplate().getIdle().first());
     }
 
     public TiledMapTileLayer getCollisionLayer() {
@@ -70,5 +69,13 @@ public class  Creep {
 
     public void setHp(int hp) {
         this.hp = hp;
+    }
+
+    public TemplateForUnit getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(TemplateForUnit template) {
+        this.template = template;
     }
 }
