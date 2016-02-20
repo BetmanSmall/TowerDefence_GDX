@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 
@@ -7,35 +8,39 @@ import com.badlogic.gdx.utils.Array;
  * Created by Андрей on 20.02.2016.
  */
 public class CreepsManager {
-    private static Array<Creep> creepsArray;
+    private Array<Creep> creepsArray;
 
-    public static Array<Creep> getCreepsArray() {
-        return creepsArray;
+    public CreepsManager(int amountCreeps) {
+        creepsArray = new Array<Creep>(amountCreeps);
     }
 
-    public static void setCreepsArray(Array<Creep> creepsArray) {
-        CreepsManager.creepsArray = creepsArray;
+    public Creep createCreep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
+        creepsArray.add(new Creep(position, layer, templateForUnit));
+        return creepsArray.get(creepsArray.size);
     }
 
-    public static Creep getCreep(int id) {
+//    public Array<Creep> getCreepsArray() {
+//        return creepsArray;
+//    }
+
+    public Creep getCreep(int id) {
         return creepsArray.get(id);
     }
 
-    public static Creep getCreep(GridPoint2 position) {
-        for(int i=0;i<creepsArray.size;i++) {
-            if(creepsArray.get(i).getPosition().x == position.x &&
-                    creepsArray.get(i).getPosition().y == position.y) {
+    public Creep getCreep(GridPoint2 position) {
+        for(int i=0; i < creepsArray.size; i++) {
+            if(creepsArray.get(i).getPosition().x == position.x && creepsArray.get(i).getPosition().y == position.y) {
                 return creepsArray.get(i);
             }
         }
         return null;
     }
 
-    public static void addCreeps(Creep creep) {
-        creepsArray.add(creep);
-    }
+//    public void addCreeps(Creep creep) {
+//        creepsArray.add(creep);
+//    }
 
-    public static int amountCreeps() {
+    public int amountCreeps() {
         return creepsArray.size;
     }
 }

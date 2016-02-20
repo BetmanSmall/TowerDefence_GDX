@@ -47,6 +47,7 @@ public class GameField {
     Array<Tower> towers;
 
 //    int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
+    CreepsManager creepsManager;
     int defaultNumCreateCreeps = 3;
 
     float intervalForTimerCreeps = 1f;
@@ -82,7 +83,7 @@ public class GameField {
 			}
 		}
 
-        CreepsManager.setCreepsArray(new Array<Creep>());
+        creepsManager = new CreepsManager(defaultNumCreateCreeps);
         towers = new Array<Tower>();
 
         waveAlgorithm = new WaveAlgorithm(sizeFieldX, sizeFieldY, exitPoint.x, exitPoint.y, layerForeGround);
@@ -179,8 +180,8 @@ public class GameField {
                 public void run() {
 //                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
                     if(spawnPoint != null) {
-                        if(CreepsManager.amountCreeps() < defaultNumCreateCreeps) {
-                            CreepsManager.addCreeps(new Creep(layerForeGround, defaultTileForCreeps, new GridPoint2(spawnPoint.x, spawnPoint.y)));
+                        if(creepsManager.amountCreeps() < defaultNumCreateCreeps) {
+//                            CreepsManager.addCreeps(new Creep(layerForeGround, defaultTileForCreeps, new GridPoint2(spawnPoint.x, spawnPoint.y)));
                         }
                     }
                     stepAllCreeps();
@@ -237,7 +238,7 @@ public class GameField {
      */
     int stepAllCreeps() {
         boolean allDead = true;
-        for(int k = 0; k < CreepsManager.amountCreeps(); k++) {
+        for(int k = 0; k < creepsManager.amountCreeps(); k++) {
             int result = stepOneCreep(k);
             if(result != -2)
                 allDead = false;
@@ -258,7 +259,7 @@ public class GameField {
     }
 
     int stepOneCreep(int creepId) {
-        Creep tmpCreep = CreepsManager.getCreep(creepId);
+        Creep tmpCreep = creepsManager.getCreep(creepId);
         if(tmpCreep.isAlive()) {
             int currX = tmpCreep.getPosition().x;
             int currY = tmpCreep.getPosition().y;
@@ -297,7 +298,7 @@ public class GameField {
             if(exitX != currX || exitY != currY)
             {
                 Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
-                CreepsManager.getCreep(creepId).moveTo(new GridPoint2(exitX, exitY));
+                creepsManager.getCreep(creepId).moveTo(new GridPoint2(exitX, exitY));
             } else {
                 return 0;
             }
@@ -393,13 +394,13 @@ public class GameField {
         return towerTiles;
     }
 
-    public static void attackCreep(GridPoint2 position) {
+    public void attackCreep(GridPoint2 position) {
         for(int i=-1;i<=1;i++) {
             for(int j=-1;j<=1;j++) {
                 if(cellIsCreep(position.x + i, position.y + j)) {
-                    CreepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setHp(0);
-                    if (CreepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).getHp() <= 0) {
-                        CreepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setAlive(false);
+                    creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setHp(0);
+                    if (creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).getHp() <= 0) {
+                        creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setAlive(false);
                     }
                 }
             }

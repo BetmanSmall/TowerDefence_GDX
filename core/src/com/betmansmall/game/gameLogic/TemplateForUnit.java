@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
  */
 public class TemplateForUnit {
     private int hp;
+
+    private Array<TiledMapTile> idle;
 
     private Array<TiledMapTile> walkUp;
     private Array<TiledMapTile> walkUpRight;
@@ -163,5 +166,13 @@ public class TemplateForUnit {
 
     public void setWalkUp(Array<TiledMapTile> walkUp) {
         this.walkUp = walkUp;
+    }
+
+    public Array<TiledMapTile> getIdle() {
+        return idle;
+    }
+
+    public void setIdle(Array<TiledMapTile> idle) {
+        this.idle = idle;
     }
 }
