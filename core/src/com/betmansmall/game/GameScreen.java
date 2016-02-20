@@ -79,8 +79,13 @@ public class GameScreen implements Screen {
 						if(button == 0) {
 							gameField.getTowers().add(new Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("1"), tileCoor));
 							gameField.waveAlgorithm.searh();
-						} else if(button == 1) {
+						} else if (button == 1) {
 							gameField.waveAlgorithm.searh(tileCoor.x, tileCoor.y);
+						}
+					} else if(gameField.cellIsTower(tileCoor.x, tileCoor.y)) {
+						if(button == 0) {
+//							gameField.getTowers().get
+							Gdx.app.log("GameScreen::GestureListener::tap()", "Delete tower from:" + tileCoor);
 						}
 					}
 				}
