@@ -2,7 +2,6 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -70,6 +69,12 @@ public class GameScreen implements Screen {
 			flinging = true;
 			velX = cam.zoom * velocityX * 0.5f;
 			velY = cam.zoom * velocityY * 0.5f;
+			return false;
+		}
+
+		@Override
+		public boolean pan(float x, float y, float deltaX, float deltaY) {
+			cam.position.add(-deltaX * cam.zoom, deltaY * cam.zoom, 0);
 			return false;
 		}
 

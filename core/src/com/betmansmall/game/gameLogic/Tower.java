@@ -83,7 +83,7 @@ public class Tower {
                 public void run() {
                     Gdx.app.log("Timer", "for Towerss!");
 
-                    GameField.attackCreep(getPosition());
+                    //GameField.attackCreep(getPosition());
                 }
             }, 0, getAttackSpeed());
         }
