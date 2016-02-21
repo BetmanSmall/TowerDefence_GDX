@@ -13,11 +13,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
-import com.betmansmall.game.CollisionDetection;
+import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.WaveAlgorithm;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class GameField {
     static TiledMapTileLayer layerBackGround, layerForeGround;
 
     public boolean isDrawableGrid = true;
-    public boolean isDrawableSteps = false;
+    public boolean isDrawableSteps = true;
 
     TiledMapTile defaultTileForCreeps;
     Array<Tower> towers;
@@ -214,7 +213,7 @@ public class GameField {
                 tilePoints.add(new Vector2(posX + halfSizeCellX, posY + halfSizeCellY));
                 tilePoints.add(new Vector2(posX + sizeCellX, posY));
                 tilePoints.add(new Vector2(posX + halfSizeCellX, posY - halfSizeCellY));
-                if(CollisionDetection.estimation(tilePoints, gameCoor)) {
+                if(WhichCell.estimation(tilePoints, gameCoor)) {
 //                    Gdx.app.log("GameField::whichCell()", "-- posX:" + posX + " posY:" + posY);
 //                    Gdx.app.log("GameField::whichCell()", "-- tilePoints:" + tilePoints.toString());
 //                    Gdx.app.log("GameField::whichCell()", "-- x:" + tileX + " y:" + tileY);

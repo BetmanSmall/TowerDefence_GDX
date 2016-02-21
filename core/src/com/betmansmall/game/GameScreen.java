@@ -22,11 +22,7 @@ public class GameScreen implements Screen {
 	private static final float MIN_ZOOM = 0.2f; // 2x zoom
 
 	private GameScreen gs;
-	public OrthographicCamera cam;
-
-	private final GameInterface gameInterface = new GameInterface();
-	private GameField gameField;
-
+	private TowerDefence towerDefence;
 	class CameraController implements GestureListener {
 		float velX, velY;
 		boolean flinging = false;
@@ -74,6 +70,11 @@ public class GameScreen implements Screen {
 		}
 
 		@Override
+		public boolean pan(float x, float y, float deltaX, float deltaY) {
+			return false;
+		}
+
+		@Override
 		public boolean panStop(float x, float y, int pointer, int button) {
 			return false;
 		}
@@ -104,10 +105,16 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	public OrthographicCamera cam;
+
+	private final GameInterface gameInterface = new GameInterface();
+	private GameField gameField;
+
 	private CameraController cameraController = new CameraController();
 
-	public GameScreen() {
+	public GameScreen(TowerDefence towerDefence) {
 		this.gs = this;
+		this.towerDefence = towerDefence;
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 

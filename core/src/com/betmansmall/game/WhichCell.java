@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by Андрей on 31.01.2016.
  */
-public class CollisionDetection {
+public class WhichCell {
     public static boolean estimation(ArrayList<Vector2> mapPoints, GridPoint2 touch) {
         int res = 0;
         for(int i = 0; i < mapPoints.size()-1; i++)
@@ -33,7 +33,7 @@ public class CollisionDetection {
         else if((h-j) == 4 || (h-j) == -4) {
             int f = correlation(q, w, e, r, touch);
             if(f == 0)
-                Gdx.app.log("CollisionDetection::getDelta()", "-- Точка находится на границе полигона.");
+                Gdx.app.log("WhichCell::getDelta()", "-- Точка находится на границе полигона.");
             return f;
         }
         return h-j;

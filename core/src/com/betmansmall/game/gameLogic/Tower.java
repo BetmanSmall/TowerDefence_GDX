@@ -5,9 +5,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Timer;
-import com.betmansmall.game.CollisionDetection;
-
-import java.awt.Point;
 
 /**
  * Created by Андрей on 24.01.2016.
@@ -83,7 +80,7 @@ public class Tower {
                 public void run() {
                     Gdx.app.log("Timer", "for Towerss!");
 
-                    GameField.attackCreep(getPosition());
+//                    GameField.attackCreep(getPosition());
                 }
             }, 0, getAttackSpeed());
         }

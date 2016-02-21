@@ -120,7 +120,7 @@ public class MainMenuScreen implements Screen {
             isShowAbout = true;
         } else if(y > 442 * menuButtons.getHeight()/600f && y < 600 * menuButtons.getHeight()/600f ) {
             Gdx.app.log("MainScreen","Play");
-            towerDefence.setScreen(new GameScreen());
+            towerDefence.setScreen(new GameScreen(towerDefence));
         } else {
             Gdx.app.log("MainScreen","Unknown analyzer");
         }

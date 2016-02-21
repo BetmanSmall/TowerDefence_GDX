@@ -6,7 +6,7 @@ import com.badlogic.gdx.Screen;
 
 
 /**
- * Created by Vitaly on 13.10.2015.
+ * Created by BetmanSmall on 13.10.2015.
  */
 public class TowerDefence extends Game {
 //    SpriteBatch batch;
