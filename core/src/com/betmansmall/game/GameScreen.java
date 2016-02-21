@@ -2,7 +2,6 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,7 +21,11 @@ public class GameScreen implements Screen {
 	private static final float MIN_ZOOM = 0.2f; // 2x zoom
 
 	private GameScreen gs;
-	private TowerDefence towerDefence;
+	public OrthographicCamera cam;
+
+	private final GameInterface gameInterface = new GameInterface();
+	private GameField gameField;
+
 	class CameraController implements GestureListener {
 		float velX, velY;
 		boolean flinging = false;
@@ -71,6 +74,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
+			cam.position.add(-deltaX * cam.zoom, deltaY * cam.zoom, 0);
 			return false;
 		}
 
@@ -105,16 +109,10 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public OrthographicCamera cam;
-
-	private final GameInterface gameInterface = new GameInterface();
-	private GameField gameField;
-
 	private CameraController cameraController = new CameraController();
 
-	public GameScreen(TowerDefence towerDefence) {
+	public GameScreen() {
 		this.gs = this;
-		this.towerDefence = towerDefence;
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
