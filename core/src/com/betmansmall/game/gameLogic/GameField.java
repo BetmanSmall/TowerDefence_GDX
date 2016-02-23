@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
@@ -20,14 +18,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.WaveAlgorithm;
-import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by betmansmall on 08.02.2016.
@@ -52,8 +47,7 @@ public class GameField {
 //    private int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
     private int defaultNumCreateCreeps = 10;
     private CreepsManager creepsManager;
-//    private TowersManager towersManager;
-    private Array<Tower> towers;
+    public TowersManager towersManager;
     private FactionsManager factionsManager;
 
     private float intervalForTimerCreeps = 1f;
@@ -89,8 +83,7 @@ public class GameField {
         waveAlgorithm = new WaveAlgorithm(sizeFieldX, sizeFieldY, exitPoint.x, exitPoint.y, layerForeGround);
 
         creepsManager = new CreepsManager(defaultNumCreateCreeps);
-//        towersManager = new TowersManager();
-        towers = new Array<Tower>();
+        towersManager = new TowersManager();
         factionsManager = new FactionsManager();
 
 		TiledMapTileSets tileSets = map.getTileSets();
@@ -101,7 +94,8 @@ public class GameField {
                 TemplateForUnit unit = new TemplateForUnit(tileSet);
                 factionsManager.addUnitToFaction(unit);
             } else if(tileSetName.contains("tower")) {
-//                TemplateForTower
+                TemplateForTower tower = new TemplateForTower(tileSet);
+                factionsManager.addTowerToFaction(tower);
             }
 		}
     }
@@ -178,8 +172,7 @@ public class GameField {
 //                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
                     if(spawnPoint != null) {
                         if(creepsManager.amountCreeps() < defaultNumCreateCreeps) {
-                            creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getDefaultTemplateForUnitFromFirstFaction());
-//                            CreepsManager.addCreeps(new Creep(layerForeGround, defaultTileForCreeps, new GridPoint2(spawnPoint.x, spawnPoint.y)));
+                            creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getRandomTemplateForUnitFromFirstFaction());
                         }
                     }
                     stepAllCreeps();
@@ -223,6 +216,9 @@ public class GameField {
         return null;
     }
 
+    public void createTower(GridPoint2 position) {
+        towersManager.createTower(position, layerForeGround, factionsManager.getRandomTemplateForTowerFromFirstFaction());
+    }
 //    public void searhPath() {
 //        waveAlgorithm.searh();
 //    }
@@ -374,16 +370,16 @@ public class GameField {
         return layerForeGround;
     }
 
-    public void attackCreep(GridPoint2 position) {
-        for(int i=-1;i<=1;i++) {
-            for(int j=-1;j<=1;j++) {
-                if(cellIsCreep(position.x + i, position.y + j)) {
-                    creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setHp(0);
-                    if (creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).getHp() <= 0) {
-                        creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setAlive(false);
-                    }
-                }
-            }
-        }
-    }
+//    public void attackCreep(GridPoint2 position) {
+//        for(int i=-1;i<=1;i++) {
+//            for(int j=-1;j<=1;j++) {
+//                if(cellIsCreep(position.x + i, position.y + j)) {
+//                    creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setHp(0);
+//                    if (creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).getHp() <= 0) {
+//                        creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setAlive(false);
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

@@ -9,31 +9,32 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
  * Created by Андрей on 20.02.2016.
  */
 public class CreepsManager {
-    private Array<Creep> creepsArray;
+    private Array<Creep> creeps;
 
     public CreepsManager(int amountCreeps) {
-        creepsArray = new Array<Creep>(amountCreeps);
+        creeps = new Array<Creep>(amountCreeps);
     }
 
     public Creep createCreep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
-        creepsArray.add(new Creep(position, layer, templateForUnit));
-        return creepsArray.peek();
+        creeps.add(new Creep(position, layer, templateForUnit));
+        return creeps.peek();
     }
 
     public Creep getCreep(int id) {
-        return creepsArray.get(id);
+        return creeps.get(id);
     }
 
     public Creep getCreep(GridPoint2 position) {
-        for(int i=0; i < creepsArray.size; i++) {
-            if(creepsArray.get(i).getPosition().x == position.x && creepsArray.get(i).getPosition().y == position.y) {
-                return creepsArray.get(i);
+        for(int i=0; i < creeps.size; i++) {
+            GridPoint2 creepPosition = creeps.get(i).getPosition();
+            if(creepPosition.equals(position)) {
+                return creeps.get(i);
             }
         }
         return null;
     }
 
     public int amountCreeps() {
-        return creepsArray.size;
+        return creeps.size;
     }
 }

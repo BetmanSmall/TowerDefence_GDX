@@ -28,12 +28,38 @@ public class FactionsManager {
         factions.add(faction);
     }
 
-    public TemplateForUnit getDefaultTemplateForUnitFromFirstFaction() {
+    public void addTowerToFaction(TemplateForTower tower) {
+        String newFactionName = tower.getFactionName();
+        for(Faction faction: factions) {
+            if(faction.getName().equals(newFactionName)) {
+                faction.getTowers().add(tower);
+                tower.setFaction(faction);
+                return;
+            }
+        }
+        Faction faction = new Faction(newFactionName);
+        faction.getTowers().add(tower);
+        tower.setFaction(faction);
+        factions.add(faction);
+    }
+
+    public TemplateForUnit getRandomTemplateForUnitFromFirstFaction() {
         Faction faction = factions.first();
         if(faction != null) {
             TemplateForUnit templateForUnit = faction.getUnits().random();
             if(templateForUnit != null) {
                 return templateForUnit;
+            }
+        }
+        return null;
+    }
+
+    public TemplateForTower getRandomTemplateForTowerFromFirstFaction() {
+        Faction faction = factions.first();
+        if(faction != null) {
+            TemplateForTower templateForTower = faction.getTowers().random();
+            if(templateForTower != null) {
+                return templateForTower;
             }
         }
         return null;
