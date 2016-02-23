@@ -110,6 +110,7 @@ public class WaveAlgorithm {
         this.exitPointY = exitPointY;
         this.layer = layer;
         this.mapWithSteps = new Array<Integer>(sizeX * sizeY);
+        searchThread.start();
 //        this.outMap = new Array<Integer>(sizeX*sizeY);
         clearStepsOnWaveAlgorithm();
     }
