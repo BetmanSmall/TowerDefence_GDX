@@ -1,32 +1,31 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
-
-import java.awt.Point;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 /**
  * Created by betmansmall on 22.09.2015.
  */
 public class  Creep {
-    private int hp;
-    private boolean alive;
-    private TiledMapTileLayer collisionLayer;
-    private TemplateForUnit template;
-
     private GridPoint2 position;
+    private boolean alive;
+    private int hp;
+    private TemplateForUnit templateForUnit;
+    private TextureRegion curentFrame;
 
-    public Creep() {
+    private TiledMapTileLayer layer;
 
-    }
+    public Creep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
+        this.position = position;
+        this.alive = true;
+        this.hp = templateForUnit.getHp();
+        this.templateForUnit = templateForUnit;
+        this.curentFrame = templateForUnit.getCurrentIdleFrame().getTextureRegion();
 
-    public Creep(GridPoint2 position, TiledMapTileLayer collisionLayer, TemplateForUnit unit) {
-        setTemplate(unit);
-        setCollisionLayer(collisionLayer);
-        setAlive(true);
-        setHp(unit.getHp());
-        setPosition(position);
+        this.layer = layer;
+
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         getCollisionLayer().setCell(position.x, position.y, cell);
     }
@@ -36,46 +35,34 @@ public class  Creep {
         this.position = position;
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         getCollisionLayer().setCell(position.x, position.y, cell);
-        cell.setTile(getTemplate().getIdle().first());
+        cell.setTile(templateForUnit.getCurrentIdleFrame());
     }
 
     public TiledMapTileLayer getCollisionLayer() {
-        return collisionLayer;
-    }
-
-    public void setCollisionLayer(TiledMapTileLayer collisionLayer) {
-        this.collisionLayer = collisionLayer;
+        return layer;
     }
 
     public GridPoint2 getPosition() {
         return position;
     }
 
-    public void setPosition(GridPoint2 position) {
-        this.position = position;
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     public boolean isAlive() {
         return alive;
     }
 
-    public void setAlive(boolean alive) {
-        this.alive = alive;
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
     public int getHp() {
         return hp;
     }
 
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public TemplateForUnit getTemplate() {
-        return template;
-    }
-
-    public void setTemplate(TemplateForUnit template) {
-        this.template = template;
+    public TemplateForUnit getTemplateForUnit() {
+        return templateForUnit;
     }
 }

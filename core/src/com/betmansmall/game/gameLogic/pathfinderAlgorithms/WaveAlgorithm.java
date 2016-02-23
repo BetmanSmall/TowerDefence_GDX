@@ -8,21 +8,24 @@ import com.badlogic.gdx.utils.Array;
  * Created by betmansmall on 18.02.2016.
  */
 public class WaveAlgorithm {
-    boolean CIRCLET8 = true;
+    private boolean CIRCLET8 = true;
 
-    Array<Integer> mapWithSteps;
-    int sizeX, sizeY;
-    int exitPointX, exitPointY;
-    TiledMapTileLayer layer;
-    boolean found;
+    private Array<Integer> mapWithSteps;
+//    private Array<Integer> outMap;
+    private int sizeX, sizeY;
+    private int exitPointX, exitPointY;
+    private TiledMapTileLayer layer;
+    private boolean found;
+    private Thread thread;
 
     public WaveAlgorithm(int sizeX, int sizeY, int exitPointX, int exitPointY, TiledMapTileLayer layer) {
-        this.mapWithSteps = new Array<Integer>(sizeX*sizeY);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.exitPointX = exitPointX;
         this.exitPointY = exitPointY;
         this.layer = layer;
+        this.mapWithSteps = new Array<Integer>(sizeX*sizeY);
+//        this.outMap = new Array<Integer>(sizeX*sizeY);
         clearStepsOnWaveAlgorithm();
     }
 
@@ -30,11 +33,14 @@ public class WaveAlgorithm {
         return found;
     }
 
-    public int getStepCell(int x, int y) {
+    public int getNumStep(int x, int y) {
         if(found) {
-            if(x >= 0 && x < sizeX) {
+            if (x >= 0 && x < sizeX) {
                 if (y >= 0 && y < sizeY) {
-                    return mapWithSteps.get(sizeX * y + x);
+                    if (cellIsEmpty(x, y)) {
+                        return getStepCellWithOutIfs(x, y);
+                    }
+                    return 0;
                 }
             }
         }
@@ -42,29 +48,45 @@ public class WaveAlgorithm {
     }
 
     public void searh() {
-        Gdx.app.log("WaveAlgorithm::searh()", "-- Start!");
-        searh(exitPointX, exitPointY);
-        Gdx.app.log("WaveAlgorithm::searh()", "-- Stop!");
+        Gdx.app.log("WaveAlgorithm::searh()", "-- Searh start!");
+        researh(exitPointX, exitPointY);
+        Gdx.app.log("WaveAlgorithm::searh()", "-- Searh stop!");
     }
 
-    public void searh(final int x, final int y) {
+    public void researh(final int x, final int y) {
         clearStepsOnWaveAlgorithm();
 
         setNumOfCell(x, y, 1);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Gdx.app.log("WaveAlgorithm::researh()", "-- Thread start!");
-                waveStep(x, y, 1);
-                found = true;
-                Gdx.app.log("WaveAlgorithm::researh()", "-- Thread stop!");
-            }
-        }).start();
+        if(thread != null && thread.isAlive()) {
+            return;
+//            Gdx.app.log("WaveAlgorithm::researh()", "-- " + thread.toString() + "al:" + thread.isAlive() + "int:" + thread.isInterrupted());
+        } else {
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+//                    Gdx.app.log("WaveAlgorithm::researh()", "-- Thread start! " + Thread.currentThread().toString());
+                    waveStep(x, y, 1);
+//                    Gdx.app.postRunnable(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            outMap = mapWithSteps;
+//                        }
+//                    });
+                    found = true;
+//                    Gdx.app.log("WaveAlgorithm::researh()", "-- Thread stop! " + Thread.currentThread().toString());
+                }
+            });
+            thread.start();
+        }
     }
 
-    void waveStep(int x, int y, int step) {
-//        Gdx.app.log("WaveAlgorithm::waveStep()", "-- (" + x + ", " + y + ", " + step + ");");
+    private void waveStep(int x, int y, int step) {
+//        Gdx.app.log("WaveAlgorithm::waveStep()", "-- heap:" + Gdx.app.getJavaHeap() + " Step:" + step);
+//        if(Thread.currentThread().isInterrupted()) {
+//            Gdx.app.log("WaveAlgorithm::waveStep()-isInterrupted", "-- Thread work:" + Thread.currentThread().toString() + " Step:" + step);
+//            return;
+//        }
         //------------3*3----------------
         if(CIRCLET8) {
             boolean mass[][] = new boolean[3][3];
@@ -101,7 +123,7 @@ public class WaveAlgorithm {
         }
     }
 
-    boolean setNumOfCell(int x, int y, int step) {
+    private boolean setNumOfCell(int x, int y, int step) {
         if(x >= 0 && x < sizeX) {
             if(y >= 0 && y < sizeY) {
                 if(cellIsEmpty(x, y)) {
@@ -115,16 +137,16 @@ public class WaveAlgorithm {
         return false;
     }
 
-    int getStepCellWithOutIfs(int x, int y) {
+    private int getStepCellWithOutIfs(int x, int y) {
         return mapWithSteps.get(sizeX*y + x);
     }
 
-    void setStepCell(int x, int y, int step) {
+    private void setStepCell(int x, int y, int step) {
 //        Gdx.app.log("WaveAlgorithm::setStepCell()", "-- x:" + x + " y:" + y + " step:" + step + " sum:" + (sizeX*y + x));
         mapWithSteps.set(sizeX*y + x, step);
     }
 
-    void clearStepsOnWaveAlgorithm() {
+    private void clearStepsOnWaveAlgorithm() {
         found = false;
         mapWithSteps.clear();
         for(int tmpX = 0; tmpX < sizeX; tmpX++) {
@@ -134,7 +156,7 @@ public class WaveAlgorithm {
         }
     }
 
-    boolean cellIsEmpty(int x, int y) {
+    private boolean cellIsEmpty(int x, int y) {
         if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile() != null) {
             Object property = layer.getCell(x, y).getTile().getProperties().get("busy");
             if(property != null) {

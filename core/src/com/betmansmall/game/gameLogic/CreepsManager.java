@@ -3,6 +3,7 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 /**
  * Created by Андрей on 20.02.2016.
@@ -16,12 +17,8 @@ public class CreepsManager {
 
     public Creep createCreep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
         creepsArray.add(new Creep(position, layer, templateForUnit));
-        return creepsArray.get(creepsArray.size);
+        return creepsArray.peek();
     }
-
-//    public Array<Creep> getCreepsArray() {
-//        return creepsArray;
-//    }
 
     public Creep getCreep(int id) {
         return creepsArray.get(id);
@@ -35,10 +32,6 @@ public class CreepsManager {
         }
         return null;
     }
-
-//    public void addCreeps(Creep creep) {
-//        creepsArray.add(creep);
-//    }
 
     public int amountCreeps() {
         return creepsArray.size;

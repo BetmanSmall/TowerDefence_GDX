@@ -49,10 +49,10 @@ public class GameScreen implements Screen {
 			if(tileCooCoordinate != null) {
 				if(gameField.cellIsEmpty(tileCooCoordinate.x, tileCooCoordinate.y)) {
 					if(button == 0) {
-						gameField.getTowers().add(new Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("1"), tileCooCoordinate));
+//						gameField.getTowers().add(new Tower(gameField.getLayerForeGround(), gameField.getTowerTiles().get("1"), tileCooCoordinate));
 						gameField.waveAlgorithm.searh();
 					} else if(button == 1) {
-						gameField.waveAlgorithm.searh(tileCooCoordinate.x, tileCooCoordinate.y);
+						gameField.waveAlgorithm.researh(tileCooCoordinate.x, tileCooCoordinate.y);
 					}
 				}
 			}
