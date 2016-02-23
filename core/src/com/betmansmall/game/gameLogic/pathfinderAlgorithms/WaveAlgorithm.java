@@ -10,13 +10,15 @@ import com.badlogic.gdx.utils.Array;
 public class WaveAlgorithm {
     private boolean CIRCLET8 = true;
 
-    private Array<Integer> mapWithSteps;
+    private volatile Array<Integer> mapWithSteps;
     //    private Array<Integer> outMap;
     private int sizeX, sizeY;
     private int exitPointX, exitPointY;
     private TiledMapTileLayer layer;
     private boolean found;
     private SearchThread searchThread = new SearchThread();
+
+    private static volatile int threads = 0;
 
     private class SearchThread extends Thread {
 
@@ -25,6 +27,7 @@ public class WaveAlgorithm {
         private int arg3; // third arg
         private boolean isSearchInterrupted = false;
         private boolean startSearch = false;
+        private ThreadGroup threadGroup = new ThreadGroup("subThread 1");
 
         public void interruptSearch() {
             isSearchInterrupted = true;
@@ -40,6 +43,18 @@ public class WaveAlgorithm {
                 this.arg2 = arg2;
                 this.arg3 = arg3;
                 startSearch = true;
+            }
+        }
+
+        private class WaveStepRunnable implements Runnable {
+            private int x,y,nextStep;
+            public void init(int x,int y,int nextStep) {
+                this.x = x;this.y=y;this.nextStep=nextStep;
+            }
+
+            @Override
+            public void run() {
+                waveStep(x , y, nextStep);
             }
         }
 
@@ -61,10 +76,19 @@ public class WaveAlgorithm {
                     for (int tmpX = -1; tmpX < 2; tmpX++)
                         mass[tmpX + 1][tmpY + 1] = setNumOfCell(x + tmpX, y + tmpY, nextStep);
 
-                for (int tmpY = -1; tmpY < 2; tmpY++)
-                    for (int tmpX = -1; tmpX < 2; tmpX++)
-                        if (mass[tmpX + 1][tmpY + 1])
-                            waveStep(x + tmpX, y + tmpY, nextStep);
+
+                    for (int tmpY = -1; tmpY < 2; tmpY++)
+                        for (int tmpX = -1; tmpX < 2; tmpX++)
+                            if (mass[tmpX + 1][tmpY + 1]) {
+                                if(getStepCellWithOutIfs(x + tmpX, y+tmpY) <= step && getStepCellWithOutIfs(x + tmpX, y+tmpY) != 0) {
+                                    continue;
+                                }
+                                WaveStepRunnable newRunnable = new WaveStepRunnable();
+                                newRunnable.init(x + tmpX, y + tmpY, nextStep);
+                                new Thread(threadGroup, newRunnable, "thread " + threads).start();
+                                threads++;
+                            }
+
             } else {
                 //------------2*2-----------------
                 boolean mass[] = new boolean[4];
@@ -94,6 +118,7 @@ public class WaveAlgorithm {
                 if (this.startSearch) {
                     synchronized (SearchThread.class) {
                         this.startSearch = false;
+                        threadGroup.interrupt();
                         waveStep(arg1, arg2, arg3);
                         found = true;
                         this.isSearchInterrupted = false;
@@ -102,6 +127,7 @@ public class WaveAlgorithm {
             }
         }
     }
+
 
     public WaveAlgorithm(int sizeX, int sizeY, int exitPointX, int exitPointY, TiledMapTileLayer layer) {
         this.sizeX = sizeX;
