@@ -17,12 +17,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.WhichCell;
+import com.betmansmall.game.gameLogic.GridNav.GridNav;
+import com.betmansmall.game.gameLogic.GridNav.Options;
+import com.betmansmall.game.gameLogic.GridNav.Vertex;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.WaveAlgorithm;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by betmansmall on 08.02.2016.
@@ -43,9 +48,11 @@ public class GameField {
     private static TiledMapTileLayer layerBackGround, layerForeGround;
     private GridPoint2 spawnPoint, exitPoint;
     public WaveAlgorithm waveAlgorithm;
+    public GridNav gridNav;
+    ArrayDeque<Vertex> bestroute;
 
 //    private int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
-    private int defaultNumCreateCreeps = 10;
+    private int defaultNumCreateCreeps = 1;
     private CreepsManager creepsManager;
     public TowersManager towersManager;
     private FactionsManager factionsManager;
@@ -81,7 +88,40 @@ public class GameField {
 			}
 		}
         waveAlgorithm = new WaveAlgorithm(sizeFieldX, sizeFieldY, exitPoint.x, exitPoint.y, layerForeGround);
+        gridNav = new GridNav();
+        char[][] M = new char[sizeFieldX][sizeFieldY];
+        for(int i=0;i<sizeFieldX;i++) {
+            for(int j = 0; j < sizeFieldY; j++) {
+                if(cellIsEmpty(i,j)) {
+                    M[i][j] = '.';
+                }
+                else {
+                    M[i][j] = 'T';
+                }
+            }
+        }
 
+//        for(int i=0;i<M.length;i++) {
+//            for (int j = 0; j < M[0].length; j++) {
+//                System.out.print(M[i][j] + "");
+//            }
+//            System.out.println();
+//        }
+        gridNav.loadCharMatrix(M);
+        bestroute = gridNav.route(new int[] {spawnPoint.x, spawnPoint.y}, new int[] {exitPoint.x, exitPoint.y},
+                Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+        Vertex[][] mat = gridNav.getVertexMatrix();
+        /*ArrayDeque<Vertex> b = bestroute;
+		while(!b.isEmpty()){
+			Vertex y = b.pop();
+				mat[y.getY()][y.getX()].setKey('O');
+		}*/
+		for(int i=0;i<mat.length;i++) {
+			for (int j = 0; j < mat[0].length; j++) {
+				System.out.print(mat[i][j].getKey() + "");
+			}
+			System.out.println();
+		}
         creepsManager = new CreepsManager(defaultNumCreateCreeps);
         towersManager = new TowersManager();
         factionsManager = new FactionsManager();
@@ -261,9 +301,11 @@ public class GameField {
 
             int exitX = currX, exitY = currY;
 
-            int min = waveAlgorithm.getNumStep(currX, currY);
-
-            if(min == 1)
+            //int min = waveAlgorithm.getNumStep(currX, currY);
+            Vertex v = getNextStep(currX, currY);
+            exitX = v.getY();
+            exitY = v.getX();
+            /*if(min == 1)
                 return 1;
             if(min == 0)
                 return -1;
@@ -289,16 +331,30 @@ public class GameField {
                         }
                     }
             //-----------------------------------------------------------
-
-            if(exitX != currX || exitY != currY)
-            {
-                Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
-                creepsManager.getCreep(creepId).moveTo(new GridPoint2(exitX, exitY));
-            } else {
-                return 0;
-            }
+            */
+            Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
+            creepsManager.getCreep(creepId).moveTo(new GridPoint2(exitX, exitY));
         }
         return 0;
+    }
+
+    public Vertex getNextStep(int x, int y) {
+        Iterator it = bestroute.iterator();
+        while(it.hasNext()){
+			Vertex v = (Vertex) it.next();
+			System.out.println(v.getX() + " " + v.getY()  + " " + v.getDistance()  + " " + v.getToGoal());
+		}
+        Iterator itt = bestroute.iterator();
+        while(itt.hasNext()) {
+            Vertex v = (Vertex) itt.next();
+            System.out.println(v.getX() + " " + y + " " + v.getY() + " " + x);
+            if ((v.getX() == y && v.getY() == x) || (v.getX() == x && v.getY() == y)) {
+                Vertex ret =(Vertex) itt.next();
+                System.out.println();
+                return ret;
+            }
+        }
+        return null;
     }
 
     public int getSizeFieldX() {
