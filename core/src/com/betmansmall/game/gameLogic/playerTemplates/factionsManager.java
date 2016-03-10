@@ -57,7 +57,7 @@ public class FactionsManager {
     public TemplateForTower getRandomTemplateForTowerFromFirstFaction() {
         Faction faction = factions.first();
         if(faction != null) {
-            TemplateForTower templateForTower = faction.getTowers().random();
+            TemplateForTower templateForTower = faction.getTowers().get(0);
             if(templateForTower != null) {
                 return templateForTower;
             }

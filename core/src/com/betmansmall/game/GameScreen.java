@@ -13,13 +13,8 @@ import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.betmansmall.game.gameLogic.GameField;
-import com.betmansmall.game.gameLogic.GridNav.Cartographer;
-import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
-import com.betmansmall.game.gameLogic.GridNav.*;
 
-import java.io.File;
-import java.util.ArrayDeque;
 public class GameScreen implements Screen {
 	private static final float MAX_ZOOM = 2f; //max size
 	private static final float MIN_ZOOM = 0.2f; // 2x zoom
@@ -51,13 +46,8 @@ public class GameScreen implements Screen {
 			GridPoint2 tileCooCoordinate = gameField.whichCell(gameCoordinate);
 
 			if(tileCooCoordinate != null) {
-				if(gameField.cellIsEmpty(tileCooCoordinate.x, tileCooCoordinate.y)) {
-					if(button == 0) {
-						gameField.createTower(tileCooCoordinate);
-//						gameField.waveAlgorithm.searh();
-					} else if(button == 1) {
-						gameField.waveAlgorithm.researh(tileCooCoordinate.x, tileCooCoordinate.y);
-					}
+				if(button == 0) {
+					gameField.createTower(tileCooCoordinate);
 				}
 			}
 			return false;
@@ -124,21 +114,21 @@ public class GameScreen implements Screen {
 
 		gameField = new GameField("maps/arena.tmx");
 
-		int[] t1 = {};
-		int[] t2 = {};
-		ArrayDeque<Vertex> bestroute;
-		GridNav la = new GridNav();
-		try {
-			char[][] M = la.dotMapToCharMatrix(new File("maps/arena.map"));
-			la.loadCharMatrix(M);
-			t1 = new int[] {14,1};
-			t2 = new int[] {37,35};
-		}
-		catch(Exception e) {}
-		bestroute = la.route(t1, t2, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-		Vertex[][] mat = la.getVertexMatrix();
-
-		ArrayDeque<Vertex> b = bestroute;
+//		int[] t1 = {};
+//		int[] t2 = {};
+//		ArrayDeque<Vertex> bestroute;
+//		GridNav la = new GridNav();
+//		try {
+//			char[][] M = la.dotMapToCharMatrix(new File("maps/arena.map"));
+//			la.loadCharMatrix(M);
+//			t1 = new int[] {14,1};
+//			t2 = new int[] {37,35};
+//		}
+//		catch(Exception e) {}
+//		bestroute = la.route(t1, t2, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+//		Vertex[][] mat = la.getVertexMatrix();
+//
+//		ArrayDeque<Vertex> b = bestroute;
 //		while(!b.isEmpty()){
 //			Vertex y = b.pop();
 //				mat[y.getX()][y.getY()].setKey('O');
@@ -172,7 +162,6 @@ public class GameScreen implements Screen {
 			cam.update();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
-			gameField.waveAlgorithm.searh();
 			gameField.createTimerForCreeps();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUMPAD_0");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
