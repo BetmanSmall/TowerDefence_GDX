@@ -144,7 +144,7 @@ public class GameField {
     public void render(float delta, OrthographicCamera camera) {
         renderer.setView(camera);
         renderer.render();
-        System.out.println("GOGOGO"+delta);
+
         if(isDrawableGrid)
             drawGrid(camera);
     }
@@ -179,6 +179,7 @@ public class GameField {
                             Creep creep = creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getRandomTemplateForUnitFromFirstFaction());
                             cellManager.getCell(spawnPoint.x, spawnPoint.y).addCreep(creep);
                             createTimerForCreep(creep);
+                            creep.setRoute(gridNav, spawnPoint, exitPoint);
                         }
                     }
                 }
@@ -248,11 +249,10 @@ public class GameField {
             cellManager.getCell(position.x, position.y).setTower(
                     towersManager.createTower(position, layerForeGround, factionsManager.getRandomTemplateForTowerFromFirstFaction()));
             cellManager.getCell(position.x, position.y).setPathFinder('T');
+            gridNav.loadCharMatrix(cellManager.getCharMatrix());
+            creepsManager.setRouteForCreeps(gridNav, exitPoint);
         }
     }
-//    public void searhPath() {
-//        waveAlgorithm.searh();
-//    }
 
     /**
      * @brief Говорит всем криппам ходить
@@ -261,27 +261,6 @@ public class GameField {
      * @return 0 - Все криппы сходили успешно
      * @return -1 - Какому-либо криппу перекрыли путь до $exitPoint
      */
-   /* private int stepAllCreeps() {
-        boolean allDead = true;
-        for(int k = 0; k < creepsManager.amountCreeps(); k++) {
-            int result = stepOneCreep(k);
-            if(result != -2)
-                allDead = false;
-
-            if(result == 1) {
-//                currentFinishedCreeps++;
-//                if(currentFinishedCreeps >= gameOverLimitCreeps)
-//                    return 1;
-            }
-            else if(result == -1)
-                return -1;
-        }
-
-        if(allDead)
-            return 2;
-        else
-            return 0;
-    }*/
 
     private int stepOneCreep(Creep tmpCreep) {
         if(tmpCreep.isAlive()) {
@@ -307,14 +286,16 @@ public class GameField {
     }
 
     public Vertex getNextStep(int x, int y) {
-        gridNav.loadCharMatrix(cellManager.getCharMatrix());
-        ArrayDeque<Vertex> bestroute = gridNav.route(new int[]{x, y}, new int[]{exitPoint.x, exitPoint.y},
-                Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+//        gridNav.loadCharMatrix(cellManager.getCharMatrix());
+//        ArrayDeque<Vertex> bestroute = gridNav.route(new int[]{x, y}, new int[]{exitPoint.x, exitPoint.y},
+//                Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+        Creep creep = creepsManager.getCreep(new GridPoint2(x, y));
+        ArrayDeque<Vertex> bestroute = creep.getRoute();
         Iterator it = bestroute.iterator();
         while(it.hasNext()) {
             Vertex v = (Vertex) it.next();
             if(v.getX() == exitPoint.y && v.getY() == exitPoint.x) {
-                creepsManager.getCreep(new GridPoint2(x, y)).setAlive(false);
+                creep.setAlive(false);
                 layerForeGround.getCell(x, y).setTile(null);
                 return null;
             }

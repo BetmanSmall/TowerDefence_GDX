@@ -3,6 +3,8 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
+import com.betmansmall.game.gameLogic.GridNav.GridNav;
+import com.betmansmall.game.gameLogic.GridNav.Options;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 /**
@@ -38,5 +40,12 @@ public class CreepsManager {
 
     public int amountCreeps() {
         return creeps.size;
+    }
+
+    public void setRouteForCreeps(GridNav gridNav, GridPoint2 exitPoint) {
+        for(int i=0;i<creeps.size;i++) {
+            creeps.get(i).setRoute(gridNav.route(new int[]{creeps.get(i).getPosition().x, creeps.get(i).getPosition().y},
+                    new int[]{exitPoint.x, exitPoint.y}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true));
+        }
     }
 }
