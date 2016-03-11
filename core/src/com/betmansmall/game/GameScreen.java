@@ -53,6 +53,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean longPress(float x, float y) {
+			gameField.createSpawnTimerForCreeps();
 			return false;
 		}
 
@@ -111,37 +112,6 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(gameInterface.setCommonInputHandler(new GestureDetector(cameraController)));
 
 		gameField = new GameField("maps/arena.tmx");
-
-//		int[] t1 = {};
-//		int[] t2 = {};
-//		ArrayDeque<Vertex> bestroute;
-//		GridNav la = new GridNav();
-//		try {
-//			char[][] M = la.dotMapToCharMatrix(new File("maps/arena.map"));
-//			la.loadCharMatrix(M);
-//			t1 = new int[] {14,1};
-//			t2 = new int[] {37,35};
-//		}
-//		catch(Exception e) {}
-//		bestroute = la.route(t1, t2, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-//		Vertex[][] mat = la.getVertexMatrix();
-//
-//		ArrayDeque<Vertex> b = bestroute;
-//		while(!b.isEmpty()){
-//			Vertex y = b.pop();
-//				mat[y.getX()][y.getY()].setKey('O');
-//		}
-//		for(int i=0;i<mat.length;i++) {
-//			for (int j = 0; j < mat[0].length; j++) {
-//				System.out.print(mat[i][j].getKey() + "");
-//			}
-//			System.out.println();
-//		}
-//		while(!bestroute.isEmpty()){
-//			Vertex v = bestroute.pop();
-//			System.out.println(v.getX() + " " + v.getY()  + " " + v.getDistance()  + " " + v.getToGoal());
-//		}
-//		System.out.print(la.getDistance() + "");
 	}
 
 	@Override
@@ -160,7 +130,7 @@ public class GameScreen implements Screen {
 			cam.update();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
-			gameField.createTimerForCreeps();
+			gameField.createSpawnTimerForCreeps();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUMPAD_0");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			gameField.isDrawableGrid = !gameField.isDrawableGrid;

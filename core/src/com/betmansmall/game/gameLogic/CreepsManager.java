@@ -20,6 +20,8 @@ public class CreepsManager {
         return creeps.peek();
     }
 
+    public int getCreep(Creep creep) { return creeps.indexOf(creep, false); }
+
     public Creep getCreep(int id) {
         return creeps.get(id);
     }

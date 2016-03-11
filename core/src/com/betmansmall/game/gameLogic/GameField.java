@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.GridNav.GridNav;
@@ -57,7 +58,8 @@ public class GameField {
     private CellManager cellManager;
 
     private float intervalForTimerCreeps = 1f;
-    private Timer.Task timerForCreeps;
+    private Timer.Task timerSpawnCreeps;
+    private Timer.Task timerForCreeps[];
 
     public GameField(String mapName) {
         map = new TmxMapLoader().load(mapName);
@@ -74,7 +76,7 @@ public class GameField {
         cellManager = new CellManager(sizeFieldX, sizeFieldY);
 		for(int x = 0; x < sizeFieldX; x++) {
 			for(int y = 0; y < sizeFieldY; y++) {
-                cellManager.setCell(x, y, new CellManager.Cell());
+                cellManager.setCell(x, y, new Cell());
 				TiledMapTileLayer.Cell cell = layerBackGround.getCell(x, y);
                 TiledMapTileLayer.Cell cellFore = layerForeGround.getCell(x, y);
                 if(cell != null) {
@@ -132,7 +134,7 @@ public class GameField {
     }
 
     public void dispose() {
-        stopTimerForCreeps();
+        stopSpawnTimerForCreeps();
 		map.dispose();
 		map = null;
 		renderer.dispose();
@@ -142,7 +144,7 @@ public class GameField {
     public void render(float delta, OrthographicCamera camera) {
         renderer.setView(camera);
         renderer.render();
-
+        System.out.println("GOGOGO"+delta);
         if(isDrawableGrid)
             drawGrid(camera);
     }
@@ -166,28 +168,50 @@ public class GameField {
 		sr.end();
 	}
 
-    public void createTimerForCreeps(){
-        if(timerForCreeps == null) {
-            timerForCreeps = Timer.schedule(new Timer.Task() {
+    public void createSpawnTimerForCreeps(){
+        if(timerSpawnCreeps == null) {
+            timerSpawnCreeps = Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
 //                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
                     if(spawnPoint != null) {
                         if(creepsManager.amountCreeps() < defaultNumCreateCreeps) {
-                            cellManager.getCell(spawnPoint.x, spawnPoint.y).addCreep(
-                                    creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getRandomTemplateForUnitFromFirstFaction()));
+                            Creep creep = creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getRandomTemplateForUnitFromFirstFaction());
+                            cellManager.getCell(spawnPoint.x, spawnPoint.y).addCreep(creep);
+                            createTimerForCreep(creep);
                         }
                     }
-                    stepAllCreeps();
                 }
             }, 0, intervalForTimerCreeps);
         }
     }
 
-    private void stopTimerForCreeps() {
+    private void stopSpawnTimerForCreeps() {
         Gdx.app.log("GameField::stopTimerForCreeps()", "Stop timer for creeps!");
-        timerForCreeps.cancel();
-        timerForCreeps = null;
+        timerSpawnCreeps.cancel();
+        timerSpawnCreeps = null;
+    }
+
+    public void createTimerForCreep(final Creep creep){
+        int id = creepsManager.getCreep(creep);
+        timerForCreeps = new Timer.Task[defaultNumCreateCreeps];
+        if(timerForCreeps[id] == null) {
+            timerForCreeps[id] = Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+//                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
+
+                    stepOneCreep(creep);
+                }
+            }, 0, creep.getSpeed());
+        }
+    }
+
+    private void stopTimerForCreeps(Creep creep) {
+        int id = creepsManager.getCreep(creep);
+        Gdx.app.log("GameField::stopTimerForCreeps()", "Stop timer for creeps!");
+        timerForCreeps[id].cancel();
+        timerForCreeps[id] = null;
     }
 
     public GridPoint2 whichCell(GridPoint2 gameCoor) {
@@ -237,7 +261,7 @@ public class GameField {
      * @return 0 - Все криппы сходили успешно
      * @return -1 - Какому-либо криппу перекрыли путь до $exitPoint
      */
-    private int stepAllCreeps() {
+   /* private int stepAllCreeps() {
         boolean allDead = true;
         for(int k = 0; k < creepsManager.amountCreeps(); k++) {
             int result = stepOneCreep(k);
@@ -257,10 +281,9 @@ public class GameField {
             return 2;
         else
             return 0;
-    }
+    }*/
 
-    private int stepOneCreep(int creepId) {
-        Creep tmpCreep = creepsManager.getCreep(creepId);
+    private int stepOneCreep(Creep tmpCreep) {
         if(tmpCreep.isAlive()) {
 //            tmpCreep.getTemplate().
             int currX = tmpCreep.getPosition().x;
@@ -276,7 +299,7 @@ public class GameField {
 
                 Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
                 cellManager.getCell(currX, currY).removeCreep(tmpCreep);
-                creepsManager.getCreep(creepId).moveTo(new GridPoint2(exitX, exitY));
+                tmpCreep.moveTo(new GridPoint2(exitX, exitY));
                 cellManager.getCell(exitX, exitY).addCreep(tmpCreep);
             }
         }

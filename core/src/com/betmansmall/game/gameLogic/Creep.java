@@ -14,6 +14,7 @@ public class  Creep {
     private int hp;
     private TemplateForUnit templateForUnit;
     private TextureRegion curentFrame;
+    private float speed;
 
     private TiledMapTileLayer layer;
 
@@ -23,6 +24,7 @@ public class  Creep {
         this.hp = templateForUnit.getHp();
         this.templateForUnit = templateForUnit;
         this.curentFrame = templateForUnit.getCurrentIdleFrame().getTextureRegion();
+        this.speed = templateForUnit.getSpeed();
 
         this.layer = layer;
 
@@ -64,5 +66,13 @@ public class  Creep {
 
     public TemplateForUnit getTemplateForUnit() {
         return templateForUnit;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 }
