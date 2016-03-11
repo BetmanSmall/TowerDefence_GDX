@@ -32,6 +32,7 @@ public class  Creep {
         this.templateForUnit = templateForUnit;
         this.curentFrame = templateForUnit.getCurrentIdleFrame().getTextureRegion();
         this.speed = templateForUnit.getSpeed();
+        this.elapsedTime = 0;
 
         this.layer = layer;
 

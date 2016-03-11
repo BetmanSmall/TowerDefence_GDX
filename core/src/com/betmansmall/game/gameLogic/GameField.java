@@ -145,6 +145,8 @@ public class GameField {
         renderer.setView(camera);
         renderer.render();
 
+        stepAllCreep(delta);
+
         if(isDrawableGrid)
             drawGrid(camera);
     }
@@ -178,7 +180,6 @@ public class GameField {
                         if(creepsManager.amountCreeps() < defaultNumCreateCreeps) {
                             Creep creep = creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getRandomTemplateForUnitFromFirstFaction());
                             cellManager.getCell(spawnPoint.x, spawnPoint.y).addCreep(creep);
-                            createTimerForCreep(creep);
                             creep.setRoute(gridNav, spawnPoint, exitPoint);
                         }
                     }
@@ -191,28 +192,6 @@ public class GameField {
         Gdx.app.log("GameField::stopTimerForCreeps()", "Stop timer for creeps!");
         timerSpawnCreeps.cancel();
         timerSpawnCreeps = null;
-    }
-
-    public void createTimerForCreep(final Creep creep){
-        int id = creepsManager.getCreep(creep);
-        timerForCreeps = new Timer.Task[defaultNumCreateCreeps];
-        if(timerForCreeps[id] == null) {
-            timerForCreeps[id] = Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-//                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
-
-                    stepOneCreep(creep);
-                }
-            }, 0, creep.getSpeed());
-        }
-    }
-
-    private void stopTimerForCreeps(Creep creep) {
-        int id = creepsManager.getCreep(creep);
-        Gdx.app.log("GameField::stopTimerForCreeps()", "Stop timer for creeps!");
-        timerForCreeps[id].cancel();
-        timerForCreeps[id] = null;
     }
 
     public GridPoint2 whichCell(GridPoint2 gameCoor) {
@@ -254,13 +233,17 @@ public class GameField {
         }
     }
 
-    /**
-     * @brief Говорит всем криппам ходить
-     * @return 2 - Все криппы мертвы
-     * @return 1 - Eсли колличество криппов в точке @exitPoint превышено $gameOverLimitCreeps
-     * @return 0 - Все криппы сходили успешно
-     * @return -1 - Какому-либо криппу перекрыли путь до $exitPoint
-     */
+    private void stepAllCreep(float delta) {
+        for(int i=0;i<creepsManager.amountCreeps();i++) {
+            Creep creep = creepsManager.getCreep(i);
+            float elTime = creep.getElapsedTime()+delta;
+            if(elTime >= creep.getSpeed()) {
+                creep.setElapsedTime(0);
+                stepOneCreep(creep);
+            }
+            else creep.setElapsedTime(elTime);
+        }
+    }
 
     private int stepOneCreep(Creep tmpCreep) {
         if(tmpCreep.isAlive()) {
