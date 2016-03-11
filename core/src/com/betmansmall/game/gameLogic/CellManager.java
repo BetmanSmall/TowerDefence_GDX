@@ -1,9 +1,5 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.utils.Array;
-
 /**
  * Created by Андрей on 10.03.2016.
  */
@@ -51,97 +47,5 @@ public class CellManager {
         return charMatrix;
     }
 
-    public static class Cell extends TiledMapTileLayer.Cell {
 
-        private Tower tower;
-
-        private Array<Creep> creeps;
-
-        private char pathFinder;
-
-        private boolean spawnPoint;
-
-        private boolean exitPoint;
-
-        Cell() {
-            creeps = new Array<Creep>();
-        }
-
-        public Array<Creep> getCreeps() {
-            return creeps;
-        }
-
-        public void addCreep(Creep creep) {
-            creeps.add(creep);
-        }
-
-        public void removeCreep(Creep creep) {
-            creeps.removeValue(creep, false);
-        }
-
-        public Tower getTower() {
-            return tower;
-        }
-
-        public void setTower(Tower tower) {
-            this.tower = tower;
-        }
-
-        public char getPathFinder() {
-            return pathFinder;
-        }
-
-        public void setPathFinder(char pathFinder) {
-            this.pathFinder = pathFinder;
-        }
-
-        public boolean isSpawnPoint() {
-            return spawnPoint;
-        }
-
-        public void setSpawnPoint(boolean spawnPoint) {
-            this.spawnPoint = spawnPoint;
-        }
-
-        public boolean isExitPoint() {
-            return exitPoint;
-        }
-
-        public void setExitPoint(boolean exitPoint) {
-            this.exitPoint = exitPoint;
-        }
-        public boolean isEmpty() {
-            if (!isFlora() && !isCreep() && !isTower()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        public boolean isFlora() {
-            if(getPathFinder() == '.') {
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-
-        public boolean isCreep() {
-            if(creeps.size == 0) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        public boolean isTower() {
-            if(tower != null) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-    }
 }

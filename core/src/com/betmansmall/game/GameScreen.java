@@ -46,9 +46,7 @@ public class GameScreen implements Screen {
 			GridPoint2 tileCooCoordinate = gameField.whichCell(gameCoordinate);
 
 			if(tileCooCoordinate != null) {
-				if(button == 0) {
-					gameField.createTower(tileCooCoordinate);
-				}
+				gameField.createTower(tileCooCoordinate);
 			}
 			return false;
 		}
