@@ -42,6 +42,8 @@ public class Cell extends TiledMapTileLayer.Cell {
         this.tower = tower;
     }
 
+    public void removeTower() { tower = null;}
+
     public char getPathFinder() {
         return pathFinder;
     }

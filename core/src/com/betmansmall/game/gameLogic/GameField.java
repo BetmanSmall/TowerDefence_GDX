@@ -3,8 +3,6 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -14,13 +12,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.GridNav.GridNav;
-import com.betmansmall.game.gameLogic.GridNav.Options;
 import com.betmansmall.game.gameLogic.GridNav.Vertex;
-import com.betmansmall.game.gameLogic.pathfinderAlgorithms.WaveAlgorithm;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
@@ -34,8 +29,6 @@ import java.util.Iterator;
  */
 public class GameField {
     private ShapeRenderer sr = new ShapeRenderer();
-    private SpriteBatch batch = new SpriteBatch();
-    private BitmapFont font = new BitmapFont();
 
     public boolean isDrawableGrid = true;
     public boolean isDrawableSteps = true;
@@ -48,9 +41,7 @@ public class GameField {
     private static TiledMapTileLayer layerBackGround, layerForeGround;
     private GridPoint2 spawnPoint, exitPoint;
     public GridNav gridNav;
-    ArrayDeque<Vertex> bestroute;
 
-//    private int currentFinishedCreeps = 0, gameOverLimitCreeps = 20;
     private int defaultNumCreateCreeps = 100;
     private CreepsManager creepsManager;
     public TowersManager towersManager;
@@ -59,7 +50,7 @@ public class GameField {
 
     private float intervalForTimerCreeps = 1f;
     private Timer.Task timerSpawnCreeps;
-    
+
     public GameField(String mapName) {
         map = new TmxMapLoader().load(mapName);
         renderer = new IsometricTiledMapRenderer(map);
@@ -208,16 +199,19 @@ public class GameField {
         return null;
     }
 
-    public void createTower(GridPoint2 position) {
+    public void towerActions(GridPoint2 position) {
         if(cellManager.getCell(position.x, position.y).isEmpty()) {
             cellManager.getCell(position.x, position.y).setTower(
                     towersManager.createTower(position, layerForeGround, factionsManager.getRandomTemplateForTowerFromFirstFaction()));
             cellManager.getCell(position.x, position.y).setPathFinder('T');
             gridNav.loadCharMatrix(cellManager.getCharMatrix());
             creepsManager.setRouteForCreeps(gridNav, exitPoint);
+        } else if (cellManager.getCell(position.x, position.y).isTower()) {
+            towersManager.removeTower(position, layerForeGround);
+            cellManager.getCell(position.x, position.y).removeTower();
+            cellManager.getCell(position.x, position.y).setPathFinder('.');
         }
     }
-
     private void stepAllCreep(float delta) {
         for(int i=0;i<creepsManager.amountCreeps();i++) {
             Creep creep = creepsManager.getCreep(i);
@@ -232,13 +226,11 @@ public class GameField {
 
     private int stepOneCreep(Creep tmpCreep) {
         if(tmpCreep.isAlive()) {
-//            tmpCreep.getTemplate().
             int currX = tmpCreep.getPosition().x;
             int currY = tmpCreep.getPosition().y;
 
             int exitX = currX, exitY = currY;
 
-            //int min = waveAlgorithm.getNumStep(currX, currY);
             Vertex v = getNextStep(currX, currY);
             if (v != null) {
                 exitX = v.getY();
@@ -285,14 +277,6 @@ public class GameField {
 
     public int getSizeCellY() {
         return sizeCellY;
-    }
-
-    public TiledMapTileLayer getLayerBackGround() {
-        return layerBackGround;
-    }
-
-    public TiledMapTileLayer getLayerForeGround() {
-        return layerForeGround;
     }
 
 //    public void attackCreep(GridPoint2 position) {
