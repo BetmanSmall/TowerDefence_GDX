@@ -210,6 +210,8 @@ public class GameField {
             towersManager.removeTower(position, layerForeGround);
             cellManager.getCell(position.x, position.y).removeTower();
             cellManager.getCell(position.x, position.y).setPathFinder('.');
+            gridNav.loadCharMatrix(cellManager.getCharMatrix());
+            creepsManager.setRouteForCreeps(gridNav, exitPoint);
         }
     }
     private void stepAllCreep(float delta) {
