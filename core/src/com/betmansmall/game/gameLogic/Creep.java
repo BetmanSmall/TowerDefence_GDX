@@ -15,7 +15,6 @@ import java.util.ArrayDeque;
  */
 public class  Creep {
     private GridPoint2 position;
-    private boolean alive;
     private int hp;
     private TemplateForUnit templateForUnit;
     private TextureRegion curentFrame;
@@ -27,7 +26,6 @@ public class  Creep {
 
     public Creep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
         this.position = position;
-        this.alive = true;
         this.hp = templateForUnit.getHp();
         this.templateForUnit = templateForUnit;
         this.curentFrame = templateForUnit.getCurrentIdleFrame().getTextureRegion();
@@ -54,14 +52,6 @@ public class  Creep {
 
     public GridPoint2 getPosition() {
         return position;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    public boolean isAlive() {
-        return alive;
     }
 
     public void setHp(int hp) {

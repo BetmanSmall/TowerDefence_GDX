@@ -190,9 +190,6 @@ public class GameField {
                 tilePoints.add(new Vector2(posX + sizeCellX, posY));
                 tilePoints.add(new Vector2(posX + halfSizeCellX, posY - halfSizeCellY));
                 if(WhichCell.estimation(tilePoints, gameCoor)) {
-//                    Gdx.app.log("GameField::whichCell()", "-- posX:" + posX + " posY:" + posY);
-//                    Gdx.app.log("GameField::whichCell()", "-- tilePoints:" + tilePoints.toString());
-//                    Gdx.app.log("GameField::whichCell()", "-- x:" + tileX + " y:" + tileY);
                     return new GridPoint2(tileX, tileY);
                 }
             }
@@ -201,21 +198,21 @@ public class GameField {
     }
 
     public void towerActions(GridPoint2 position) {
-        if(cellManager.getCell(position.x, position.y).isEmpty()) {
+        if(cellManager.getCell(position.x, position.y).isEmpty()) { //Set Tower
             cellManager.getCell(position.x, position.y).setPathFinder('T');
             gridNav.loadCharMatrix(cellManager.getCharMatrix());
             ArrayDeque<Vertex> adv = gridNav.route(new int[]{spawnPoint.x, spawnPoint.y},
                     new int[]{exitPoint.x, exitPoint.y}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-            if(creepsManager.setRouteForCreeps(gridNav, exitPoint) && adv != null) {
+            if(creepsManager.setRouteForCreeps(gridNav, exitPoint) && adv != null) { //Set tower if there is route to exit point
                 cellManager.getCell(position.x, position.y).setTower(
                         towersManager.createTower(position, layerForeGround, factionsManager.getRandomTemplateForTowerFromFirstFaction()));
             } else {
-                Gdx.app.log("ERROR: Impossible to set tower", "creep route not found");
+                Gdx.app.log("ERROR: Impossible to set tower in {"+position.x+", "+position.y+"}", "creep route not found");
                 cellManager.getCell(position.x, position.y).setPathFinder('.');
                 gridNav.loadCharMatrix(cellManager.getCharMatrix());
                 creepsManager.setRouteForCreeps(gridNav, exitPoint);
             }
-        } else if (cellManager.getCell(position.x, position.y).isTower()) {
+        } else if (cellManager.getCell(position.x, position.y).isTower()) { //Remove tower
             towersManager.removeTower(position, layerForeGround);
             cellManager.getCell(position.x, position.y).removeTower();
             cellManager.getCell(position.x, position.y).setPathFinder('.');
@@ -236,22 +233,20 @@ public class GameField {
     }
 
     private int stepOneCreep(Creep tmpCreep) {
-        if(tmpCreep.isAlive()) {
-            int currX = tmpCreep.getPosition().x;
-            int currY = tmpCreep.getPosition().y;
+        int currX = tmpCreep.getPosition().x;
+        int currY = tmpCreep.getPosition().y;
 
-            int exitX = currX, exitY = currY;
+        int exitX = currX, exitY = currY;
 
-            Vertex v = getNextStep(currX, currY);
-            if (v != null) {
-                exitX = v.getY();
-                exitY = v.getX();
+        Vertex v = getNextStep(currX, currY);
+        if (v != null) {
+            exitX = v.getY();
+            exitY = v.getX();
 
-                Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
-                cellManager.getCell(currX, currY).removeCreep(tmpCreep);
-                tmpCreep.moveTo(new GridPoint2(exitX, exitY));
-                cellManager.getCell(exitX, exitY).addCreep(tmpCreep);
-            }
+            Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exitX + " Y:" + exitY);
+            cellManager.getCell(currX, currY).removeCreep(tmpCreep);
+            tmpCreep.moveTo(new GridPoint2(exitX, exitY));
+            cellManager.getCell(exitX, exitY).addCreep(tmpCreep);
         }
         return 0;
     }
@@ -263,7 +258,7 @@ public class GameField {
         while(it.hasNext()) {
             Vertex v = (Vertex) it.next();
             if(v.getX() == exitPoint.y && v.getY() == exitPoint.x) {
-                creep.setAlive(false);
+                creepsManager.removeCreep(creep);
                 layerForeGround.getCell(x, y).setTile(null);
                 return null;
             }

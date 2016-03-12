@@ -21,6 +21,10 @@ public class CreepsManager {
         creeps = new Array<Creep>(amountCreeps);
     }
 
+    public void removeCreep(Creep creep) {
+        creeps.removeValue(creep, false);
+    }
+
     public Creep createCreep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
         creeps.add(new Creep(position, layer, templateForUnit));
         return creeps.peek();
