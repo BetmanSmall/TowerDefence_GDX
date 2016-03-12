@@ -123,6 +123,7 @@ public class GameField {
         renderer.render();
 
         stepAllCreep(delta);
+        attackCreeps(delta);
 
         if(isDrawableGrid)
             drawGrid(camera);
@@ -220,6 +221,7 @@ public class GameField {
             creepsManager.setRouteForCreeps(gridNav, exitPoint);
         }
     }
+
     private void stepAllCreep(float delta) {
         for(int i=0;i<creepsManager.amountCreeps();i++) {
             Creep creep = creepsManager.getCreep(i);
@@ -285,16 +287,36 @@ public class GameField {
         return sizeCellY;
     }
 
-//    public void attackCreep(GridPoint2 position) {
-//        for(int i=-1;i<=1;i++) {
-//            for(int j=-1;j<=1;j++) {
-//                if(cellIsCreep(position.x + i, position.y + j)) {
-//                    creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setHp(0);
-//                    if (creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).getHp() <= 0) {
-//                        creepsManager.getCreep(new GridPoint2(position.x + i, position.y + j)).setAlive(false);
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private void attackCreeps(float delta) {
+        for(int i=0;i<towersManager.amountTowers();i++) {
+            Tower tower = towersManager.getTower(i);
+            float elTime = tower.getElapsedTime()+delta;
+            if(elTime >= tower.getAttackSpeed()) {
+                tower.setElapsedTime(0);
+                attackCreep(tower);
+            }
+            else tower.setElapsedTime(elTime);
+        }
+    }
+    private void attackCreep(Tower tower) {
+        int radius = tower.getRadius();
+        for(int i=-radius;i<=radius;i++) {
+            for(int j=-radius;j<=radius;j++) {
+                GridPoint2 position = tower.getPosition();
+                if(cellManager.getCell(position.x + i, position.y + j).isCreep()) {
+                    Creep creep = cellManager.getCell(position.x + i, position.y + j).getCreeps().first();
+                    int hp = creep.getHp() - tower.getDamage();
+                    if (hp <= 0) {
+                        cellManager.getCell(position.x+i, position.y+j).removeCreep(creep);
+                        creepsManager.removeCreep(creep);
+                        layerForeGround.getCell(position.x+i, position.y+j).setTile(null);
+                    }
+                    else {
+                        creep.setHp(hp);
+                    }
+                    Gdx.app.log("Creep hp", creep.getHp()+"");
+                }
+            }
+        }
+    }
 }

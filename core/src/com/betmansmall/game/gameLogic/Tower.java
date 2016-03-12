@@ -13,11 +13,12 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
  */
 public class Tower {
     private GridPoint2 position;
-//    private int id;
     private TemplateForTower templateForTower;
     private TiledMapTile idleTile;
-
-//    private Timer.Task timerForCreeps;
+    private float attackSpeed;
+    private float elapsedTime;
+    private int damage;
+    private int radius;
 
     private TiledMapTileLayer layer;
 
@@ -25,6 +26,10 @@ public class Tower {
         this.position = position;
         this.templateForTower = templateForTower;
         this.idleTile = templateForTower.getIdleTile();
+        this.radius = templateForTower.getRadius();
+        this.attackSpeed = templateForTower.getAttack();
+        this.damage = templateForTower.getDamage();
+        this.elapsedTime = 0;
 
         this.layer = layer;
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -36,58 +41,45 @@ public class Tower {
         return layer;
     }
 
-//    public int getDamage() {
-//        return damage;
-//    }
-//
-//    public void setDamage(int damage) {
-//        this.damage = damage;
-//    }
-//
-//    public int getRadius() {
-//        return radius;
-//    }
-//
-//    public void setRadius(int radius) {
-//        this.radius = radius;
-//    }
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
 
     public GridPoint2 getPosition() {
         return position;
     }
 
-//    public void setPosition(GridPoint2 position) {
-//        this.position = position;
-//    }
-
-//    public float getAttackSpeed() {
-//        return attackSpeed;
-//    }
-
-//    public void setAttackSpeed(float attackSpeed) {
-//        this.attackSpeed = attackSpeed;
-//    }
-
-//    public void createTimerForTowers(){
-//        if(timerForCreeps == null) {
-//            timerForCreeps = Timer.schedule(new Timer.Task() {
-//                @Override
-//                public void run() {
-//                    Gdx.app.log("Timer", "for Towerss!");
-//
-////                    GameField.attackCreep(getPosition());
-//                }
-//            }, 0, getAttackSpeed());
-//        }
-//    }
-
-//    public void stopTimerForTowers() {
-//        timerForCreeps.cancel();
-//        timerForCreeps = null;
-//    }
 
     public boolean deleteTower() {
         getLayer().setCell(getPosition().x, getPosition().y, null);
         return true;
+    }
+
+    public float getAttackSpeed() {
+        return attackSpeed;
+    }
+
+    public void setAttackSpeed(float attackSpeed) {
+        this.attackSpeed = attackSpeed;
+    }
+
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
     }
 }
