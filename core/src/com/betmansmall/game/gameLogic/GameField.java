@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.GridNav.GridNav;
+import com.betmansmall.game.gameLogic.GridNav.Options;
 import com.betmansmall.game.gameLogic.GridNav.Vertex;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -201,11 +202,19 @@ public class GameField {
 
     public void towerActions(GridPoint2 position) {
         if(cellManager.getCell(position.x, position.y).isEmpty()) {
-            cellManager.getCell(position.x, position.y).setTower(
-                    towersManager.createTower(position, layerForeGround, factionsManager.getRandomTemplateForTowerFromFirstFaction()));
             cellManager.getCell(position.x, position.y).setPathFinder('T');
             gridNav.loadCharMatrix(cellManager.getCharMatrix());
-            creepsManager.setRouteForCreeps(gridNav, exitPoint);
+            ArrayDeque<Vertex> adv = gridNav.route(new int[]{spawnPoint.x, spawnPoint.y},
+                    new int[]{exitPoint.x, exitPoint.y}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+            if(creepsManager.setRouteForCreeps(gridNav, exitPoint) && adv != null) {
+                cellManager.getCell(position.x, position.y).setTower(
+                        towersManager.createTower(position, layerForeGround, factionsManager.getRandomTemplateForTowerFromFirstFaction()));
+            } else {
+                Gdx.app.log("ERROR: Impossible to set tower", "creep route not found");
+                cellManager.getCell(position.x, position.y).setPathFinder('.');
+                gridNav.loadCharMatrix(cellManager.getCharMatrix());
+                creepsManager.setRouteForCreeps(gridNav, exitPoint);
+            }
         } else if (cellManager.getCell(position.x, position.y).isTower()) {
             towersManager.removeTower(position, layerForeGround);
             cellManager.getCell(position.x, position.y).removeTower();
