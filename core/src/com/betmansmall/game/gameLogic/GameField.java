@@ -59,8 +59,7 @@ public class GameField {
 
     private float intervalForTimerCreeps = 1f;
     private Timer.Task timerSpawnCreeps;
-    private Timer.Task timerForCreeps[];
-
+    
     public GameField(String mapName) {
         map = new TmxMapLoader().load(mapName);
         renderer = new IsometricTiledMapRenderer(map);
@@ -101,20 +100,6 @@ public class GameField {
 		}
         gridNav = new GridNav();
         gridNav.loadCharMatrix(cellManager.getCharMatrix());
-        bestroute = gridNav.route(new int[] {spawnPoint.x, spawnPoint.y}, new int[] {exitPoint.x, exitPoint.y},
-                Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-        Vertex[][] mat = gridNav.getVertexMatrix();
-        /*ArrayDeque<Vertex> b = bestroute;
-		while(!b.isEmpty()){
-			Vertex y = b.pop();
-				mat[y.getY()][y.getX()].setKey('O');
-		}*/
-		for(int i=0;i<mat.length;i++) {
-			for (int j = 0; j < mat[0].length; j++) {
-				System.out.print(mat[i][j].getKey() + "");
-			}
-			System.out.println();
-		}
         creepsManager = new CreepsManager(defaultNumCreateCreeps);
         towersManager = new TowersManager();
         factionsManager = new FactionsManager();
@@ -269,9 +254,6 @@ public class GameField {
     }
 
     public Vertex getNextStep(int x, int y) {
-//        gridNav.loadCharMatrix(cellManager.getCharMatrix());
-//        ArrayDeque<Vertex> bestroute = gridNav.route(new int[]{x, y}, new int[]{exitPoint.x, exitPoint.y},
-//                Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
         Creep creep = creepsManager.getCreep(new GridPoint2(x, y));
         ArrayDeque<Vertex> bestroute = creep.getRoute();
         Iterator it = bestroute.iterator();
@@ -282,7 +264,7 @@ public class GameField {
                 layerForeGround.getCell(x, y).setTile(null);
                 return null;
             }
-            if ((v.getX() == y && v.getY() == x) || (v.getX() == x && v.getY() == y)) {
+            if (v.getX() == y && v.getY() == x) {
                 return (Vertex) it.next();
             }
         }
