@@ -20,6 +20,7 @@ public class MainMenuScreen implements Screen {
     private Image background;
     private Image returnButton;
     private Image aboutScreen;
+    private Image welcomeScreen;
 
     private Texture buttons;
 
@@ -45,6 +46,16 @@ public class MainMenuScreen implements Screen {
     }
 
     private void create() {
+        welcomeScreen = new Image((new Texture(Gdx.files.internal("img/welcomescreen.png"))));
+        welcomeScreen.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        welcomeScreen.setPosition(0f, 0f);
+        welcomeScreen.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                welcomeScreen.remove();
+            }
+        });
+
         //Creating background
         background = new Image(new Texture(Gdx.files.internal("img/background.jpg")));
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -52,8 +63,8 @@ public class MainMenuScreen implements Screen {
 
         //Adding the return button
         returnButton = new Image(new Texture(Gdx.files.internal("img/backbutton.png")));
-        returnButton.setSize(100, 100);
-        returnButton.setPosition(0, 0);
+        returnButton.setSize(100f, 100f);
+        returnButton.setPosition(0f, 0f);
         returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -90,7 +101,7 @@ public class MainMenuScreen implements Screen {
 
         aboutScreen = new Image(new Texture(Gdx.files.internal("img/about.png")));
         aboutScreen.setPosition(Gdx.graphics.getWidth() / 2 - 250, 0);
-        aboutScreen.addListener(new ClickListener(){
+        aboutScreen.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 aboutScreen.remove();
@@ -102,7 +113,7 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(menuButtons);
         mmStage.addActor(settings);
         mmStage.addActor(returnButton);
-
+        mmStage.addActor(welcomeScreen);
     }
 
     @Override

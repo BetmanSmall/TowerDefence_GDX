@@ -32,7 +32,12 @@ public class CreepsRoulette extends Roulette {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("TAG", "setVisible = " + !rouletteCircle.isVisible());
-                rouletteCircle.setVisible(!rouletteCircle.isVisible());
+                if(!rouletteCircle.isVisible()) {
+                    rouletteCircle.setVisible(true);
+                }
+                else{
+                    rouletteCircle.setVisible(false);
+                }
             }
         });
 

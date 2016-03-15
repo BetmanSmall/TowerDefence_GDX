@@ -17,7 +17,7 @@ import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.GridNav.GridNav;
 import com.betmansmall.game.gameLogic.GridNav.Options;
 import com.betmansmall.game.gameLogic.GridNav.Vertex;
-import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.game.gameLogic.playerTemplates.factionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
@@ -46,7 +46,7 @@ public class GameField {
     private int defaultNumCreateCreeps = 100;
     private CreepsManager creepsManager;
     public TowersManager towersManager;
-    private FactionsManager factionsManager;
+    private com.betmansmall.game.gameLogic.playerTemplates.factionsManager factionsManager;
     private CellManager cellManager;
 
     private float intervalForTimerCreeps = 1f;
@@ -94,7 +94,7 @@ public class GameField {
         gridNav.loadCharMatrix(cellManager.getCharMatrix());
         creepsManager = new CreepsManager(defaultNumCreateCreeps);
         towersManager = new TowersManager();
-        factionsManager = new FactionsManager();
+        factionsManager = new factionsManager();
 
 		TiledMapTileSets tileSets = map.getTileSets();
 		for(TiledMapTileSet tileSet:tileSets) {
