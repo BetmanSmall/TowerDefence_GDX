@@ -21,6 +21,11 @@ public class TowersManager {
         return towers.peek();
     }
 
+    public void removeTower(GridPoint2 position, TiledMapTileLayer layer) {
+        towers.removeValue(getTower(position), false);
+        layer.getCell(position.x, position.y).setTile(null);
+    }
+
     public Tower getTower(int id) {
         return towers.get(id);
     }

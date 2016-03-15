@@ -15,10 +15,11 @@ public class TemplateForTower {
 
     private String factionName;
     private String name;
-    private Integer attack;
+    private float attack;
     private Integer radius;
     private Integer size;
     private String type;
+    private Integer damage;
 
     private TiledMapTile idleTile;
     private Array<TiledMapTile> ammunition;
@@ -26,10 +27,11 @@ public class TemplateForTower {
     public TemplateForTower(TiledMapTileSet tileSet) {
         this.factionName =  tileSet.getProperties().get("factionName", String.class);
         this.name =         tileSet.getProperties().get("name", String.class);
-        this.attack =       new Integer(tileSet.getProperties().get("attack", String.class));
-        this.radius =       new Integer(tileSet.getProperties().get("radius", String.class));
+        this.attack =       0.5f;
+        this.radius =       1;//new Integer(tileSet.getProperties().get("radius", String.class));
         this.size =         new Integer(tileSet.getProperties().get("size", String.class));
         this.type =         tileSet.getProperties().get("type", String.class);
+        this.damage =       50;
 
         this.ammunition = new Array<TiledMapTile>();
 
@@ -55,7 +57,7 @@ public class TemplateForTower {
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
         else if(this.name == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'name'! Check the file");
-        else if(this.attack == null)
+        else if(this.attack == 0)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'attack'! Check the file");
         else if(this.radius == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'radius'! Check the file");
@@ -80,5 +82,16 @@ public class TemplateForTower {
 
     public TiledMapTile getIdleTile() {
         return idleTile;
+    }
+
+    public float getAttack() {
+        return attack;
+    }
+
+    public Integer getRadius() {
+        return radius;
+    }
+    public Integer getDamage() {
+        return damage;
     }
 }

@@ -3,7 +3,6 @@ package com.betmansmall.game.gameLogic.pathfinderAlgorithms;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
-
 /**
  * Created by betmansmall on 18.02.2016.
  */

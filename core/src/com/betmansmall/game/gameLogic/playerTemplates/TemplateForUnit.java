@@ -21,6 +21,7 @@ public class TemplateForUnit {
     private Integer  hp;
     private String   type;
     private float interval;
+    private float speed;
 
     private AnimatedTiledMapTile idle;
     private ObjectMap<String, AnimatedTiledMapTile> walks;
@@ -32,6 +33,7 @@ public class TemplateForUnit {
         this.hp =           new Integer(tileSet.getProperties().get("health_point", String.class));
         this.type =         tileSet.getProperties().get("type", String.class);
 //        this.interval = 0.02f;
+        this.speed =        0.2f;
         walks = new ObjectMap<String, AnimatedTiledMapTile>();
         deaths = new ObjectMap<String, AnimatedTiledMapTile>();
 
@@ -198,5 +200,9 @@ public class TemplateForUnit {
             return idle.getCurrentFrame();
         }
         return null;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 }

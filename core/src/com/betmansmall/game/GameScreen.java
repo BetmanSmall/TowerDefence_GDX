@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.betmansmall.game.gameLogic.GameField;
-import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 
 public class GameScreen implements Screen {
@@ -47,20 +46,14 @@ public class GameScreen implements Screen {
 			GridPoint2 tileCooCoordinate = gameField.whichCell(gameCoordinate);
 
 			if(tileCooCoordinate != null) {
-				if(gameField.cellIsEmpty(tileCooCoordinate.x, tileCooCoordinate.y)) {
-					if(button == 0) {
-						gameField.createTower(tileCooCoordinate);
-//						gameField.waveAlgorithm.searh();
-					} else if(button == 1) {
-						gameField.waveAlgorithm.researh(tileCooCoordinate.x, tileCooCoordinate.y);
-					}
-				}
+				gameField.towerActions(tileCooCoordinate);
 			}
 			return false;
 		}
 
 		@Override
 		public boolean longPress(float x, float y) {
+			gameField.createSpawnTimerForCreeps();
 			return false;
 		}
 
@@ -136,9 +129,8 @@ public class GameScreen implements Screen {
 				cam.zoom -= 0.1f;
 			cam.update();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
-		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
-			gameField.waveAlgorithm.searh();
-			gameField.createTimerForCreeps();
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
+			gameField.createSpawnTimerForCreeps();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUMPAD_0");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			gameField.isDrawableGrid = !gameField.isDrawableGrid;
