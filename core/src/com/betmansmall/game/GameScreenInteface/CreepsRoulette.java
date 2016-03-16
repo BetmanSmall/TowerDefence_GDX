@@ -16,7 +16,7 @@ public class CreepsRoulette extends Roulette {
     private Group group;
     private ImageButton rouletteButton;
     private ImageButton rouletteCircle;
-
+    static volatile Boolean IS_HIDE_CREEPS = false;
 
     public CreepsRoulette() {
         init();
@@ -32,12 +32,8 @@ public class CreepsRoulette extends Roulette {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("TAG", "setVisible = " + !rouletteCircle.isVisible());
-                if(!rouletteCircle.isVisible()) {
-                    rouletteCircle.setVisible(true);
-                }
-                else{
-                    rouletteCircle.setVisible(false);
-                }
+                IS_HIDE_CREEPS=!IS_HIDE_CREEPS;
+                rouletteCircle.setVisible(IS_HIDE_CREEPS);
             }
         });
 
@@ -46,8 +42,8 @@ public class CreepsRoulette extends Roulette {
         rouletteCircle.setPosition(0 - rouletteCircle.getWidth() / 2, 0 - rouletteCircle.getHeight() / 2);
         rouletteCircle.setVisible(false);
 
-        group.addActor(rouletteButton);
         group.addActor(rouletteCircle);
+        group.addActor(rouletteButton);
     }
 
     @Override

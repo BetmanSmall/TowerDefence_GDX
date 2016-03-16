@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
+
 /**
  * Created by Дима Цыкунов on 20.02.2016.
  */
@@ -16,6 +18,7 @@ public class TowersRoulette extends Roulette {
     private Group group;
     private ImageButton rouletteButton;
     private ImageButton rouletteCircle;
+    static volatile Boolean IS_HIDE_TOWERS = false;
 
     public TowersRoulette() {
         init();
@@ -33,23 +36,19 @@ public class TowersRoulette extends Roulette {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("TAG", "setVisible = " + !rouletteCircle.isVisible());
-                if(!rouletteCircle.isVisible()) {
-                    rouletteCircle.setVisible(true);
-                }
-                else{
-                    Gdx.app.log("TAG", "setVisible = " + rouletteCircle.isVisible());
-                    rouletteCircle.setVisible(false);
-                }
+                IS_HIDE_TOWERS = !IS_HIDE_TOWERS;
+                rouletteCircle.setVisible(IS_HIDE_TOWERS);
             }
         });
 
         rouletteCircle = new ImageButton(new Image(new Texture(Gdx.files.internal("img/golden_ring.png"))).getDrawable());
-        rouletteCircle.setSize(getLocalWidth(RING_WIDTH),getLocalHeight(RING_HEIGHT));
+        rouletteCircle.setSize(getLocalWidth(RING_WIDTH), getLocalHeight(RING_HEIGHT));
         rouletteCircle.setPosition(Gdx.graphics.getWidth() - rouletteCircle.getWidth() / 2, 0 - rouletteCircle.getHeight() / 2);
         rouletteCircle.setVisible(false);
+        rouletteCircle.addAction(rotateBy(90, 25f));
 
-        group.addActor(rouletteButton);
         group.addActor(rouletteCircle);
+        group.addActor(rouletteButton);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -33,6 +34,8 @@ public class MainMenuScreen implements Screen {
 
     private boolean isShowAbout = false;
 
+    float timer;
+
     public MainMenuScreen(TowerDefence towerDefence){
         this.towerDefence = towerDefence;
         create();
@@ -49,12 +52,6 @@ public class MainMenuScreen implements Screen {
         welcomeScreen = new Image((new Texture(Gdx.files.internal("img/welcomescreen.png"))));
         welcomeScreen.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         welcomeScreen.setPosition(0f, 0f);
-        welcomeScreen.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                welcomeScreen.remove();
-            }
-        });
 
         //Creating background
         background = new Image(new Texture(Gdx.files.internal("img/background.jpg")));
@@ -142,6 +139,11 @@ public class MainMenuScreen implements Screen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mmStage.act(delta);
         mmStage.draw();
+        if(timer>3)
+        {
+            welcomeScreen.remove();
+        }
+        timer = timer+delta;
         //Gdx.app.log("GameScreen FPS", (1/delta) + "");
     }
 
