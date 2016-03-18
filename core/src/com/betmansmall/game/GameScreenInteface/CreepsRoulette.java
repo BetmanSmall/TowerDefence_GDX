@@ -7,16 +7,23 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.betmansmall.game.GameScreen;
+import com.betmansmall.game.gameLogic.Creep;
+import com.betmansmall.game.gameLogic.GameField;
 
 /**
  * Created by Дима Цыкунов on 20.02.2016.
  */
 public class CreepsRoulette extends Roulette {
 
+    private CreepsRoulette cr;
     private Group group;
-    private ImageButton rouletteButton;
-    private ImageButton rouletteCircle;
-    static volatile Boolean IS_HIDE_CREEPS = false;
+    private static int buttonSizeX = 200, buttonSizeY = 200;
+    private ImageButton playButton;
+    private ImageButton pauseButton;
+    private static volatile Boolean IS_PAUSE = false;
+    private static GameScreen gs;
+    private GameField gameField;
 
     public CreepsRoulette() {
         init();
@@ -25,25 +32,40 @@ public class CreepsRoulette extends Roulette {
     private void init() {
         group = new Group();
 
-        rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/creep_roulette_main.png"))).getDrawable());
-        rouletteButton.setSize(getLocalWidth(ROULETTE_WIDTH), getLocalHeight(ROULETTE_HEIGHT));
-        rouletteButton.setPosition(0, 0);
-        rouletteButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("TAG", "setVisible = " + !rouletteCircle.isVisible());
-                IS_HIDE_CREEPS=!IS_HIDE_CREEPS;
-                rouletteCircle.setVisible(IS_HIDE_CREEPS);
-            }
-        });
+        playButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/playbutton.png"))).getDrawable());
+        playButton.setSize(buttonSizeX,buttonSizeY);
+        playButton.setPosition(0, 0);
 
-        rouletteCircle = new ImageButton(new Image(new Texture(Gdx.files.internal("img/golden_ring.png"))).getDrawable());
-        rouletteCircle.setSize(getLocalWidth(RING_WIDTH), getLocalHeight(RING_HEIGHT));
-        rouletteCircle.setPosition(0 - rouletteCircle.getWidth() / 2, 0 - rouletteCircle.getHeight() / 2);
-        rouletteCircle.setVisible(false);
+        pauseButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/pausebutton.png"))).getDrawable());
+        pauseButton.setSize(buttonSizeX,buttonSizeY);
+        pauseButton.setPosition(0, 0);
+        pauseButton.setVisible(true);
 
-        group.addActor(rouletteCircle);
-        group.addActor(rouletteButton);
+        group.addActor(pauseButton);
+        group.addActor(playButton);
+    }
+
+    public void buttonClick(){
+        if(IS_PAUSE){
+            IS_PAUSE = !IS_PAUSE;
+            pauseButton.setZIndex(1);
+            playButton.setZIndex(0);
+        }
+        else {
+            IS_PAUSE = !IS_PAUSE;
+            pauseButton.setZIndex(0);
+            playButton.setZIndex(1);
+        }
+    }
+    public float getButtonSizeX(){
+        return buttonSizeX;
+    }
+    public float getButtonSizeY(){
+        return buttonSizeY;
+    }
+
+    public CreepsRoulette getCreepsRoulette(){
+        return this.cr;
     }
 
     @Override

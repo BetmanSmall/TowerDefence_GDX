@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.betmansmall.game.GameScreenInteface.CreepsRoulette;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 
@@ -24,6 +25,7 @@ public class GameScreen implements Screen {
 
 	private final GameInterface gameInterface = new GameInterface();
 	private GameField gameField;
+	private CreepsRoulette gameButton;
 
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -41,10 +43,13 @@ public class GameScreen implements Screen {
 		public boolean tap(float x, float y, int count, int button) {
 			Vector3 touch = new Vector3(x, y, 0);
 			cam.unproject(touch);
-
 			GridPoint2 gameCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
 			GridPoint2 tileCooCoordinate = gameField.whichCell(gameCoordinate);
-
+			gameButton = new CreepsRoulette();
+			gameButton = gameButton.getCreepsRoulette();
+			if(x <= gameButton.getButtonSizeX() && y <= gameButton.getButtonSizeY()){
+				gameButton.buttonClick();
+			}
 			if(tileCooCoordinate != null) {
 				gameField.towerActions(tileCooCoordinate);
 			}
@@ -113,6 +118,8 @@ public class GameScreen implements Screen {
 
 		gameField = new GameField("maps/arena.tmx");
 	}
+
+
 
 	@Override
 	public void show() {
