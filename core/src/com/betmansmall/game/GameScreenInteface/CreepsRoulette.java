@@ -1,5 +1,6 @@
 package com.betmansmall.game.GameScreenInteface;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -25,7 +26,8 @@ public class CreepsRoulette extends Roulette {
     private static GameScreen gs;
     private GameField gameField;
 
-    public CreepsRoulette() {
+    public CreepsRoulette(GameField gameField) {
+        this.gameField = gameField;
         init();
     }
 
@@ -47,14 +49,21 @@ public class CreepsRoulette extends Roulette {
 
     public void buttonClick(){
         if(IS_PAUSE){
+
             IS_PAUSE = !IS_PAUSE;
             pauseButton.setZIndex(1);
             playButton.setZIndex(0);
+
+            //CHANGE THIS CODE TO START/RESUME METHOD CALL
+            gameField.createSpawnTimerForCreeps();
         }
         else {
             IS_PAUSE = !IS_PAUSE;
             pauseButton.setZIndex(0);
             playButton.setZIndex(1);
+
+            // HERE WILL BE REPRESENTED THE PAUSE METHOD OF WAVES
+
         }
     }
     public float getButtonSizeX(){
@@ -64,8 +73,19 @@ public class CreepsRoulette extends Roulette {
         return buttonSizeY;
     }
 
-    public CreepsRoulette getCreepsRoulette(){
-        return this.cr;
+    public boolean isButtonTouched(float x, float y) {
+        boolean isTouched = false;
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            if(x <= getButtonSizeX() && y <= getButtonSizeY()){
+                isTouched = true;
+            }
+        } else if( Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            if(x <= getButtonSizeX()&& y > Gdx.graphics.getHeight() - getButtonSizeY()){
+                isTouched = true;
+            }
+        }
+        if(isTouched) buttonClick();
+        return isTouched;
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pool;
+import com.betmansmall.game.gameLogic.GameField;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
@@ -26,9 +27,11 @@ public class TowersRoulette extends Roulette {
     private ImageButton rouletteButton;
     private ImageButton rouletteCircle;
     private static volatile Boolean IS_HIDE_TOWERS = false;
+    private GameField gameField;
 
 
-    public TowersRoulette() {
+    public TowersRoulette(GameField gameField) {
+        this.gameField = gameField;
         init();
     }
 

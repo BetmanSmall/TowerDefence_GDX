@@ -23,9 +23,9 @@ public class GameScreen implements Screen {
 	private GameScreen gs;
 	public OrthographicCamera cam;
 
-	private final GameInterface gameInterface = new GameInterface();
+	private GameInterface gameInterface;
 	private GameField gameField;
-	private CreepsRoulette gameButton;
+	private CreepsRoulette creepsRoulette;
 
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -45,11 +45,12 @@ public class GameScreen implements Screen {
 			cam.unproject(touch);
 			GridPoint2 gameCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
 			GridPoint2 tileCooCoordinate = gameField.whichCell(gameCoordinate);
-			gameButton = new CreepsRoulette();
-			gameButton = gameButton.getCreepsRoulette();
-			if(x <= gameButton.getButtonSizeX() && y <= gameButton.getButtonSizeY()){
-				gameButton.buttonClick();
+
+			//CHECK IF THE PAUSE BUTTON IS TOUCHED
+			if(gameInterface.getCreepsRoulette().isButtonTouched(x,y)){
+				return false;
 			}
+
 			if(tileCooCoordinate != null) {
 				gameField.towerActions(tileCooCoordinate);
 			}
@@ -114,9 +115,11 @@ public class GameScreen implements Screen {
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+		gameField = new GameField("maps/arena.tmx");
+		gameInterface = new GameInterface(gameField);
+
 		Gdx.input.setInputProcessor(gameInterface.setCommonInputHandler(new GestureDetector(cameraController)));
 
-		gameField = new GameField("maps/arena.tmx");
 	}
 
 

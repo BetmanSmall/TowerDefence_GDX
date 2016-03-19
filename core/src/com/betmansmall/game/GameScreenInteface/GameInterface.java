@@ -3,6 +3,7 @@ package com.betmansmall.game.GameScreenInteface;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.betmansmall.game.gameLogic.GameField;
 
 /**
  * Created by Transet on 07.02.2016.
@@ -16,18 +17,36 @@ public class GameInterface {
         CREEPS_ROULETTE
     }
 
+    public TowersRoulette getTowersRoulette() {
+        return towersRoulette;
+    }
+
+    public void setTowersRoulette(TowersRoulette towersRoulette) {
+        this.towersRoulette = towersRoulette;
+    }
+
+    public CreepsRoulette getCreepsRoulette() {
+        return creepsRoulette;
+    }
+
+    public void setCreepsRoulette(CreepsRoulette creepsRoulette) {
+        this.creepsRoulette = creepsRoulette;
+    }
+
     private TowersRoulette towersRoulette;
     private CreepsRoulette creepsRoulette;
     private Stage stage;
+    private GameField gameField;
 
-    public GameInterface() {
+    public GameInterface(GameField gameField) {
+        this.gameField = gameField;
         init();
     }
 
     private void init() {
         stage = new Stage();
-        towersRoulette = new TowersRoulette();
-        creepsRoulette = new CreepsRoulette();
+        towersRoulette = new TowersRoulette(gameField);
+        creepsRoulette = new CreepsRoulette(gameField);
 
         stage.addActor(towersRoulette.getGroup());
         stage.addActor(creepsRoulette.getGroup());
