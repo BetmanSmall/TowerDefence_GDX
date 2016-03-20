@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
 			GridPoint2 tileCooCoordinate = gameField.whichCell(gameCoordinate);
 
 			//CHECK IF THE PAUSE BUTTON IS TOUCHED
-			if(gameInterface.getCreepsRoulette().isButtonTouched(x,y)){
+			if(gameInterface.getCreepsRoulette().isButtonTouched(x,y)) {
 				return false;
 			}
 
@@ -140,7 +140,8 @@ public class GameScreen implements Screen {
 			cam.update();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
-			gameField.setGamePause(!gameField.getGamePaused());
+//			gameField.setGamePause(!gameField.getGamePaused());
+			gameInterface.getCreepsRoulette().buttonClick();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUM_0");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			gameField.isDrawableGrid = !gameField.isDrawableGrid;

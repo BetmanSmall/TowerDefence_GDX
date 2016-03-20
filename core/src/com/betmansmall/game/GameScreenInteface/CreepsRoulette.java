@@ -47,26 +47,19 @@ public class CreepsRoulette extends Roulette {
         group.addActor(playButton);
     }
 
-    public void buttonClick(){
-        if(IS_PAUSE){
-
+    public void buttonClick() {
+        if(IS_PAUSE) {
             IS_PAUSE = !IS_PAUSE;
             pauseButton.setZIndex(1);
             playButton.setZIndex(0);
-
-            //CHANGE THIS CODE TO START/RESUME METHOD CALL
-//            gameField.createSpawnTimerForCreeps();
-        }
-        else {
+        } else {
             IS_PAUSE = !IS_PAUSE;
             pauseButton.setZIndex(0);
             playButton.setZIndex(1);
-
-            // HERE WILL BE REPRESENTED THE PAUSE METHOD OF WAVES
-
         }
         gameField.setGamePause(IS_PAUSE);
     }
+
     public float getButtonSizeX(){
         return buttonSizeX;
     }
