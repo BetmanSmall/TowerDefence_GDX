@@ -25,7 +25,6 @@ public class GameScreen implements Screen {
 
 	private GameInterface gameInterface;
 	private GameField gameField;
-	private CreepsRoulette creepsRoulette;
 
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -114,7 +113,6 @@ public class GameScreen implements Screen {
 		this.gs = this;
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
 		gameField = new GameField("maps/arena.tmx");
 		gameInterface = new GameInterface(gameField);
 
@@ -126,6 +124,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
+		//Start position of camera
+		cam.position.add((gameField.getSizeFieldX()*gameField.getSizeCellX())/2,0,0);
 	}
 
 	private void inputHandler(float delta) {

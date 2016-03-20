@@ -22,7 +22,7 @@ public class CreepsRoulette extends Roulette {
     private static int buttonSizeX = 200, buttonSizeY = 200;
     private ImageButton playButton;
     private ImageButton pauseButton;
-    private static volatile Boolean IS_PAUSE = false;
+    private static volatile Boolean IS_PAUSE = true;
     private static GameScreen gs;
     private GameField gameField;
 
