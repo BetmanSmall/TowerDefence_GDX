@@ -17,7 +17,7 @@ import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.GridNav.GridNav;
 import com.betmansmall.game.gameLogic.GridNav.Options;
 import com.betmansmall.game.gameLogic.GridNav.Vertex;
-import com.betmansmall.game.gameLogic.playerTemplates.factionsManager;
+import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
@@ -46,11 +46,13 @@ public class GameField {
     private int defaultNumCreateCreeps = 100;
     private CreepsManager creepsManager;
     public TowersManager towersManager;
-    private com.betmansmall.game.gameLogic.playerTemplates.factionsManager factionsManager;
+    private FactionsManager factionsManager;
     private CellManager cellManager;
 
-    private float intervalForTimerCreeps = 1f;
+    private float intervalForSpawnCreeps = 1f;
+    private float elapsedTimeForSpawn = 0f;
     private Timer.Task timerSpawnCreeps;
+    private boolean gamePaused;
 
     public GameField(String mapName) {
         map = new TmxMapLoader().load(mapName);
@@ -94,7 +96,7 @@ public class GameField {
         gridNav.loadCharMatrix(cellManager.getCharMatrix());
         creepsManager = new CreepsManager(defaultNumCreateCreeps);
         towersManager = new TowersManager();
-        factionsManager = new factionsManager();
+        factionsManager = new FactionsManager();
 
 		TiledMapTileSets tileSets = map.getTileSets();
 		for(TiledMapTileSet tileSet:tileSets) {
@@ -108,10 +110,11 @@ public class GameField {
                 factionsManager.addTowerToFaction(tower);
             }
 		}
+        gamePaused = true;
     }
 
     public void dispose() {
-        stopSpawnTimerForCreeps();
+//        stopSpawnTimerForCreeps();
 		map.dispose();
 		map = null;
 		renderer.dispose();
@@ -122,8 +125,11 @@ public class GameField {
         renderer.setView(camera);
         renderer.render();
 
-        stepAllCreep(delta);
-        attackCreeps(delta);
+        if(!gamePaused) {
+            spawnCreep(delta);
+            stepAllCreep(delta);
+            attackCreeps(delta);
+        }
 
         if(isDrawableGrid)
             drawGrid(camera);
@@ -148,28 +154,46 @@ public class GameField {
 		sr.end();
 	}
 
-    public void createSpawnTimerForCreeps(){
-        if(timerSpawnCreeps == null) {
-            timerSpawnCreeps = Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-//                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
-                    if(spawnPoint != null) {
-                        if(creepsManager.amountCreeps() < defaultNumCreateCreeps) {
-                            Creep creep = creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getRandomTemplateForUnitFromFirstFaction());
-                            cellManager.getCell(spawnPoint.x, spawnPoint.y).addCreep(creep);
-                            creep.setRoute(gridNav, spawnPoint, exitPoint);
-                        }
-                    }
-                }
-            }, 0, intervalForTimerCreeps);
-        }
+    public void setGamePause(boolean gamePaused) {
+        this.gamePaused = gamePaused;
     }
 
-    private void stopSpawnTimerForCreeps() {
-        Gdx.app.log("GameField::stopTimerForCreeps()", "Stop timer for creeps!");
-        timerSpawnCreeps.cancel();
-        timerSpawnCreeps = null;
+    public boolean getGamePaused() {
+        return gamePaused;
+    }
+
+//    private void createSpawnTimerForCreeps(){
+//        if(timerSpawnCreeps == null) {
+//            timerSpawnCreeps = Timer.schedule(new Timer.Task() {
+//                @Override
+//                public void run() {
+////                    Gdx.app.log("GameField::createTimerForCreeps()", "-- Timer for Creeps! Delta:" + timerForCreeps.getExecuteTimeMillis());
+//                    spawnCreep();
+//                }
+//            }, 0, intervalForSpawnCreeps);
+//        }
+//    }
+//
+//    private void stopSpawnTimerForCreeps() {
+//        if(timerSpawnCreeps != null) {
+//            Gdx.app.log("GameField::stopTimerForCreeps()", "Stop timer for creeps!");
+//            timerSpawnCreeps.cancel();
+//            timerSpawnCreeps = null;
+//        }
+//    }
+
+    private void spawnCreep(float delta) {
+        elapsedTimeForSpawn += delta;
+        if(elapsedTimeForSpawn > intervalForSpawnCreeps) {
+            elapsedTimeForSpawn = 0f;
+            if (creepsManager.amountCreeps() < defaultNumCreateCreeps) {
+                if (spawnPoint != null) {
+                    Creep creep = creepsManager.createCreep(spawnPoint, layerForeGround, factionsManager.getRandomTemplateForUnitFromFirstFaction());
+                    cellManager.getCell(spawnPoint.x, spawnPoint.y).addCreep(creep);
+                    creep.setRoute(gridNav, spawnPoint, exitPoint);
+                }
+            }
+        }
     }
 
     public GridPoint2 whichCell(GridPoint2 gameCoor) {

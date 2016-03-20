@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean longPress(float x, float y) {
-			gameField.createSpawnTimerForCreeps();
+//			gameField.createSpawnTimerForCreeps();
 			return false;
 		}
 
@@ -139,9 +139,9 @@ public class GameScreen implements Screen {
 				cam.zoom -= 0.1f;
 			cam.update();
 			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
-		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
-			gameField.createSpawnTimerForCreeps();
-			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUMPAD_0");
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
+			gameField.setGamePause(!gameField.getGamePaused());
+			Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUM_0");
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			gameField.isDrawableGrid = !gameField.isDrawableGrid;
 			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);

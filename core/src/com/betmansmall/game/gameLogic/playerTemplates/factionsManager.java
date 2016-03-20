@@ -6,10 +6,10 @@ import com.badlogic.gdx.utils.ObjectMap;
 /**
  * Created by betmansmall on 23.02.2016.
  */
-public class factionsManager {
+public class FactionsManager {
     private Array<Faction> factions;
 
-    public factionsManager() {
+    public FactionsManager() {
         factions = new Array<Faction>();
     }
 
