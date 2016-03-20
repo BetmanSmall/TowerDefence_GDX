@@ -69,14 +69,8 @@ public class CreepsRoulette extends Roulette {
 
     public boolean isButtonTouched(float x, float y) {
         boolean isTouched = false;
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            if(x <= getButtonSizeX() && y <= getButtonSizeY()){
+        if(x <= getButtonSizeX()&& y > Gdx.graphics.getHeight() - getButtonSizeY()){
                 isTouched = true;
-            }
-        } else if( Gdx.app.getType() == Application.ApplicationType.Desktop) {
-            if(x <= getButtonSizeX()&& y > Gdx.graphics.getHeight() - getButtonSizeY()){
-                isTouched = true;
-            }
         }
         if(isTouched) buttonClick();
         return isTouched;
