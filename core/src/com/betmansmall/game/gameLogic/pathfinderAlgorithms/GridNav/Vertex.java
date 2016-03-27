@@ -1,4 +1,4 @@
-package com.betmansmall.game.gameLogic.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
 
 /**
  * The class for the graph vertices. Provides functionality for storing information related to that specific vertex.

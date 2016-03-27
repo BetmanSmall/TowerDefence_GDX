@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.betmansmall.game.gameLogic.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
 
 import java.util.ArrayDeque;
 import java.util.PriorityQueue;
@@ -19,10 +19,10 @@ public class Astar {
     private Vertex start;
     private Vertex goal;
     private String directions;
-    private Options heuristics;
+    private com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options heuristics;
     
     private boolean utilitymode=false;
-    private Tools Tools;
+    private com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Tools Tools;
     private ArrayDeque<Vertex> utilityStack;
     
     /**
@@ -34,7 +34,7 @@ public class Astar {
      * @param diagonalMovement true -> diagonalMovement is allowed, false -> denied
      */
     
-    protected Astar(Vertex[][] map, int[] start, int[] goal, Options heuristics, boolean diagonalMovement){
+    protected Astar(Vertex[][] map, int[] start, int[] goal, com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options heuristics, boolean diagonalMovement){
         Tools = new Tools();
         this.map = map;
         this.heap = new PriorityQueue<Vertex>(map.length*map[0].length);
@@ -61,7 +61,7 @@ public class Astar {
      * @param utilitymode true -> utilitymode ON.
      */
     
-    protected Astar(Vertex[][] map, int[] start, int[] goal, Options heuristics, boolean diagonalMovement, boolean utilitymode){        
+    protected Astar(Vertex[][] map, int[] start, int[] goal, com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options heuristics, boolean diagonalMovement, boolean utilitymode){
         this(map, start, goal, heuristics, diagonalMovement);
         this.utilitymode=utilitymode;
         this.utilityStack = new ArrayDeque<Vertex>();

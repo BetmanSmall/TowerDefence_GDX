@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.betmansmall.game.gameLogic.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
 
 import java.util.ArrayDeque;
 import java.util.Random;

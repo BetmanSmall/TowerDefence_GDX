@@ -1,5 +1,5 @@
 
-package com.betmansmall.game.gameLogic.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
 
 import java.util.Arrays;
 
