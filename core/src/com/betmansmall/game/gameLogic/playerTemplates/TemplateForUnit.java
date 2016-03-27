@@ -196,7 +196,7 @@ public class TemplateForUnit {
 
     public TiledMapTile getCurrentIdleFrame() {
         if(idle != null) {
-            Gdx.app.log("TemplateForUnit::getCurrentIdleFrame()", "-- CurrentFrameId:" + idle.getCurrentFrameIndex());
+//            Gdx.app.log("TemplateForUnit::getCurrentIdleFrame()", "-- CurrentFrameId:" + idle.getCurrentFrameIndex());
             return idle.getCurrentFrame();
         }
         return null;

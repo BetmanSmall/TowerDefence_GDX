@@ -1,10 +1,8 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -13,25 +11,29 @@ import com.badlogic.gdx.utils.Array;
 public class TemplateForTower {
     private Faction faction;
 
-    private String factionName;
-    private String name;
-    private float attack;
-    private Integer radius;
-    private Integer size;
-    private String type;
-    private Integer damage;
+    public Float attackSpeed;
+    public Integer damage;
+    public String factionName;
+    public String name;
+    public Integer radius;
+    public Integer size;
+    public String type;
 
-    private TiledMapTile idleTile;
-    private Array<TiledMapTile> ammunition;
+    public Array<TiledMapTile> ammunition;
+    public TiledMapTile idleTile;
 
     public TemplateForTower(TiledMapTileSet tileSet) {
-        this.factionName =  tileSet.getProperties().get("factionName", String.class);
-        this.name =         tileSet.getProperties().get("name", String.class);
-        this.attack =       0.5f;
-        this.radius =       1;//new Integer(tileSet.getProperties().get("radius", String.class));
-        this.size =         new Integer(tileSet.getProperties().get("size", String.class));
-        this.type =         tileSet.getProperties().get("type", String.class);
-        this.damage =       50;
+        try {
+            this.attackSpeed = Float.parseFloat(tileSet.getProperties().get("attackSpeed", String.class));
+            this.damage = Integer.parseInt(tileSet.getProperties().get("damage", String.class));
+            this.factionName = tileSet.getProperties().get("factionName", String.class);
+            this.name = tileSet.getProperties().get("name", String.class);
+            this.radius = Integer.parseInt(tileSet.getProperties().get("radius", String.class));
+            this.size = Integer.parseInt(tileSet.getProperties().get("size", String.class));
+            this.type = tileSet.getProperties().get("type", String.class);
+        } catch(Exception exp) {
+            Gdx.app.log("TemplateForTower::TemplateForTower()", " -- Exp: " + exp);
+        }
 
         this.ammunition = new Array<TiledMapTile>();
 
@@ -53,12 +55,14 @@ public class TemplateForTower {
     }
 
     private void validate() {
+        if(this.attackSpeed == 0)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'attackSpeed'! Check the file");
+        if(this.damage == null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'damage'! Check the file");
         if(this.factionName == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
         else if(this.name == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'name'! Check the file");
-        else if(this.attack == 0)
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'attack'! Check the file");
         else if(this.radius == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'radius'! Check the file");
         else if(this.size == null)
@@ -75,23 +79,7 @@ public class TemplateForTower {
     public void setFaction(Faction faction) {
         this.faction = faction;
     }
-
     public String getFactionName() {
         return factionName;
-    }
-
-    public TiledMapTile getIdleTile() {
-        return idleTile;
-    }
-
-    public float getAttack() {
-        return attack;
-    }
-
-    public Integer getRadius() {
-        return radius;
-    }
-    public Integer getDamage() {
-        return damage;
     }
 }

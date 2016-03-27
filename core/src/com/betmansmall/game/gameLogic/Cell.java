@@ -1,86 +1,135 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Андрей on 11.03.2016.
  */
-public class Cell extends TiledMapTileLayer.Cell {
-
+public class Cell {
+    private boolean empty;
+    private boolean terrain;
     private Tower tower;
-
     private Array<Creep> creeps;
 
-    private char pathFinder;
-
-    private boolean spawnPoint;
-
-    private boolean exitPoint;
+//    private char pathFinder;
+//    private boolean spawnPoint;
+//    private boolean exitPoint;
 
     Cell() {
-        creeps = new Array<Creep>();
+        this.empty = true;
+        this.terrain = false;
+        this.tower = null;
+        this.creeps = null;
     }
 
-    public Array<Creep> getCreeps() {
-        return creeps;
+    public boolean isEmpty() {
+        return empty;
     }
 
-    public void addCreep(Creep creep) {
-        creeps.add(creep);
+    public boolean isTerrain() {
+        return terrain;
     }
 
-    public void removeCreep(Creep creep) {
-        creeps.removeValue(creep, false);
+    public boolean setTerrain() {
+        if(empty) {
+            terrain = true;
+            empty = false;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeTerrain() {
+        if(terrain) {
+            terrain = false;
+            empty = true;
+            return true;
+        }
+        return false;
     }
 
     public Tower getTower() {
         return tower;
     }
 
-    public void setTower(Tower tower) {
-        this.tower = tower;
+    public boolean setTower(Tower tower) {
+        if(empty) {
+            this.tower = tower;
+            empty = false;
+            return true;
+        }
+        return false;
     }
 
-    public void removeTower() { tower = null;}
-
-    public char getPathFinder() {
-        return pathFinder;
+    public boolean removeTower() {
+        if(tower != null) {
+            tower = null;
+            empty = true;
+            return true;
+        }
+        return false;
     }
 
-    public void setPathFinder(char pathFinder) {
-        this.pathFinder = pathFinder;
+    public Array<Creep> getCreeps() {
+        return creeps;
     }
 
-    public boolean isSpawnPoint() {
-        return spawnPoint;
+    public Creep getCreep() {
+        if(creeps != null) {
+            return creeps.first();
+        }
+        return null;
     }
 
-    public void setSpawnPoint(boolean spawnPoint) {
-        this.spawnPoint = spawnPoint;
+//    public int getCreep(Creep creep)
+
+    public boolean setCreep(Creep creep) {
+        if(empty) {
+            creeps = new Array<Creep>();
+            creeps.add(creep);
+            empty = false;
+            return true;
+        } else if(creeps != null) {
+            creeps.add(creep);
+            return true;
+        }
+        return false;
     }
 
-    public boolean isExitPoint() {
-        return exitPoint;
+    public int removeCreep(Creep creep) {
+        if(creeps != null) {
+            creeps.removeValue(creep, false);
+            if(creeps.size == 0) {
+                creeps = null;
+                empty = true;
+                return 0;
+            }
+            return creeps.size;
+        }
+        return -1;
     }
 
-    public void setExitPoint(boolean exitPoint) {
-        this.exitPoint = exitPoint;
-    }
-    public boolean isEmpty() {
-         return pathFinder == '.' && creeps.size == 0 && tower==null && !spawnPoint && !exitPoint;
-    }
-
-    public boolean isTerrain() {
-        return pathFinder != '.';
-    }
-
-    public boolean isCreep() {
-        return creeps.size != 0;
-    }
-
-    public boolean isTower() {
-         return tower != null;
-    }
-
+//    public char getPathFinder() {
+//        return pathFinder;
+//    }
+//
+//    public void setPathFinder(char pathFinder) {
+//        this.pathFinder = pathFinder;
+//    }
+//
+//    public boolean isSpawnPoint() {
+//        return spawnPoint;
+//    }
+//
+//    public void setSpawnPoint(boolean spawnPoint) {
+//        this.spawnPoint = spawnPoint;
+//    }
+//
+//    public boolean isExitPoint() {
+//        return exitPoint;
+//    }
+//
+//    public void setExitPoint(boolean exitPoint) {
+//        this.exitPoint = exitPoint;
+//    }
 }

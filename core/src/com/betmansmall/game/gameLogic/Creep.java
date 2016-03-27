@@ -1,11 +1,8 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
-import com.betmansmall.game.gameLogic.GridNav.GridNav;
-import com.betmansmall.game.gameLogic.GridNav.Options;
-import com.betmansmall.game.gameLogic.GridNav.Vertex;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Vertex;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 import java.util.ArrayDeque;
@@ -16,39 +13,47 @@ import java.util.ArrayDeque;
 public class  Creep {
     private GridPoint2 position;
     private int hp;
-    private TemplateForUnit templateForUnit;
-    private TextureRegion curentFrame;
     private float speed;
     private float elapsedTime;
+
     private ArrayDeque<Vertex> route;
 
-    private TiledMapTileLayer layer;
+    private TemplateForUnit templateForUnit;
+    private TextureRegion curentFrame;
 
-    public Creep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
+    public Creep(GridPoint2 position, ArrayDeque<Vertex> route, TemplateForUnit templateForUnit) {
         this.position = position;
         this.hp = templateForUnit.getHp();
-        this.templateForUnit = templateForUnit;
-        this.curentFrame = templateForUnit.getCurrentIdleFrame().getTextureRegion();
         this.speed = templateForUnit.getSpeed();
         this.elapsedTime = 0;
 
-        this.layer = layer;
+        this.route = route;
 
-        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        getCollisionLayer().setCell(position.x, position.y, cell);
+        this.templateForUnit = templateForUnit;
+        this.curentFrame = templateForUnit.getCurrentIdleFrame().getTextureRegion();
     }
 
-    public void moveTo(GridPoint2 position) {
-        getCollisionLayer().setCell(this.position.x, this.position.y, null);
-        this.position = position;
-        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        getCollisionLayer().setCell(position.x, position.y, cell);
-        cell.setTile(templateForUnit.getCurrentIdleFrame());
+    public void dispose() {
+        position = null;
+        route = null;
+        templateForUnit = null;
+        curentFrame = null;
     }
 
-    public TiledMapTileLayer getCollisionLayer() {
-        return layer;
+    public GridPoint2 move() {
+        if(route != null && !route.isEmpty()) {
+            Vertex nextCoordinate = route.pollFirst();
+            position.set(nextCoordinate.getX(), nextCoordinate.getY());
+            return position;
+        } else {
+            dispose();
+            return null;
+        }
     }
+
+//    public void setPosition(GridPoint2 position) {
+//        this.position = position;
+//    }
 
     public GridPoint2 getPosition() {
         return position;
@@ -62,36 +67,35 @@ public class  Creep {
         return hp;
     }
 
-    public TemplateForUnit getTemplateForUnit() {
-        return templateForUnit;
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public float getSpeed() {
         return speed;
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
     }
 
     public float getElapsedTime() {
         return elapsedTime;
     }
 
-    public void setElapsedTime(float elapsedTime) {
-        this.elapsedTime = elapsedTime;
+    public void setRoute(ArrayDeque<Vertex> route) {
+        this.route = route;
     }
 
     public ArrayDeque<Vertex> getRoute() {
         return route;
     }
 
-    public void setRoute(ArrayDeque<Vertex> route) {
-        this.route = route;
+    public TemplateForUnit getTemplateForUnit() {
+        return templateForUnit;
     }
 
-    public void setRoute(GridNav gridNav, GridPoint2 position, GridPoint2 exitPoint) {
-       this.route = gridNav.route(new int[]{position.x, position.y}, new int[]{exitPoint.x, exitPoint.y},
-                Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+    public TextureRegion getCurentFrame() {
+        return curentFrame;
     }
 }

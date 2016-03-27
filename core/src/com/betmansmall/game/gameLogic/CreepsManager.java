@@ -1,12 +1,10 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
-import com.betmansmall.game.gameLogic.GridNav.GridNav;
-import com.betmansmall.game.gameLogic.GridNav.Options;
-import com.betmansmall.game.gameLogic.GridNav.Vertex;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.GridNav;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Vertex;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 import java.util.ArrayDeque;
@@ -21,13 +19,10 @@ public class CreepsManager {
         creeps = new Array<Creep>(amountCreeps);
     }
 
-    public void removeCreep(Creep creep) {
-        creeps.removeValue(creep, false);
-    }
-
-    public Creep createCreep(GridPoint2 position, TiledMapTileLayer layer, TemplateForUnit templateForUnit) {
-        creeps.add(new Creep(position, layer, templateForUnit));
-        return creeps.peek();
+    public Creep createCreep(GridPoint2 position, ArrayDeque<Vertex> route, TemplateForUnit templateForUnit) {
+        Creep newCreep = new Creep(position, route, templateForUnit);
+        creeps.add(newCreep);
+        return newCreep;
     }
 
     public int getCreep(Creep creep) { return creeps.indexOf(creep, false); }
@@ -46,8 +41,16 @@ public class CreepsManager {
         return null;
     }
 
+    public Array<Creep> getAllCreeps() {
+        return creeps;
+    }
+
     public int amountCreeps() {
         return creeps.size;
+    }
+
+    public void removeCreep(Creep creep) {
+        creeps.removeValue(creep, false);
     }
 
     public boolean setRouteForCreeps(GridNav gridNav, GridPoint2 exitPoint) {

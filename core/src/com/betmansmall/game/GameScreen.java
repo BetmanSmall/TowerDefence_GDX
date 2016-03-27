@@ -17,7 +17,7 @@ import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 
 public class GameScreen implements Screen {
-	private static final float MAX_ZOOM = 2f; //max size
+	private static final float MAX_ZOOM = 3f; //max size
 	private static final float MIN_ZOOM = 0.2f; // 2x zoom
 
 	private GameScreen gs;
@@ -51,7 +51,11 @@ public class GameScreen implements Screen {
 			}
 
 			if(tileCooCoordinate != null) {
-				gameField.towerActions(tileCooCoordinate);
+				if(button == 0) {
+					gameField.towerActions(tileCooCoordinate.x, tileCooCoordinate.y);
+				} else if(button == 1) {
+					gameField.createCreep(tileCooCoordinate.x, tileCooCoordinate.y);
+				}
 			}
 			return false;
 		}
@@ -113,14 +117,12 @@ public class GameScreen implements Screen {
 		this.gs = this;
 		this.cam = new OrthographicCamera();
 		this.cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 		gameField = new GameField("maps/arena.tmx");
 		gameInterface = new GameInterface(gameField);
 
 		Gdx.input.setInputProcessor(gameInterface.setCommonInputHandler(new GestureDetector(cameraController)));
-
 	}
-
-
 
 	@Override
 	public void show() {
@@ -147,8 +149,17 @@ public class GameScreen implements Screen {
 			gameField.isDrawableGrid = !gameField.isDrawableGrid;
 			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-			gameField.isDrawableSteps = !gameField.isDrawableSteps;
-			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableSteps:" + gameField.isDrawableSteps);
+			gameField.isDrawableCreeps = !gameField.isDrawableCreeps;
+			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableCreeps:" + gameField.isDrawableCreeps);
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+			gameField.isDrawableTowers = !gameField.isDrawableTowers;
+			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
+			gameField.isDrawableRoutes = !gameField.isDrawableRoutes;
+			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableRoutes:" + gameField.isDrawableRoutes);
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
+			gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
+			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
 		}
 	}
 	

@@ -48,8 +48,8 @@ public class GameInterface {
         towersRoulette = new TowersRoulette(gameField);
         creepsRoulette = new CreepsRoulette(gameField);
 
-        stage.addActor(towersRoulette.getGroup());
         stage.addActor(creepsRoulette.getGroup());
+//        stage.addActor(towersRoulette.getGroup());
     }
 
     public InputMultiplexer setCommonInputHandler(InputProcessor inputProcessor) {

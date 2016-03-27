@@ -110,7 +110,7 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(menuButtons);
         mmStage.addActor(settings);
         mmStage.addActor(returnButton);
-        mmStage.addActor(welcomeScreen);
+//        mmStage.addActor(welcomeScreen);
     }
 
     @Override

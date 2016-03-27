@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -29,6 +30,7 @@ public class FactionsManager {
     }
 
     public void addTowerToFaction(TemplateForTower tower) {
+        Gdx.app.log("TemplateForTower::addTowerToFaction()", " -- Tower name:" + tower.name);
         String newFactionName = tower.getFactionName();
         for(Faction faction: factions) {
             if(faction.getName().equals(newFactionName)) {
@@ -57,7 +59,7 @@ public class FactionsManager {
     public TemplateForTower getRandomTemplateForTowerFromFirstFaction() {
         Faction faction = factions.first();
         if(faction != null) {
-            TemplateForTower templateForTower = faction.getTowers().get(0);
+            TemplateForTower templateForTower = faction.getTowers().random();
             if(templateForTower != null) {
                 return templateForTower;
             }

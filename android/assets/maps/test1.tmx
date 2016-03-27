@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="32" nextobjectid="1">
- <tileset firstgid="1" name="terrain" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="terrain" tilewidth="64" tileheight="64" tilecount="160">
   <properties>
    <property name="type" value="terrain"/>
   </properties>
@@ -18,6 +18,11 @@
   <tile id="3">
    <properties>
     <property name="exitPoint" value="1"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="bridge" value="1"/>
    </properties>
   </tile>
   <tile id="30">
@@ -569,7 +574,7 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="161" name="unit1_grunt" tilewidth="72" tileheight="72">
+ <tileset firstgid="161" name="unit1_grunt" tilewidth="72" tileheight="72" tilecount="60">
   <properties>
    <property name="faction_name" value="Faction1"/>
    <property name="health_point" value="100"/>
@@ -1022,7 +1027,7 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="221" name="unit2_troll_axethrower" tilewidth="72" tileheight="72">
+ <tileset firstgid="221" name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="60">
   <properties>
    <property name="faction_name" value="Faction1"/>
    <property name="health_point" value="90"/>
@@ -1475,63 +1480,13 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="281" name="tower1_scout" tilewidth="64" tileheight="64">
+ <tileset firstgid="281" name="tower1_scout" tilewidth="64" tileheight="64" tilecount="6">
   <properties>
-   <property name="attackSpeed" value="0.2"/>
-   <property name="damage" value="10"/>
+   <property name="attack" value="10"/>
+   <property name="attackSpeed" value="15"/>
    <property name="factionName" value="Faction1"/>
    <property name="name" value="Scout"/>
    <property name="radius" value="1"/>
-   <property name="size" value="1"/>
-   <property name="type" value="tower"/>
-  </properties>
-  <image source="textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
-  <terraintypes>
-   <terrain name="idleTile" tile="0"/>
-   <terrain name="arrow_up" tile="1"/>
-   <terrain name="arrow_up_right" tile="2"/>
-   <terrain name="arrow_right" tile="3"/>
-   <terrain name="arrow_down_right" tile="4"/>
-   <terrain name="arrow_down" tile="5"/>
-  </terraintypes>
-  <tile id="0">
-   <properties>
-    <property name="tileName" value="idleTile"/>
-   </properties>
-  </tile>
-  <tile id="1">
-   <properties>
-    <property name="tileName" value="arrow_up"/>
-   </properties>
-  </tile>
-  <tile id="2">
-   <properties>
-    <property name="tileName" value="arrow_up_right"/>
-   </properties>
-  </tile>
-  <tile id="3">
-   <properties>
-    <property name="tileName" value="arrow_right"/>
-   </properties>
-  </tile>
-  <tile id="4">
-   <properties>
-    <property name="tileName" value="arrow_down_right"/>
-   </properties>
-  </tile>
-  <tile id="5">
-   <properties>
-    <property name="tileName" value="arrow_down"/>
-   </properties>
-  </tile>
- </tileset>
- <tileset firstgid="287" name="tower2_scout" tilewidth="64" tileheight="64">
-  <properties>
-   <property name="attackSpeed" value="0.2"/>
-   <property name="damage" value="10"/>
-   <property name="factionName" value="Faction1"/>
-   <property name="name" value="Scout2"/>
-   <property name="radius" value="1"/>
    <property name="size" value="2"/>
    <property name="type" value="tower"/>
   </properties>
@@ -1575,95 +1530,24 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="293" name="tower3_cannon" tilewidth="64" tileheight="64">
+ <tileset firstgid="287" name="tower2_mage" tilewidth="96" tileheight="96" tilecount="2">
   <properties>
-   <property name="attackSpeed" value="0.2"/>
-   <property name="damage" value="25"/>
+   <property name="attack" value="25"/>
+   <property name="attackSpeed" value="20"/>
    <property name="factionName" value="Faction1"/>
-   <property name="name" value="Cannon"/>
-   <property name="radius" value="2"/>
-   <property name="size" value="1"/>
-   <property name="type" value="tower"/>
-  </properties>
-  <image source="textures/warcraft2/tilesets/summer/orc/buildings/cannon_tower.png" trans="ff00ff" width="64" height="128"/>
-  <terraintypes>
-   <terrain name="idle_up" tile="0"/>
-   <terrain name="idle_down" tile="1"/>
-  </terraintypes>
-  <tile id="0">
-   <properties>
-    <property name="tileName" value="idleTile"/>
-   </properties>
-  </tile>
- </tileset>
- <tileset firstgid="295" name="tower4_cannon" tilewidth="64" tileheight="64">
-  <properties>
-   <property name="attackSpeed" value="0.2"/>
-   <property name="damage" value="25"/>
-   <property name="factionName" value="Faction1"/>
-   <property name="name" value="Cannon2"/>
-   <property name="radius" value="2"/>
-   <property name="size" value="2"/>
-   <property name="type" value="tower"/>
-  </properties>
-  <image source="textures/warcraft2/tilesets/summer/orc/buildings/cannon_tower.png" trans="ff00ff" width="64" height="128"/>
-  <terraintypes>
-   <terrain name="idle_up" tile="0"/>
-   <terrain name="idle_down" tile="1"/>
-  </terraintypes>
-  <tile id="0">
-   <properties>
-    <property name="tileName" value="idleTile"/>
-   </properties>
-  </tile>
- </tileset>
- <tileset firstgid="297" name="tower5_scout" tilewidth="64" tileheight="64">
-  <properties>
-   <property name="attackSpeed" value="0.2"/>
-   <property name="damage" value="10"/>
-   <property name="factionName" value="Faction1"/>
-   <property name="name" value="Scout3"/>
+   <property name="name" value="Mage"/>
    <property name="radius" value="1"/>
    <property name="size" value="3"/>
    <property name="type" value="tower"/>
   </properties>
-  <image source="textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
+  <image source="textures/warcraft2/tilesets/winter/human/buildings/mage_tower.png" trans="ff00ff" width="96" height="192"/>
   <terraintypes>
-   <terrain name="idleTile" tile="0"/>
-   <terrain name="arrow_up" tile="1"/>
-   <terrain name="arrow_up_right" tile="2"/>
-   <terrain name="arrow_right" tile="3"/>
-   <terrain name="arrow_down_right" tile="4"/>
-   <terrain name="arrow_down" tile="5"/>
+   <terrain name="idle_up" tile="0"/>
+   <terrain name="idle_down" tile="1"/>
   </terraintypes>
   <tile id="0">
    <properties>
     <property name="tileName" value="idleTile"/>
-   </properties>
-  </tile>
-  <tile id="1">
-   <properties>
-    <property name="tileName" value="arrow_up"/>
-   </properties>
-  </tile>
-  <tile id="2">
-   <properties>
-    <property name="tileName" value="arrow_up_right"/>
-   </properties>
-  </tile>
-  <tile id="3">
-   <properties>
-    <property name="tileName" value="arrow_right"/>
-   </properties>
-  </tile>
-  <tile id="4">
-   <properties>
-    <property name="tileName" value="arrow_down_right"/>
-   </properties>
-  </tile>
-  <tile id="5">
-   <properties>
-    <property name="tileName" value="arrow_down"/>
    </properties>
   </tile>
  </tileset>
@@ -1732,8 +1616,8 @@
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,2,
-2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,

@@ -16,14 +16,18 @@ public class TowersManager {
         towers = new Array<Tower>();
     }
 
-    public Tower createTower(GridPoint2 position, TiledMapTileLayer layer, TemplateForTower templateForTower) {
-        towers.add(new Tower(position, layer, templateForTower));
-        return towers.peek();
+    public Tower createTower(GridPoint2 position, TemplateForTower templateForTower) {
+        Tower tower = new Tower(position, templateForTower);
+        towers.add(tower);
+        return tower;
     }
 
-    public void removeTower(GridPoint2 position, TiledMapTileLayer layer) {
+    public void removeTower(Tower tower) {
+        towers.removeValue(tower, false);
+    }
+
+    public void removeTower(GridPoint2 position) {
         towers.removeValue(getTower(position), false);
-        layer.getCell(position.x, position.y).setTile(null);
     }
 
     public Tower getTower(int id) {
@@ -38,6 +42,10 @@ public class TowersManager {
             }
         }
         return null;
+    }
+
+    public Array<Tower> getAllTowers() {
+        return towers;
     }
 
     public int amountTowers() {

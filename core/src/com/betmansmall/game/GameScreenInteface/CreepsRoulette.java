@@ -70,7 +70,7 @@ public class CreepsRoulette extends Roulette {
     public boolean isButtonTouched(float x, float y) {
         boolean isTouched = false;
         if(x <= getButtonSizeX()&& y > Gdx.graphics.getHeight() - getButtonSizeY()){
-                isTouched = true;
+            isTouched = true;
         }
         if(isTouched) buttonClick();
         return isTouched;

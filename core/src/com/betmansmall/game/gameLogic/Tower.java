@@ -1,11 +1,8 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.utils.Timer;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 /**
@@ -13,73 +10,66 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
  */
 public class Tower {
     private GridPoint2 position;
-    private TemplateForTower templateForTower;
-    private TiledMapTile idleTile;
-    private float attackSpeed;
-    private float elapsedTime;
     private int damage;
     private int radius;
+    private float attackSpeed;
+    private float elapsedTime;
 
-    private TiledMapTileLayer layer;
+    private TemplateForTower templateForTower;
+    private TiledMapTile idleTile;
 
-    public Tower(GridPoint2 position, TiledMapTileLayer layer, TemplateForTower templateForTower){
+    public Tower(GridPoint2 position, TemplateForTower templateForTower){
         this.position = position;
-        this.templateForTower = templateForTower;
-        this.idleTile = templateForTower.getIdleTile();
-        this.radius = templateForTower.getRadius();
-        this.attackSpeed = templateForTower.getAttack();
-        this.damage = templateForTower.getDamage();
+        this.damage = templateForTower.damage;
+        this.radius = templateForTower.radius;
+        this.attackSpeed = templateForTower.attackSpeed;
         this.elapsedTime = 0;
 
-        this.layer = layer;
-        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        cell.setTile(idleTile);
-        getLayer().setCell(position.x, position.y, cell);
-    }
-
-    public TiledMapTileLayer getLayer() {
-        return layer;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    public int getRadius() {
-        return radius;
-    }
-
-    public void setRadius(int radius) {
-        this.radius = radius;
+        this.templateForTower = templateForTower;
+        this.idleTile = templateForTower.idleTile;
     }
 
     public GridPoint2 getPosition() {
         return position;
     }
 
-
-    public boolean deleteTower() {
-        getLayer().setCell(getPosition().x, getPosition().y, null);
-        return true;
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
-    public float getAttackSpeed() {
-        return attackSpeed;
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public int getRadius() {
+        return radius;
     }
 
     public void setAttackSpeed(float attackSpeed) {
         this.attackSpeed = attackSpeed;
     }
 
-    public float getElapsedTime() {
-        return elapsedTime;
+    public float getAttackSpeed() {
+        return attackSpeed;
     }
 
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
+    }
+
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public TemplateForTower getTemplateForTower() {
+        return templateForTower;
+    }
+
+    public TextureRegion getCurentFrame() {
+        return idleTile.getTextureRegion();
     }
 }

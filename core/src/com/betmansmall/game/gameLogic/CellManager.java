@@ -36,16 +36,4 @@ public class CellManager {
         if (y < 0 || y >= height) return;
         cells[x][y] = cell;
     }
-
-    public char[][] getCharMatrix() {
-        char[][] charMatrix = new char[width][height];
-        for(int x=0; x<width; x++) {
-            for(int y=0; y<height; y++) {
-                charMatrix[x][y] = getCell(x, y).getPathFinder();
-            }
-        }
-        return charMatrix;
-    }
-
-
 }
