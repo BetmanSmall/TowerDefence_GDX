@@ -3,6 +3,7 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,11 +15,15 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.GridNav;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Vertex;
+import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
@@ -58,8 +63,9 @@ public class GameField {
     private Cell[][] field;
     private GridNav gridNav;
     private GridPoint2 spawnPoint, exitPoint;
+    private boolean diagonalON = false;
 
-    private int defaultNumCreateCreeps = 10;
+    private int defaultNumCreateCreeps = 100;
     private CreepsManager creepsManager;
     private TowersManager towersManager;
     private FactionsManager factionsManager;
@@ -67,6 +73,11 @@ public class GameField {
     private float intervalForSpawnCreeps = 1f;
     private float elapsedTimeForSpawn = 0f;
     private boolean gamePaused;
+
+    //TEST ZONE1
+    public static Animation animation;
+    float stateTime;
+    //TEST ZONE2
 
     public GameField(String mapName) {
         map = new TmxMapLoader().load(mapName);
@@ -80,7 +91,7 @@ public class GameField {
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
 
-        creepsManager = new CreepsManager(defaultNumCreateCreeps);
+        creepsManager = new CreepsManager();
         towersManager = new TowersManager();
         factionsManager = new FactionsManager();
 
@@ -91,6 +102,18 @@ public class GameField {
             if(tileSetName.contains("unit")) {
                 TemplateForUnit unit = new TemplateForUnit(tileSet);
                 factionsManager.addUnitToFaction(unit);
+                if(animation == null) {
+                    AnimatedTiledMapTile animatedTiledMapTile = unit.animations.get("walk_" + Direction.LEFT);
+                    StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+                    Array<TextureRegion> textureRegions = new Array<TextureRegion>(staticTiledMapTiles.length);
+                    Gdx.app.log("GameField::GameField()", " -- textureRegion.size:" + staticTiledMapTiles.length);
+                    for(int k = 0; k < staticTiledMapTiles.length; k++) {
+                        TextureRegion textureRegion = staticTiledMapTiles[k].getTextureRegion();
+                        textureRegions.add(textureRegion);
+                    }
+                    stateTime = 0f;
+                    animation = new Animation(0.25f, textureRegions);
+                }
             } else if(tileSetName.contains("tower")) {
                 TemplateForTower tower = new TemplateForTower(tileSet);
                 factionsManager.addTowerToFaction(tower);
@@ -179,6 +202,14 @@ public class GameField {
             drawRoutes(camera);
         if(isDrawableGridNav)
             drawGridNav(camera);
+
+        if(animation != null) {
+            stateTime += delta;
+            TextureRegion currentFrame = animation.getKeyFrame(stateTime, true); // #16
+            spriteBatch.begin();
+            spriteBatch.draw(currentFrame, 50, 300, 300, 300); // #17
+            spriteBatch.end();
+        }
     }
 
 	private void drawGrid(OrthographicCamera camera) {
@@ -214,34 +245,44 @@ public class GameField {
             int newX = creep.getNewPosition().getX(), newY = creep.getNewPosition().getY();
             float fVx = halfSizeCellX*newY + newX*halfSizeCellX;
             float fVy = halfSizeCellY*newY - newX*halfSizeCellY;
-            float elapsedTime = creep.getElapsedTime(), speed = creep.getSpeed();
 
-            if(newX < oldX && newY > oldY) {
-                fVy -= (sizeCellY/speed)*(speed-elapsedTime);
-            } else if(newX == oldX && newY > oldY) {
-                fVx += (sizeCellX/2/speed)*(speed-elapsedTime);
-                fVy -= (sizeCellY/2/speed)*(speed-elapsedTime);
-            } else if(newX > oldX && newY > oldY) {
-                fVx += (sizeCellX/speed)*(speed-elapsedTime);
-            } else if(newX > oldX && newY == oldY) {
-                fVx += (sizeCellX/2/speed)*(speed-elapsedTime);
-                fVy += (sizeCellY/2/speed)*(speed-elapsedTime);
-            } else if(newX > oldX && newY < oldY) {
-                fVy += (sizeCellY/speed)*(speed-elapsedTime);
-            } else if(newX == oldX && newY < oldY) {
-                fVx -= (sizeCellX/2/speed)*(speed-elapsedTime);
-                fVy += (sizeCellY/2/speed)*(speed-elapsedTime);
-            } else if(newX < oldX && newY < oldY) {
-                fVx -= (sizeCellX/speed)*(speed-elapsedTime);
-            } else if(newX < oldX && newY == oldY) {
-                fVx -= (sizeCellX/2/speed)*(speed-elapsedTime);
-                fVy -= (sizeCellY/2/speed)*(speed-elapsedTime);
-            }
+            float elapsedTime = creep.getElapsedTime(), speed = creep.getSpeed();
 
             TextureRegion curentFrame = creep.getCurentFrame();
             int deltaX = (curentFrame.getRegionWidth()-sizeCellX)/2;
             int deltaY = (curentFrame.getRegionHeight()-sizeCellY)/2;
-            spriteBatch.draw(curentFrame, fVx - deltaX, fVy - deltaY);
+            fVx -= deltaX;
+            fVy -= deltaY;
+
+            if(newX < oldX && newY > oldY) {
+                fVy -= (sizeCellY/speed)*(speed-elapsedTime);
+            } else if(newX == oldX && newY > oldY) {
+                fVx -= (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy -= (sizeCellY/2/speed)*(speed-elapsedTime);
+            } else if(newX > oldX && newY > oldY) {
+                fVx -= (sizeCellX/speed)*(speed-elapsedTime);
+            } else if(newX > oldX && newY == oldY) {
+                fVx -= (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy += (sizeCellY/2/speed)*(speed-elapsedTime);
+            } else if(newX > oldX && newY < oldY) {
+                fVy += (sizeCellY/speed)*(speed-elapsedTime);
+            } else if(newX == oldX && newY < oldY) {
+                fVx += (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy += (sizeCellY/2/speed)*(speed-elapsedTime);
+            } else if(newX < oldX && newY < oldY) {
+                fVx += (sizeCellX/speed)*(speed-elapsedTime);
+            } else if(newX < oldX && newY == oldY) {
+                fVx += (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy -= (sizeCellY/2/speed)*(speed-elapsedTime);
+            }
+
+//            shapeRenderer.setProjectionMatrix(camera.combined);
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//            shapeRenderer.setColor(Color.BLUE); // (100, 60, 21, 1f);
+//            shapeRenderer.circle(fVx, fVy, 1);
+//            shapeRenderer.end();
+
+            spriteBatch.draw(curentFrame, fVx, fVy);
 
 //            Gdx.app.log("GameField::drawCreeps()", " -- x:" + x + " y:" + y + " x1:" + x1 + " y1:" + y1);
 //            Gdx.app.log("GameField::drawCreeps()", " -- sizeTexReg:" + creep.getCurentFrame().getRegionWidth() + "x" + creep.getCurentFrame().getRegionHeight());
@@ -363,7 +404,7 @@ public class GameField {
 
     public void createCreep(int x, int y) {
         gridNav.loadCharMatrix(getCharMatrix());
-        ArrayDeque<Vertex> route = gridNav.route(new int[]{y, x}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
+        ArrayDeque<Vertex> route = gridNav.route(new int[]{y, x}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, diagonalON);
 
         if(route != null) {
             Creep creep = creepsManager.createCreep(route, factionsManager.getRandomTemplateForUnitFromFirstFaction());
@@ -419,7 +460,7 @@ public class GameField {
     private void rerouteForAllCreeps() {
         gridNav.loadCharMatrix(getCharMatrix());
         for(Creep creep: creepsManager.getAllCreeps()) {
-            ArrayDeque<Vertex> route = gridNav.route(new int[]{creep.getNewPosition().getY(), creep.getNewPosition().getX()}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
+            ArrayDeque<Vertex> route = gridNav.route(new int[]{creep.getNewPosition().getY(), creep.getNewPosition().getX()}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, diagonalON);
             creep.setRoute(route);
         }
     }
@@ -483,4 +524,6 @@ public class GameField {
 //            }
 //        }
 //    }
+
+
 }

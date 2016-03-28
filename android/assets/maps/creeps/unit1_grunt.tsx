@@ -5,7 +5,7 @@
   <property name="faction_name" value="Faction1"/>
   <property name="health_point" value="100"/>
   <property name="name" value="Grunt"/>
-  <property name="speed" value="0.2"/>
+  <property name="speed" value="0.7"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../textures/warcraft2/orc/units/grunt.png" trans="ff00ff" width="360" height="864"/>

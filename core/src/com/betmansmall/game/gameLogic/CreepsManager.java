@@ -15,8 +15,8 @@ import java.util.ArrayDeque;
 public class CreepsManager {
     private Array<Creep> creeps;
 
-    public CreepsManager(int amountCreeps) {
-        creeps = new Array<Creep>(amountCreeps);
+    public CreepsManager() {
+        creeps = new Array<Creep>();
     }
 
     public Creep createCreep(ArrayDeque<Vertex> route, TemplateForUnit templateForUnit) {

@@ -58,6 +58,8 @@ public class GameScreen implements Screen {
 					gameField.createCreep(tileCooCoordinate.x, tileCooCoordinate.y);
 				} else if(button == 3) {
 					gameField.setExitPoint(tileCooCoordinate.x, tileCooCoordinate.y);
+				} else if(button == 4) {
+					gameField.setSpawnPoint(tileCooCoordinate.x, tileCooCoordinate.y);
 				}
 			}
 			return false;

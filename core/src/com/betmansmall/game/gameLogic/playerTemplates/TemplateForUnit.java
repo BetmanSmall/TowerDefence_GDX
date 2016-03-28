@@ -23,9 +23,8 @@ public class TemplateForUnit {
     public Float   speed;
     public String  type;
 
-    public TextureRegion idle;
-    public ObjectMap<String, AnimatedTiledMapTile> walks;
-    public ObjectMap<String, AnimatedTiledMapTile> deaths;
+//    public TextureRegion idle;
+    public ObjectMap<String, AnimatedTiledMapTile> animations;
 
     public TemplateForUnit(TiledMapTileSet tileSet) {
         try {
@@ -39,8 +38,7 @@ public class TemplateForUnit {
             Gdx.app.error("TemplateForUnit::TemplateForUnit()", " -- Exp: " + exp + " Cheak the file!");
         }
 
-        walks = new ObjectMap<String, AnimatedTiledMapTile>();
-        deaths = new ObjectMap<String, AnimatedTiledMapTile>();
+        animations = new ObjectMap<String, AnimatedTiledMapTile>();
 
         setAnimationFrames(tileSet);
         validate();
@@ -56,109 +54,73 @@ public class TemplateForUnit {
                         setIdleAnimationFrames(actionAndDirection, aTile);
                     if(actionAndDirection.contains("walk"))
                         setWalkAnimationFrames(actionAndDirection, aTile);
-                    else if(actionAndDirection.contains("death"))
-                        setDeathAnimationFrames(actionAndDirection, aTile);
+//                    else if(actionAndDirection.contains("death"))
+//                        setDeathAnimationFrames(actionAndDirection, aTile);
                 }
             }
         }
 
     }
     private void setIdleAnimationFrames(String actionAndDirection, AnimatedTiledMapTile tile) {
-        idle = tile.getTextureRegion();
+//        idle = tile.getTextureRegion();
+        if(actionAndDirection.equals("idle_" + Direction.UP)) {
+            animations.put("idle_" + Direction.UP, tile);
+        } else if(actionAndDirection.equals("idle_" + Direction.UP_RIGHT)) {
+            animations.put("idle_" + Direction.UP_RIGHT, tile);
+            animations.put("idle_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
+        } else if(actionAndDirection.equals("idle_" + Direction.RIGHT)) {
+            animations.put("idle_" + Direction.RIGHT, tile);
+            animations.put("idle_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
+        } else if(actionAndDirection.equals("idle_" + Direction.DOWN_RIGHT)) {
+            animations.put("idle_" + Direction.DOWN_RIGHT, tile);
+            animations.put("idle_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
+        } else if(actionAndDirection.equals("idle_" + Direction.DOWN)) {
+            animations.put("idle_" + Direction.DOWN, tile);
+        }
     }
     private void setWalkAnimationFrames(String actionAndDirection, AnimatedTiledMapTile tile) {
         if(actionAndDirection.equals("walk3_" + Direction.UP)) {
-            walks.put("walk_" + Direction.UP, tile);
+            animations.put("walk_" + Direction.UP, tile);
         } else if(actionAndDirection.equals("walk3_" + Direction.UP_RIGHT)) {
-            walks.put("walk_" + Direction.UP_RIGHT, tile);
-
-            Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(tile.getFrameTiles());
-            for(int k = 0; k < frames.size; k++) {
-                StaticTiledMapTile tmpFrame = frames.get(k);
-                TextureRegion textureRegion = tmpFrame.getTextureRegion();
-                textureRegion.flip(true, false);
-                tmpFrame.setTextureRegion(textureRegion);
-                frames.set(k, tmpFrame);
-            }
-            IntArray intervals = new IntArray(tile.getAnimationIntervals());
-            walks.put("walk_" + Direction.UP_LEFT, new AnimatedTiledMapTile(intervals, frames));
+            animations.put("walk_" + Direction.UP_RIGHT, tile);
+            animations.put("walk_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
         } else if(actionAndDirection.equals("walk3_" + Direction.RIGHT)) {
-            walks.put("walk_" + Direction.RIGHT, tile);
-
-            Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(tile.getFrameTiles());
-            for(int k = 0; k < frames.size; k++) {
-                StaticTiledMapTile tmpFrame = frames.get(k);
-                TextureRegion textureRegion = tmpFrame.getTextureRegion();
-                textureRegion.flip(true, false);
-                tmpFrame.setTextureRegion(textureRegion);
-                frames.set(k, tmpFrame);
-            }
-            IntArray intervals = new IntArray(tile.getAnimationIntervals());
-            walks.put("walk_" + Direction.LEFT, new AnimatedTiledMapTile(intervals, frames));
+            animations.put("walk_" + Direction.RIGHT, tile);
+            animations.put("walk_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
         } else if(actionAndDirection.equals("walk3_" + Direction.DOWN_RIGHT)) {
-            walks.put("walk_" + Direction.DOWN_RIGHT, tile);
-
-            Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(tile.getFrameTiles());
-            for(int k = 0; k < frames.size; k++) {
-                StaticTiledMapTile tmpFrame = frames.get(k);
-                TextureRegion textureRegion = tmpFrame.getTextureRegion();
-                textureRegion.flip(true, false);
-                tmpFrame.setTextureRegion(textureRegion);
-                frames.set(k, tmpFrame);
-            }
-            IntArray intervals = new IntArray(tile.getAnimationIntervals());
-            walks.put("walk_" + Direction.DOWN_LEFT, new AnimatedTiledMapTile(intervals, frames));
-
+            animations.put("walk_" + Direction.DOWN_RIGHT, tile);
+            animations.put("walk_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
         } else if(actionAndDirection.equals("walk3_" + Direction.DOWN)) {
-            walks.put("walk_" + Direction.DOWN, tile);
+            animations.put("walk_" + Direction.DOWN, tile);
         }
     }
     private void setDeathAnimationFrames(String actionAndDirection, AnimatedTiledMapTile tile) {
         if(actionAndDirection.equals("death1_" + Direction.UP)) {
-            deaths.put("death_" + Direction.UP, tile);
+            animations.put("death_" + Direction.UP, tile);
         } else if(actionAndDirection.equals("death1_" + Direction.UP_RIGHT)) {
-            deaths.put("death_" + Direction.UP_RIGHT, tile);
-
-            Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(tile.getFrameTiles());
-            for(int k = 0; k < frames.size; k++) {
-                StaticTiledMapTile tmpFrame = frames.get(k);
-                TextureRegion textureRegion = tmpFrame.getTextureRegion();
-                textureRegion.flip(true, false);
-                tmpFrame.setTextureRegion(textureRegion);
-                frames.set(k, tmpFrame);
-            }
-            IntArray intervals = new IntArray(tile.getAnimationIntervals());
-            deaths.put("death_" + Direction.UP_LEFT, new AnimatedTiledMapTile(intervals, frames));
+            animations.put("death_" + Direction.UP_RIGHT, tile);
+            animations.put("death_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
         } else if(actionAndDirection.equals("death1_" + Direction.RIGHT)) {
-            deaths.put("death_" + Direction.RIGHT, tile);
-
-            Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(tile.getFrameTiles());
-            for(int k = 0; k < frames.size; k++) {
-                StaticTiledMapTile tmpFrame = frames.get(k);
-                TextureRegion textureRegion = tmpFrame.getTextureRegion();
-                textureRegion.flip(true, false);
-                tmpFrame.setTextureRegion(textureRegion);
-                frames.set(k, tmpFrame);
-            }
-            IntArray intervals = new IntArray(tile.getAnimationIntervals());
-            deaths.put("death_" + Direction.LEFT, new AnimatedTiledMapTile(intervals, frames));
+            animations.put("death_" + Direction.RIGHT, tile);
+            animations.put("death_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
         } else if(actionAndDirection.equals("death1_" + Direction.DOWN_RIGHT)) {
-            deaths.put("death_" + Direction.DOWN_RIGHT, tile);
-
-            Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(tile.getFrameTiles());
-            for(int k = 0; k < frames.size; k++) {
-                StaticTiledMapTile tmpFrame = frames.get(k);
-                TextureRegion textureRegion = tmpFrame.getTextureRegion();
-                textureRegion.flip(true, false);
-                tmpFrame.setTextureRegion(textureRegion);
-                frames.set(k, tmpFrame);
-            }
-            IntArray intervals = new IntArray(tile.getAnimationIntervals());
-            deaths.put("death_" + Direction.DOWN_LEFT, new AnimatedTiledMapTile(intervals, frames));
-
+            animations.put("death_" + Direction.DOWN_RIGHT, tile);
+            animations.put("death_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
         } else if(actionAndDirection.equals("death1_" + Direction.DOWN)) {
-            deaths.put("death_" + Direction.DOWN, tile);
+            animations.put("death_" + Direction.DOWN, tile);
         }
+    }
+
+    private AnimatedTiledMapTile flipAnimatedTiledMapTile(AnimatedTiledMapTile animatedTiledMapTile) {
+        Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(animatedTiledMapTile.getFrameTiles());
+        for(int k = 0; k < frames.size; k++) {
+            TextureRegion textureRegion = new TextureRegion(frames.get(k).getTextureRegion());
+            textureRegion.flip(true, false);
+            StaticTiledMapTile frame = new StaticTiledMapTile(textureRegion);
+            frames.set(k, frame);
+        }
+        IntArray intervals = new IntArray(animatedTiledMapTile.getAnimationIntervals());
+        return new AnimatedTiledMapTile(intervals, frames);
     }
 
     private void validate() {
@@ -176,14 +138,8 @@ public class TemplateForUnit {
         else if(this.type == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'type'! Check the file");
 
-        if(idle == null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'idle'! Check the file");
-        }
-//        else if(walks.get("walkUp") == null) {
-//            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'walkUp'! Check the file");
-//        }
-        for (String key: walks.keys()) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Dir:" + key + " Lenght:" + walks.get(key).getFrameTiles().length);
+        for (String key: animations.keys()) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- Dir:" + key + " Lenght:" + animations.get(key).getFrameTiles().length);
         }
     }
 
