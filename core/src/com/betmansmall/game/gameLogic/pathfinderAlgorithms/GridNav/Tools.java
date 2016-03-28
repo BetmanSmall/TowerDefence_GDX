@@ -26,10 +26,10 @@ public class Tools {
     protected double heuristics(int y, int x, Options heuristic, Vertex whereTo){
         int dx = Math.abs(y - whereTo.getY());
         int dy = Math.abs(x - whereTo.getX());
-        if(heuristic==Options.MANHATTAN_HEURISTIC) return dy + dx;                
-        if(heuristic==Options.DIAGONAL_HEURISTIC) return (dx + dy) + (Math.sqrt(2) - 2) * Math.min(dx, dy);
-        if(heuristic==Options.DIAGONAL_EQUAL_COST_HEURISTIC) return Math.max(dx, dy);
-        if(heuristic==Options.EUCLIDEAN_HEURISTIC) return Math.sqrt(dx * dx + dy * dy);
+        if(heuristic== Options.MANHATTAN_HEURISTIC) return dy + dx;
+        if(heuristic== Options.DIAGONAL_HEURISTIC) return (dx + dy) + (Math.sqrt(2) - 2) * Math.min(dx, dy);
+        if(heuristic== Options.DIAGONAL_EQUAL_COST_HEURISTIC) return Math.max(dx, dy);
+        if(heuristic== Options.EUCLIDEAN_HEURISTIC) return Math.sqrt(dx * dx + dy * dy);
         return -1;
     }
     

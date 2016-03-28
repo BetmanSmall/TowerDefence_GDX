@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
  * Implementation of the Jump Point Search algorithm with self-made data structures.
  * @author Elias Nygren
  */
-public class JPS {    
+public class JPS {
     private PriorityQueue<Vertex> heap;
     private Vertex[][] map;
     private Vertex start;
@@ -74,7 +74,7 @@ public class JPS {
                         jumpPoint.setDistance(distance);
                         
                         //use appropriate heuristic if necessary (-1 is the default value of distance to goal, so heuristic not used if still -1)
-                        if(jumpPoint.getToGoal() == -1) jumpPoint.setToGoal(Tools.heuristics(jumpPoint.getY(), jumpPoint.getX(), this.heuristics, goal));                    
+                        if(jumpPoint.getToGoal() == -1) jumpPoint.setToGoal(Tools.heuristics(jumpPoint.getY(), jumpPoint.getX(), this.heuristics, goal));
                         
                         jumpPoint.setPath(vertex);
 

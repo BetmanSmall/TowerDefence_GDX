@@ -46,19 +46,20 @@ public class GameField {
     } public int getSizeCellY() {
         return sizeCellY;
     }
+    private TiledMapTileLayer foreground, backbround;
 
     private WhichCell whichCell;
     public boolean isDrawableGrid = true;
     public boolean isDrawableCreeps = true;
     public boolean isDrawableTowers = true;
     public boolean isDrawableRoutes = true;
-    public boolean isDrawableGridNav = true;
+    public boolean isDrawableGridNav = false;
 
     private Cell[][] field;
     private GridNav gridNav;
     private GridPoint2 spawnPoint, exitPoint;
 
-    private int defaultNumCreateCreeps = 100;
+    private int defaultNumCreateCreeps = 10;
     private CreepsManager creepsManager;
     private TowersManager towersManager;
     private FactionsManager factionsManager;
@@ -69,7 +70,7 @@ public class GameField {
 
     public GameField(String mapName) {
         map = new TmxMapLoader().load(mapName);
-        renderer = new IsometricTiledMapRenderer(map);
+        renderer = new IsometricTiledMapRenderer(map, spriteBatch);
 
         sizeFieldX = map.getProperties().get("width", Integer.class);
         sizeFieldY = map.getProperties().get("height", Integer.class);
@@ -307,13 +308,20 @@ public class GameField {
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED); // (100, 60, 21, 1f);
+//        shapeRenderer.setColor(Color.RED); // (100, 60, 21, 1f);
 
         for(int y = 0; y < sizeFieldY; y++) {
             for(int x = 0; x < sizeFieldX; x++) {
                 float fVx = halfSizeCellX * (y+1) + x * halfSizeCellX;
                 float fVy = halfSizeCellY * (y+1) - x * halfSizeCellY;
                 if(!field[x][y].isEmpty()) {
+                    if(field[x][y].isTerrain()) {
+                        shapeRenderer.setColor(Color.RED);
+                    } else if(field[x][y].getCreep() != null) {
+                        shapeRenderer.setColor(Color.GREEN);
+                    } else if(field[x][y].getTower() != null) {
+                        shapeRenderer.setColor(Color.BLACK);
+                    }
                     shapeRenderer.circle(fVx, fVy, 3);
                 }
             }
@@ -333,6 +341,14 @@ public class GameField {
         return whichCell.whichCell(gameCoordinate);
     }
 
+    public void setSpawnPoint(int x, int y) {
+        spawnPoint = new GridPoint2(x, y);
+    }
+    public void setExitPoint(int x, int y) {
+        exitPoint = new GridPoint2(x, y);
+        rerouteForAllCreeps();
+    }
+
     private void spawnCreep(float delta) {
         elapsedTimeForSpawn += delta;
         if(elapsedTimeForSpawn > intervalForSpawnCreeps) {
@@ -347,7 +363,7 @@ public class GameField {
 
     public void createCreep(int x, int y) {
         gridNav.loadCharMatrix(getCharMatrix());
-        ArrayDeque<Vertex> route = gridNav.route(new int[]{y, x}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+        ArrayDeque<Vertex> route = gridNav.route(new int[]{y, x}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
 
         if(route != null) {
             Creep creep = creepsManager.createCreep(route, factionsManager.getRandomTemplateForUnitFromFirstFaction());
@@ -403,7 +419,7 @@ public class GameField {
     private void rerouteForAllCreeps() {
         gridNav.loadCharMatrix(getCharMatrix());
         for(Creep creep: creepsManager.getAllCreeps()) {
-            ArrayDeque<Vertex> route = gridNav.route(new int[]{creep.getNewPosition().getX(), creep.getNewPosition().getY()}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+            ArrayDeque<Vertex> route = gridNav.route(new int[]{creep.getNewPosition().getY(), creep.getNewPosition().getX()}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
             creep.setRoute(route);
         }
     }

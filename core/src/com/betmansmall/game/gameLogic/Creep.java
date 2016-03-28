@@ -31,8 +31,9 @@ public class  Creep {
     public Creep(ArrayDeque<Vertex> route, TemplateForUnit templateForUnit) {
         if(route != null) {
             this.route = route;
-            this.oldPosition = route.peekFirst();
-            this.newPosition = route.pollFirst();
+            Vertex firstVertex = route.pollFirst();
+            this.oldPosition = new Vertex(firstVertex.getX(), firstVertex.getY(), firstVertex.getKey());
+            this.newPosition = new Vertex(firstVertex.getX(), firstVertex.getY(), firstVertex.getKey());
             this.hp = templateForUnit.hp;
             this.speed = templateForUnit.speed;
             this.elapsedTime = templateForUnit.speed;

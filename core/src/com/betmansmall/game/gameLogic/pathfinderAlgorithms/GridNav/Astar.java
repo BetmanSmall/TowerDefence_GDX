@@ -19,10 +19,10 @@ public class Astar {
     private Vertex start;
     private Vertex goal;
     private String directions;
-    private com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options heuristics;
+    private Options heuristics;
     
     private boolean utilitymode=false;
-    private com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Tools Tools;
+    private Tools Tools;
     private ArrayDeque<Vertex> utilityStack;
     
     /**
@@ -34,7 +34,7 @@ public class Astar {
      * @param diagonalMovement true -> diagonalMovement is allowed, false -> denied
      */
     
-    protected Astar(Vertex[][] map, int[] start, int[] goal, com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options heuristics, boolean diagonalMovement){
+    protected Astar(Vertex[][] map, int[] start, int[] goal, Options heuristics, boolean diagonalMovement){
         Tools = new Tools();
         this.map = map;
         this.heap = new PriorityQueue<Vertex>(map.length*map[0].length);
@@ -61,7 +61,7 @@ public class Astar {
      * @param utilitymode true -> utilitymode ON.
      */
     
-    protected Astar(Vertex[][] map, int[] start, int[] goal, com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options heuristics, boolean diagonalMovement, boolean utilitymode){
+    protected Astar(Vertex[][] map, int[] start, int[] goal, Options heuristics, boolean diagonalMovement, boolean utilitymode){
         this(map, start, goal, heuristics, diagonalMovement);
         this.utilitymode=utilitymode;
         this.utilityStack = new ArrayDeque<Vertex>();
@@ -93,7 +93,7 @@ public class Astar {
                                                 
             //utilitymode used by LosAlgoritmos.closestValidCoordinate
             if(utilitymode){
-                if(Tools.valid(vertex.getY(), vertex.getX(), map)){                    
+                if(Tools.valid(vertex.getY(), vertex.getX(), map)){
                     ArrayDeque<Vertex> s = new ArrayDeque<Vertex>();
                     s.push(vertex);                    
                     return s;
@@ -127,7 +127,7 @@ public class Astar {
                 if(!ngbr.isOpened() || ngbr.getDistance()>distance){
                     ngbr.setDistance(distance);
                     //use appropriate heuristic if necessary, -1 is the default value of distance to goal
-                    if(ngbr.getToGoal() == -1) ngbr.setToGoal(Tools.heuristics(ngbr.getY(), ngbr.getX(), this.heuristics, goal));              
+                    if(ngbr.getToGoal() == -1) ngbr.setToGoal(Tools.heuristics(ngbr.getY(), ngbr.getX(), this.heuristics, goal));
                     
                     ngbr.setPath(vertex);
         

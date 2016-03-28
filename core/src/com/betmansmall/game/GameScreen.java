@@ -40,6 +40,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
+			Gdx.app.log("GameScreen::tap()", " -- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 			Vector3 touch = new Vector3(x, y, 0);
 			cam.unproject(touch);
 			GridPoint2 gameCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
@@ -55,6 +56,8 @@ public class GameScreen implements Screen {
 					gameField.towerActions(tileCooCoordinate.x, tileCooCoordinate.y);
 				} else if(button == 1) {
 					gameField.createCreep(tileCooCoordinate.x, tileCooCoordinate.y);
+				} else if(button == 3) {
+					gameField.setExitPoint(tileCooCoordinate.x, tileCooCoordinate.y);
 				}
 			}
 			return false;

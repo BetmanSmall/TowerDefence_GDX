@@ -13,7 +13,7 @@ public class GridNav {
     private boolean clearmap;
     private int[] start;
     private int[] goal;
-    private com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Tools Tools;
+    private Tools Tools;
     private Cartographer c;
 
     public GridNav() {
@@ -31,12 +31,12 @@ public class GridNav {
      * @return null if no charMatrix loaded or invalid [y,x] coordinates
      */
    
-    public ArrayDeque<Vertex> route(int[] start, int[] goal, com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options algo, com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options heuristic, boolean diagonalMovement) {
+    public ArrayDeque<Vertex> route(int[] start, int[] goal, Options algo, Options heuristic, boolean diagonalMovement) {
         if(vertexMatrix==null) return null;
         if(!Tools.valid(start[0], start[1], vertexMatrix) || !Tools.valid(goal[0], goal[1], vertexMatrix)) return null;
         
         //set default heuristic if none was chosen for non-DIJKSTRA algorithm
-        if(algo!= com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options.DIJKSTRA && heuristic== com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options.NO_HEURISTIC) heuristic = com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options.MANHATTAN_HEURISTIC;
+        if(algo!= Options.DIJKSTRA && heuristic== Options.NO_HEURISTIC) heuristic = Options.MANHATTAN_HEURISTIC;
         
         this.start=start;
         this.goal=goal;
@@ -46,9 +46,9 @@ public class GridNav {
         clearmap=true;
                 
         //select correct algo & settings
-        if(algo== com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options.DIJKSTRA) return new com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Astar(vertexMatrix, start, goal, com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options.NO_HEURISTIC, diagonalMovement).run();
-        else if(algo== com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options.ASTAR) return new com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Astar(vertexMatrix, start, goal, heuristic, diagonalMovement).run();
-        else if(algo== com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Options.JPS) return new com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.JPS(vertexMatrix, start, goal, heuristic, true).run();
+        if(algo== Options.DIJKSTRA) return new Astar(vertexMatrix, start, goal, Options.NO_HEURISTIC, diagonalMovement).run();
+        else if(algo== Options.ASTAR) return new Astar(vertexMatrix, start, goal, heuristic, diagonalMovement).run();
+        else if(algo== Options.JPS) return new JPS(vertexMatrix, start, goal, heuristic, true).run();
         return null;
     }
     
