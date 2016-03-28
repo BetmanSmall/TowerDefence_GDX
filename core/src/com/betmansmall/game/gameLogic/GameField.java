@@ -209,15 +209,38 @@ public class GameField {
         spriteBatch.begin();
 
         for(Creep creep: creepsManager.getAllCreeps()) {
-            int x = creep.getPosition().x;
-            int y = creep.getPosition().y;
-            float x1 = halfSizeCellX*y + x*halfSizeCellX;
-            float y1 = halfSizeCellY*y - x*halfSizeCellY;
+            int oldX = creep.getOldPosition().getX(), oldY = creep.getOldPosition().getY();
+            int newX = creep.getNewPosition().getX(), newY = creep.getNewPosition().getY();
+            float fVx = halfSizeCellX*newY + newX*halfSizeCellX;
+            float fVy = halfSizeCellY*newY - newX*halfSizeCellY;
+            float elapsedTime = creep.getElapsedTime(), speed = creep.getSpeed();
+
+            if(newX < oldX && newY > oldY) {
+                fVy -= (sizeCellY/speed)*(speed-elapsedTime);
+            } else if(newX == oldX && newY > oldY) {
+                fVx += (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy -= (sizeCellY/2/speed)*(speed-elapsedTime);
+            } else if(newX > oldX && newY > oldY) {
+                fVx += (sizeCellX/speed)*(speed-elapsedTime);
+            } else if(newX > oldX && newY == oldY) {
+                fVx += (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy += (sizeCellY/2/speed)*(speed-elapsedTime);
+            } else if(newX > oldX && newY < oldY) {
+                fVy += (sizeCellY/speed)*(speed-elapsedTime);
+            } else if(newX == oldX && newY < oldY) {
+                fVx -= (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy += (sizeCellY/2/speed)*(speed-elapsedTime);
+            } else if(newX < oldX && newY < oldY) {
+                fVx -= (sizeCellX/speed)*(speed-elapsedTime);
+            } else if(newX < oldX && newY == oldY) {
+                fVx -= (sizeCellX/2/speed)*(speed-elapsedTime);
+                fVy -= (sizeCellY/2/speed)*(speed-elapsedTime);
+            }
 
             TextureRegion curentFrame = creep.getCurentFrame();
             int deltaX = (curentFrame.getRegionWidth()-sizeCellX)/2;
             int deltaY = (curentFrame.getRegionHeight()-sizeCellY)/2;
-            spriteBatch.draw(curentFrame, x1 - deltaX, y1 - deltaY);
+            spriteBatch.draw(curentFrame, fVx - deltaX, fVy - deltaY);
 
 //            Gdx.app.log("GameField::drawCreeps()", " -- x:" + x + " y:" + y + " x1:" + x1 + " y1:" + y1);
 //            Gdx.app.log("GameField::drawCreeps()", " -- sizeTexReg:" + creep.getCurentFrame().getRegionWidth() + "x" + creep.getCurentFrame().getRegionHeight());
@@ -326,12 +349,20 @@ public class GameField {
         gridNav.loadCharMatrix(getCharMatrix());
         ArrayDeque<Vertex> route = gridNav.route(new int[]{y, x}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
 
-        GridPoint2 point = new GridPoint2(x, y);
-        Creep creep = creepsManager.createCreep(point, route, factionsManager.getRandomTemplateForUnitFromFirstFaction());
-        field[x][y].setCreep(creep);
+        if(route != null) {
+            Creep creep = creepsManager.createCreep(route, factionsManager.getRandomTemplateForUnitFromFirstFaction());
+            field[x][y].setCreep(creep);
+//            Gdx.app.log("GameField::createCreep()", " -- x:" + x + " y:" + y + " eX:" + exitPoint.x + " eY:" + exitPoint.y);
+//            Gdx.app.log("GameField::createCreep()", " -- route:" + route);
+        }
+    }
 
-        Gdx.app.log("GameField::createCreep()", " -- x:" + x + " y:" + y + " eX:" + exitPoint.x + " eY:" + exitPoint.y);
-        Gdx.app.log("GameField::createCreep()", " -- route:" + route);
+    public void towerActions(int x, int y) {
+        if(field[x][y].isEmpty()) {
+            createTower(x, y);
+        } else if(field[x][y].getTower() != null) {
+            removeTower(x, y);
+        }
     }
 
     public boolean createTower(int x, int y) {
@@ -339,7 +370,7 @@ public class GameField {
         int towerSize = templateForTower.size;
         for(int tmpX = 0; tmpX < towerSize; tmpX++)
             for(int tmpY = 0; tmpY < towerSize; tmpY++)
-                if(!field[tmpX+x][tmpY+y].isEmpty())
+                if(!field[tmpX+x][tmpY+y].isEmpty()) // HAVE BUGS! CAN out of array!
                     return false;
 
         GridPoint2 position = new GridPoint2(x, y);
@@ -350,14 +381,6 @@ public class GameField {
 
         rerouteForAllCreeps();
         return true;
-    }
-
-    private void rerouteForAllCreeps() {
-        gridNav.loadCharMatrix(getCharMatrix());
-        for(Creep creep: creepsManager.getAllCreeps()) {
-            ArrayDeque<Vertex> route = gridNav.route(new int[]{creep.getPosition().y, creep.getPosition().x}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-            creep.setRoute(route);
-        }
     }
 
     public void removeTower(int touchX, int touchY) {
@@ -377,40 +400,38 @@ public class GameField {
         }
     }
 
-    public void towerActions(int x, int y) {
-        if(field[x][y].isEmpty()) {
-            createTower(x, y);
-        } else if(field[x][y].getTower() != null) {
-            removeTower(x, y);
+    private void rerouteForAllCreeps() {
+        gridNav.loadCharMatrix(getCharMatrix());
+        for(Creep creep: creepsManager.getAllCreeps()) {
+            ArrayDeque<Vertex> route = gridNav.route(new int[]{creep.getNewPosition().getX(), creep.getNewPosition().getY()}, new int[]{exitPoint.y, exitPoint.x}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
+            creep.setRoute(route);
         }
     }
 
     private void stepAllCreep(float delta) {
         for(int i=0; i<creepsManager.amountCreeps(); i++) {
             Creep creep = creepsManager.getCreep(i);
-            float elTime = creep.getElapsedTime()+delta;
-            if(elTime >= creep.getSpeed()) {
-                creep.setElapsedTime(0);
-                stepOneCreep(creep);
+            Vertex oldPosition = creep.getNewPosition();
+//            field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+//            float elTime = creep.getElapsedTime()+delta;
+//            if(elTime >= creep.getSpeed()) {
+//                creep.setElapsedTime(0);
+//                stepOneCreep(creep);
+//            }
+//            else creep.setElapsedTime(elTime);
+            Vertex newPosition = creep.move(delta);
+            if(newPosition != null) {
+                if(!newPosition.equals(oldPosition)) {
+                    field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+                    field[newPosition.getX()][newPosition.getY()].setCreep(creep);
+//                    Gdx.app.log("GameField::stepAllCreep()", "-- Creep move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
+                }
+            } else {
+                field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+                creepsManager.removeCreep(creep);
+//                Gdx.app.log("GameField::stepAllCreep()", "-- Creep finished!");
             }
-            else creep.setElapsedTime(elTime);
         }
-    }
-
-    private int stepOneCreep(Creep tmpCreep) {
-        int currX = tmpCreep.getPosition().x;
-        int currY = tmpCreep.getPosition().y;
-
-        field[currX][currY].removeCreep(tmpCreep);
-        GridPoint2 exit = tmpCreep.move();
-        if(exit != null) {
-            field[exit.x][exit.y].setCreep(tmpCreep);
-            Gdx.app.log("GameField::stepOneCreep()", "-- Creep move to X:" + exit.x + " Y:" + exit.y);
-        } else {
-            creepsManager.removeCreep(tmpCreep);
-            Gdx.app.log("GameField::stepOneCreep()", "-- Creep finished!");
-        }
-        return 0;
     }
 
 //    private void attackCreeps(float delta) {
@@ -429,7 +450,7 @@ public class GameField {
 //        int radius = tower.getRadius();
 //        for(int i=-radius;i<=radius;i++) {
 //            for(int j=-radius;j<=radius;j++) {
-//                GridPoint2 position = tower.getPosition();
+//                GridPoint2 position = tower.getNewPosition();
 //                if(cellManager.getCell(position.x + i, position.y + j).isCreep()) {
 //                    Creep creep = cellManager.getCell(position.x + i, position.y + j).getCreeps().first();
 //                    int hp = creep.getHp() - tower.getDamage();

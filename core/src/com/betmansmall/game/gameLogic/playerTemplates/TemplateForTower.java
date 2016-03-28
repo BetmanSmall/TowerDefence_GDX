@@ -11,28 +11,30 @@ import com.badlogic.gdx.utils.Array;
 public class TemplateForTower {
     private Faction faction;
 
-    public Float attackSpeed;
-    public Integer damage;
-    public String factionName;
-    public String name;
-    public Integer radius;
-    public Integer size;
-    public String type;
+    public Float    attackSpeed;
+    public Integer  cost;
+    public Integer  damage;
+    public String   factionName;
+    public String   name;
+    public Integer  radius;
+    public Integer  size;
+    public String   type;
 
     public Array<TiledMapTile> ammunition;
     public TiledMapTile idleTile;
 
     public TemplateForTower(TiledMapTileSet tileSet) {
         try {
-            this.attackSpeed = Float.parseFloat(tileSet.getProperties().get("attackSpeed", String.class));
-            this.damage = Integer.parseInt(tileSet.getProperties().get("damage", String.class));
-            this.factionName = tileSet.getProperties().get("factionName", String.class);
-            this.name = tileSet.getProperties().get("name", String.class);
-            this.radius = Integer.parseInt(tileSet.getProperties().get("radius", String.class));
-            this.size = Integer.parseInt(tileSet.getProperties().get("size", String.class));
-            this.type = tileSet.getProperties().get("type", String.class);
+            this.attackSpeed =  Float.parseFloat(tileSet.getProperties().get("attackSpeed", String.class));
+            this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
+            this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
+            this.factionName =  tileSet.getProperties().get("factionName", String.class);
+            this.name =         tileSet.getProperties().get("name", String.class);
+            this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
+            this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
+            this.type =         tileSet.getProperties().get("type", String.class);
         } catch(Exception exp) {
-            Gdx.app.log("TemplateForTower::TemplateForTower()", " -- Exp: " + exp);
+            Gdx.app.error("TemplateForTower::TemplateForTower()", " -- Exp: " + exp + " Cheak the file!");
         }
 
         this.ammunition = new Array<TiledMapTile>();
@@ -55,8 +57,11 @@ public class TemplateForTower {
     }
 
     private void validate() {
+        // Need cheak range values
         if(this.attackSpeed == 0)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'attackSpeed'! Check the file");
+        if(this.cost == null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'cost'! Check the file");
         if(this.damage == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'damage'! Check the file");
         if(this.factionName == null)

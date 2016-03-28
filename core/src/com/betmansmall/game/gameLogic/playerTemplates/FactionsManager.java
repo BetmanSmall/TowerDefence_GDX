@@ -30,7 +30,7 @@ public class FactionsManager {
     }
 
     public void addTowerToFaction(TemplateForTower tower) {
-        Gdx.app.log("TemplateForTower::addTowerToFaction()", " -- Tower name:" + tower.name);
+//        Gdx.app.log("FactionsManager::addTowerToFaction()", " -- Tower name:" + tower.name);
         String newFactionName = tower.getFactionName();
         for(Faction faction: factions) {
             if(faction.getName().equals(newFactionName)) {

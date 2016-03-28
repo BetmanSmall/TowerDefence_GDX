@@ -19,8 +19,8 @@ public class CreepsManager {
         creeps = new Array<Creep>(amountCreeps);
     }
 
-    public Creep createCreep(GridPoint2 position, ArrayDeque<Vertex> route, TemplateForUnit templateForUnit) {
-        Creep newCreep = new Creep(position, route, templateForUnit);
+    public Creep createCreep(ArrayDeque<Vertex> route, TemplateForUnit templateForUnit) {
+        Creep newCreep = new Creep(route, templateForUnit);
         creeps.add(newCreep);
         return newCreep;
     }
@@ -31,9 +31,9 @@ public class CreepsManager {
         return creeps.get(id);
     }
 
-    public Creep getCreep(GridPoint2 position) {
+    public Creep getCreep(Vertex position) {
         for(int i=0; i < creeps.size; i++) {
-            GridPoint2 creepPosition = creeps.get(i).getPosition();
+            Vertex creepPosition = creeps.get(i).getNewPosition();
             if(creepPosition.equals(position)) {
                 return creeps.get(i);
             }
@@ -55,7 +55,7 @@ public class CreepsManager {
 
     public boolean setRouteForCreeps(GridNav gridNav, GridPoint2 exitPoint) {
         for(int i=0;i<creeps.size;i++) {
-            ArrayDeque<Vertex> adv = gridNav.route(new int[]{creeps.get(i).getPosition().x, creeps.get(i).getPosition().y},
+            ArrayDeque<Vertex> adv = gridNav.route(new int[]{creeps.get(i).getNewPosition().getX(), creeps.get(i).getNewPosition().getY()},
                     new int[]{exitPoint.x, exitPoint.y}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
             if(adv != null) {
                 creeps.get(i).setRoute(adv);

@@ -36,7 +36,6 @@ public class Tower {
     public void setDamage(int damage) {
         this.damage = damage;
     }
-
     public int getDamage() {
         return damage;
     }
@@ -44,7 +43,6 @@ public class Tower {
     public void setRadius(int radius) {
         this.radius = radius;
     }
-
     public int getRadius() {
         return radius;
     }
@@ -52,7 +50,6 @@ public class Tower {
     public void setAttackSpeed(float attackSpeed) {
         this.attackSpeed = attackSpeed;
     }
-
     public float getAttackSpeed() {
         return attackSpeed;
     }
@@ -60,7 +57,6 @@ public class Tower {
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
-
     public float getElapsedTime() {
         return elapsedTime;
     }
