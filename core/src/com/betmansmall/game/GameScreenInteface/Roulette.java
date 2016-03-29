@@ -3,6 +3,8 @@ package com.betmansmall.game.GameScreenInteface;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
+import java.util.List;
+
 /**
  * Created by Дима Цыкунов on 20.02.2016.
  */
@@ -26,6 +28,6 @@ public abstract class Roulette {
         return MODEL_HEIGHT / Gdx.graphics.getHeight() * height;
     }
 
-    public abstract Group getGroup();
+    public abstract List<Group> getGroup();
 
 }

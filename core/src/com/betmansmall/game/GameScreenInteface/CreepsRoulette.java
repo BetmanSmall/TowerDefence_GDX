@@ -12,6 +12,9 @@ import com.betmansmall.game.GameScreen;
 import com.betmansmall.game.gameLogic.Creep;
 import com.betmansmall.game.gameLogic.GameField;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Дима Цыкунов on 20.02.2016.
  */
@@ -69,8 +72,8 @@ public class CreepsRoulette extends Roulette {
     }
 
     @Override
-    public Group getGroup() {
-        return group;
+    public List<Group> getGroup() {
+        return Arrays.asList(group);
     }
 
 }

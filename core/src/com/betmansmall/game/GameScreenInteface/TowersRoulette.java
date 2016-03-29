@@ -2,18 +2,22 @@ package com.betmansmall.game.GameScreenInteface;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.betmansmall.game.gameLogic.GameField;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-/**
- * Created by Дима Цыкунов on 20.02.2016.
- */
 public class TowersRoulette extends Roulette {
-    private Group group;
+    private Group circleGroup;
+    private Group buttonGroup;
     private ImageButton rouletteButton;
     private ImageButton rouletteCircle;
     private static volatile Boolean IS_HIDE_TOWERS = true;
@@ -26,36 +30,52 @@ public class TowersRoulette extends Roulette {
     }
 
     private void init() {
-        group = new Group();
+        circleGroup  = new Group();
+        buttonGroup = new Group();
 
         rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_roulette_main.png"))).getDrawable());
         rouletteButton.setName("rouletteButton");
         rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+        rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
+        buttonGroup.addActor(rouletteButton);
+        buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
 
         rouletteCircle = new ImageButton(new Image(new Texture(Gdx.files.internal("img/golden_ring.png"))).getDrawable());
         rouletteCircle.setSize(getLocalWidth(RING_RADIUS) * 2, getLocalHeight(RING_RADIUS) * 2);
         rouletteCircle.setPosition(Gdx.graphics.getWidth() - rouletteCircle.getWidth() / 2, 0 - rouletteCircle.getHeight() / 2);
         rouletteCircle.setVisible(false);
+        circleGroup.addActor(rouletteCircle);
+        circleGroup.setOrigin(Gdx.graphics.getWidth(), 0);
 
-        rouletteButton.addAction(rotateBy(90f, 5f));
-
-        group.addActor(rouletteCircle);
-        group.addActor(rouletteButton);
-        group.setOrigin(Gdx.graphics.getWidth(), 0);
-        group.addAction(rotateBy(90f, 5f));
     }
 
     private void buttonClick() {
         IS_HIDE_TOWERS = !IS_HIDE_TOWERS;
         rouletteCircle.setVisible(!IS_HIDE_TOWERS);
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+
     }
 
     private void ringClick(){
         Gdx.app.log("TAG", "Tower is selected");
         rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+    }
+
+    public boolean rotateBy(float x, float y, float deltaX, float deltaY) {
+        x = Gdx.graphics.getWidth()  - x;
+        y = Gdx.graphics.getHeight() - y;
+        if((x*x + y*y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))
+                && x <= getLocalWidth(RING_RADIUS) && y <= getLocalWidth(RING_RADIUS) && !IS_HIDE_TOWERS) {
+            if (!((x*x + y*y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
+                    && x <= getLocalWidth(ROULETTE_RADIUS) && y <= getLocalWidth(ROULETTE_RADIUS))) {
+                float rotation = -((deltaX < 0)? -1f : 1f) * ((deltaY < 0)? deltaY * (-1f) : deltaY);
+                circleGroup.rotateBy(rotation);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isButtonTouched(float x, float y) {
@@ -89,7 +109,7 @@ public class TowersRoulette extends Roulette {
     }
 
     @Override
-    public Group getGroup() {
-        return group;
+    public List<Group> getGroup() {
+        return Arrays.asList(buttonGroup, circleGroup);
     }
 }
