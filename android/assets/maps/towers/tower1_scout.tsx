@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="tower1_scout" tilewidth="64" tileheight="64">
  <properties>
-  <property name="attackSpeed" value="0.2"/>
+  <property name="ammoSpeed" value="0.1"/>
   <property name="cost" value="10"/>
   <property name="damage" value="10"/>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Scout"/>
   <property name="radius" value="1"/>
+  <property name="reloadTime" value="0.5"/>
   <property name="size" value="1"/>
   <property name="type" value="tower"/>
  </properties>
@@ -26,27 +27,27 @@
  </tile>
  <tile id="1">
   <properties>
-   <property name="tileName" value="arrow_UP"/>
+   <property name="tileName" value="ammo_UP"/>
   </properties>
  </tile>
  <tile id="2">
   <properties>
-   <property name="tileName" value="arrow_UP_RIGHT"/>
+   <property name="tileName" value="ammo_UP_RIGHT"/>
   </properties>
  </tile>
  <tile id="3">
   <properties>
-   <property name="tileName" value="arrow_RIGHT"/>
+   <property name="tileName" value="ammo_RIGHT"/>
   </properties>
  </tile>
  <tile id="4">
   <properties>
-   <property name="tileName" value="arrow_DOWN_RIGHT"/>
+   <property name="tileName" value="ammo_DOWN_RIGHT"/>
   </properties>
  </tile>
  <tile id="5">
   <properties>
-   <property name="tileName" value="arrow_DOWN"/>
+   <property name="tileName" value="ammo_DOWN"/>
   </properties>
  </tile>
 </tileset>

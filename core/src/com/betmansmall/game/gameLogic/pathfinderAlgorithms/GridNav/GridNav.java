@@ -21,6 +21,10 @@ public class GridNav {
         c = new Cartographer();
     }
 
+    public ArrayDeque<Vertex> route(int sX, int sY, int eX, int eY) {
+        return route(new int[]{sY, sX}, new int[]{eY, eX}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
+    }
+
     /**
      * Routing with specified settings, returns the shortest route.
      * @param start start coordinates y,x of the route.

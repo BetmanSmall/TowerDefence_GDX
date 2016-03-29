@@ -66,4 +66,15 @@ public class FactionsManager {
         }
         return null;
     }
+
+    public TemplateForUnit getTemplateForUnitFromFirstFaction(int index) {
+        Faction faction = factions.first();
+        if(faction != null) {
+            TemplateForUnit templateForUnit = faction.getUnits().get(index);
+            if(templateForUnit != null) {
+                return templateForUnit;
+            }
+        }
+        return null;
+    }
 }
