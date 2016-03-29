@@ -18,19 +18,18 @@ public class TemplateForUnit {
 
     public Integer bounty;
     public String  factionName;
-    public Integer hp;
+    public Integer healthPoints;
     public String  name;
     public Float   speed;
     public String  type;
 
-//    public TextureRegion idle;
     public ObjectMap<String, AnimatedTiledMapTile> animations;
 
     public TemplateForUnit(TiledMapTileSet tileSet) {
         try {
             this.bounty =       Integer.parseInt(tileSet.getProperties().get("bounty", String.class));
-            this.factionName =  tileSet.getProperties().get("faction_name", String.class);
-            this.hp =           Integer.parseInt(tileSet.getProperties().get("health_point", String.class));
+            this.factionName =  tileSet.getProperties().get("factionName", String.class);
+            this.healthPoints =           Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
             this.name =         tileSet.getProperties().get("name", String.class);
             this.speed =        Float.parseFloat(tileSet.getProperties().get("speed", String.class));
             this.type =         tileSet.getProperties().get("type", String.class);
@@ -129,8 +128,8 @@ public class TemplateForUnit {
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'bounty'! Check the file");
         else if(this.factionName == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
-        else if(this.hp == null)
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'hp'! Check the file");
+        else if(this.healthPoints == null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'healthPoints'! Check the file");
         else if(this.name == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'name'! Check the file");
         else if(this.speed == null)

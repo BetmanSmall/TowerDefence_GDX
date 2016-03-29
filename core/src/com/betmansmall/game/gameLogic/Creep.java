@@ -33,7 +33,7 @@ public class  Creep {
             this.route = route;
             this.oldPosition = route.peekFirst();
             this.newPosition = route.pollFirst();
-            this.hp = templateForUnit.hp;
+            this.hp = templateForUnit.healthPoints;
             this.speed = templateForUnit.speed;
             this.elapsedTime = templateForUnit.speed;
 

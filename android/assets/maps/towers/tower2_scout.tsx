@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="tower2_scout" tilewidth="64" tileheight="64">
  <properties>
-  <property name="attackSpeed" value="0.2"/>
+  <property name="ammoSpeed" value="0.1"/>
   <property name="cost" value="10"/>
   <property name="damage" value="10"/>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Scout2"/>
   <property name="radius" value="1"/>
+  <property name="reloadTime" value="0.2"/>
   <property name="size" value="2"/>
   <property name="type" value="tower"/>
  </properties>

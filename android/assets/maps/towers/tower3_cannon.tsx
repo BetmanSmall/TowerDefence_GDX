@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="tower3_cannon" tilewidth="64" tileheight="64">
  <properties>
-  <property name="attackSpeed" value="0.2"/>
+  <property name="ammoSpeed" value="0.4"/>
   <property name="cost" value="10"/>
-  <property name="damage" value="25"/>
+  <property name="damage" value="5"/>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Cannon"/>
   <property name="radius" value="2"/>
+  <property name="reloadTime" value="1"/>
   <property name="size" value="1"/>
   <property name="type" value="tower"/>
  </properties>

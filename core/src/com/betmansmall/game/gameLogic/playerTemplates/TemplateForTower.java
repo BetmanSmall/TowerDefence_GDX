@@ -11,12 +11,12 @@ import com.badlogic.gdx.utils.Array;
 public class TemplateForTower {
     private Faction faction;
 
-    public Float    attackSpeed;
     public Integer  cost;
     public Integer  damage;
     public String   factionName;
     public String   name;
     public Integer  radius;
+    public Float    reloadTime;
     public Integer  size;
     public String   type;
 
@@ -25,12 +25,12 @@ public class TemplateForTower {
 
     public TemplateForTower(TiledMapTileSet tileSet) {
         try {
-            this.attackSpeed =  Float.parseFloat(tileSet.getProperties().get("attackSpeed", String.class));
             this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
             this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
             this.factionName =  tileSet.getProperties().get("factionName", String.class);
             this.name =         tileSet.getProperties().get("name", String.class);
             this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
+            this.reloadTime =   Float.parseFloat(tileSet.getProperties().get("reloadTime", String.class));
             this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
             this.type =         tileSet.getProperties().get("type", String.class);
         } catch(Exception exp) {
@@ -58,18 +58,18 @@ public class TemplateForTower {
 
     private void validate() {
         // Need cheak range values
-        if(this.attackSpeed == 0)
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'attackSpeed'! Check the file");
         if(this.cost == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'cost'! Check the file");
-        if(this.damage == null)
+        else if(this.damage == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'damage'! Check the file");
-        if(this.factionName == null)
+        else if(this.factionName == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
         else if(this.name == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'name'! Check the file");
         else if(this.radius == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'radius'! Check the file");
+        else if(this.reloadTime == null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'reloadTime'! Check the file");
         else if(this.size == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'size'! Check the file");
         else if(this.type == null)
@@ -78,7 +78,7 @@ public class TemplateForTower {
         if(idleTile == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'idleTile'! Check the file");
         else if(ammunition.size == 0)
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'arrows'! Check the file");
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'ammo'! Check the file");
     }
 
     public void setFaction(Faction faction) {
