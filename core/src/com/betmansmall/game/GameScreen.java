@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.betmansmall.game.GameScreenInteface.CreepsRoulette;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
@@ -48,6 +49,11 @@ public class GameScreen implements Screen {
 
 			//CHECK IF THE PAUSE BUTTON IS TOUCHED
 			if(gameInterface.getCreepsRoulette().isButtonTouched(x,y)) {
+				return false;
+			}
+
+			//CHECK IF THE TOWER BUTTON IS TOUCHED
+			if(gameInterface.getTowersRoulette().isButtonTouched(x,y)) {
 				return false;
 			}
 
@@ -173,12 +179,13 @@ public class GameScreen implements Screen {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		gameInterface.act(delta);
+
 		inputHandler(delta);
 		cameraController.update();
 		cam.update();
 
 		gameField.render(delta, cam);
+		gameInterface.act(delta);
 		gameInterface.draw();
 	}
 
@@ -188,6 +195,7 @@ public class GameScreen implements Screen {
 		cam.viewportWidth = width;
 		cam.update();
 		Gdx.app.log("GameScreen::resize()", "-- New width:" + width + " height:" + height);
+		gameInterface.getInterfaceStage().getViewport().update(width, height);
 	}
 
 	@Override
