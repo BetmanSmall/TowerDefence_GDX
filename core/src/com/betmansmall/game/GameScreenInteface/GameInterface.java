@@ -1,9 +1,15 @@
 package com.betmansmall.game.GameScreenInteface;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.betmansmall.game.gameLogic.GameField;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.touchable;
 
 /**
  * Created by Transet on 07.02.2016.
@@ -29,6 +35,10 @@ public class GameInterface {
         return creepsRoulette;
     }
 
+    public  Stage getInterfaceStage(){
+        return stage;
+    }
+
     public void setCreepsRoulette(CreepsRoulette creepsRoulette) {
         this.creepsRoulette = creepsRoulette;
     }
@@ -49,7 +59,7 @@ public class GameInterface {
         creepsRoulette = new CreepsRoulette(gameField);
 
         stage.addActor(creepsRoulette.getGroup());
-//        stage.addActor(towersRoulette.getGroup());
+        stage.addActor(towersRoulette.getGroup());
     }
 
     public InputMultiplexer setCommonInputHandler(InputProcessor inputProcessor) {
@@ -66,5 +76,4 @@ public class GameInterface {
     public void draw() {
         stage.draw();
     }
-
 }

@@ -19,7 +19,6 @@ public class CreepsRoulette extends Roulette {
 
     private CreepsRoulette cr;
     private Group group;
-    private static int buttonSizeX = 200, buttonSizeY = 200;
     private ImageButton playButton;
     private ImageButton pauseButton;
     private static volatile Boolean IS_PAUSE = true;
@@ -35,11 +34,11 @@ public class CreepsRoulette extends Roulette {
         group = new Group();
 
         playButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/playbutton.png"))).getDrawable());
-        playButton.setSize(buttonSizeX,buttonSizeY);
+        playButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
         playButton.setPosition(0, 0);
 
         pauseButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/pausebutton.png"))).getDrawable());
-        pauseButton.setSize(buttonSizeX,buttonSizeY);
+        pauseButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
         pauseButton.setPosition(0, 0);
         pauseButton.setVisible(true);
 
@@ -60,16 +59,9 @@ public class CreepsRoulette extends Roulette {
         gameField.setGamePause(IS_PAUSE);
     }
 
-    public float getButtonSizeX(){
-        return buttonSizeX;
-    }
-    public float getButtonSizeY(){
-        return buttonSizeY;
-    }
-
     public boolean isButtonTouched(float x, float y) {
         boolean isTouched = false;
-        if(x <= getButtonSizeX()&& y > Gdx.graphics.getHeight() - getButtonSizeY()){
+        if(x <= getLocalWidth(ROULETTE_RADIUS)&& y > Gdx.graphics.getHeight() - getLocalHeight(ROULETTE_RADIUS)){
             isTouched = true;
         }
         if(isTouched) buttonClick();
