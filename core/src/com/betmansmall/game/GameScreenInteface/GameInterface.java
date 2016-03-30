@@ -3,6 +3,7 @@ package com.betmansmall.game.GameScreenInteface;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.betmansmall.game.gameLogic.GameField;
 
@@ -58,8 +59,12 @@ public class GameInterface {
         towersRoulette = new TowersRoulette(gameField);
         creepsRoulette = new CreepsRoulette(gameField);
 
-        stage.addActor(creepsRoulette.getGroup());
-        stage.addActor(towersRoulette.getGroup());
+        for(Actor actor : creepsRoulette.getGroup()) {
+            stage.addActor(actor);
+        }
+        for(Actor actor : towersRoulette.getGroup()) {
+            stage.addActor(actor);
+        }
     }
 
     public InputMultiplexer setCommonInputHandler(InputProcessor inputProcessor) {

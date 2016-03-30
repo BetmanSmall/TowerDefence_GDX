@@ -12,14 +12,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.betmansmall.game.GameScreenInteface.CreepsRoulette;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 
 public class GameScreen implements Screen {
 	private static final float MAX_ZOOM = 3f; //max size
 	private static final float MIN_ZOOM = 0.2f; // 2x zoom
+	private float MAX_DESTINATION_X = 0f;
+	private float MAX_DESTINATION_Y = 0f;
 
 	private GameScreen gs;
 	public OrthographicCamera cam;
@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
 		float velX, velY;
 		boolean flinging = false;
 		float initialScale = 1;
+		boolean lastCircleTouched = false;
 
 		@Override
 		public boolean touchDown(float x, float y, int pointer, int button) {
@@ -79,15 +80,25 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean fling(float velocityX, float velocityY, int button) {
-			flinging = true;
-			velX = cam.zoom * velocityX * 0.5f;
-			velY = cam.zoom * velocityY * 0.5f;
+			if(!lastCircleTouched) {
+				flinging = true;
+				velX = cam.zoom * velocityX * 0.5f;
+				velY = cam.zoom * velocityY * 0.5f;
+			}
 			return false;
 		}
 
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
-			cam.position.add(-deltaX * cam.zoom, deltaY * cam.zoom, 0);
+			if(gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY)) {
+				lastCircleTouched = true;
+				return true;
+			}
+			lastCircleTouched = false;
+			if( cam.position.x + -deltaX * cam.zoom < MAX_DESTINATION_X && cam.position.x + -deltaX * cam.zoom > 0)
+				cam.position.add(-deltaX * cam.zoom, 0, 0);
+			if( Math.abs(cam.position.y +  deltaY * cam.zoom) < MAX_DESTINATION_Y )
+				cam.position.add(0, deltaY * cam.zoom, 0);
 			return false;
 		}
 
@@ -115,7 +126,10 @@ public class GameScreen implements Screen {
 			if (flinging) {
 				velX *= 0.98f;
 				velY *= 0.98f;
-				cam.position.add(-velX * Gdx.graphics.getDeltaTime(), velY * Gdx.graphics.getDeltaTime(), 0);
+				if(cam.position.x + -velX * Gdx.graphics.getDeltaTime() > 0 && cam.position.x + -velX * Gdx.graphics.getDeltaTime() < MAX_DESTINATION_X )
+					cam.position.add(-velX * Gdx.graphics.getDeltaTime(), 0, 0);
+				if( Math.abs(cam.position.y + velY * Gdx.graphics.getDeltaTime()) < MAX_DESTINATION_Y )
+					cam.position.add(0,  velY * Gdx.graphics.getDeltaTime(), 0);
 				if (Math.abs(velX) < 0.01f) velX = 0;
 				if (Math.abs(velY) < 0.01f) velY = 0;
 			}
@@ -133,6 +147,10 @@ public class GameScreen implements Screen {
 		gameInterface = new GameInterface(gameField);
 
 		Gdx.input.setInputProcessor(gameInterface.setCommonInputHandler(new GestureDetector(cameraController)));
+		Gdx.app.log("tag", "cel " + gameField.getSizeCellX() + " field" + gameField.getSizeFieldX());
+		Gdx.app.log("tag", "cel " + gameField.getSizeCellY() + " field" + gameField.getSizeFieldY());
+		MAX_DESTINATION_X = gameField.getSizeCellX() * gameField.getSizeFieldX();
+		MAX_DESTINATION_Y = gameField.getSizeCellY() * gameField.getSizeFieldY() / 2f;
 	}
 
 	@Override

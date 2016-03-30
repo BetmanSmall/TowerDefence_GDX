@@ -4,13 +4,36 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by betmansmall on 23.02.2016.
  */
 public class FactionsManager {
+
+    private static volatile FactionsManager instance;
+
+    private  TemplateForTower currentTemplateTower;
+
+    public static FactionsManager getInstance() {
+        FactionsManager localInstance = instance;
+        if (localInstance == null) {
+            synchronized (FactionsManager.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new FactionsManager();
+                }
+            }
+        }
+        return localInstance;
+    }
+
     private Array<Faction> factions;
 
     public FactionsManager() {
+        instance = this; //TODO init with singleton
         factions = new Array<Faction>();
     }
 
@@ -76,5 +99,23 @@ public class FactionsManager {
             }
         }
         return null;
+    }
+
+    public List<TemplateForTower> getAllTowers(){
+        List<TemplateForTower> allTowers = new ArrayList<TemplateForTower>();
+        for(Faction faction : factions) {
+            for(TemplateForTower template : faction.getTowers()) {
+                allTowers.add(template);
+            }
+        }
+        return allTowers;
+    }
+    //Mukhin gad
+    public TemplateForTower getCurrentTemplateTower() {
+        return currentTemplateTower;
+    }
+
+    public void setCurrentTemplateTower(TemplateForTower currentTemplateTower) {
+        this.currentTemplateTower = currentTemplateTower;
     }
 }
