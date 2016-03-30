@@ -3,9 +3,11 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 
 import com.badlogic.gdx.math.GridPoint2;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 
@@ -22,6 +25,7 @@ public class GameScreen implements Screen {
 	private static final float MIN_ZOOM = 0.2f; // 2x zoom
 	private float MAX_DESTINATION_X = 0f;
 	private float MAX_DESTINATION_Y = 0f;
+	private BitmapFont bitmapFont = new BitmapFont();
 
 	private float currentDuration;
 	private float MAX_DURATION_FOR_DEFEAT_SCREEN = 5f;
@@ -49,7 +53,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
-			Gdx.app.log("GameScreen::tap()", " -- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+//			Gdx.app.log("GameScreen::tap()", " -- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 			Vector3 touch = new Vector3(x, y, 0);
 			cam.unproject(touch);
 			GridPoint2 gameCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
@@ -205,13 +209,18 @@ public class GameScreen implements Screen {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		String gameState = gameField.getGameState();
-		if(gameState.equals("In progress")) {
+		if (gameState.equals("In progress")) {
 			inputHandler(delta);
 			cameraController.update();
 			cam.update();
 			gameField.render(delta, cam);
 			gameInterface.act(delta);
 			gameInterface.draw();
+			gameInterface.getInterfaceStage().getBatch().begin();
+			bitmapFont.getData().setScale(4);
+			bitmapFont.setColor(Color.YELLOW);
+			bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf("Gold amount: " + gameField.getGamerGold()), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
+			gameInterface.getInterfaceStage().getBatch().end();
 		} else if(gameState.equals("Lose")){
 			currentDuration += delta;
 			if(currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
@@ -222,7 +231,7 @@ public class GameScreen implements Screen {
 			if(defeatScreen == null)
 				defeatScreen = new Texture(Gdx.files.internal("img/defeat.jpg"));
 			gameInterface.getInterfaceStage().getBatch().begin();
-			gameInterface.getInterfaceStage().getBatch().draw(defeatScreen,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+			gameInterface.getInterfaceStage().getBatch().draw(defeatScreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			gameInterface.getInterfaceStage().getBatch().end();
 		}else if (gameState.equals("Win")){
 			currentDuration += delta;
@@ -234,7 +243,7 @@ public class GameScreen implements Screen {
 			if(defeatScreen == null)
 				defeatScreen = new Texture(Gdx.files.internal("img/victory.jpg"));
 			gameInterface.getInterfaceStage().getBatch().begin();
-			gameInterface.getInterfaceStage().getBatch().draw(defeatScreen,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+			gameInterface.getInterfaceStage().getBatch().draw(defeatScreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			gameInterface.getInterfaceStage().getBatch().end();
 		} else {
 			Gdx.app.log("Something goes wrong", "123");

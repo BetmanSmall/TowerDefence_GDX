@@ -221,6 +221,8 @@ public class GameField {
             TextureRegion currentFrame = animation.getKeyFrame(stateTime, true); // #16
             spriteBatch.begin();
             spriteBatch.draw(currentFrame, 50, 300, 300, 300); // #17
+//            bitmapFont.draw(spriteBatch, getGamerGold(), Gdx.graphics.getWidth()/2-10, Gdx.graphics.getHeight())
+//            bitmapFont.draw(spriteBatch, String.valueOf(getGamerGold()), Gdx.graphics.getWidth()/2-10, Gdx.graphics.getHeight()-10);
             spriteBatch.end();
         }
     }
@@ -590,15 +592,15 @@ public class GameField {
 
     public String getGameState() {
         if(missedCreeps >= maxOfMissedCreeps) {
-            Gdx.app.log("GameField::getGameState()", " -- LOSE!!");
+//            Gdx.app.log("GameField::getGameState()", " -- LOSE!!");
             return "Lose";
         } else {
             if(waveManager.getNumberOfCreeps() == 0 && creepsManager.amountCreeps() == 0) {
-                Gdx.app.log("GameField::getGameState()", " -- WIN!!");
+//                Gdx.app.log("GameField::getGameState()", " -- WIN!!");
                 return "Win";
             }
         }
-        Gdx.app.log("GameField::getGameState()", " -- IN PROGRESS!!");
+//        Gdx.app.log("GameField::getGameState()", " -- IN PROGRESS!!");
         return "In progress";
     }
 

@@ -63,7 +63,7 @@ public class TowersRoulette extends Roulette {
     }
 
     private void ringClick(){
-        Gdx.app.log("TAG", "Tower is selected");
+//        Gdx.app.log("TAG", "Tower is selected");
         rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
         float trash = circleGroup.getRotation() % 90; //TODO rename trash variable
@@ -129,12 +129,12 @@ public class TowersRoulette extends Roulette {
         if ((x*x + y*y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
                 && x <= getLocalWidth(ROULETTE_RADIUS) && y <= getLocalWidth(ROULETTE_RADIUS)) {
             isTouched = true;
-            Gdx.app.log("TAG", "ROULETTE");
+//            Gdx.app.log("TAG", "ROULETTE");
             // return isTouched;
             if(isTouched) buttonClick();
             return isTouched;
         }
-        Gdx.app.log("TAG", "NOTHING");
+//        Gdx.app.log("TAG", "NOTHING");
         return false;
     }
 
