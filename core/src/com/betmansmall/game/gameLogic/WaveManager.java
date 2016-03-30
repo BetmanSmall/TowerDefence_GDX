@@ -20,7 +20,7 @@ public class WaveManager {
         this.exitPoints = new Array<GridPoint2>();
         this.waves = new Array<Wave>();
 
-        this.waves.add(new Wave(new Integer[]{1,1,1,1}));
+        this.waves.add(new Wave(new Integer[]{1,1,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0,1,1,1,0}));
     }
 
     public Integer getNextCreepTemplateIndexForSpawn(float delta) {

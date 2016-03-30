@@ -129,9 +129,9 @@ public class GameField {
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = true;
-        maxOfMissedCreeps = 3;
+        maxOfMissedCreeps = 7;
         missedCreeps = 0;
-        gamerGold = 37;
+        gamerGold = 50;
         // GAME INTERFACE ZONE2
     }
 
