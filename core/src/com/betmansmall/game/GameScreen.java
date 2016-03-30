@@ -90,7 +90,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
-			if(gameInterface.getTowersRoulette().rotateBy(x,y,deltaX,deltaY)) {
+			if(gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY)) {
 				lastCircleTouched = true;
 				return true;
 			}

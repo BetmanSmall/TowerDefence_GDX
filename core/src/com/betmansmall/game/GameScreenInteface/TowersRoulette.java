@@ -9,8 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.playerTemplates.Faction;
+import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -23,7 +27,9 @@ public class TowersRoulette extends Roulette {
     private static volatile Boolean IS_HIDE_TOWERS = true;
     private GameField gameField;
     private RotateToAction rotateToAction;
-
+    private TemplateForTower templateForTower;
+    private  FactionsManager factionsManager;
+    private Faction faction;
     public TowersRoulette(GameField gameField) {
         this.gameField = gameField;
         init();
@@ -54,16 +60,23 @@ public class TowersRoulette extends Roulette {
         IS_HIDE_TOWERS = !IS_HIDE_TOWERS;
         rouletteCircle.setVisible(!IS_HIDE_TOWERS);
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
-
     }
 
     private void ringClick(){
         Gdx.app.log("TAG", "Tower is selected");
         rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+        float trash = circleGroup.getRotation() % 90; //TODO rename trash variable
+        if(trash  > 45 ) {
+            circleGroup.addAction(rotateBy(90f - trash, 0.5f));
+        } else {
+            circleGroup.addAction(rotateBy(-trash, 0.5f));
+        }
+        //TODO implement neccessary part just workaround
+        chooseTower(trash);
     }
 
-    public boolean rotateBy(float x, float y, float deltaX, float deltaY) {
+    public boolean makeRotation(float x, float y, float deltaX, float deltaY) {
         x = Gdx.graphics.getWidth()  - x;
         y = Gdx.graphics.getHeight() - y;
         if((x*x + y*y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))
@@ -76,6 +89,23 @@ public class TowersRoulette extends Roulette {
             }
         }
         return false;
+    }
+
+    public void chooseTower(float isGreatedRound) {
+        List<TemplateForTower> list = FactionsManager.getInstance().getAllTowers();
+        TemplateForTower localTemplate = list.get(0);
+        float tmp;
+        if(isGreatedRound  > 45 ) {
+            tmp = 90f - isGreatedRound + circleGroup.getRotation();
+        } else {
+            tmp = - isGreatedRound + circleGroup.getRotation();
+        }
+
+        int towerId = (int)(tmp % (90 * list.size())) / 90;
+        if(towerId < list.size())
+            localTemplate = list.get(Math.abs(towerId));
+        Gdx.app.log("tag","sette :" + localTemplate.name);
+        FactionsManager.getInstance().setCurrentTemplateTower(localTemplate);
     }
 
     public boolean isButtonTouched(float x, float y) {

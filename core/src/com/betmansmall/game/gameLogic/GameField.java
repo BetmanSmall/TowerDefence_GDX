@@ -456,7 +456,7 @@ public class GameField {
     }
 
     public boolean createTower(int x, int y) {
-        TemplateForTower templateForTower = factionsManager.getRandomTemplateForTowerFromFirstFaction();
+        TemplateForTower templateForTower = factionsManager.getCurrentTemplateTower();
         if(gamerGold >= templateForTower.cost) {
             int towerSize = templateForTower.size;
             for (int tmpX = 0; tmpX < towerSize; tmpX++)
