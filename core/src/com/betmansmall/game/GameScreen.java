@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.input.GestureDetector;
 
 import com.badlogic.gdx.math.GridPoint2;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 
@@ -20,6 +22,11 @@ public class GameScreen implements Screen {
 	private static final float MIN_ZOOM = 0.2f; // 2x zoom
 	private float MAX_DESTINATION_X = 0f;
 	private float MAX_DESTINATION_Y = 0f;
+
+	private float currentDuration;
+	private float MAX_DURATION_FOR_DEFEAT_SCREEN = 5f;
+
+	private Texture defeatScreen;
 
 	private GameScreen gs;
 	public OrthographicCamera cam;
@@ -61,9 +68,9 @@ public class GameScreen implements Screen {
 			if(tileCooCoordinate != null) {
 				if(button == 0) {
 					gameField.towerActions(tileCooCoordinate.x, tileCooCoordinate.y);
+//				} else if(button == 1) {
+//					gameField.createCreep(tileCooCoordinate.x, tileCooCoordinate.y);
 				} else if(button == 1) {
-					gameField.createCreep(tileCooCoordinate.x, tileCooCoordinate.y);
-				} else if(button == 3) {
 					gameField.setExitPoint(tileCooCoordinate.x, tileCooCoordinate.y);
 				} else if(button == 4) {
 					gameField.setSpawnPoint(tileCooCoordinate.x, tileCooCoordinate.y);
@@ -197,14 +204,41 @@ public class GameScreen implements Screen {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
-		inputHandler(delta);
-		cameraController.update();
-		cam.update();
-
-		gameField.render(delta, cam);
-		gameInterface.act(delta);
-		gameInterface.draw();
+		String gameState = gameField.getGameState();
+		if(gameState.equals("In progress")) {
+			inputHandler(delta);
+			cameraController.update();
+			cam.update();
+			gameField.render(delta, cam);
+			gameInterface.act(delta);
+			gameInterface.draw();
+		} else if(gameState.equals("Lose")){
+			currentDuration += delta;
+			if(currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
+				//this.dispose();
+				TowerDefence.getInstance().setMainMenu(this);
+				return;
+			}
+			if(defeatScreen == null)
+				defeatScreen = new Texture(Gdx.files.internal("img/defeat.jpg"));
+			gameInterface.getInterfaceStage().getBatch().begin();
+			gameInterface.getInterfaceStage().getBatch().draw(defeatScreen,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+			gameInterface.getInterfaceStage().getBatch().end();
+		}else if (gameState.equals("Win")){
+			currentDuration += delta;
+			if(currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
+				//this.dispose();
+				TowerDefence.getInstance().setMainMenu(this);
+				return;
+			}
+			if(defeatScreen == null)
+				defeatScreen = new Texture(Gdx.files.internal("img/victory.jpg"));
+			gameInterface.getInterfaceStage().getBatch().begin();
+			gameInterface.getInterfaceStage().getBatch().draw(defeatScreen,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+			gameInterface.getInterfaceStage().getBatch().end();
+		} else {
+			Gdx.app.log("Something goes wrong", "123");
+		}
 	}
 
 	@Override
@@ -213,7 +247,10 @@ public class GameScreen implements Screen {
 		cam.viewportWidth = width;
 		cam.update();
 		Gdx.app.log("GameScreen::resize()", "-- New width:" + width + " height:" + height);
-		gameInterface.getInterfaceStage().getViewport().update(width, height);
+		//gameInterface.getInterfaceStage().getViewport().update(width, height);
+		//gameInterface.getInterfaceStage().getCamera().viewportHeight = height;
+		//gameInterface.getInterfaceStage().getCamera().viewportWidth = width;
+		//gameInterface.getInterfaceStage().getCamera().update();
 	}
 
 	@Override
@@ -231,6 +268,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		gameField.dispose();
+		gameField = null;
+		gameInterface = null;
 	}
 }

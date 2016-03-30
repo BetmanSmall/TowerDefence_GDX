@@ -129,7 +129,7 @@ public class GameField {
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = true;
-        maxOfMissedCreeps = 10;
+        maxOfMissedCreeps = 3;
         missedCreeps = 0;
         gamerGold = 37;
         // GAME INTERFACE ZONE2
@@ -191,8 +191,6 @@ public class GameField {
     }
 
     public void dispose() {
-		map.dispose();
-		map = null;
 		renderer.dispose();
 		renderer = null;
     }
@@ -529,6 +527,7 @@ public class GameField {
             } else {
                 field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
                 creepsManager.removeCreep(creep);
+                missedCreeps++;
 //                Gdx.app.log("GameField::stepAllCreep()", "-- Creep finished!");
             }
         }
@@ -590,13 +589,16 @@ public class GameField {
     }
 
     public String getGameState() {
-        if(missedCreeps > maxOfMissedCreeps) {
+        if(missedCreeps >= maxOfMissedCreeps) {
+            Gdx.app.log("GameField::getGameState()", " -- LOSE!!");
             return "Lose";
         } else {
             if(waveManager.getNumberOfCreeps() == 0 && creepsManager.amountCreeps() == 0) {
+                Gdx.app.log("GameField::getGameState()", " -- WIN!!");
                 return "Win";
             }
         }
+        Gdx.app.log("GameField::getGameState()", " -- IN PROGRESS!!");
         return "In progress";
     }
 

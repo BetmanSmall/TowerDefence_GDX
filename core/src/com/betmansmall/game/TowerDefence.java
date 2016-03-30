@@ -12,7 +12,7 @@ public class TowerDefence extends Game {
 //    SpriteBatch batch;
 //    BitmapFont font;
 
-    private Screen mainMenu;
+    public Screen mainMenu;
 
     private static volatile TowerDefence instance;
 
@@ -31,6 +31,7 @@ public class TowerDefence extends Game {
 
     @Override
     public void create() {
+        instance = this;
 //        batch = new SpriteBatch();
 //        font = new BitmapFont();
         //Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
@@ -39,10 +40,10 @@ public class TowerDefence extends Game {
     }
 
     public void setMainMenu(Screen toDel) {
+        this.setScreen(mainMenu);
         if (toDel != null) {
             toDel.dispose();
         }
-        this.setScreen(mainMenu);
     }
 
     @Override

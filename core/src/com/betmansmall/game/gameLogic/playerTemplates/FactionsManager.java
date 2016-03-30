@@ -112,6 +112,9 @@ public class FactionsManager {
     }
     //Mukhin gad
     public TemplateForTower getCurrentTemplateTower() {
+        if(currentTemplateTower == null) {
+            currentTemplateTower = getAllTowers().get(0);
+        }
         return currentTemplateTower;
     }
 
