@@ -15,7 +15,7 @@ public class FactionsManager {
 
     private static volatile FactionsManager instance;
 
-    private  TemplateForTower currentTemplateTower;
+    private TemplateForTower currentTemplateTower;
 
     public static FactionsManager getInstance() {
         FactionsManager localInstance = instance;

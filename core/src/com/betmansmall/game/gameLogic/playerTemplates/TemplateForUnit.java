@@ -29,10 +29,12 @@ public class TemplateForUnit {
         try {
             this.bounty =       Integer.parseInt(tileSet.getProperties().get("bounty", String.class));
             this.factionName =  tileSet.getProperties().get("factionName", String.class);
-            this.healthPoints =           Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
+            this.healthPoints = Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
             this.name =         tileSet.getProperties().get("name", String.class);
             this.speed =        Float.parseFloat(tileSet.getProperties().get("speed", String.class));
             this.type =         tileSet.getProperties().get("type", String.class);
+
+            this.speed = this.speed*2;
         } catch(Exception exp) {
             Gdx.app.error("TemplateForUnit::TemplateForUnit()", " -- Exp: " + exp + " Cheak the file!");
         }
@@ -51,62 +53,62 @@ public class TemplateForUnit {
                 if(actionAndDirection != null) {
                     if(actionAndDirection.contains("idle"))
                         setIdleAnimationFrames(actionAndDirection, aTile);
-                    if(actionAndDirection.contains("walk"))
+                    else if(actionAndDirection.contains("walk"))
                         setWalkAnimationFrames(actionAndDirection, aTile);
-//                    else if(actionAndDirection.contains("death"))
-//                        setDeathAnimationFrames(actionAndDirection, aTile);
+                    else if(actionAndDirection.contains("death"))
+                        setDeathAnimationFrames(actionAndDirection, aTile);
                 }
             }
         }
+    }
 
-    }
-    private void setIdleAnimationFrames(String actionAndDirection, AnimatedTiledMapTile tile) {
-//        idle = tile.getTextureRegion();
+    private void setIdleAnimationFrames(String actionAndDirection, AnimatedTiledMapTile aTile) {
+//        idle = aTile.getTextureRegion();
         if(actionAndDirection.equals("idle_" + Direction.UP)) {
-            animations.put("idle_" + Direction.UP, tile);
+            animations.put("idle_" + Direction.UP, aTile);
         } else if(actionAndDirection.equals("idle_" + Direction.UP_RIGHT)) {
-            animations.put("idle_" + Direction.UP_RIGHT, tile);
-            animations.put("idle_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("idle_" + Direction.UP_RIGHT, aTile);
+            animations.put("idle_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("idle_" + Direction.RIGHT)) {
-            animations.put("idle_" + Direction.RIGHT, tile);
-            animations.put("idle_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("idle_" + Direction.RIGHT, aTile);
+            animations.put("idle_" + Direction.LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("idle_" + Direction.DOWN_RIGHT)) {
-            animations.put("idle_" + Direction.DOWN_RIGHT, tile);
-            animations.put("idle_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("idle_" + Direction.DOWN_RIGHT, aTile);
+            animations.put("idle_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("idle_" + Direction.DOWN)) {
-            animations.put("idle_" + Direction.DOWN, tile);
+            animations.put("idle_" + Direction.DOWN, aTile);
         }
     }
-    private void setWalkAnimationFrames(String actionAndDirection, AnimatedTiledMapTile tile) {
+    private void setWalkAnimationFrames(String actionAndDirection, AnimatedTiledMapTile aTile) {
         if(actionAndDirection.equals("walk3_" + Direction.UP)) {
-            animations.put("walk_" + Direction.UP, tile);
+            animations.put("walk_" + Direction.UP, aTile);
         } else if(actionAndDirection.equals("walk3_" + Direction.UP_RIGHT)) {
-            animations.put("walk_" + Direction.UP_RIGHT, tile);
-            animations.put("walk_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("walk_" + Direction.UP_RIGHT, aTile);
+            animations.put("walk_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("walk3_" + Direction.RIGHT)) {
-            animations.put("walk_" + Direction.RIGHT, tile);
-            animations.put("walk_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("walk_" + Direction.RIGHT, aTile);
+            animations.put("walk_" + Direction.LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("walk3_" + Direction.DOWN_RIGHT)) {
-            animations.put("walk_" + Direction.DOWN_RIGHT, tile);
-            animations.put("walk_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("walk_" + Direction.DOWN_RIGHT, aTile);
+            animations.put("walk_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("walk3_" + Direction.DOWN)) {
-            animations.put("walk_" + Direction.DOWN, tile);
+            animations.put("walk_" + Direction.DOWN, aTile);
         }
     }
-    private void setDeathAnimationFrames(String actionAndDirection, AnimatedTiledMapTile tile) {
+    private void setDeathAnimationFrames(String actionAndDirection, AnimatedTiledMapTile aTile) {
         if(actionAndDirection.equals("death1_" + Direction.UP)) {
-            animations.put("death_" + Direction.UP, tile);
+            animations.put("death_" + Direction.UP, aTile);
         } else if(actionAndDirection.equals("death1_" + Direction.UP_RIGHT)) {
-            animations.put("death_" + Direction.UP_RIGHT, tile);
-            animations.put("death_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("death_" + Direction.UP_RIGHT, aTile);
+            animations.put("death_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("death1_" + Direction.RIGHT)) {
-            animations.put("death_" + Direction.RIGHT, tile);
-            animations.put("death_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("death_" + Direction.RIGHT, aTile);
+            animations.put("death_" + Direction.LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("death1_" + Direction.DOWN_RIGHT)) {
-            animations.put("death_" + Direction.DOWN_RIGHT, tile);
-            animations.put("death_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
+            animations.put("death_" + Direction.DOWN_RIGHT, aTile);
+            animations.put("death_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(aTile));
         } else if(actionAndDirection.equals("death1_" + Direction.DOWN)) {
-            animations.put("death_" + Direction.DOWN, tile);
+            animations.put("death_" + Direction.DOWN, aTile);
         }
     }
 

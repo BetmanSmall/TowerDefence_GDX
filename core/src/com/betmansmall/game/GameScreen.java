@@ -54,20 +54,15 @@ public class GameScreen implements Screen {
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
 //			Gdx.app.log("GameScreen::tap()", " -- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+//			CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
+			if(gameInterface.getCreepsRoulette().isButtonTouched(x,y) || gameInterface.getTowersRoulette().isButtonTouched(x,y)) {
+				return false;
+			}
+
 			Vector3 touch = new Vector3(x, y, 0);
 			cam.unproject(touch);
 			GridPoint2 gameCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
 			GridPoint2 tileCooCoordinate = gameField.whichCell(gameCoordinate);
-
-			//CHECK IF THE PAUSE BUTTON IS TOUCHED
-			if(gameInterface.getCreepsRoulette().isButtonTouched(x,y)) {
-				return false;
-			}
-
-			//CHECK IF THE TOWER BUTTON IS TOUCHED
-			if(gameInterface.getTowersRoulette().isButtonTouched(x,y)) {
-				return false;
-			}
 
 			if(tileCooCoordinate != null) {
 				if(button == 0) {

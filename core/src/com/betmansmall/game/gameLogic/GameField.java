@@ -109,7 +109,7 @@ public class GameField {
                 TemplateForUnit unit = new TemplateForUnit(tileSet);
                 factionsManager.addUnitToFaction(unit);
                 if(animation == null) {
-                    AnimatedTiledMapTile animatedTiledMapTile = unit.animations.get("idle_" + Direction.UP);
+                    AnimatedTiledMapTile animatedTiledMapTile = unit.animations.get("death_" + Direction.UP);
                     StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
                     Array<TextureRegion> textureRegions = new Array<TextureRegion>(staticTiledMapTiles.length);
 //                    Gdx.app.log("GameField::GameField()", " -- textureRegion.size:" + staticTiledMapTiles.length);
@@ -131,7 +131,7 @@ public class GameField {
         gamePaused = true;
         maxOfMissedCreeps = 7;
         missedCreeps = 0;
-        gamerGold = 50;
+        gamerGold = 100;
         // GAME INTERFACE ZONE2
     }
 
@@ -207,10 +207,10 @@ public class GameField {
 
         if(isDrawableGrid)
             drawGrid(camera);
-        if(isDrawableCreeps)
-            drawCreeps(camera);
         if(isDrawableTowers)
             drawTowers(camera);
+        if(isDrawableCreeps)
+            drawCreeps(camera);
         if(isDrawableRoutes)
             drawRoutes(camera);
         if(isDrawableGridNav)
@@ -255,7 +255,10 @@ public class GameField {
 //        spriteBatch.setProjectionMatrix(camera.combined);
 //        spriteBatch.begin();
 
-        for(Creep creep: creepsManager.getAllCreeps()) {
+
+//        for(Creep creep: creepsManager.getAllCreeps()) {
+        for(int k = creepsManager.getAllCreeps().size-1; k >= 0; k--) {
+            Creep creep = creepsManager.getCreep(k);
             int oldX = creep.getOldPosition().getX(), oldY = creep.getOldPosition().getY();
             int newX = creep.getNewPosition().getX(), newY = creep.getNewPosition().getY();
             float fVx = halfSizeCellX*newY + newX*halfSizeCellX;
@@ -284,30 +287,36 @@ public class GameField {
                 fVy -= (sizeCellY/2/speed)*(speed-elapsedTime);
             }
 
-
-            TextureRegion curentFrame = creep.getCurentFrame();
+            TextureRegion curentFrame;
+            if(creep.isAlive()) {
+                curentFrame = creep.getCurentFrame();
+            } else {
+                curentFrame = creep.getCurrentDeathFrame();
+            }
             int deltaX = (curentFrame.getRegionWidth()-sizeCellX)/2;
             int deltaY = (curentFrame.getRegionHeight()-sizeCellY)/2;
             fVx -= deltaX;
             fVy -= deltaY;
 
-            shapeRenderer.setProjectionMatrix(camera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.BLACK);
-            float spaceInHpBar = 1;
-            float hpBarWidth = 30;
-            float hpBarHeight = 7;
-            float hpBarWidthSpace = (curentFrame.getRegionWidth()-hpBarWidth)/2;
-            float hpBarTopSpace = hpBarHeight;
-            shapeRenderer.rect(fVx + hpBarWidthSpace, fVy + curentFrame.getRegionHeight() - hpBarTopSpace, hpBarWidth, hpBarHeight);
-            shapeRenderer.setColor(Color.GREEN);
-            int maxHP = creep.getTemplateForUnit().healthPoints;
-            int hp = creep.getHp();
-            hpBarWidth = hpBarWidth/maxHP * hp;
-            shapeRenderer.rect(fVx + hpBarWidthSpace+spaceInHpBar, fVy + curentFrame.getRegionHeight() - hpBarTopSpace + spaceInHpBar, hpBarWidth - (spaceInHpBar*2), hpBarHeight - (spaceInHpBar*2));
+            if(creep.isAlive()) {
+                shapeRenderer.setProjectionMatrix(camera.combined);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.setColor(Color.BLACK);
+                float spaceInHpBar = 1;
+                float hpBarWidth = 30;
+                float hpBarHeight = 7;
+                float hpBarWidthSpace = (curentFrame.getRegionWidth() - hpBarWidth) / 2;
+                float hpBarTopSpace = hpBarHeight;
+                shapeRenderer.rect(fVx + hpBarWidthSpace, fVy + curentFrame.getRegionHeight() - hpBarTopSpace, hpBarWidth, hpBarHeight);
+                shapeRenderer.setColor(Color.GREEN);
+                int maxHP = creep.getTemplateForUnit().healthPoints;
+                int hp = creep.getHp();
+                hpBarWidth = hpBarWidth / maxHP * hp;
+                shapeRenderer.rect(fVx + hpBarWidthSpace + spaceInHpBar, fVy + curentFrame.getRegionHeight() - hpBarTopSpace + spaceInHpBar, hpBarWidth - (spaceInHpBar * 2), hpBarHeight - (spaceInHpBar * 2));
 //            shapeRenderer.setColor(Color.BLUE); // (100, 60, 21, 1f);
 //            shapeRenderer.circle(fVx, fVy, 1);
-            shapeRenderer.end();
+                shapeRenderer.end();
+            }
 
             spriteBatch.setProjectionMatrix(camera.combined);
             spriteBatch.begin();
@@ -512,25 +521,26 @@ public class GameField {
         for(int i=0; i<creepsManager.amountCreeps(); i++) {
             Creep creep = creepsManager.getCreep(i);
             Vertex oldPosition = creep.getNewPosition();
-//            field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
-//            float elTime = creep.getElapsedReloadTime()+delta;
-//            if(elTime >= creep.getSpeed()) {
-//                creep.setElapsedReloadTime(0);
-//                stepOneCreep(creep);
-//            }
-//            else creep.setElapsedReloadTime(elTime);
-            Vertex newPosition = creep.move(delta);
-            if(newPosition != null) {
-                if(!newPosition.equals(oldPosition)) {
-                    field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
-                    field[newPosition.getX()][newPosition.getY()].setCreep(creep);
+            if(creep.isAlive()) {
+                Vertex newPosition = creep.move(delta);
+                if (newPosition != null) {
+                    if (!newPosition.equals(oldPosition)) {
+                        field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+                        field[newPosition.getX()][newPosition.getY()].setCreep(creep);
 //                    Gdx.app.log("GameField::stepAllCreep()", "-- Creep move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
+                    }
+                } else {
+                    field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+                    creepsManager.removeCreep(creep);
+                    missedCreeps++;
+//                Gdx.app.log("GameField::stepAllCreep()", "-- Creep finished!");
                 }
             } else {
-                field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
-                creepsManager.removeCreep(creep);
-                missedCreeps++;
-//                Gdx.app.log("GameField::stepAllCreep()", "-- Creep finished!");
+                if(!creep.changeDeathFrame(delta)) {
+                    field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+                    creepsManager.removeCreep(creep);
+//                Gdx.app.log("GameField::stepAllCreep()", "-- Creep death! and delete!");
+                }
             }
         }
     }
@@ -541,30 +551,25 @@ public class GameField {
             float elTime = tower.getElapsedReloadTime()+delta;
             if(elTime >= tower.getReloadTime()) {
                 tower.setElapsedReloadTime(0);
-                attackCreep(tower);
+                attackCreep(tower, delta);
             }
             else tower.setElapsedReloadTime(elTime);
         }
     }
 
-    private void attackCreep(Tower tower) {
+    private void attackCreep(Tower tower, float delta) {
         int radius = tower.getRadius();
         for(int i=-radius;i<=radius;i++) {
             for(int j=-radius;j<=radius;j++) {
                 GridPoint2 position = tower.getPosition();
                 if(field[position.x + i][position.y + j].getCreep() != null) {
                     Creep creep = field[position.x + i][position.y + j].getCreeps().first();
-                    int hp = creep.getHp() - tower.getDamage();
-                    if(hp <= 0) {
-                        field[position.x+i][position.y+j].removeCreep(creep);
-                        creepsManager.removeCreep(creep);
+                    if(creep.die(tower.getDamage())) {
+                        field[position.x + i][position.y + j].removeCreep(creep);
                         gamerGold += creep.getTemplateForUnit().bounty;
-                        Gdx.app.log("Creep::attackCreep()", " -- ");
+                        Gdx.app.log("Creep::attackCreep()", " -- Creep Death!");
                     }
-                    else {
-                        creep.setHp(hp);
-                    }
-//                    Gdx.app.log("Creep healthPoints", creep.getHp()+"");
+//                    attackCreep(tower, delta); // Maybe loop!!!!
                 }
             }
         }
