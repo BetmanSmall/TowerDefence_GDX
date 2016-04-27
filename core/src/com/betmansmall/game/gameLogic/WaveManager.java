@@ -23,13 +23,13 @@ public class WaveManager {
         this.waves.add(new Wave(new Integer[]{1,1,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0,1,1,1,0}));
     }
 
-    public Integer getNextCreepTemplateIndexForSpawn(float delta) {
+    public Integer getNextIndexTemplateForUnitForSpawnCreep(float delta) {
         elapsedTimeForSpawn += delta;
         if(elapsedTimeForSpawn > intervalForSpawnCreeps) {
             elapsedTimeForSpawn = 0f;
             return waves.first().units.pollFirst();
         }
-        return -1;
+        return null;
     }
 
     public int getNumberOfCreeps() {

@@ -14,7 +14,7 @@ import java.util.ArrayDeque;
 /**
  * Created by betmansmall on 22.09.2015.
  */
-public class  Creep {
+public class Creep {
     private ArrayDeque<Vertex> route;
     private Vertex oldPosition;
     private Vertex newPosition;
@@ -22,6 +22,7 @@ public class  Creep {
     private float speed;
     private float elapsedTime;
     private float deathElapsedTime;
+    public float graphicalCoordinateX, graphicalCoordinateY;
 
     private TemplateForUnit templateForUnit;
 
@@ -65,6 +66,11 @@ public class  Creep {
         templateForUnit = null;
         direction = null;
         animation = null;
+    }
+
+    public void setGraphicalCoordinates(float x, float y) {
+        this.graphicalCoordinateX = x;
+        this.graphicalCoordinateY = y;
     }
 
     public Vertex move(float delta) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
+import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 /**
@@ -19,7 +20,7 @@ public class Tower {
     private TemplateForTower templateForTower;
     private TiledMapTile idleTile;
 
-    private Array<ProjecTile> projecTiles;
+    public Array<ProjecTile> projecTiles;
 
     public Tower(GridPoint2 position, TemplateForTower templateForTower){
         this.position = position;
@@ -31,6 +32,25 @@ public class Tower {
         this.templateForTower = templateForTower;
         this.idleTile = templateForTower.idleTile;
         this.projecTiles = new Array<ProjecTile>();
+    }
+
+    public void shot(Creep creep) {
+        int halfSizeCellX = GameField.getSizeCellX()/2;
+        int halfSizeCellY = GameField.getSizeCellY()/2;
+//        float fVx = halfSizeCellX*newY + newX*halfSizeCellX;
+//        float fVy = halfSizeCellY*newY - newX*halfSizeCellY;
+        float coorX = halfSizeCellX*position.y + position.x*halfSizeCellX;
+        float coorY = halfSizeCellY*position.y - position.x*halfSizeCellY;
+        TextureRegion tmpTextureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
+        coorX -= tmpTextureRegion.getRegionWidth()/2;
+        coorY += tmpTextureRegion.getRegionHeight()/2;
+        projecTiles.add(new ProjecTile(coorX, coorY, creep, templateForTower));
+    }
+
+    public void moveAllProjecTiles() {
+        for(ProjecTile projecTile: projecTiles) {
+            projecTile.move();
+        }
     }
 
     public GridPoint2 getPosition() {

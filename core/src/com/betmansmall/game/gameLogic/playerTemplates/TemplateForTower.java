@@ -1,9 +1,11 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Created by betmansmall on 22.02.2016.
@@ -11,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
 public class TemplateForTower {
     private Faction faction;
 
+    public Integer  ammoDistance;
+    public Float    ammoSpeed;
     public Integer  cost;
     public Integer  damage;
     public String   factionName;
@@ -20,11 +24,13 @@ public class TemplateForTower {
     public Integer  size;
     public String   type;
 
-    public Array<TiledMapTile> ammunition;
     public TiledMapTile idleTile;
+    public ObjectMap<String, TiledMapTile> ammunitionPictures;
 
     public TemplateForTower(TiledMapTileSet tileSet) {
         try {
+            this.ammoDistance = Integer.parseInt(tileSet.getProperties().get("ammoDistance", String.class));
+            this.ammoSpeed =    Float.parseFloat(tileSet.getProperties().get("ammoSpeed", String.class));
             this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
             this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
             this.factionName =  tileSet.getProperties().get("factionName", String.class);
@@ -37,7 +43,7 @@ public class TemplateForTower {
             Gdx.app.error("TemplateForTower::TemplateForTower()", " -- Exp: " + exp + " Cheak the file!");
         }
 
-        this.ammunition = new Array<TiledMapTile>();
+        this.ammunitionPictures = new ObjectMap<String, TiledMapTile>();
 
         setTiledMapTiles(tileSet);
         validate();
@@ -49,16 +55,46 @@ public class TemplateForTower {
             if (tileName != null) {
                 if(tileName.equals("idleTile")) {
                     idleTile = tile;
-                } else if(tileName.contains("arrow")) {
-                    ammunition.add(tile);
+                } else if(tileName.contains("ammo_")) {
+                    setAmmoTiles(tileName, tile);
                 }
             }
         }
     }
 
+    private void setAmmoTiles(String tileName, TiledMapTile tile) {
+        if(tile != null) {
+            if(tileName.equals("ammo_" + Direction.UP)) {
+                ammunitionPictures.put("ammo_" + Direction.UP, tile);
+            } else if(tileName.equals("ammo_" + Direction.UP_RIGHT)) {
+                ammunitionPictures.put("ammo_" + Direction.UP_RIGHT, tile);
+                ammunitionPictures.put("ammo_" + Direction.UP_LEFT, flipTiledMapTile(tile));
+            } else if(tileName.equals("ammo_" + Direction.RIGHT)) {
+                ammunitionPictures.put("ammo_" + Direction.RIGHT, tile);
+                ammunitionPictures.put("ammo_" + Direction.LEFT, flipTiledMapTile(tile));
+            } else if(tileName.equals("ammo_" + Direction.DOWN_RIGHT)) {
+                ammunitionPictures.put("ammo_" + Direction.DOWN_RIGHT, tile);
+                ammunitionPictures.put("ammo_" + Direction.DOWN_LEFT, flipTiledMapTile(tile));
+            } else if(tileName.equals("ammo_" + Direction.DOWN)) {
+                ammunitionPictures.put("ammo_" + Direction.DOWN, tile);
+            }
+        }
+    }
+
+    private TiledMapTile flipTiledMapTile(TiledMapTile tiledMapTile) {
+        TextureRegion textureRegion = new TextureRegion(tiledMapTile.getTextureRegion());
+        textureRegion.flip(true, false);
+        return new StaticTiledMapTile(textureRegion);
+    }
+
+
     private void validate() {
         // Need cheak range values
-        if(this.cost == null)
+        if(this.ammoDistance == null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'ammoDistance'! Check the file");
+        else if(this.ammoSpeed == null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'ammoSpeed'! Check the file");
+        else if(this.cost == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'cost'! Check the file");
         else if(this.damage == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'damage'! Check the file");
@@ -77,7 +113,7 @@ public class TemplateForTower {
 
         if(idleTile == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'idleTile'! Check the file");
-        else if(ammunition.size == 0)
+        else if(ammunitionPictures.size == 0)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'ammo'! Check the file");
     }
 

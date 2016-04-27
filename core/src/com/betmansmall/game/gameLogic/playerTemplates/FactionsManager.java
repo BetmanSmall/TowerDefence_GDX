@@ -90,7 +90,7 @@ public class FactionsManager {
         return null;
     }
 
-    public TemplateForUnit getTemplateForUnitFromFirstFaction(int index) {
+    public TemplateForUnit getTemplateForUnitFromFirstFactionByIndex(int index) {
         Faction faction = factions.first();
         if(faction != null) {
             TemplateForUnit templateForUnit = faction.getUnits().get(index);

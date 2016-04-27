@@ -39,7 +39,7 @@ public class TemplateForUnit {
             Gdx.app.error("TemplateForUnit::TemplateForUnit()", " -- Exp: " + exp + " Cheak the file!");
         }
 
-        animations = new ObjectMap<String, AnimatedTiledMapTile>();
+        this.animations = new ObjectMap<String, AnimatedTiledMapTile>();
 
         setAnimationFrames(tileSet);
         validate();
@@ -49,7 +49,7 @@ public class TemplateForUnit {
         for(TiledMapTile tile: tileSet) {
             if(tile instanceof AnimatedTiledMapTile) {
                 AnimatedTiledMapTile aTile = (AnimatedTiledMapTile) tile;
-                String actionAndDirection = tile.getProperties().get("actionAndDirection", String.class);
+                String actionAndDirection = aTile.getProperties().get("actionAndDirection", String.class);
                 if(actionAndDirection != null) {
                     if(actionAndDirection.contains("idle"))
                         setIdleAnimationFrames(actionAndDirection, aTile);

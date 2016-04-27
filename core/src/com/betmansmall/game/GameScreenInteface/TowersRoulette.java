@@ -104,7 +104,7 @@ public class TowersRoulette extends Roulette {
         int towerId = (int)(tmp % (90 * list.size())) / 90;
         if(towerId < list.size())
             localTemplate = list.get(Math.abs(towerId));
-        Gdx.app.log("tag","sette :" + localTemplate.name);
+        Gdx.app.log("tag", "sette :" + localTemplate.name);
         FactionsManager.getInstance().setCurrentTemplateTower(localTemplate);
     }
 

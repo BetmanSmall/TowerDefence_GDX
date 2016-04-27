@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="unit2_troll_axethrower" tilewidth="72" tileheight="72">
+<tileset name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="10"/>
-  <property name="faction_name" value="Faction1"/>
-  <property name="health_point" value="90"/>
+  <property name="bounty" value="5"/>
+  <property name="factionName" value="Faction1"/>
+  <property name="healthPoints" value="145"/>
   <property name="name" value="Troll Axethrower"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.3"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="864"/>
+ <image source="../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>
  <terraintypes>
   <terrain name="idle_UP" tile="0"/>
   <terrain name="idle_UP_RIGHT" tile="1"/>
@@ -361,6 +361,13 @@
    <frame tileid="45" duration="100"/>
    <frame tileid="50" duration="100"/>
    <frame tileid="55" duration="100"/>
+   <frame tileid="65" duration="100"/>
+   <frame tileid="60" duration="100"/>
+   <frame tileid="70" duration="100"/>
+   <frame tileid="75" duration="100"/>
+   <frame tileid="80" duration="100"/>
+   <frame tileid="85" duration="100"/>
+   <frame tileid="90" duration="100"/>
   </animation>
  </tile>
  <tile id="46">
@@ -371,6 +378,13 @@
    <frame tileid="46" duration="100"/>
    <frame tileid="51" duration="100"/>
    <frame tileid="56" duration="100"/>
+   <frame tileid="66" duration="100"/>
+   <frame tileid="61" duration="100"/>
+   <frame tileid="71" duration="100"/>
+   <frame tileid="76" duration="100"/>
+   <frame tileid="81" duration="100"/>
+   <frame tileid="86" duration="100"/>
+   <frame tileid="91" duration="100"/>
   </animation>
  </tile>
  <tile id="47">
@@ -381,6 +395,13 @@
    <frame tileid="47" duration="100"/>
    <frame tileid="52" duration="100"/>
    <frame tileid="57" duration="100"/>
+   <frame tileid="67" duration="100"/>
+   <frame tileid="62" duration="100"/>
+   <frame tileid="77" duration="100"/>
+   <frame tileid="77" duration="100"/>
+   <frame tileid="82" duration="100"/>
+   <frame tileid="87" duration="100"/>
+   <frame tileid="92" duration="100"/>
   </animation>
  </tile>
  <tile id="48">
@@ -391,6 +412,13 @@
    <frame tileid="48" duration="100"/>
    <frame tileid="53" duration="100"/>
    <frame tileid="58" duration="100"/>
+   <frame tileid="68" duration="100"/>
+   <frame tileid="63" duration="100"/>
+   <frame tileid="73" duration="100"/>
+   <frame tileid="78" duration="100"/>
+   <frame tileid="83" duration="100"/>
+   <frame tileid="88" duration="100"/>
+   <frame tileid="93" duration="100"/>
   </animation>
  </tile>
  <tile id="49">
@@ -401,6 +429,13 @@
    <frame tileid="49" duration="100"/>
    <frame tileid="54" duration="100"/>
    <frame tileid="59" duration="100"/>
+   <frame tileid="69" duration="100"/>
+   <frame tileid="64" duration="100"/>
+   <frame tileid="79" duration="100"/>
+   <frame tileid="79" duration="100"/>
+   <frame tileid="84" duration="100"/>
+   <frame tileid="89" duration="100"/>
+   <frame tileid="94" duration="100"/>
   </animation>
  </tile>
  <tile id="50">
