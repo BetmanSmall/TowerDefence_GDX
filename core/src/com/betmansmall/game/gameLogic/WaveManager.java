@@ -25,7 +25,7 @@ public class WaveManager {
 
     public Integer getNextIndexTemplateForUnitForSpawnCreep(float delta) {
         elapsedTimeForSpawn += delta;
-        if(elapsedTimeForSpawn > intervalForSpawnCreeps) {
+        if(elapsedTimeForSpawn >= intervalForSpawnCreeps) {
             elapsedTimeForSpawn = 0f;
             return waves.first().units.pollFirst();
         }

@@ -13,6 +13,9 @@ public class ProjecTile {
     public float x, y;
     public Creep creep;
     public float ammoDistance;
+    public float ammoSize;
+
+    public TemplateForTower templateForTower;
 
     public ObjectMap<String, TiledMapTile> ammunitionPictures;
 
@@ -21,6 +24,10 @@ public class ProjecTile {
         this.y = y;
         this.creep = creep;
         this.ammoDistance = templateForTower.ammoDistance;
+        this.ammoSize = templateForTower.ammoSize;
+
+        this.templateForTower = templateForTower;
+
         this.ammunitionPictures = templateForTower.ammunitionPictures;
     }
 

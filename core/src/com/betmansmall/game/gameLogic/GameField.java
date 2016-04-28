@@ -197,7 +197,8 @@ public class GameField {
         if(!gamePaused) {
             spawnCreep(delta);
             stepAllCreep(delta);
-            attackCreeps(delta);
+            shotAllTowers(delta);
+            moveAllProjecTiles(delta);
         }
 
         if(isDrawableGrid)
@@ -210,6 +211,7 @@ public class GameField {
             drawRoutes(camera);
         if(isDrawableGridNav)
             drawGridNav(camera);
+        drawProjecTiles(camera);
 
         if(animation != null) {
             stateTime += delta;
@@ -307,8 +309,8 @@ public class GameField {
                 int hp = creep.getHp();
                 hpBarWidth = hpBarWidth / maxHP * hp;
                 shapeRenderer.rect(fVx + hpBarWidthSpace + spaceInHpBar, fVy + curentFrame.getRegionHeight() - hpBarTopSpace + spaceInHpBar, hpBarWidth - (spaceInHpBar * 2), hpBarHeight - (spaceInHpBar * 2));
-//            shapeRenderer.setColor(Color.BLUE); // (100, 60, 21, 1f);
-//            shapeRenderer.circle(fVx, fVy, 1);
+                shapeRenderer.setColor(Color.BLUE); // (100, 60, 21, 1f);
+                shapeRenderer.circle(fVx, fVy, 1);
                 shapeRenderer.end();
             }
 
@@ -405,6 +407,20 @@ public class GameField {
         shapeRenderer.end();
     }
 
+    private void drawProjecTiles(OrthographicCamera camera) {
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        for(Tower tower: towersManager.getAllTowers()) {
+            for(ProjecTile projecTile: tower.projecTiles) {
+                TextureRegion textureRegion = projecTile.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
+                float width = textureRegion.getRegionWidth()*projecTile.ammoSize;
+                float height = textureRegion.getRegionHeight()*projecTile.ammoSize;
+                spriteBatch.draw(textureRegion, projecTile.x, projecTile.y, width, height);
+            }
+        }
+        spriteBatch.end();
+    }
+
     public void setSpawnPoint(int x, int y) {
 //        spawnPoint = new GridPoint2(x, y);
         waveManager.spawnPoints.set(0, new GridPoint2(x, y));
@@ -437,7 +453,7 @@ public class GameField {
 
         if(route != null) {
             Creep creep = creepsManager.createCreep(route, templateForUnit);
-            field[x][y].setCreep(creep);
+            field[x][y].setCreep(creep); // TODO field maybe out array
 //            Gdx.app.log("GameField::createCreep()", " -- x:" + x + " y:" + y + " eX:" + waveManager.exitPoints.first().x + " eY:" + waveManager.exitPoints.first().y);
 //            Gdx.app.log("GameField::createCreep()", " -- route:" + route);
         }
@@ -455,15 +471,15 @@ public class GameField {
         TemplateForTower templateForTower = factionsManager.getCurrentTemplateTower();
         if(gamerGold >= templateForTower.cost) {
             int towerSize = templateForTower.size;
-            for (int tmpX = 0; tmpX < towerSize; tmpX++)
-                for (int tmpY = 0; tmpY < towerSize; tmpY++)
-                    if (!field[tmpX + x][tmpY + y].isEmpty()) // HAVE BUGS! Can out of array!
+            for(int tmpX = 0; tmpX < towerSize; tmpX++)
+                for(int tmpY = 0; tmpY < towerSize; tmpY++)
+                    if(!cellIsEmpty(tmpX+x, tmpY+y))
                         return false;
 
             GridPoint2 position = new GridPoint2(x, y);
             Tower tower = towersManager.createTower(position, templateForTower);
-            for (int tmpX = 0; tmpX < towerSize; tmpX++)
-                for (int tmpY = 0; tmpY < towerSize; tmpY++)
+            for(int tmpX = 0; tmpX < towerSize; tmpX++)
+                for(int tmpY = 0; tmpY < towerSize; tmpY++)
                     field[tmpX + x][tmpY + y].setTower(tower);
 
             rerouteForAllCreeps();
@@ -532,35 +548,27 @@ public class GameField {
         }
     }
 
-    private void attackCreeps(float delta) {
-        for(int i=0;i<towersManager.amountTowers();i++) {
-            Tower tower = towersManager.getTower(i);
-            float elTime = tower.getElapsedReloadTime()+delta;
-            if(elTime >= tower.getReloadTime()) {
-                tower.setElapsedReloadTime(0);
-                attackCreep(tower, delta);
-//                tower.moveAllProjecTiles(); // TODO FIX! NEED WORK!
+    private void shotAllTowers(float delta) {
+        for(Tower tower: towersManager.getAllTowers()) {
+            if(tower.recharge(delta)) {
+                int radius = tower.getRadius();
+                for(int tmpX = -radius; tmpX <= radius; tmpX++) {
+                    for(int tmpY = -radius; tmpY <= radius; tmpY++) {
+                        GridPoint2 position = tower.getPosition();
+                        if(cellHasCreep(tmpX+position.x, tmpY+position.y)) {
+                            Creep creep = field[tmpX+position.x][tmpY+position.y].getCreep();
+                            tower.shoot(creep);
+                            return;
+                        }
+                    }
+                }
             }
-            else tower.setElapsedReloadTime(elTime);
         }
     }
 
-    private void attackCreep(Tower tower, float delta) {
-        int radius = tower.getRadius();
-        for(int i = -radius; i <= radius; i++) {
-            for(int j = -radius; j <= radius; j++) {
-                GridPoint2 position = tower.getPosition();
-                if(field[position.x + i][position.y + j].getCreep() != null) {
-                    Creep creep = field[position.x + i][position.y + j].getCreeps().first();
-//                    tower.shot(creep);
-                    if(creep.die(tower.getDamage())) {
-                        field[position.x + i][position.y + j].removeCreep(creep);
-                        gamerGold += creep.getTemplateForUnit().bounty;
-                        Gdx.app.log("Creep::attackCreep()", " -- Creep Death!");
-                    }
-//                    attackCreep(tower, delta); // Maybe loop!!!!
-                }
-            }
+    private void moveAllProjecTiles(float delta) {
+        for(Tower tower: towersManager.getAllTowers()) {
+            tower.moveAllProjecTiles();
         }
     }
 
@@ -602,4 +610,22 @@ public class GameField {
         return gamerGold;
     }
     // GAME INTERFACE ZONE2
+
+    private boolean cellIsEmpty(int x, int y) {
+        if(x >= 0 && y >= 0) {
+            if(x < sizeFieldX && y < sizeFieldY) {
+                return field[x][y].isEmpty();
+            }
+        }
+        return false;
+    }
+
+    private boolean cellHasCreep(int x, int y) {
+        if(x >= 0 && y >= 0) {
+            if(x < sizeFieldX && y < sizeFieldY) {
+                return field[x][y].getCreep() != null;
+            }
+        }
+        return false;
+    }
 }

@@ -147,7 +147,7 @@ public class GameScreen implements Screen {
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		gameField = new GameField("maps/arena2.tmx");
+		gameField = new GameField("maps/arena3.tmx");
 		gameInterface = new GameInterface(gameField);
 
 		Gdx.input.setInputProcessor(gameInterface.setCommonInputHandler(new GestureDetector(cameraController)));

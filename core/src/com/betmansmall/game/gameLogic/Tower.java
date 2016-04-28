@@ -34,22 +34,39 @@ public class Tower {
         this.projecTiles = new Array<ProjecTile>();
     }
 
-    public void shot(Creep creep) {
-        int halfSizeCellX = GameField.getSizeCellX()/2;
-        int halfSizeCellY = GameField.getSizeCellY()/2;
+    public boolean recharge(float delta) {
+        elapsedReloadTime += delta;
+        if(elapsedReloadTime >= reloadTime) {
+//            elapsedReloadTime = 0f;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean shoot(Creep creep) {
+        if(elapsedReloadTime >= reloadTime) {
+            int halfSizeCellX = GameField.getSizeCellX() / 2;
+            int halfSizeCellY = GameField.getSizeCellY() / 2;
 //        float fVx = halfSizeCellX*newY + newX*halfSizeCellX;
 //        float fVy = halfSizeCellY*newY - newX*halfSizeCellY;
-        float coorX = halfSizeCellX*position.y + position.x*halfSizeCellX;
-        float coorY = halfSizeCellY*position.y - position.x*halfSizeCellY;
-        TextureRegion tmpTextureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
-        coorX -= tmpTextureRegion.getRegionWidth()/2;
-        coorY += tmpTextureRegion.getRegionHeight()/2;
-        projecTiles.add(new ProjecTile(coorX, coorY, creep, templateForTower));
+            float coorX = halfSizeCellX * position.y + position.x * halfSizeCellX;
+            float coorY = halfSizeCellY * position.y - position.x * halfSizeCellY;
+            TextureRegion tmpTextureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
+            coorX += (tmpTextureRegion.getRegionWidth()-(tmpTextureRegion.getRegionWidth()*templateForTower.ammoSize))/2;
+            coorY += (tmpTextureRegion.getRegionHeight()-(tmpTextureRegion.getRegionHeight()*templateForTower.ammoSize))/2;
+            projecTiles.add(new ProjecTile(coorX, coorY, creep, templateForTower));
+            elapsedReloadTime = 0f;
+            return true;
+        }
+        return false;
     }
 
     public void moveAllProjecTiles() {
         for(ProjecTile projecTile: projecTiles) {
-            projecTile.move();
+            if(!projecTile.move()) {
+//                projecTile.dispose();
+                projecTiles.removeValue(projecTile, false);
+            }
         }
     }
 
@@ -78,13 +95,6 @@ public class Tower {
         return reloadTime;
     }
 
-    public void setElapsedReloadTime(float elapsedReloadTime) {
-        this.elapsedReloadTime = elapsedReloadTime;
-    }
-    public float getElapsedReloadTime() {
-        return elapsedReloadTime;
-    }
-
     public TemplateForTower getTemplateForTower() {
         return templateForTower;
     }
@@ -92,6 +102,4 @@ public class Tower {
     public TextureRegion getCurentFrame() {
         return idleTile.getTextureRegion();
     }
-
-//    public void shot()
 }

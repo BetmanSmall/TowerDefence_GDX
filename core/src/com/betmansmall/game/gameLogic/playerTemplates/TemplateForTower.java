@@ -14,6 +14,7 @@ public class TemplateForTower {
     private Faction faction;
 
     public Integer  ammoDistance;
+    public Float    ammoSize;
     public Float    ammoSpeed;
     public Integer  cost;
     public Integer  damage;
@@ -30,12 +31,13 @@ public class TemplateForTower {
     public TemplateForTower(TiledMapTileSet tileSet) {
         try {
             this.ammoDistance = Integer.parseInt(tileSet.getProperties().get("ammoDistance", String.class));
+            this.ammoSize =     Float.parseFloat(tileSet.getProperties().get("ammoSize", String.class));
             this.ammoSpeed =    Float.parseFloat(tileSet.getProperties().get("ammoSpeed", String.class));
             this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
             this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
             this.factionName =  tileSet.getProperties().get("factionName", String.class);
             this.name =         tileSet.getProperties().get("name", String.class);
-            this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
+            this.radius =       4;//Integer.parseInt(tileSet.getProperties().get("radius", String.class));
             this.reloadTime =   Float.parseFloat(tileSet.getProperties().get("reloadTime", String.class));
             this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
             this.type =         tileSet.getProperties().get("type", String.class);
@@ -92,6 +94,8 @@ public class TemplateForTower {
         // Need cheak range values
         if(this.ammoDistance == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'ammoDistance'! Check the file");
+        else if(this.ammoSize == null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'ammoSize'! Check the file");
         else if(this.ammoSpeed == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'ammoSpeed'! Check the file");
         else if(this.cost == null)
