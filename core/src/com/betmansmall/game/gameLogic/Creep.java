@@ -56,7 +56,7 @@ public class Creep {
             textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
         }
         animation = new Animation(speed/staticTiledMapTiles.length, textureRegions);
-        Gdx.app.log("Creep::setAnimation()", " -- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
+//        Gdx.app.log("Creep::setAnimation()", " -- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
     }
 
     public void dispose() {

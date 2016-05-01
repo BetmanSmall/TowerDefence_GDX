@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
@@ -92,8 +93,8 @@ public class TowersRoulette extends Roulette {
     }
 
     public void chooseTower(float isGreatedRound) {
-        List<TemplateForTower> list = FactionsManager.getInstance().getAllTowers();
-        TemplateForTower localTemplate = list.get(0);
+        Array<TemplateForTower> templateForTowers = gameField.getAllFirstTowersFromFirstFaction();
+        TemplateForTower localTemplate = templateForTowers.get(0);
         float tmp;
         if(isGreatedRound  > 45 ) {
             tmp = 90f - isGreatedRound + circleGroup.getRotation();
@@ -101,11 +102,11 @@ public class TowersRoulette extends Roulette {
             tmp = - isGreatedRound + circleGroup.getRotation();
         }
 
-        int towerId = (int)(tmp % (90 * list.size())) / 90;
-        if(towerId < list.size())
-            localTemplate = list.get(Math.abs(towerId));
+        int towerId = (int)(tmp % (90 * templateForTowers.size)) / 90;
+        if(towerId < templateForTowers.size)
+            localTemplate = templateForTowers.get(Math.abs(towerId));
         Gdx.app.log("tag", "sette :" + localTemplate.name);
-        FactionsManager.getInstance().setCurrentTemplateTower(localTemplate);
+        gameField.createdUnderConstruction(localTemplate);
     }
 
     public boolean isButtonTouched(float x, float y) {

@@ -36,7 +36,7 @@ public class GameInterface {
         return creepsRoulette;
     }
 
-    public  Stage getInterfaceStage(){
+    public Stage getInterfaceStage(){
         return stage;
     }
 

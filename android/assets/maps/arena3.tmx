@@ -4,7 +4,9 @@
  <tileset firstgid="321" source="creeps/unit1_grunt.tsx"/>
  <tileset firstgid="416" source="creeps/unit2_troll_axethrower.tsx"/>
  <tileset firstgid="511" source="towers/tower1_scout.tsx"/>
- <tileset firstgid="517" source="towers/tower3_cannon.tsx"/>
+ <tileset firstgid="517" source="towers/tower6_test1x1.tsx"/>
+ <tileset firstgid="518" source="towers/tower7_test2x2.tsx"/>
+ <tileset firstgid="519" source="towers/tower8_test3x3.tsx"/>
  <layer name="background" width="64" height="64">
   <properties>
    <property name="spawnPoint" type="int" value="1"/>

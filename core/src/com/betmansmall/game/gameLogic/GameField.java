@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.GridNav;
@@ -67,12 +68,13 @@ public class GameField {
     private TowersManager towersManager;
     private FactionsManager factionsManager;
 
+    private UnderConstruction underConstruction;
     // GAME INTERFACE ZONE1
     private WhichCell whichCell;
     private boolean gamePaused;
     private int maxOfMissedCreeps;
     private int missedCreeps;
-    private int gamerGold;
+    public static int gamerGold;
     // GAME INTERFACE ZONE2
 
     //TEST ZONE1
@@ -93,6 +95,8 @@ public class GameField {
         creepsManager = new CreepsManager();
         towersManager = new TowersManager();
         factionsManager = new FactionsManager();
+
+        underConstruction = null;
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
 
@@ -191,6 +195,19 @@ public class GameField {
     }
 
     public void render(float delta, OrthographicCamera camera) {
+        int x = Gdx.input.getX();
+        int y = Gdx.input.getY();
+        Vector3 touch = new Vector3(x, y, 0);
+        camera.unproject(touch);
+        GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
+        GridPoint2 cellCoordinate = whichCell(grafCoordinate);
+        if(cellCoordinate != null) {
+            if(underConstruction != null) {
+                underConstruction.setEndCoors(cellCoordinate.x, cellCoordinate.y);
+            }
+            Gdx.app.log("GameField::render()", " -- x:" + cellCoordinate.x + " y:" + cellCoordinate.y);
+        }
+
         renderer.setView(camera);
         renderer.render();
 
@@ -212,6 +229,7 @@ public class GameField {
         if(isDrawableGridNav)
             drawGridNav(camera);
         drawProjecTiles(camera);
+        drawTowersUnderConstruction(camera);
 
         if(animation != null) {
             stateTime += delta;
@@ -222,6 +240,11 @@ public class GameField {
 //            bitmapFont.draw(spriteBatch, String.valueOf(getGamerGold()), Gdx.graphics.getWidth()/2-10, Gdx.graphics.getHeight()-10);
             spriteBatch.end();
         }
+        spriteBatch.begin();
+        bitmapFont.getData().setScale(4);
+        bitmapFont.setColor(Color.YELLOW);
+        bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
+        spriteBatch.end();
     }
 
 	private void drawGrid(OrthographicCamera camera) {
@@ -309,8 +332,8 @@ public class GameField {
                 int hp = creep.getHp();
                 hpBarWidth = hpBarWidth / maxHP * hp;
                 shapeRenderer.rect(fVx + hpBarWidthSpace + spaceInHpBar, fVy + curentFrame.getRegionHeight() - hpBarTopSpace + spaceInHpBar, hpBarWidth - (spaceInHpBar * 2), hpBarHeight - (spaceInHpBar * 2));
-                shapeRenderer.setColor(Color.BLUE); // (100, 60, 21, 1f);
-                shapeRenderer.circle(fVx, fVy, 1);
+//                shapeRenderer.setColor(Color.BLUE); // (100, 60, 21, 1f);
+//                shapeRenderer.circle(fVx, fVy, 1);
                 shapeRenderer.end();
             }
 
@@ -412,12 +435,105 @@ public class GameField {
         spriteBatch.begin();
         for(Tower tower: towersManager.getAllTowers()) {
             for(ProjecTile projecTile: tower.projecTiles) {
-                TextureRegion textureRegion = projecTile.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
+                TextureRegion textureRegion = projecTile.textureRegion;
                 float width = textureRegion.getRegionWidth()*projecTile.ammoSize;
                 float height = textureRegion.getRegionHeight()*projecTile.ammoSize;
                 spriteBatch.draw(textureRegion, projecTile.x, projecTile.y, width, height);
             }
         }
+        spriteBatch.end();
+    }
+
+    private void drawTowersUnderConstruction(OrthographicCamera camera) {
+        if(underConstruction != null) {
+            if(underConstruction.state == 0) {
+                drawTowerUnderConstruction(camera, underConstruction.endX, underConstruction.endY, underConstruction.templateForTower);
+            } else if(underConstruction.state == 1) {
+                drawTowerUnderConstruction(camera, underConstruction.startX, underConstruction.startY, underConstruction.templateForTower);
+
+                for(int k = 0; k < underConstruction.coorsX.size; k++) {
+                    drawTowerUnderConstruction(camera, underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower);
+                }
+            }
+        }
+    }
+
+    private void drawTowerUnderConstruction(OrthographicCamera camera, int buildX, int buildY, TemplateForTower templateForTower) {
+        Gdx.app.log("GameField::drawTowerUnderConstruction()", " -- buildX:" + buildX + " buildY:" + buildY + " templateForTower:" + templateForTower);
+        int sizeCellX = getSizeCellX();
+        int sizeCellY = getSizeCellY();
+        float halfSizeCellX = sizeCellX/2;
+        float halfSizeCellY = sizeCellY/2;
+//        buildY = buildY+1;
+
+        int towerSize = templateForTower.size;
+        TextureRegion textureRegion = templateForTower.idleTile.getTextureRegion();
+        int pixSizeCellX = textureRegion.getRegionWidth() / towerSize;
+        int pixSizeCellY = textureRegion.getRegionHeight() / towerSize;
+        TextureRegion[][] smallTextureRegions = textureRegion.split(pixSizeCellX, pixSizeCellY);
+
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        Color oldColor = spriteBatch.getColor();
+        for(int x = 0; x < towerSize; x++) {
+            for(int y = 0; y < towerSize; y++) {
+                float pxlsX = halfSizeCellX*(buildY) + (buildX)*halfSizeCellX;
+                float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-1);
+
+                if(cellIsEmpty(buildX+x, buildY+y)) {
+//                        p.setOpacity(0.5);
+//                        p.drawPixmap(pxlsX - sizeCellX/2, pxlsY + sizeCellY - (sizeCellY*2)*height, sizeCellX, (sizeCellY*2)*height, pix);
+                    spriteBatch.setColor(0, 1f, 0, 0.55f);
+                    spriteBatch.draw(smallTextureRegions[x][y], pxlsX+(sizeCellX*y), pxlsY+((sizeCellY*2)*(towerSize-x-1)), sizeCellX, sizeCellY*2);
+//                    p.setOpacity(1);
+                } else {
+                    spriteBatch.setColor(1f, 0, 0, 0.55f);
+                    spriteBatch.draw(smallTextureRegions[x][y], pxlsX+(sizeCellX*y), pxlsY+((sizeCellY*2)*(towerSize-x-1)), sizeCellX, sizeCellY*2);
+//                        p.setOpacity(0.5);
+//                        p.drawPixmap(pxlsX - sizeCellX/2, pxlsY + sizeCellY - (sizeCellY*2)*height, sizeCellX, (sizeCellY*2)*height, pix);
+//
+//                        QPainter painter(&pix);
+//                        painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+//                        painter.fillRect(pix.rect(), cRed);
+//                        painter.end();
+//                        p.drawPixmap(pxlsX - sizeCellX/2, pxlsY + sizeCellY - (sizeCellY*2)*height, sizeCellX, (sizeCellY*2)*height, pix);
+                }
+            }
+        }
+//        float pxlsX = halfSizeCellX*(buildY) + (buildX)*halfSizeCellX;
+//        float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-1);
+//        spriteBatch.draw(smallTextureRegions[0][0], pxlsX,              pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[0][1], pxlsX+sizeCellX,    pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[1][0], pxlsX,              pxlsY, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[1][1], pxlsX+sizeCellX,    pxlsY, sizeCellX, sizeCellY*2);
+
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,             pxlsY+sizeCellY*2,  sizeCellX, sizeCellY*2, 0, 0, (int)pixSizeCellX, (int)pixSizeCellY, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,             pxlsY+sizeCellY*2,  sizeCellX, sizeCellY*2, pixSizeCellX, -sizeCellY, 0f, 0f);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,   pxlsY+sizeCellY*2,  sizeCellX, sizeCellY*2, 32, 0,  (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,             pxlsY,              sizeCellX, sizeCellY*2, 0,  32, (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,   pxlsY,              sizeCellX, sizeCellY*2, 32, 32, (int)pixSizeCell, (int)pixSizeCell, false, false);
+
+//        spriteBatch.draw(smallTextureRegions[0][0], pxlsX,                      pxlsY+sizeCellY*2+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[0][1], pxlsX+sizeCellX,            pxlsY+sizeCellY*2+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[0][2], pxlsX+sizeCellX+sizeCellX,  pxlsY+sizeCellY*2+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[1][0], pxlsX,                      pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[1][1], pxlsX+sizeCellX,            pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[1][2], pxlsX+sizeCellX+sizeCellX,  pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[2][0], pxlsX,                      pxlsY, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[2][1], pxlsX+sizeCellX,            pxlsY, sizeCellX, sizeCellY*2);
+//        spriteBatch.draw(smallTextureRegions[2][2], pxlsX+sizeCellX+sizeCellX,  pxlsY, sizeCellX, sizeCellY*2);
+
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,                     pxlsY+sizeCellY*2+sizeCellY*2,  sizeCellX, sizeCellY*2, 0, 0, (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,           pxlsY+sizeCellY*2+sizeCellY*2,  sizeCellX, sizeCellY*2, 22, 0,  (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX+sizeCellX, pxlsY+sizeCellY*2+sizeCellY*2,  sizeCellX, sizeCellY*2, 43, 0,  (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,                     pxlsY+sizeCellY*2,              sizeCellX, sizeCellY*2, 0,  22, (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,           pxlsY+sizeCellY*2,              sizeCellX, sizeCellY*2, 22, 22, (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX+sizeCellX, pxlsY+sizeCellY*2,              sizeCellX, sizeCellY*2, 43, 22,  (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,                     pxlsY,                          sizeCellX, sizeCellY*2, 0,  43, (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,           pxlsY,                          sizeCellX, sizeCellY*2, 22, 43, (int)pixSizeCell, (int)pixSizeCell, false, false);
+//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX+sizeCellX, pxlsY,                          sizeCellX, sizeCellY*2, 43, 43,  (int)pixSizeCell, (int)pixSizeCell, false, false);
+
+        spriteBatch.setColor(oldColor);
         spriteBatch.end();
     }
 
@@ -468,7 +584,7 @@ public class GameField {
     }
 
     public boolean createTower(int x, int y) {
-        TemplateForTower templateForTower = factionsManager.getCurrentTemplateTower();
+        TemplateForTower templateForTower = factionsManager.getRandomTemplateForTowerFromFirstFaction();
         if(gamerGold >= templateForTower.cost) {
             int towerSize = templateForTower.size;
             for(int tmpX = 0; tmpX < towerSize; tmpX++)
@@ -568,7 +684,7 @@ public class GameField {
 
     private void moveAllProjecTiles(float delta) {
         for(Tower tower: towersManager.getAllTowers()) {
-            tower.moveAllProjecTiles();
+            tower.moveAllProjecTiles(delta);
         }
     }
 
@@ -608,6 +724,18 @@ public class GameField {
 
     public int getGamerGold() {
         return gamerGold;
+    }
+
+    public Array<TemplateForTower> getAllFirstTowersFromFirstFaction() {
+        return factionsManager.getAllFirstTowersFromFirstFaction();
+    }
+
+    public boolean createdUnderConstruction(TemplateForTower templateForTower) {
+        if(underConstruction != null) {
+            underConstruction.dispose();
+        }
+        underConstruction = new UnderConstruction(templateForTower);
+        return true;
     }
     // GAME INTERFACE ZONE2
 

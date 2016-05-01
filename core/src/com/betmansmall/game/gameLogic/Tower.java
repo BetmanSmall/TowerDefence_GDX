@@ -45,7 +45,7 @@ public class Tower {
 
     public boolean shoot(Creep creep) {
         if(elapsedReloadTime >= reloadTime) {
-            int halfSizeCellX = GameField.getSizeCellX() / 2;
+            int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
             int halfSizeCellY = GameField.getSizeCellY() / 2;
 //        float fVx = halfSizeCellX*newY + newX*halfSizeCellX;
 //        float fVy = halfSizeCellY*newY - newX*halfSizeCellY;
@@ -61,11 +61,16 @@ public class Tower {
         return false;
     }
 
-    public void moveAllProjecTiles() {
+    public void moveAllProjecTiles(float delta) {
         for(ProjecTile projecTile: projecTiles) {
-            if(!projecTile.move()) {
-//                projecTile.dispose();
-                projecTiles.removeValue(projecTile, false);
+            switch(projecTile.hasReached(delta)) {
+                case 0:
+                    if(projecTile.creep.die(damage)) {
+                        GameField.gamerGold += projecTile.creep.getTemplateForUnit().bounty;
+                    }
+                case -1:
+                    projecTile.dispose();
+                    projecTiles.removeValue(projecTile, false);
             }
         }
     }

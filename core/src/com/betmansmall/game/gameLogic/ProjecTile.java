@@ -3,7 +3,7 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Vertex;
+import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 /**
@@ -17,7 +17,9 @@ public class ProjecTile {
 
     public TemplateForTower templateForTower;
 
+    public TextureRegion textureRegion;
     public ObjectMap<String, TiledMapTile> ammunitionPictures;
+    private int radius;
 
     ProjecTile(float x, float y, Creep creep, TemplateForTower templateForTower) {
         this.x = x;
@@ -28,43 +30,70 @@ public class ProjecTile {
 
         this.templateForTower = templateForTower;
 
+        this.textureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
         this.ammunitionPictures = templateForTower.ammunitionPictures;
+        this.radius = 11;
     }
 
-    public boolean move() {
-        float destX = creep.graphicalCoordinateX;
-        float destY = creep.graphicalCoordinateY;
+    /**
+     * Говорит пуле постараться достигнуть криппа.
+     *
+     * @param delta пока не используется. (нужна для ожидания пули времени для перемещения)
+     * @return -1 - Пуля не передвинулась. Крип мертв. Нужно убрать пулю из массива пуль.<br>
+     * 0 - Пуля передвинулась и достигла крипа.<br>
+     * 1 - Пуля передвинулась, но не достигла крипа.<br>
+     */
+    public int hasReached(float delta) {
+        if(creep.isAlive()) {
+            float creepCenterX = creep.graphicalCoordinateX + (creep.getCurentFrame().getRegionWidth() / 2);
+            float creepCenterY = creep.graphicalCoordinateY + (creep.getCurentFrame().getRegionHeight() / 2);
 
-        if(x != destX || y != destY) {
-            if(x == destX) {
-                if(y < destY) {
+//            ==================БЫДЛО КОД===============
+            if (x == creepCenterX) {
+                if (y < creepCenterY) {
                     y += ammoDistance;
-                } else if (y > destY) {
+                } else if (y > creepCenterY) {
                     y -= ammoDistance;
                 }
-            } else if(y == destY) {
-                if(x < destX) {
+            } else if (y == creepCenterY) {
+                if (x < creepCenterX) {
                     x += ammoDistance;
-                } else if(x > destX) {
+                } else if (x > creepCenterX) {
                     x -= ammoDistance;
                 }
-            } else if(x < destX && y > destY) {
-                x += ammoDistance/2;
-                y -= ammoDistance/2;
-            } else if(x > destX && y > destY) {
-                x -= ammoDistance/2;
-                y -= ammoDistance/2;
-            } else if(x < destX && y < destY) {
-                x += ammoDistance/2;
-                y += ammoDistance/2;
-            } else if(x > destX && y < destY) {
-                x -= ammoDistance/2;
-                y += ammoDistance/2;
+            } else if (x < creepCenterX && y > creepCenterY) {
+                x += ammoDistance / 2;
+                y -= ammoDistance / 2;
+            } else if (x > creepCenterX && y > creepCenterY) {
+                x -= ammoDistance / 2;
+                y -= ammoDistance / 2;
+            } else if (x < creepCenterX && y < creepCenterY) {
+                x += ammoDistance / 2;
+                y += ammoDistance / 2;
+            } else if (x > creepCenterX && y < creepCenterY) {
+                x -= ammoDistance / 2;
+                y += ammoDistance / 2;
             }
-            return true;
-        } else {
-            return false;
+//            ==================БЫДЛО КОД===============
+
+            float x1 = creepCenterX - (radius / 2);
+            float y1 = creepCenterY - (radius / 2);
+            float x2 = creepCenterX + (radius / 2);
+            float y2 = creepCenterY + (radius / 2);
+
+            if (x > x1 && x < x2) {
+                if (y > y1 && y < y2) {
+                    return 0;
+                }
+            }
+            return 1;
         }
-//        return false;
+        return -1;
+    }
+
+    public void dispose() {
+        creep = null;
+        templateForTower = null;
+        ammunitionPictures = null;
     }
 }

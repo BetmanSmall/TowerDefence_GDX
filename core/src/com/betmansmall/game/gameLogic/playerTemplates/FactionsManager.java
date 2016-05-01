@@ -1,39 +1,32 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by betmansmall on 23.02.2016.
  */
 public class FactionsManager {
-
-    private static volatile FactionsManager instance;
-
-    private TemplateForTower currentTemplateTower;
-
-    public static FactionsManager getInstance() {
-        FactionsManager localInstance = instance;
-        if (localInstance == null) {
-            synchronized (FactionsManager.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new FactionsManager();
-                }
-            }
-        }
-        return localInstance;
-    }
+//    private static volatile FactionsManager instance;
+//
+//    private TemplateForTower currentTemplateTower;
+//
+//    public static FactionsManager getInstance() {
+//        FactionsManager localInstance = instance;
+//        if (localInstance == null) {
+//            synchronized (FactionsManager.class) {
+//                localInstance = instance;
+//                if (localInstance == null) {
+//                    instance = localInstance = new FactionsManager();
+//                }
+//            }
+//        }
+//        return localInstance;
+//    }
 
     private Array<Faction> factions;
 
     public FactionsManager() {
-        instance = this; //TODO init with singleton
+//        instance = this; //TODO init with singleton
         factions = new Array<Faction>();
     }
 
@@ -101,8 +94,12 @@ public class FactionsManager {
         return null;
     }
 
-    public List<TemplateForTower> getAllTowers(){
-        List<TemplateForTower> allTowers = new ArrayList<TemplateForTower>();
+    public Array<TemplateForTower> getAllFirstTowersFromFirstFaction() {
+        return factions.first().getTowers();
+    }
+
+    public Array<TemplateForTower> getAllTowers(){
+        Array<TemplateForTower> allTowers = new Array<TemplateForTower>();
         for(Faction faction : factions) {
             for(TemplateForTower template : faction.getTowers()) {
                 allTowers.add(template);
@@ -110,15 +107,15 @@ public class FactionsManager {
         }
         return allTowers;
     }
-    //Mukhin gad
-    public TemplateForTower getCurrentTemplateTower() {
-        if(currentTemplateTower == null) {
-            currentTemplateTower = getAllTowers().get(0);
-        }
-        return currentTemplateTower;
-    }
-
-    public void setCurrentTemplateTower(TemplateForTower currentTemplateTower) {
-        this.currentTemplateTower = currentTemplateTower;
-    }
+//    //Mukhin gad
+//    public TemplateForTower getCurrentTemplateTower() {
+//        if(currentTemplateTower == null) {
+//            currentTemplateTower = getAllTowers().get(0);
+//        }
+//        return currentTemplateTower;
+//    }
+//
+//    public void setCurrentTemplateTower(TemplateForTower currentTemplateTower) {
+//        this.currentTemplateTower = currentTemplateTower;
+//    }
 }

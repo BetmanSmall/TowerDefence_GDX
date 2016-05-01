@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
-//			Gdx.app.log("GameScreen::tap()", " -- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+			Gdx.app.log("GameScreen::tap()", " -- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 //			CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
 			if(gameInterface.getCreepsRoulette().isButtonTouched(x,y) || gameInterface.getTowersRoulette().isButtonTouched(x,y)) {
 				return false;
@@ -105,6 +105,11 @@ public class GameScreen implements Screen {
 				camera.position.add(0, deltaY * camera.zoom, 0);
 			return false;
 		}
+
+//		@Override
+//		public boolean mouseMoved(int screenX, int screenY) {
+//
+//		}
 
 		@Override
 		public boolean panStop(float x, float y, int pointer, int button) {
