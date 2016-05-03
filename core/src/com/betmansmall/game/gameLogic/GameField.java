@@ -3,6 +3,7 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -69,6 +70,8 @@ public class GameField {
     private FactionsManager factionsManager;
 
     private UnderConstruction underConstruction;
+    private Texture greenCheckmark;
+    private Texture redCross;
     // GAME INTERFACE ZONE1
     private WhichCell whichCell;
     private boolean gamePaused;
@@ -97,6 +100,11 @@ public class GameField {
         factionsManager = new FactionsManager();
 
         underConstruction = null;
+        greenCheckmark = new Texture(Gdx.files.internal("maps/textures/green_checkmark.png"));
+        redCross = new Texture(Gdx.files.internal("maps/textures/red_cross.png"));
+        if(greenCheckmark == null || redCross == null) {
+            Gdx.app.error("GameField::GameField()", " -- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
+        }
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
 
@@ -195,19 +203,6 @@ public class GameField {
     }
 
     public void render(float delta, OrthographicCamera camera) {
-        int x = Gdx.input.getX();
-        int y = Gdx.input.getY();
-        Vector3 touch = new Vector3(x, y, 0);
-        camera.unproject(touch);
-        GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-        GridPoint2 cellCoordinate = whichCell(grafCoordinate);
-        if(cellCoordinate != null) {
-            if(underConstruction != null) {
-                underConstruction.setEndCoors(cellCoordinate.x, cellCoordinate.y);
-            }
-            Gdx.app.log("GameField::render()", " -- x:" + cellCoordinate.x + " y:" + cellCoordinate.y);
-        }
-
         renderer.setView(camera);
         renderer.render();
 
@@ -459,7 +454,7 @@ public class GameField {
     }
 
     private void drawTowerUnderConstruction(OrthographicCamera camera, int buildX, int buildY, TemplateForTower templateForTower) {
-        Gdx.app.log("GameField::drawTowerUnderConstruction()", " -- buildX:" + buildX + " buildY:" + buildY + " templateForTower:" + templateForTower);
+//        Gdx.app.log("GameField::drawTowerUnderConstruction()", " -- buildX:" + buildX + " buildY:" + buildY + " templateForTower:" + templateForTower);
         int sizeCellX = getSizeCellX();
         int sizeCellY = getSizeCellY();
         float halfSizeCellX = sizeCellX/2;
@@ -468,72 +463,73 @@ public class GameField {
 
         int towerSize = templateForTower.size;
         TextureRegion textureRegion = templateForTower.idleTile.getTextureRegion();
-        int pixSizeCellX = textureRegion.getRegionWidth() / towerSize;
-        int pixSizeCellY = textureRegion.getRegionHeight() / towerSize;
-        TextureRegion[][] smallTextureRegions = textureRegion.split(pixSizeCellX, pixSizeCellY);
+//        int pixSizeCellX = textureRegion.getRegionWidth() / towerSize;
+//        int pixSizeCellY = textureRegion.getRegionHeight() / towerSize;
+//        TextureRegion[][] smallTextureRegions = textureRegion.split(pixSizeCellX, pixSizeCellY);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         Color oldColor = spriteBatch.getColor();
-        for(int x = 0; x < towerSize; x++) {
-            for(int y = 0; y < towerSize; y++) {
-                float pxlsX = halfSizeCellX*(buildY) + (buildX)*halfSizeCellX;
-                float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-1);
 
-                if(cellIsEmpty(buildX+x, buildY+y)) {
-//                        p.setOpacity(0.5);
-//                        p.drawPixmap(pxlsX - sizeCellX/2, pxlsY + sizeCellY - (sizeCellY*2)*height, sizeCellX, (sizeCellY*2)*height, pix);
-                    spriteBatch.setColor(0, 1f, 0, 0.55f);
-                    spriteBatch.draw(smallTextureRegions[x][y], pxlsX+(sizeCellX*y), pxlsY+((sizeCellY*2)*(towerSize-x-1)), sizeCellX, sizeCellY*2);
-//                    p.setOpacity(1);
-                } else {
-                    spriteBatch.setColor(1f, 0, 0, 0.55f);
-                    spriteBatch.draw(smallTextureRegions[x][y], pxlsX+(sizeCellX*y), pxlsY+((sizeCellY*2)*(towerSize-x-1)), sizeCellX, sizeCellY*2);
-//                        p.setOpacity(0.5);
-//                        p.drawPixmap(pxlsX - sizeCellX/2, pxlsY + sizeCellY - (sizeCellY*2)*height, sizeCellX, (sizeCellY*2)*height, pix);
-//
-//                        QPainter painter(&pix);
-//                        painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-//                        painter.fillRect(pix.rect(), cRed);
-//                        painter.end();
-//                        p.drawPixmap(pxlsX - sizeCellX/2, pxlsY + sizeCellY - (sizeCellY*2)*height, sizeCellX, (sizeCellY*2)*height, pix);
+        boolean drawFull = true;
+        boolean canBuild = true;
+        int startX = 0, startY = 0, finishX = 0, finishY = 0;
+        if(towerSize != 1) {
+            if(towerSize%2 == 0) {
+                startX = -(towerSize/2);
+                startY = -((towerSize/2)-1);
+                finishX = ((towerSize/2)-1);
+                finishY = (towerSize/2);
+            } else {
+                startX = -(towerSize/2);
+                startY = -(towerSize/2);
+                finishX = towerSize/2;
+                finishY = towerSize/2;
+            }
+        }
+        for(int x = startX; x <= finishX; x++) {
+            for(int y = startY; y <= finishY; y++) {
+//                float pxlsX = halfSizeCellX*(buildY) + (buildX)*halfSizeCellX;
+//                float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-1);
+                if(!cellIsEmpty(buildX+x, buildY+y)) {
+                    if(drawFull) {
+                        canBuild = false;
+//                    } else {
+//                        spriteBatch.setColor(1f, 0, 0, 0.55f);
+//                        spriteBatch.draw(smallTextureRegions[x][y], pxlsX + (sizeCellX * y), pxlsY + ((sizeCellY * 2) * (towerSize - x - 1)), sizeCellX, sizeCellY * 2);
+                    }
+//                } else {
+//                    spriteBatch.setColor(0, 1f, 0, 0.55f);
+//                    spriteBatch.draw(smallTextureRegions[x][y], pxlsX + (sizeCellX * y), pxlsY + ((sizeCellY * 2) * (towerSize - x - 1)), sizeCellX, sizeCellY * 2);
                 }
             }
         }
-//        float pxlsX = halfSizeCellX*(buildY) + (buildX)*halfSizeCellX;
-//        float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-1);
-//        spriteBatch.draw(smallTextureRegions[0][0], pxlsX,              pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[0][1], pxlsX+sizeCellX,    pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[1][0], pxlsX,              pxlsY, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[1][1], pxlsX+sizeCellX,    pxlsY, sizeCellX, sizeCellY*2);
+        if(drawFull) {
+            float pxlsX = (halfSizeCellX*(buildY) + (buildX)*halfSizeCellX) - halfSizeCellX*(towerSize-1);
+            float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-((towerSize%2!=0)?1:2));
 
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,             pxlsY+sizeCellY*2,  sizeCellX, sizeCellY*2, 0, 0, (int)pixSizeCellX, (int)pixSizeCellY, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,             pxlsY+sizeCellY*2,  sizeCellX, sizeCellY*2, pixSizeCellX, -sizeCellY, 0f, 0f);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,   pxlsY+sizeCellY*2,  sizeCellX, sizeCellY*2, 32, 0,  (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,             pxlsY,              sizeCellX, sizeCellY*2, 0,  32, (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,   pxlsY,              sizeCellX, sizeCellY*2, 32, 32, (int)pixSizeCell, (int)pixSizeCell, false, false);
+            if(canBuild)
+                spriteBatch.setColor(0, 1f, 0, 0.55f);
+            else
+                spriteBatch.setColor(1f, 0, 0, 0.55f);
 
-//        spriteBatch.draw(smallTextureRegions[0][0], pxlsX,                      pxlsY+sizeCellY*2+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[0][1], pxlsX+sizeCellX,            pxlsY+sizeCellY*2+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[0][2], pxlsX+sizeCellX+sizeCellX,  pxlsY+sizeCellY*2+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[1][0], pxlsX,                      pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[1][1], pxlsX+sizeCellX,            pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[1][2], pxlsX+sizeCellX+sizeCellX,  pxlsY+sizeCellY*2, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[2][0], pxlsX,                      pxlsY, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[2][1], pxlsX+sizeCellX,            pxlsY, sizeCellX, sizeCellY*2);
-//        spriteBatch.draw(smallTextureRegions[2][2], pxlsX+sizeCellX+sizeCellX,  pxlsY, sizeCellX, sizeCellY*2);
+            spriteBatch.draw(textureRegion, pxlsX, pxlsY, sizeCellX*towerSize, (sizeCellY*2)*towerSize);
+            spriteBatch.setColor(oldColor);
+            for(int x = startX; x <= finishX; x++) {
+                for(int y = startY; y <= finishY; y++) {
+                    pxlsX = halfSizeCellX*(buildY+y) + (buildX+x)*halfSizeCellX;
+                    pxlsY = halfSizeCellY*(buildY+y) - (buildX+x)*halfSizeCellY;
 
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,                     pxlsY+sizeCellY*2+sizeCellY*2,  sizeCellX, sizeCellY*2, 0, 0, (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,           pxlsY+sizeCellY*2+sizeCellY*2,  sizeCellX, sizeCellY*2, 22, 0,  (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX+sizeCellX, pxlsY+sizeCellY*2+sizeCellY*2,  sizeCellX, sizeCellY*2, 43, 0,  (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,                     pxlsY+sizeCellY*2,              sizeCellX, sizeCellY*2, 0,  22, (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,           pxlsY+sizeCellY*2,              sizeCellX, sizeCellY*2, 22, 22, (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX+sizeCellX, pxlsY+sizeCellY*2,              sizeCellX, sizeCellY*2, 43, 22,  (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX,                     pxlsY,                          sizeCellX, sizeCellY*2, 0,  43, (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX,           pxlsY,                          sizeCellX, sizeCellY*2, 22, 43, (int)pixSizeCell, (int)pixSizeCell, false, false);
-//        spriteBatch.draw(textureRegion.getTexture(), pxlsX+sizeCellX+sizeCellX, pxlsY,                          sizeCellX, sizeCellY*2, 43, 43,  (int)pixSizeCell, (int)pixSizeCell, false, false);
-
-        spriteBatch.setColor(oldColor);
+                    if(cellIsEmpty(buildX+x, buildY+y)) {
+                        if(greenCheckmark != null)
+                            spriteBatch.draw(greenCheckmark, pxlsX, pxlsY, sizeCellX, sizeCellY*2);
+                    } else {
+                        if(redCross != null)
+                            spriteBatch.draw(redCross, pxlsX, pxlsY, sizeCellX, sizeCellY*2);
+                    }
+                }
+            }
+        }
         spriteBatch.end();
     }
 
@@ -572,6 +568,12 @@ public class GameField {
             field[x][y].setCreep(creep); // TODO field maybe out array
 //            Gdx.app.log("GameField::createCreep()", " -- x:" + x + " y:" + y + " eX:" + waveManager.exitPoints.first().x + " eY:" + waveManager.exitPoints.first().y);
 //            Gdx.app.log("GameField::createCreep()", " -- route:" + route);
+        }
+    }
+
+    public void prepareBuildTower(int x, int y) {
+        if(underConstruction != null) {
+            underConstruction.setStartCoors(x, y);
         }
     }
 
@@ -634,6 +636,10 @@ public class GameField {
                 creep.setRoute(route);
             }
         }
+    }
+
+    public UnderConstruction getUnderConstruction() {
+        return underConstruction;
     }
 
     private void stepAllCreep(float delta) {

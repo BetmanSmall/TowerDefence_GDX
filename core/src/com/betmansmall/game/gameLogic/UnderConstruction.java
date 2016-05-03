@@ -43,6 +43,15 @@ public class UnderConstruction {
         return true;
     }
 
+    public boolean setState(int state) {
+        this.state = state;
+        return true;
+    }
+
+    public int getState() {
+        return state;
+    }
+
     public boolean setEndCoors(int endX, int endY) {
         Gdx.app.log("UnderConstruction::setEndCoors()", " -- endX:" + endX + " endY:" + endY);
         this.endX = endX;
@@ -52,7 +61,7 @@ public class UnderConstruction {
             state = 0;
         }
 
-        if(state == 1 && templateForTower != null) {
+        if(state == 2 && templateForTower != null) {
             coorsX.clear();
             coorsY.clear();
             if(endY == startY || (endY < (startY+templateForTower.size) && endY > startY)) {
