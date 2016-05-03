@@ -61,29 +61,44 @@ public class UnderConstruction {
             state = 0;
         }
 
-        if(state == 2 && templateForTower != null) {
+        if(state == 1 && templateForTower != null) {
+            int towerSize = templateForTower.size;
+            int deltaStartX = 0, deltaStartY = 0, deltaFinishX = 0, deltaFinishY = 0;
+            if(towerSize != 1) {
+                if(towerSize%2 == 0) {
+                    deltaStartX = -(towerSize/2);
+                    deltaStartY = -((towerSize/2)-1);
+                    deltaFinishX = ((towerSize/2)-1);
+                    deltaFinishY = (towerSize/2);
+                } else {
+                    deltaStartX = -(towerSize/2);
+                    deltaStartY = -(towerSize/2);
+                    deltaFinishX = towerSize/2;
+                    deltaFinishY = towerSize/2;
+                }
+            }
             coorsX.clear();
             coorsY.clear();
-            if(endY == startY || (endY < (startY+templateForTower.size) && endY > startY)) {
+            if(endY == startY || (endY < (startY+towerSize) && endY > startY)) {
                 if(endX >= startX) {
-                    for(int currX = startX+templateForTower.size; currX <= endX; currX+=templateForTower.size) {
+                    for(int currX = startX+towerSize; currX <= endX; currX+=towerSize) {
                         this.coorsX.add(currX);
                         this.coorsY.add(startY);
                     }
                 } else {
-                    for(int currX = startX-templateForTower.size; currX > endX-templateForTower.size; currX-=templateForTower.size) {
+                    for(int currX = startX-towerSize; currX > endX-towerSize; currX-=towerSize) {
                         this.coorsX.add(currX);
                         this.coorsY.add(startY);
                     }
                 }
-            } else if(endX == startX || endX < (startX+templateForTower.size) && endX > startX) {
+            } else if(endX == startX || endX < (startX+towerSize) && endX > startX) {
                 if(endY >= startY) {
-                    for(int currY = startY+templateForTower.size; currY <= endY; currY+=templateForTower.size) {
+                    for(int currY = startY+towerSize; currY <= endY; currY+=towerSize) {
                         this.coorsX.add(startX);
                         this.coorsY.add(currY);
                     }
                 } else {
-                    for(int currY = startY-templateForTower.size; currY > endY-templateForTower.size; currY-=templateForTower.size) {
+                    for(int currY = startY-towerSize; currY > endY-towerSize; currY-=towerSize) {
                         this.coorsX.add(startX);
                         this.coorsY.add(currY);
                     }

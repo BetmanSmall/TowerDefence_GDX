@@ -61,6 +61,8 @@ public class TowersRoulette extends Roulette {
         IS_HIDE_TOWERS = !IS_HIDE_TOWERS;
         rouletteCircle.setVisible(!IS_HIDE_TOWERS);
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+        if(IS_HIDE_TOWERS)
+            gameField.cancelUnderConstruction();
     }
 
     private void ringClick(){

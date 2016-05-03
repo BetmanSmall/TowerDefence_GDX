@@ -138,7 +138,7 @@ public class GameField {
         gamePaused = true;
         maxOfMissedCreeps = 7;
         missedCreeps = 0;
-        gamerGold = 100;
+        gamerGold = 10000;
         // GAME INTERFACE ZONE2
     }
 
@@ -381,15 +381,16 @@ public class GameField {
 
         for(Tower tower: towersManager.getAllTowers()) {
             int x = tower.getPosition().x;
-            int y = tower.getPosition().y+1;
-            float x1 = halfSizeCellX*y + x*halfSizeCellX;
-            float y1 = halfSizeCellY*y - x*halfSizeCellY;
-
+            int y = tower.getPosition().y;
             int towerSize = tower.getTemplateForTower().size;
+            float pxlsX = (halfSizeCellX*y + x*halfSizeCellX) - halfSizeCellX*(towerSize-1);
+            float pxlsY = (halfSizeCellY*y - x*halfSizeCellY) - halfSizeCellY*(towerSize-((towerSize%2!=0)?1:2));
+
             TextureRegion curentFrame = tower.getCurentFrame();
-            float deltaX = (sizeCellX/2)*fix;//(sizeCellX*towerSize)/sizeCellX;
-            float deltaY = ((sizeCellY/2)*towerSize)*fix;
-            spriteBatch.draw(curentFrame, x1 - deltaX, y1 - deltaY, (sizeCellX * towerSize) * fix, ((sizeCellY*2)*towerSize)*fix);
+//            float deltaX = (sizeCellX/2)*fix;//(sizeCellX*towerSize)/sizeCellX;
+//            float deltaY = ((sizeCellY/2)*towerSize)*fix;
+//            spriteBatch.draw(curentFrame, x1 - deltaX, y1 - deltaY, (sizeCellX * towerSize) * fix, ((sizeCellY*2)*towerSize)*fix);
+            spriteBatch.draw(curentFrame, pxlsX, pxlsY, sizeCellX*towerSize, (sizeCellY*2)*towerSize);
 
 //            Gdx.app.log("GameField::drawCreeps()", " -- x:" + x + " y:" + y + " x1:" + x1 + " y1:" + y1);
 //            Gdx.app.log("GameField::drawCreeps()", " -- deltaX:" + deltaX + " deltaY:" + deltaY + " towerSize:" + towerSize);
@@ -571,36 +572,57 @@ public class GameField {
         }
     }
 
-    public void prepareBuildTower(int x, int y) {
+    public void buildTowersWithUnderConstruction(int x, int y) {
         if(underConstruction != null) {
-            underConstruction.setStartCoors(x, y);
+            underConstruction.setEndCoors(x, y);
+            createTower(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower);
+            for(int k = 0; k < underConstruction.coorsX.size; k++) {
+//            for(int k = underConstruction.coorsX.size-1; k >= 0; k--) {
+                createTower(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower);
+            }
+            underConstruction.clearStartCoors();
+            rerouteForAllCreeps();
         }
     }
 
     public void towerActions(int x, int y) {
         if(field[x][y].isEmpty()) {
-            createTower(x, y);
+            createTower(x, y, factionsManager.getRandomTemplateForTowerFromFirstFaction());
         } else if(field[x][y].getTower() != null) {
             removeTower(x, y);
         }
     }
 
-    public boolean createTower(int x, int y) {
-        TemplateForTower templateForTower = factionsManager.getRandomTemplateForTowerFromFirstFaction();
+    public boolean createTower(int buildX, int buildY, TemplateForTower templateForTower) {
+//        TemplateForTower templateForTower = factionsManager.getRandomTemplateForTowerFromFirstFaction();
         if(gamerGold >= templateForTower.cost) {
             int towerSize = templateForTower.size;
-            for(int tmpX = 0; tmpX < towerSize; tmpX++)
-                for(int tmpY = 0; tmpY < towerSize; tmpY++)
-                    if(!cellIsEmpty(tmpX+x, tmpY+y))
+            int startX = 0, startY = 0, finishX = 0, finishY = 0;
+            if(towerSize != 1) {
+                if(towerSize%2 == 0) {
+                    startX = -(towerSize/2);
+                    startY = -((towerSize/2)-1);
+                    finishX = ((towerSize/2)-1);
+                    finishY = (towerSize/2);
+                } else {
+                    startX = -(towerSize/2);
+                    startY = -(towerSize/2);
+                    finishX = towerSize/2;
+                    finishY = towerSize/2;
+                }
+            }
+            for(int tmpX = startX; tmpX <= finishX; tmpX++)
+                for(int tmpY = startY; tmpY <= finishY; tmpY++)
+                    if(!cellIsEmpty(buildX+tmpX, buildY+tmpY))
                         return false;
 
-            GridPoint2 position = new GridPoint2(x, y);
+            GridPoint2 position = new GridPoint2(buildX, buildY);
             Tower tower = towersManager.createTower(position, templateForTower);
-            for(int tmpX = 0; tmpX < towerSize; tmpX++)
-                for(int tmpY = 0; tmpY < towerSize; tmpY++)
-                    field[tmpX + x][tmpY + y].setTower(tower);
+            for(int tmpX = startX; tmpX <= finishX; tmpX++)
+                for(int tmpY = startY; tmpY <= finishY; tmpY++)
+                    field[buildX+tmpX][buildY+tmpY].setTower(tower);
 
-            rerouteForAllCreeps();
+//            rerouteForAllCreeps();
             gamerGold -= templateForTower.cost;
             Gdx.app.log("GameField::createTower()", " -- GamerGold:" + gamerGold);
             return true;
@@ -615,9 +637,23 @@ public class GameField {
             int x = tower.getPosition().x;
             int y = tower.getPosition().y;
             int towerSize = tower.getTemplateForTower().size;
+            int startX = 0, startY = 0, finishX = 0, finishY = 0;
+            if(towerSize != 1) {
+                if(towerSize%2 == 0) {
+                    startX = -(towerSize/2);
+                    startY = -((towerSize/2)-1);
+                    finishX = ((towerSize/2)-1);
+                    finishY = (towerSize/2);
+                } else {
+                    startX = -(towerSize/2);
+                    startY = -(towerSize/2);
+                    finishX = towerSize/2;
+                    finishY = towerSize/2;
+                }
+            }
 
-            for(int tmpX = 0; tmpX < towerSize; tmpX++) {
-                for(int tmpY = 0; tmpY < towerSize; tmpY++) {
+            for(int tmpX = startX; tmpX <= finishX; tmpX++) {
+                for(int tmpY = startY; tmpY <= finishY; tmpY++) {
                     field[x+tmpX][y+tmpY].removeTower();
                 }
             }
@@ -636,10 +672,6 @@ public class GameField {
                 creep.setRoute(route);
             }
         }
-    }
-
-    public UnderConstruction getUnderConstruction() {
-        return underConstruction;
     }
 
     private void stepAllCreep(float delta) {
@@ -743,6 +775,20 @@ public class GameField {
         underConstruction = new UnderConstruction(templateForTower);
         return true;
     }
+
+    public boolean cancelUnderConstruction() {
+        if(underConstruction != null) {
+            underConstruction.dispose();
+            underConstruction = null;
+            return true;
+        }
+        return false;
+    }
+
+    public UnderConstruction getUnderConstruction() {
+        return underConstruction;
+    }
+
     // GAME INTERFACE ZONE2
 
     private boolean cellIsEmpty(int x, int y) {
