@@ -62,45 +62,43 @@ public class UnderConstruction {
         }
 
         if(state == 1 && templateForTower != null) {
-            int towerSize = templateForTower.size;
-            int deltaStartX = 0, deltaStartY = 0, deltaFinishX = 0, deltaFinishY = 0;
-            if(towerSize != 1) {
-                if(towerSize%2 == 0) {
-                    deltaStartX = -(towerSize/2);
-                    deltaStartY = -((towerSize/2)-1);
-                    deltaFinishX = ((towerSize/2)-1);
-                    deltaFinishY = (towerSize/2);
-                } else {
-                    deltaStartX = -(towerSize/2);
-                    deltaStartY = -(towerSize/2);
-                    deltaFinishX = towerSize/2;
-                    deltaFinishY = towerSize/2;
-                }
-            }
             coorsX.clear();
             coorsY.clear();
-            if(endY == startY || (endY < (startY+towerSize) && endY > startY)) {
-                if(endX >= startX) {
-                    for(int currX = startX+towerSize; currX <= endX; currX+=towerSize) {
-                        this.coorsX.add(currX);
-                        this.coorsY.add(startY);
+            int towerSize = templateForTower.size;
+            int deltaX = 0, deltaY=0;
+            if(towerSize != 1) {
+                if(towerSize%2 == 0) {
+                    deltaX = towerSize/2;
+                    deltaY = (towerSize/2)-1;
+                } else {
+                    deltaX = towerSize/2;
+                    deltaY = towerSize/2;
+                }
+            }
+            int tmpX = startX-deltaX;
+            int tmpY = startY-deltaY;
+            if(endY == tmpY || (endY < (tmpY+towerSize) && endY > tmpY)) {
+                if(endX >= tmpX) {
+                    for(int currX = tmpX+towerSize; currX <= endX; currX+=towerSize) {
+                        this.coorsX.add(currX+deltaX);
+                        this.coorsY.add(tmpY+deltaY);
                     }
                 } else {
-                    for(int currX = startX-towerSize; currX > endX-towerSize; currX-=towerSize) {
-                        this.coorsX.add(currX);
-                        this.coorsY.add(startY);
+                    for(int currX = tmpX-towerSize; currX > endX-towerSize; currX-=towerSize) {
+                        this.coorsX.add(currX+deltaX);
+                        this.coorsY.add(tmpY+deltaY);
                     }
                 }
-            } else if(endX == startX || endX < (startX+towerSize) && endX > startX) {
-                if(endY >= startY) {
-                    for(int currY = startY+towerSize; currY <= endY; currY+=towerSize) {
-                        this.coorsX.add(startX);
-                        this.coorsY.add(currY);
+            } else if(endX == tmpX || endX < (tmpX+towerSize) && endX > tmpX) {
+                if(endY >= tmpY) {
+                    for(int currY = tmpY+towerSize; currY <= endY; currY+=towerSize) {
+                        this.coorsX.add(tmpX+deltaX);
+                        this.coorsY.add(currY+deltaY);
                     }
                 } else {
-                    for(int currY = startY-towerSize; currY > endY-towerSize; currY-=towerSize) {
-                        this.coorsX.add(startX);
-                        this.coorsY.add(currY);
+                    for(int currY = tmpY-towerSize; currY > endY-towerSize; currY-=towerSize) {
+                        this.coorsX.add(tmpX+deltaX);
+                        this.coorsY.add(currY+deltaY);
                     }
                 }
             }
