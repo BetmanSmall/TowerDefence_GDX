@@ -1,26 +1,25 @@
-package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder;
 
 import java.util.ArrayDeque;
 import java.util.PriorityQueue;
 
 /**
  * Implementation of the Jump Point Search algorithm with self-made data structures.
- * @author Elias Nygren
+ * @author BetmanSmall
  */
 public class JPS {
-    private PriorityQueue<Vertex> heap;
-    private Vertex[][] map;
-    private Vertex start;
-    private Vertex goal;
+    private PriorityQueue<Node> heap;
+    private Node[][] map;
+    private Node start;
+    private Node goal;
     private String directions;
     private Options heuristics;
     private Tools Tools;
-    
-    
-    protected JPS(Vertex[][] map, int[] start, int[] goal, Options heuristics, boolean diagonalMovement){
+
+    protected JPS(Node[][] map, int[] start, int[] goal, Options heuristics, boolean diagonalMovement){
         Tools = new Tools();
         this.map = map;
-        this.heap = new PriorityQueue<Vertex>(map.length*map[0].length);
+        this.heap = new PriorityQueue<Node>(map.length*map[0].length);
         this.start = map[start[0]][start[1]];
         this.goal = map[goal[0]][goal[1]];
         this.heuristics=heuristics;
@@ -30,56 +29,55 @@ public class JPS {
         
         directions = "12345678";
     }
-    
 
-    protected ArrayDeque<Vertex> run() {
+    protected ArrayDeque<Node> run() {
         //INIT
         start.setDistance(0);        
         heap.add(start);        
         start.setOpened(true);        
-        Vertex vertex;
-        ArrayDeque<Vertex> ngbrs;
+        Node node;
+        ArrayDeque<Node> ngbrs;
         
         //ALGO
         while(!heap.isEmpty()){
-            vertex = heap.poll();
-//            System.out.println(vertex);
-            //vertex is closed when the algorithm has dealt with it
-            vertex.setClosed(true);            
+            node = heap.poll();
+//            System.out.println(node);
+            //node is closed when the algorithm has dealt with it
+            node.setClosed(true);
             //if v == target, stop algo, find the route from path matrix
-            if(vertex.equals(goal)) return Tools.shortestPath(goal, start);
+            if(node.equals(goal)) return Tools.shortestPath(goal, start);
             
 
             //IDENTIFY SUCCESSORS:
             
             //for all neighbours
-            ngbrs = getNeighbors(vertex);
+            ngbrs = getNeighbors(node);
             while(!ngbrs.isEmpty()){
-                Vertex ngbr = ngbrs.poll();
+                Node ngbr = ngbrs.poll();
                 //find next jumpPoint
-                int[] jumpCoord = jump(ngbr.getX(), ngbr.getY(), vertex.getX(), vertex.getY());
+                int[] jumpCoord = jump(ngbr.getX(), ngbr.getY(), node.getX(), node.getY());
 
                 
                 if(jumpCoord!=null){
-                    Vertex jumpPoint = map[jumpCoord[1]][jumpCoord[0]];
+                    Node jumpPoint = map[jumpCoord[1]][jumpCoord[0]];
 
                     //no need to process a jumpPoint that has already been dealt with
                     if(jumpPoint.isClosed()) continue;
                                         
                     //distance == distance of parent and from parent to jumpPoint                                        
-                    double distance = Tools.heuristics(jumpPoint.getY(), jumpPoint.getX(), Options.DIAGONAL_HEURISTIC, vertex) + vertex.getDistance();
+                    double distance = Tools.heuristics(jumpPoint.getY(), jumpPoint.getX(), Options.DIAGONAL_HEURISTIC, node) + node.getDistance();
                     
-                    //relax IF vertex is not opened (not placed to heap yet) OR shorter distance to it has been found
+                    //relax IF node is not opened (not placed to heap yet) OR shorter distance to it has been found
                     if(!jumpPoint.isOpened() || jumpPoint.getDistance()>distance){
                         jumpPoint.setDistance(distance);
                         
                         //use appropriate heuristic if necessary (-1 is the default value of distance to goal, so heuristic not used if still -1)
                         if(jumpPoint.getToGoal() == -1) jumpPoint.setToGoal(Tools.heuristics(jumpPoint.getY(), jumpPoint.getX(), this.heuristics, goal));
                         
-                        jumpPoint.setPath(vertex);
+                        jumpPoint.setPath(node);
 
 
-                        //if vertex was not yet opened, open it and place to heap. Else update its position in heap.
+                        //if node was not yet opened, open it and place to heap. Else update its position in heap.
                         if(!jumpPoint.isOpened()){                            
                             heap.add(jumpPoint);
                             jumpPoint.setOpened(true);
@@ -94,8 +92,7 @@ public class JPS {
         //no route found
         return null;
     }
-    
-    
+
     /**
      * Find next jump point
      * @param y neighbor y.
@@ -151,19 +148,14 @@ public class JPS {
         }
     }
     
-    
-    
-    
-
-    
     /**
     * Get the neighbors of the vertex.
     * No parent (first vertex) -> return all neighbors, otherwise prune.
     * @return neighbors in queue.
     */    
-    private ArrayDeque<Vertex> getNeighbors(Vertex u){
-        ArrayDeque<Vertex> ngbrs = new ArrayDeque<Vertex>();
-        Vertex parent = u.getPath();
+    private ArrayDeque<Node> getNeighbors(Node u){
+        ArrayDeque<Node> ngbrs = new ArrayDeque<Node>();
+        Node parent = u.getPath();
         
         if(parent!=null){             
             //get direction of movement
@@ -243,5 +235,4 @@ public class JPS {
         }
         return ngbrs;
     }
-    
 }

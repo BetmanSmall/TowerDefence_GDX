@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder;
 
 import java.util.ArrayDeque;
 import java.util.Random;
@@ -11,10 +11,9 @@ import java.util.Random;
 /**
  * Gathered tools used by routing algorithms, tests and GUI.
  * With Java built in data structures.
- * @author Elias Nygren
+ * @author BetmanSmall
  */
 public class Tools {
-    
      /**
      * Implementations of A* heuristics.
      * When Dijkstra (no heuristics) selected, returns -1
@@ -23,7 +22,7 @@ public class Tools {
      * @param heuristic selected heuristic
      * @return estimate distance to goal
      */
-    protected double heuristics(int y, int x, Options heuristic, Vertex whereTo){
+    protected double heuristics(int y, int x, Options heuristic, Node whereTo){
         int dx = Math.abs(y - whereTo.getY());
         int dy = Math.abs(x - whereTo.getX());
         if(heuristic== Options.MANHATTAN_HEURISTIC) return dy + dx;
@@ -32,20 +31,19 @@ public class Tools {
         if(heuristic== Options.EUCLIDEAN_HEURISTIC) return Math.sqrt(dx * dx + dy * dy);
         return -1;
     }
-    
-    
+
     /**
-     * Finds the shortest path from Vertex[][] path.
+     * Finds the shortest path from Node[][] path.
      * Used by the run() method after finding the goal.
      * @param goal The vertex at the goal (end point).
      * @param start The vertex at the start.
      * @return the best route as an ArrayList of vertices.
      */
-    protected ArrayDeque<Vertex> shortestPath(Vertex goal,  Vertex start){
-        ArrayDeque<Vertex> pino = new ArrayDeque<Vertex>();
+    protected ArrayDeque<Node> shortestPath(Node goal, Node start){
+        ArrayDeque<Node> pino = new ArrayDeque<Node>();
         pino.push(goal);
         if(goal.equals(start)) return pino;
-        Vertex u = goal.getPath();
+        Node u = goal.getPath();
         while(!u.equals(start)){     
             u.setOnPath(true);
             pino.push(u);
@@ -56,17 +54,16 @@ public class Tools {
 
         return pino;
     }
-    
-    
+
     /**
      * Gets the neighbors of a given vertex on the map.
      * @param u the vertex whose neighbors are desired.
      * @return a list of the neighbors
      */
-    protected ArrayDeque<Vertex> getNeighbors(Vertex[][] map, Vertex u, String directions){
-        ArrayDeque<Vertex> ngbrs = new ArrayDeque<Vertex>();
+    protected ArrayDeque<Node> getNeighbors(Node[][] map, Node u, String directions){
+        ArrayDeque<Node> ngbrs = new ArrayDeque<Node>();
         for(char c : directions.toCharArray()){
-            Vertex v = getNeighbor(map, u, c);    
+            Node v = getNeighbor(map, u, c);
             //if v valid (within the map)
             if(v!=null){
                 if(v.isWalkable()) ngbrs.add(v);
@@ -80,11 +77,10 @@ public class Tools {
      * @param u the vertex whose neighbors are desired.
      * @return a list of the neighbors
      */
-    
-    protected ArrayDeque<Vertex> getAllNeighbors(Vertex[][] map, Vertex u){
-        ArrayDeque<Vertex> ngbrs = new ArrayDeque<Vertex>();
+    protected ArrayDeque<Node> getAllNeighbors(Node[][] map, Node u){
+        ArrayDeque<Node> ngbrs = new ArrayDeque<Node>();
         for(char c : "12345678".toCharArray()){
-            Vertex v = getNeighbor(map, u, c);   
+            Node v = getNeighbor(map, u, c);
             if(v!=null) ngbrs.add(v);
         }
         return ngbrs; 
@@ -96,7 +92,7 @@ public class Tools {
      * @param c the direction from which the neighbor is desired, format: L/U/R/D
      * @return null if the direction is out of map, otherwise the neighbor vertex.
      */
-    protected Vertex getNeighbor(Vertex[][] map, Vertex u, char c){
+    protected Node getNeighbor(Node[][] map, Node u, char c){
         int i = 0; int j=0;        
         if(c=='1'){ --j;} //left
         else if(c=='2'){ --j; --i;} //left&up
@@ -117,73 +113,69 @@ public class Tools {
             return map[y][x];
         }       
     }
-    
-    
+
     /**
      * True if coordinate is walkable and within the map, false otherwise.
      * @param y y coordinate.
      * @param x x coordinate.
-     * @param map Vertex[][] map.
+     * @param map Node[][] map.
      * @return boolean valid.
      */
-    protected boolean valid(int y, int x, Vertex[][] map){        
+    protected boolean valid(int y, int x, Node[][] map){
         if(x<0 || y < 0 ||x>=map[0].length || y>=map.length) return false;
         return map[y][x].isWalkable();
     }
-    
-    
+
     /**
      * Returns a random, valid, point on the map.
      * @param map
      * @return 
      */
-    protected int[] randomPoint(Vertex[][] map){
+    protected int[] randomPoint(Node[][] map){
         Random r = new Random();
         int x = r.nextInt(map[0].length);
         int y = r.nextInt(map.length);
         return closestValidCoordinate(map, new int[] {y,x});
     }
-    
-    
+
     /**
      * Checks that coordinate is valid, if not, returns the closest valid coordinate.
-     * Moves coordinate to within the map and uses Dijkstra(Astar, NO_HEURISTIC) with utilitymode.
+     * Moves coordinate to within the map and uses Dijkstra(A_Star, NO_HEURISTIC) with utilitymode.
      * @param coord coordinate to be validated.
      * @return closest valid coordinate.
      */
-    protected int[] closestValidCoordinate(Vertex[][] vertexMatrix, int[] coord){        
-        if(vertexMatrix==null) return null;
-        if(valid(coord[0], coord[1], vertexMatrix)) return coord;                
+    protected int[] closestValidCoordinate(Node[][] nodeMatrix, int[] coord){
+        if(nodeMatrix ==null) return null;
+        if(valid(coord[0], coord[1], nodeMatrix)) return coord;
         
         int y = coord[0];
         int x = coord[1];
         
         //move coordinate within the map, if outside
         if(y<0) y=0;
-        if(y>=vertexMatrix.length) y=vertexMatrix.length-1;
+        if(y>= nodeMatrix.length) y= nodeMatrix.length-1;
         if(x<0) x=0;
-        if(x>=vertexMatrix[0].length) x=vertexMatrix[0].length-1;
+        if(x>= nodeMatrix[0].length) x= nodeMatrix[0].length-1;
         int[] newcoord = new int[] {y,x};
         
         //dijkstra
-        Astar A = new Astar(vertexMatrix, newcoord, newcoord, Options.NO_HEURISTIC, true, true);
-        ArrayDeque<Vertex> s = A.run();
-        Vertex v = s.pop();
+        A_Star A = new A_Star(nodeMatrix, newcoord, newcoord, Options.NO_HEURISTIC, true, true);
+        ArrayDeque<Node> s = A.run();
+        Node v = s.pop();
         y = v.getY();
         x = v.getX();
         
         //undo any changes made by dijkstra
-        ArrayDeque<Vertex> utilityStack = A.getUtilityStack();
+        ArrayDeque<Node> utilityStack = A.getUtilityStack();
         while(!utilityStack.isEmpty()){
-            Vertex vertex = utilityStack.pop();
-            vertex.setClosed(false);
-            vertex.setOnPath(false);
-            vertex.setDistance(-1);
-            vertex.setToGoal(-1);
-            vertex.setOpened(false);
+            Node node = utilityStack.pop();
+            node.setClosed(false);
+            node.setOnPath(false);
+            node.setDistance(-1);
+            node.setToGoal(-1);
+            node.setOpened(false);
         }
 
         return new int[] {y, x};
-        
     }
 }

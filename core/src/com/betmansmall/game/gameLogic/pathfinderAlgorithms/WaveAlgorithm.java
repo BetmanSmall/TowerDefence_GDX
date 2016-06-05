@@ -127,7 +127,6 @@ public class WaveAlgorithm {
         }
     }
 
-
     public WaveAlgorithm(int sizeX, int sizeY, int exitPointX, int exitPointY, TiledMapTileLayer layer) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;

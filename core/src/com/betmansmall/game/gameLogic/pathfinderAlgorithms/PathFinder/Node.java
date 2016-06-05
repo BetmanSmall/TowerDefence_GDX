@@ -1,10 +1,10 @@
-package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder;
 
 /**
  * The class for the graph vertices. Provides functionality for storing information related to that specific vertex.
- * @author Elias Nygren
+ * @author BetmanSmall
  */
-public class Vertex implements Comparable<Vertex>{
+public class Node implements Comparable<Node>{
     private int x;
     private int y;
     private double Hx;
@@ -15,7 +15,7 @@ public class Vertex implements Comparable<Vertex>{
     private boolean onPath;
     private boolean closed;
     private boolean opened;
-    private Vertex path;
+    private Node path;
     
     /**
      * Initializes values.
@@ -23,8 +23,7 @@ public class Vertex implements Comparable<Vertex>{
      * @param y coordinate
      * @param key type of coordinate 
      */
-
-    public Vertex(int x, int y, char key) {
+    public Node(int x, int y, char key) {
         this.index=-1;
         this.x = x;
         this.y = y;
@@ -48,8 +47,6 @@ public class Vertex implements Comparable<Vertex>{
         this.onPath = onPath;
     }
 
-
-    
     public char getKey() {
         return key;
     }
@@ -108,15 +105,14 @@ public class Vertex implements Comparable<Vertex>{
         this.opened = opened;
     }
 
-    public Vertex getPath() {
+    public Node getPath() {
         return path;
     }
 
-    public void setPath(Vertex path) {
+    public void setPath(Node path) {
         this.path = path;
     }
-    
-    
+
     public int getIndex() {
         return index;
     }
@@ -132,8 +128,6 @@ public class Vertex implements Comparable<Vertex>{
     public void setWalkable(boolean walkable) {
         this.walkable = walkable;
     }
-    
-    
 
     /**
      * Natural order based on the distance values.
@@ -142,7 +136,7 @@ public class Vertex implements Comparable<Vertex>{
      * @return  -1, 0 or 1.
      */
     @Override
-    public int compareTo(Vertex that) {
+    public int compareTo(Node that) {
         if(that==null) return 0;
         
         double thisdist = this.Hx==-1 ? this.Gx : this.Gx + this.Hx;
@@ -158,16 +152,13 @@ public class Vertex implements Comparable<Vertex>{
      * @param v to what this is compared.
      * @return  true if coordinates match, false otherwise.
      */
-    
-    public boolean equals(Vertex v){
+    public boolean equals(Node v){
         if(this.x==v.getX() && this.y==v.getY()) return true;
         return false;
     }
-    
 
     @Override
     public String toString() {
-        return "Vertex{" + "x=" + x + ", y=" + y + ", key=" + key + '}';
+        return "Node{" + "x=" + x + ", y=" + y + ", key=" + key + '}';
     }
-
 }

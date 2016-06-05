@@ -141,17 +141,21 @@ public class GameScreen implements Screen {
 		}
 
 		public void update () {
-			if(gameField.getUnderConstruction() == null) {
-				if (flinging) {
-					velX *= 0.98f;
-					velY *= 0.98f;
-					if (camera.position.x + -velX * Gdx.graphics.getDeltaTime() > 0 && camera.position.x + -velX * Gdx.graphics.getDeltaTime() < MAX_DESTINATION_X)
-						camera.position.add(-velX * Gdx.graphics.getDeltaTime(), 0, 0);
-					if (Math.abs(camera.position.y + velY * Gdx.graphics.getDeltaTime()) < MAX_DESTINATION_Y)
-						camera.position.add(0, velY * Gdx.graphics.getDeltaTime(), 0);
-					if (Math.abs(velX) < 0.01f) velX = 0;
-					if (Math.abs(velY) < 0.01f) velY = 0;
+			try {
+				if (gameField.getUnderConstruction() == null) {
+					if (flinging) {
+						velX *= 0.98f;
+						velY *= 0.98f;
+						if (camera.position.x + -velX * Gdx.graphics.getDeltaTime() > 0 && camera.position.x + -velX * Gdx.graphics.getDeltaTime() < MAX_DESTINATION_X)
+							camera.position.add(-velX * Gdx.graphics.getDeltaTime(), 0, 0);
+						if (Math.abs(camera.position.y + velY * Gdx.graphics.getDeltaTime()) < MAX_DESTINATION_Y)
+							camera.position.add(0, velY * Gdx.graphics.getDeltaTime(), 0);
+						if (Math.abs(velX) < 0.01f) velX = 0;
+						if (Math.abs(velY) < 0.01f) velY = 0;
+					}
 				}
+			} catch (Exception exp) {
+				int a;
 			}
 		}
 	}
@@ -312,12 +316,15 @@ public class GameScreen implements Screen {
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
 			gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
 			Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
+		} else if(Gdx.input.isKeyPressed(Input.Keys.BACK)) {
+			Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK);");
+			TowerDefence.getInstance().setMainMenu(this);
 		}
 	}
 	
 	@Override
 	public void render(float delta) {
-//		Gdx.app.log("GameScreen::render()", "-- delta:" + delta);
+		Gdx.app.log("GameScreen::render()", "-- delta:" + delta);
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

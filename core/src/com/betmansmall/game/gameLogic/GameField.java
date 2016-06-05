@@ -20,11 +20,10 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
-import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.GridNav;
-import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Vertex;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -62,7 +61,7 @@ public class GameField {
     public boolean isDrawableGridNav = false;
 
     private Cell[][] field;
-    private GridNav gridNav;
+    private PathFinder pathFinder;
 
     private WaveManager waveManager;
     private CreepsManager creepsManager;
@@ -173,8 +172,8 @@ public class GameField {
                     }
                 }
             }
-            gridNav = new GridNav();
-            gridNav.loadCharMatrix(getCharMatrix());
+            pathFinder = new PathFinder();
+            pathFinder.loadCharMatrix(getCharMatrix());
         }
     }
 
@@ -215,10 +214,10 @@ public class GameField {
 
         if(isDrawableGrid)
             drawGrid(camera);
-        if(isDrawableTowers)
-            drawTowers(camera);
         if(isDrawableCreeps)
             drawCreeps(camera);
+        if(isDrawableTowers)
+            drawTowers(camera);
         if(isDrawableRoutes)
             drawRoutes(camera);
         if(isDrawableGridNav)
@@ -354,10 +353,10 @@ public class GameField {
         shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
 
         for(Creep creep: creepsManager.getAllCreeps()) {
-            ArrayDeque<Vertex> route = creep.getRoute();
+            ArrayDeque<Node> route = creep.getRoute();
 
             if(route != null) {
-                for(Vertex coor : route) {
+                for(Node coor : route) {
                     int vX = coor.getX();
                     int vY = coor.getY()+1; // LibGDX some problems. Have offset (0,0) coor.
                     float fVx = halfSizeCellX * vY + vX * halfSizeCellX;
@@ -561,8 +560,8 @@ public class GameField {
     }
 
     private void createCreep(int x, int y, TemplateForUnit templateForUnit) {
-        gridNav.loadCharMatrix(getCharMatrix());
-        ArrayDeque<Vertex> route = gridNav.route(x, y, waveManager.exitPoints.first().x, waveManager.exitPoints.first().y);
+        pathFinder.loadCharMatrix(getCharMatrix());
+        ArrayDeque<Node> route = pathFinder.route(x, y, waveManager.exitPoints.first().x, waveManager.exitPoints.first().y);
 
         if(route != null) {
             Creep creep = creepsManager.createCreep(route, templateForUnit);
@@ -664,9 +663,9 @@ public class GameField {
     }
 
     private void rerouteForAllCreeps() {
-        gridNav.loadCharMatrix(getCharMatrix());
+        pathFinder.loadCharMatrix(getCharMatrix());
         for(Creep creep: creepsManager.getAllCreeps()) {
-            ArrayDeque<Vertex> route = gridNav.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), waveManager.exitPoints.first().x, waveManager.exitPoints.first().y);
+            ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), waveManager.exitPoints.first().x, waveManager.exitPoints.first().y);
             if(route != null) {
                 route.removeFirst();
                 creep.setRoute(route);
@@ -677,9 +676,9 @@ public class GameField {
     private void stepAllCreep(float delta) {
         for(int i = 0; i < creepsManager.amountCreeps(); i++) {
             Creep creep = creepsManager.getCreep(i);
-            Vertex oldPosition = creep.getNewPosition();
+            Node oldPosition = creep.getNewPosition();
             if(creep.isAlive()) {
-                Vertex newPosition = creep.move(delta);
+                Node newPosition = creep.move(delta);
                 if (newPosition != null) {
                     if (!newPosition.equals(oldPosition)) {
                         field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);

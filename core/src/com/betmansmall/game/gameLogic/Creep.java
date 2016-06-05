@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav.Vertex;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
@@ -15,9 +15,9 @@ import java.util.ArrayDeque;
  * Created by betmansmall on 22.09.2015.
  */
 public class Creep {
-    private ArrayDeque<Vertex> route;
-    private Vertex oldPosition;
-    private Vertex newPosition;
+    private ArrayDeque<Node> route;
+    private Node oldPosition;
+    private Node newPosition;
     private int hp;
     private float speed;
     private float elapsedTime;
@@ -29,7 +29,7 @@ public class Creep {
     private Direction direction;
     private Animation animation;
 
-    public Creep(ArrayDeque<Vertex> route, TemplateForUnit templateForUnit) {
+    public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
         if(route != null) {
             this.route = route;
             this.oldPosition = route.peekFirst();
@@ -73,7 +73,7 @@ public class Creep {
         this.graphicalCoordinateY = y;
     }
 
-    public Vertex move(float delta) {
+    public Node move(float delta) {
         if(route != null && !route.isEmpty()) {
             elapsedTime += delta;
             if (elapsedTime >= speed) {
@@ -139,10 +139,10 @@ public class Creep {
         return false;
     }
 
-    public Vertex getOldPosition() {
+    public Node getOldPosition() {
         return oldPosition;
     }
-    public Vertex getNewPosition() {
+    public Node getNewPosition() {
         return newPosition;
     }
 
@@ -170,10 +170,10 @@ public class Creep {
         return elapsedTime;
     }
 
-    public void setRoute(ArrayDeque<Vertex> route) {
+    public void setRoute(ArrayDeque<Node> route) {
         this.route = route;
     }
-    public ArrayDeque<Vertex> getRoute() {
+    public ArrayDeque<Node> getRoute() {
         return route;
     }
 

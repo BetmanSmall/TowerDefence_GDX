@@ -134,6 +134,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.app.log("MainMenuScreen::render()", "-- delta:" + delta);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mmStage.act(delta);
         mmStage.draw();
@@ -147,7 +148,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        mmStage.getViewport().update(width, height, true);
+//        mmStage.getViewport().update(width, height, true);
+//        mmStage.setViewport(mmStage.getViewport());
+
     }
 
     @Override

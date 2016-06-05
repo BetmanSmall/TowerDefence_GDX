@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.betmansmall.game.gameLogic.pathfinderAlgorithms.GridNav;
+package com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,13 +10,11 @@ import java.util.Scanner;
 
 /**
  * Provides functionality for loading .map files to the program as a char matrix.
- * @author Elias Nygren
+ * @author BetmanSmall
  */
 public class Cartographer {
     private File map;
     private Scanner scanner;
-    
-
 
     /**
      * Loads a new map file.      
