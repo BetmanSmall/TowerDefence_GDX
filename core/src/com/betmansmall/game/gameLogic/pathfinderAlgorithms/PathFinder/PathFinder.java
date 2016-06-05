@@ -22,7 +22,7 @@ public class PathFinder {
     }
 
     public ArrayDeque<Node> route(int sX, int sY, int eX, int eY) {
-        return route(new int[]{sY, sX}, new int[]{eY, eX}, Options.JPS, Options.EUCLIDEAN_HEURISTIC, false);
+        return route(new int[]{sY, sX}, new int[]{eY, eX}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
     }
 
     /**
