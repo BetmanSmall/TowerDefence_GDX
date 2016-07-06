@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="64" height="64" tilewidth="64" tileheight="32" nextobjectid="2">
  <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
- <tileset firstgid="321" name="unit1_grunt" tilewidth="72" tileheight="72" tilecount="95">
+ <tileset firstgid="321" name="unit1_grunt" tilewidth="72" tileheight="72" tilecount="95" columns="5">
   <properties>
-   <property name="bounty" value="20"/>
+   <property name="bounty" value="7"/>
    <property name="factionName" value="Faction1"/>
-   <property name="healthPoints" value="500"/>
+   <property name="healthPoints" value="380"/>
    <property name="name" value="Grunt"/>
-   <property name="speed" value="1"/>
+   <property name="speed" value="0.5"/>
    <property name="type" value="unit"/>
   </properties>
   <image source="textures/warcraft2/orc/units/grunt.png" trans="ff00ff" width="360" height="1368"/>
@@ -491,13 +491,13 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="416" name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95">
+ <tileset firstgid="416" name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95" columns="5">
   <properties>
-   <property name="bounty" value="10"/>
+   <property name="bounty" value="5"/>
    <property name="factionName" value="Faction1"/>
-   <property name="healthPoints" value="100"/>
+   <property name="healthPoints" value="145"/>
    <property name="name" value="Troll Axethrower"/>
-   <property name="speed" value="1"/>
+   <property name="speed" value="0.3"/>
    <property name="type" value="unit"/>
   </properties>
   <image source="textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>
@@ -982,11 +982,10 @@
   </tile>
  </tileset>
  <tileset firstgid="511" source="towers/tower1_scout.tsx"/>
- <tileset firstgid="517" source="towers/tower6_test1x1.tsx"/>
- <tileset firstgid="518" source="towers/tower7_test2x2.tsx"/>
- <tileset firstgid="519" source="towers/tower8_test3x3.tsx"/>
- <tileset firstgid="520" source="towers/tower9_test4x4.tsx"/>
- <tileset firstgid="521" source="towers/tower10_test5x5.tsx"/>
+ <tileset firstgid="517" source="towers/tower2_scout.tsx"/>
+ <tileset firstgid="523" source="towers/tower3_cannon.tsx"/>
+ <tileset firstgid="529" source="towers/tower4_cannon.tsx"/>
+ <tileset firstgid="535" source="towers/tower5_scout.tsx"/>
  <layer name="background" width="64" height="64">
   <properties>
    <property name="spawnPoint" value="1"/>

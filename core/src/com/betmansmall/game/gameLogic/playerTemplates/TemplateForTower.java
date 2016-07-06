@@ -37,7 +37,7 @@ public class TemplateForTower {
             this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
             this.factionName =  tileSet.getProperties().get("factionName", String.class);
             this.name =         tileSet.getProperties().get("name", String.class);
-            this.radius =       5;//Integer.parseInt(tileSet.getProperties().get("radius", String.class));
+            this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
             this.reloadTime =   Float.parseFloat(tileSet.getProperties().get("reloadTime", String.class));
             this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
             this.type =         tileSet.getProperties().get("type", String.class);
@@ -88,7 +88,6 @@ public class TemplateForTower {
         textureRegion.flip(true, false);
         return new StaticTiledMapTile(textureRegion);
     }
-
 
     private void validate() {
         // Need cheak range values

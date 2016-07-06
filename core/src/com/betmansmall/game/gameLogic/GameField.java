@@ -71,6 +71,7 @@ public class GameField {
     private UnderConstruction underConstruction;
     private Texture greenCheckmark;
     private Texture redCross;
+
     // GAME INTERFACE ZONE1
     private WhichCell whichCell;
     private boolean gamePaused;
@@ -107,8 +108,8 @@ public class GameField {
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
 
-		TiledMapTileSets tileSets = map.getTileSets();
-		for(TiledMapTileSet tileSet:tileSets) {
+        TiledMapTileSets tileSets = map.getTileSets();
+        for(TiledMapTileSet tileSet: tileSets) {
             String tileSetName = tileSet.getName();
             Gdx.app.log("GameField::GameField()", "-- TileSet:" + tileSetName);
             if(tileSetName.contains("unit")) {
@@ -130,7 +131,7 @@ public class GameField {
                 TemplateForTower templateForTower = new TemplateForTower(tileSet);
                 factionsManager.addTowerToFaction(templateForTower);
             }
-		}
+        }
 
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
@@ -197,8 +198,8 @@ public class GameField {
     }
 
     public void dispose() {
-		renderer.dispose();
-		renderer = null;
+        renderer.dispose();
+        renderer = null;
     }
 
     public void render(float delta, OrthographicCamera camera) {
@@ -214,10 +215,10 @@ public class GameField {
 
         if(isDrawableGrid)
             drawGrid(camera);
-        if(isDrawableCreeps)
-            drawCreeps(camera);
         if(isDrawableTowers)
             drawTowers(camera);
+        if(isDrawableCreeps)
+            drawCreeps(camera);
         if(isDrawableRoutes)
             drawRoutes(camera);
         if(isDrawableGridNav)
@@ -229,7 +230,7 @@ public class GameField {
             stateTime += delta;
             TextureRegion currentFrame = animation.getKeyFrame(stateTime, true); // #16
             spriteBatch.begin();
-            spriteBatch.draw(currentFrame, 50, 300, 700, 700); // #17
+            spriteBatch.draw(currentFrame, 0, 700, 700, 700); // #17
 //            bitmapFont.draw(spriteBatch, getGamerGold(), Gdx.graphics.getWidth()/2-10, Gdx.graphics.getHeight())
 //            bitmapFont.draw(spriteBatch, String.valueOf(getGamerGold()), Gdx.graphics.getWidth()/2-10, Gdx.graphics.getHeight()-10);
             spriteBatch.end();
@@ -241,26 +242,26 @@ public class GameField {
         spriteBatch.end();
     }
 
-	private void drawGrid(OrthographicCamera camera) {
-        int widthForTop = sizeFieldY * (sizeCellX/2);
-        int heightForTop = sizeFieldY * (sizeCellY/2);
-        int widthForBottom = sizeFieldX * (sizeCellX/2);
-        int heightForBottom = sizeFieldX * (sizeCellY/2);
+    private void drawGrid(OrthographicCamera camera) {
+        int halfSizeCellX = sizeCellX/2;
+        int halfSizeCellY = sizeCellY/2;
 
-		int halfSizeCellX = sizeCellX/2;
-		int halfSizeCellY = sizeCellY/2;
+        int widthForTop = sizeFieldY * halfSizeCellX; // A - B
+        int heightForTop = sizeFieldY * halfSizeCellY; // B - Top
+        int widthForBottom = sizeFieldX * halfSizeCellX; // A - C
+        int heightForBottom = sizeFieldX * halfSizeCellY; // C - Bottom
 
-		shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
+        shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
 
-		for(int x = 0; x <= sizeFieldX; x++)
-			shapeRenderer.line(x*halfSizeCellX, halfSizeCellY - x*halfSizeCellY, widthForTop + x*halfSizeCellX, halfSizeCellY + heightForTop - x*halfSizeCellY);
-		for(int y = 0; y <= sizeFieldY; y++)
-			shapeRenderer.line(y*halfSizeCellX, halfSizeCellY + y*halfSizeCellY, widthForBottom + y*halfSizeCellX, halfSizeCellY - heightForBottom + y*halfSizeCellY);
+        for(int x = 0; x <= sizeFieldX; x++)
+            shapeRenderer.line(x*halfSizeCellX, halfSizeCellY - x*halfSizeCellY, widthForTop + x*halfSizeCellX, halfSizeCellY + heightForTop - x*halfSizeCellY);
+        for(int y = 0; y <= sizeFieldY; y++)
+            shapeRenderer.line(y*halfSizeCellX, halfSizeCellY + y*halfSizeCellY, widthForBottom + y*halfSizeCellX, halfSizeCellY - heightForBottom + y*halfSizeCellY);
 
-		shapeRenderer.end();
-	}
+        shapeRenderer.end();
+    }
 
     private void drawCreeps(OrthographicCamera camera) {
         int halfSizeCellX = sizeCellX / 2;
@@ -370,13 +371,13 @@ public class GameField {
     }
 
     private void drawTowers(OrthographicCamera camera) {
-        int halfSizeCellX = sizeCellX / 2;
-        int halfSizeCellY = sizeCellY / 2;
+        int halfSizeCellX = sizeCellX/2;
+        int halfSizeCellY = sizeCellY/2;
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
-        float fix = 1f;
+//        float fix = 1f;
 
         for(Tower tower: towersManager.getAllTowers()) {
             int x = tower.getPosition().x;
@@ -593,7 +594,6 @@ public class GameField {
     }
 
     public boolean createTower(int buildX, int buildY, TemplateForTower templateForTower) {
-//        TemplateForTower templateForTower = factionsManager.getRandomTemplateForTowerFromFirstFaction();
         if(gamerGold >= templateForTower.cost) {
             int towerSize = templateForTower.size;
             int startX = 0, startY = 0, finishX = 0, finishY = 0;
@@ -679,7 +679,7 @@ public class GameField {
             Node oldPosition = creep.getNewPosition();
             if(creep.isAlive()) {
                 Node newPosition = creep.move(delta);
-                if (newPosition != null) {
+                if(newPosition != null) {
                     if (!newPosition.equals(oldPosition)) {
                         field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
                         field[newPosition.getX()][newPosition.getY()].setCreep(creep);
@@ -730,8 +730,8 @@ public class GameField {
 //    }
 
     // GAME INTERFACE ZONE1
-    public GridPoint2 whichCell(GridPoint2 gameCoordinate) {
-        return whichCell.whichCell(gameCoordinate);
+    public GridPoint2 whichCell(GridPoint2 grafCoordinate) {
+        return whichCell.whichCell(grafCoordinate);
     }
 
     public void setGamePause(boolean gamePaused) {

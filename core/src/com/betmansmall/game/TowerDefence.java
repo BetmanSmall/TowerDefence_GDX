@@ -9,9 +9,6 @@ import com.badlogic.gdx.Screen;
  * Created by BetmanSmall on 13.10.2015.
  */
 public class TowerDefence extends Game {
-//    SpriteBatch batch;
-//    BitmapFont font;
-
     public Screen mainMenu;
 
     private static volatile TowerDefence instance;
@@ -31,10 +28,8 @@ public class TowerDefence extends Game {
 
     @Override
     public void create() {
+//        Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         instance = this;
-//        batch = new SpriteBatch();
-//        font = new BitmapFont();
-        //Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         mainMenu = new MainMenuScreen(this);
         setMainMenu(null);
     }
@@ -59,8 +54,9 @@ public class TowerDefence extends Game {
     @Override
     public void dispose() {
         super.dispose();
-//        batch.dispose();
-//        font.dispose();
+        mainMenu.dispose();
+        getScreen().dispose();
+        closeApplication();
     }
 
     public void closeApplication(){

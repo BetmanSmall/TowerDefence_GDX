@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * Created by betmansmall on 09.02.2016.
  */
 public class TemplateForUnit {
-    private Faction  faction;
+    private Faction faction;
 
     public Integer bounty;
     public String  factionName;
@@ -139,7 +139,7 @@ public class TemplateForUnit {
         else if(this.type == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'type'! Check the file");
 
-        for (String key: animations.keys()) {
+        for(String key: animations.keys()) {
             Gdx.app.log("TemplateForUnit::validate()", "-- Dir:" + key + " Lenght:" + animations.get(key).getFrameTiles().length);
         }
     }

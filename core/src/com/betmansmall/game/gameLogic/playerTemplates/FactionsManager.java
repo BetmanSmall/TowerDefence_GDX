@@ -34,13 +34,13 @@ public class FactionsManager {
         String newFactionName = unit.getFactionName();
         for(Faction faction: factions) {
             if(faction.getName().equals(newFactionName)) {
-                faction.getUnits().add(unit);
+                faction.getTemplateForUnits().add(unit);
                 unit.setFaction(faction);
                 return;
             }
         }
         Faction faction = new Faction(newFactionName);
-        faction.getUnits().add(unit);
+        faction.getTemplateForUnits().add(unit);
         unit.setFaction(faction);
         factions.add(faction);
     }
@@ -50,13 +50,13 @@ public class FactionsManager {
         String newFactionName = tower.getFactionName();
         for(Faction faction: factions) {
             if(faction.getName().equals(newFactionName)) {
-                faction.getTowers().add(tower);
+                faction.getTemplateForTowers().add(tower);
                 tower.setFaction(faction);
                 return;
             }
         }
         Faction faction = new Faction(newFactionName);
-        faction.getTowers().add(tower);
+        faction.getTemplateForTowers().add(tower);
         tower.setFaction(faction);
         factions.add(faction);
     }
@@ -64,7 +64,7 @@ public class FactionsManager {
     public TemplateForUnit getRandomTemplateForUnitFromFirstFaction() {
         Faction faction = factions.first();
         if(faction != null) {
-            TemplateForUnit templateForUnit = faction.getUnits().random();
+            TemplateForUnit templateForUnit = faction.getTemplateForUnits().random();
             if(templateForUnit != null) {
                 return templateForUnit;
             }
@@ -75,7 +75,7 @@ public class FactionsManager {
     public TemplateForTower getRandomTemplateForTowerFromFirstFaction() {
         Faction faction = factions.first();
         if(faction != null) {
-            TemplateForTower templateForTower = faction.getTowers().random();
+            TemplateForTower templateForTower = faction.getTemplateForTowers().random();
             if(templateForTower != null) {
                 return templateForTower;
             }
@@ -86,7 +86,7 @@ public class FactionsManager {
     public TemplateForUnit getTemplateForUnitFromFirstFactionByIndex(int index) {
         Faction faction = factions.first();
         if(faction != null) {
-            TemplateForUnit templateForUnit = faction.getUnits().get(index);
+            TemplateForUnit templateForUnit = faction.getTemplateForUnits().get(index);
             if(templateForUnit != null) {
                 return templateForUnit;
             }
@@ -95,13 +95,13 @@ public class FactionsManager {
     }
 
     public Array<TemplateForTower> getAllFirstTowersFromFirstFaction() {
-        return factions.first().getTowers();
+        return factions.first().getTemplateForTowers();
     }
 
     public Array<TemplateForTower> getAllTowers(){
         Array<TemplateForTower> allTowers = new Array<TemplateForTower>();
         for(Faction faction : factions) {
-            for(TemplateForTower template : faction.getTowers()) {
+            for(TemplateForTower template : faction.getTemplateForTowers()) {
                 allTowers.add(template);
             }
         }

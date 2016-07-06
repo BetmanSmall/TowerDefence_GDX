@@ -83,7 +83,7 @@ public class Creep {
                 newPosition = route.pollFirst();
                 int oldX = oldPosition.getX(), oldY = oldPosition.getY();
                 int newX = newPosition.getX(), newY = newPosition.getY();
-                if (newX < oldX && newY > oldY) {
+                if(newX < oldX && newY > oldY) {
                     direction = Direction.UP;
                 } else if (newX == oldX && newY > oldY) {
                     direction = Direction.UP_RIGHT;
@@ -102,7 +102,7 @@ public class Creep {
                 }
 
 //                Gdx.app.log("Creep::move()", " -- oldDirection:" + oldDirection + " newDirection:" + direction);
-                if (!direction.equals(oldDirection)) {
+                if(!direction.equals(oldDirection)) {
                     setAnimation("walk_");
                 }
             }

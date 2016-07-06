@@ -8,24 +8,24 @@ import com.badlogic.gdx.utils.Array;
 public class Faction {
     private String name;
 
-    private Array<TemplateForUnit> units;
-    private Array<TemplateForTower> towers;
+    private Array<TemplateForUnit> templateForUnits;
+    private Array<TemplateForTower> templateForTowers;
 
     public Faction(String name) {
         this.name = name;
-        this.units = new Array<TemplateForUnit>();
-        this.towers = new Array<TemplateForTower>();
+        this.templateForUnits = new Array<TemplateForUnit>();
+        this.templateForTowers = new Array<TemplateForTower>();
     }
 
     public String getName() {
         return name;
     }
 
-    public Array<TemplateForUnit> getUnits() {
-        return units;
+    public Array<TemplateForUnit> getTemplateForUnits() {
+        return templateForUnits;
     }
 
-    public Array<TemplateForTower> getTowers() {
-        return towers;
+    public Array<TemplateForTower> getTemplateForTowers() {
+        return templateForTowers;
     }
 }

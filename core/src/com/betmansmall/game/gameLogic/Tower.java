@@ -37,7 +37,6 @@ public class Tower {
     public boolean recharge(float delta) {
         elapsedReloadTime += delta;
         if(elapsedReloadTime >= reloadTime) {
-//            elapsedReloadTime = 0f;
             return true;
         }
         return false;
@@ -47,8 +46,6 @@ public class Tower {
         if(elapsedReloadTime >= reloadTime) {
             int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
             int halfSizeCellY = GameField.getSizeCellY() / 2;
-//        float fVx = halfSizeCellX*newY + newX*halfSizeCellX;
-//        float fVy = halfSizeCellY*newY - newX*halfSizeCellY;
             float coorX = halfSizeCellX * position.y + position.x * halfSizeCellX;
             float coorY = halfSizeCellY * position.y - position.x * halfSizeCellY;
             TextureRegion tmpTextureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();

@@ -4,11 +4,11 @@
   <property name="ammoDistance" value="5"/>
   <property name="ammoSize" value="0.5"/>
   <property name="ammoSpeed" value="0.2"/>
-  <property name="cost" value="10"/>
-  <property name="damage" value="20"/>
+  <property name="cost" value="20"/>
+  <property name="damage" value="5"/>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Scout"/>
-  <property name="radius" value="1"/>
+  <property name="name" value="Scout1"/>
+  <property name="radius" value="5"/>
   <property name="reloadTime" value="1"/>
   <property name="size" value="2"/>
   <property name="type" value="tower"/>
@@ -16,11 +16,11 @@
  <image source="../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
-  <terrain name="arrow_UP" tile="1"/>
-  <terrain name="arrow_UP_RIGHT" tile="2"/>
-  <terrain name="arrow_RIGHT" tile="3"/>
-  <terrain name="arrow_DOWN_RIGHT" tile="4"/>
-  <terrain name="arrow_DOWN" tile="5"/>
+  <terrain name="ammo_UP" tile="1"/>
+  <terrain name="ammo_UP_RIGHT" tile="2"/>
+  <terrain name="ammo_RIGHT" tile="3"/>
+  <terrain name="ammo_DOWN_RIGHT" tile="4"/>
+  <terrain name="ammo_DOWN" tile="5"/>
  </terraintypes>
  <tile id="0">
   <properties>
