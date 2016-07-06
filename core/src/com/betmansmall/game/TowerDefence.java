@@ -6,28 +6,39 @@ import com.badlogic.gdx.Screen;
 
 
 /**
- * Created by Vitaly on 13.10.2015.
+ * Created by BetmanSmall on 13.10.2015.
  */
 public class TowerDefence extends Game {
-//    SpriteBatch batch;
-//    BitmapFont font;
+    public Screen mainMenu;
 
-    private Screen mainMenu;
+    private static volatile TowerDefence instance;
+
+    public static TowerDefence getInstance() {
+        TowerDefence localInstance = instance;
+        if (localInstance == null) {
+            synchronized (TowerDefence.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new TowerDefence();
+                }
+            }
+        }
+        return localInstance;
+    }
 
     @Override
     public void create() {
-//        batch = new SpriteBatch();
-//        font = new BitmapFont();
-        //Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+//        Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+        instance = this;
         mainMenu = new MainMenuScreen(this);
         setMainMenu(null);
     }
 
     public void setMainMenu(Screen toDel) {
+        this.setScreen(mainMenu);
         if (toDel != null) {
             toDel.dispose();
         }
-        this.setScreen(mainMenu);
     }
 
     @Override
@@ -43,8 +54,9 @@ public class TowerDefence extends Game {
     @Override
     public void dispose() {
         super.dispose();
-//        batch.dispose();
-//        font.dispose();
+        mainMenu.dispose();
+        getScreen().dispose();
+        closeApplication();
     }
 
     public void closeApplication(){
