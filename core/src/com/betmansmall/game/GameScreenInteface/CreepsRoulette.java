@@ -27,6 +27,7 @@ public class CreepsRoulette extends Roulette {
     private static volatile Boolean IS_PAUSE = true;
     private static GameScreen gs;
     private GameField gameField;
+    private float scale;
 
     public CreepsRoulette(GameField gameField) {
         this.gameField = gameField;
@@ -35,13 +36,14 @@ public class CreepsRoulette extends Roulette {
 
     private void init() {
         group = new Group();
+        scale = (((float) Gdx.graphics.getWidth()) / 1980);
 
         playButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/playbutton.png"))).getDrawable());
-        playButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
+        playButton.setSize(getLocalWidth(ROULETTE_RADIUS)*scale,getLocalHeight(ROULETTE_RADIUS)*scale);
         playButton.setPosition(0, 0);
 
         pauseButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/pauseButton.png"))).getDrawable());
-        pauseButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
+        pauseButton.setSize(getLocalWidth(ROULETTE_RADIUS)*scale,getLocalHeight(ROULETTE_RADIUS)*scale);
         pauseButton.setPosition(0, 0);
         pauseButton.setVisible(true);
 
