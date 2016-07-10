@@ -31,7 +31,6 @@ public class TowersRoulette extends Roulette {
     private TemplateForTower templateForTower;
     private  FactionsManager factionsManager;
     private Faction faction;
-    private float scale;
 
     public TowersRoulette(GameField gameField) {
         this.gameField = gameField;
@@ -42,18 +41,16 @@ public class TowersRoulette extends Roulette {
         circleGroup  = new Group();
         buttonGroup = new Group();
 
-        scale = (((float) Gdx.graphics.getWidth()) / 1980);
-
         rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_roulette_main.png"))).getDrawable());
         rouletteButton.setName("rouletteButton");
-        rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS)*scale, getLocalHeight(ROULETTE_RADIUS)*scale);
+        rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
         rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
         buttonGroup.addActor(rouletteButton);
         buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
 
         rouletteCircle = new ImageButton(new Image(new Texture(Gdx.files.internal("img/golden_ring.png"))).getDrawable());
-        rouletteCircle.setSize(getLocalWidth(RING_RADIUS) * 2*scale, getLocalHeight(RING_RADIUS) * 2*scale);
+        rouletteCircle.setSize(getLocalWidth(RING_RADIUS) * 2, getLocalHeight(RING_RADIUS) * 2);
         rouletteCircle.setPosition(Gdx.graphics.getWidth() - rouletteCircle.getWidth() / 2, 0 - rouletteCircle.getHeight() / 2);
         rouletteCircle.setVisible(false);
         circleGroup.addActor(rouletteCircle);
@@ -71,7 +68,7 @@ public class TowersRoulette extends Roulette {
 
     private void ringClick(){
 //        Gdx.app.log("TAG", "Tower is selected");
-        rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS)*scale, getLocalHeight(ROULETTE_RADIUS)*scale);
+        rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
         float trash = circleGroup.getRotation() % 90; //TODO rename trash variable
         if(trash  > 45 ) {
