@@ -310,6 +310,9 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
             gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
+            gameField.isDrawableTerrain = !gameField.isDrawableTerrain;
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTerrain:" + gameField.isDrawableTerrain);
         } else if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK);");
             TowerDefence.getInstance().setMainMenu(this);
