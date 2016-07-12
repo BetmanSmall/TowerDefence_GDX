@@ -15,13 +15,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+//import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
+import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
@@ -54,6 +55,7 @@ public class GameField {
         return sizeCellY;
     }
 
+    public boolean isDrawableTerrain = true;
     public boolean isDrawableGrid = true;
     public boolean isDrawableCreeps = true;
     public boolean isDrawableTowers = true;
@@ -86,7 +88,7 @@ public class GameField {
     //TEST ZONE2
 
     public GameField(String mapName) {
-        map = new TmxMapLoader().load(mapName);
+        map = new MapLoader().load(mapName);
         renderer = new IsometricTiledMapRenderer(map, spriteBatch);
 
         sizeFieldX = map.getProperties().get("width", Integer.class);
@@ -203,14 +205,24 @@ public class GameField {
     }
 
     public void render(float delta, OrthographicCamera camera) {
-        renderer.setView(camera);
-        renderer.render();
-
         if(!gamePaused) {
             spawnCreep(delta);
             stepAllCreep(delta);
             shotAllTowers(delta);
             moveAllProjecTiles(delta);
+        }
+
+        if(isDrawableTerrain) {
+            renderer.setView(camera);
+//            renderer.render();
+            renderer.getBatch().begin();
+            for(MapLayer mapLayer: map.getLayers()) {
+                if(mapLayer instanceof TiledMapTileLayer) {
+                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
+                    renderer.renderTileLayer(layer);
+                }
+            }
+            renderer.getBatch().end();
         }
 
         if(isDrawableGrid)

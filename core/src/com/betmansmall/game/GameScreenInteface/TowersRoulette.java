@@ -31,6 +31,7 @@ public class TowersRoulette extends Roulette {
     private TemplateForTower templateForTower;
     private  FactionsManager factionsManager;
     private Faction faction;
+
     public TowersRoulette(GameField gameField) {
         this.gameField = gameField;
         init();
