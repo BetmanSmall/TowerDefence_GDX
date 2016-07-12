@@ -215,12 +215,12 @@ public class GameField {
 
         if(isDrawableGrid)
             drawGrid(camera);
-        if(isDrawableTowers)
-            drawTowers(camera);
-        if(isDrawableCreeps)
-            drawCreeps(camera);
         if(isDrawableRoutes)
             drawRoutes(camera);
+        if(isDrawableCreeps)
+            drawCreeps(camera);
+        if(isDrawableTowers)
+            drawTowers(camera);
         if(isDrawableGridNav)
             drawGridNav(camera);
         drawProjecTiles(camera);

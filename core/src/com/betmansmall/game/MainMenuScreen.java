@@ -35,6 +35,8 @@ public class MainMenuScreen implements Screen {
     private float timer;
     private float screenXScale, screenYScale;
 
+    public String NameOFMapTMX;
+
     public MainMenuScreen(TowerDefence towerDefence) {
         this.towerDefence = towerDefence;
         create();
@@ -181,12 +183,19 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
+                        NameOFMapTMX = "maps/arena3.tmx";
                         break;
                     case 2:
                         //Choose map2
+                        menuLvl = 3;
+                        switchMenuButtons();
+                        NameOFMapTMX = "maps/arena2.tmx";
                         break;
                     case 3:
                         //Choose map3
+                        menuLvl = 3;
+                        switchMenuButtons();
+                        NameOFMapTMX = "maps/arena.tmx";
                         break;
                 }
                 break;
@@ -194,7 +203,7 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        towerDefence.setScreen(new GameScreen());
+                        towerDefence.setScreen(new GameScreen(NameOFMapTMX));
                         break;
                     case 2:
                         //start game with NORMAL
