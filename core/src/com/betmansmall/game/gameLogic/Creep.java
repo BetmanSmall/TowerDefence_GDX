@@ -153,6 +153,9 @@ public class Creep {
         return hp;
     }
     public boolean isAlive() {
+        if(animation == null) { // TODO Не верно, нужно исправить.
+            return false;
+        }
         return hp > 0 ? true : false;
     }
 

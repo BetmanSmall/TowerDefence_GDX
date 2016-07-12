@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
@@ -155,18 +156,22 @@ public class GameField {
                             TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
                             TiledMapTileLayer.Cell cell = layer.getCell(x, y);
                             if(cell != null) {
-                                if(cell.getTile().getProperties().get("busy") != null) {
-                                    field[x][y].setTerrain();
-                                } else if(cell.getTile().getProperties().get("spawnPoint") != null && cell.getTile().getProperties().get("spawnPoint").equals("1")) {
+                                TiledMapTile tiledMapTile = cell.getTile();
+                                if(tiledMapTile != null) {
+                                    field[x][y].addTiledMapTile(tiledMapTile);
+                                    if(tiledMapTile.getProperties().get("terrain") != null) {
+                                        field[x][y].setTerrain();
+                                    } else if(tiledMapTile.getProperties().get("spawnPoint") != null) {
 //                                    spawnPoint = new GridPoint2(x, y);
-                                    waveManager.spawnPoints.add(new GridPoint2(x, y));
+                                        waveManager.spawnPoints.add(new GridPoint2(x, y));
 //                                    field[x][y].setTerrain();
-                                    Gdx.app.log("GameField::GameField()", "-- Set spawnPoint: (" + x + ", " + y + ")");
-                                } else if (cell.getTile().getProperties().get("exitPoint") != null && cell.getTile().getProperties().get("exitPoint").equals("1")) {
+                                        Gdx.app.log("GameField::GameField()", "-- Set spawnPoint: (" + x + ", " + y + ")");
+                                    } else if(tiledMapTile.getProperties().get("exitPoint") != null) {
 //                                    exitPoint = new GridPoint2(x, y);
-                                    waveManager.exitPoints.add(new GridPoint2(x, y));
+                                        waveManager.exitPoints.add(new GridPoint2(x, y));
 //                                    field[x][y].setTerrain();
-                                    Gdx.app.log("GameField::GameField()", "-- Set exitPoint: (" + x + ", " + y + ")");
+                                        Gdx.app.log("GameField::GameField()", "-- Set exitPoint: (" + x + ", " + y + ")");
+                                    }
                                 }
                             }
                         } else {
@@ -213,26 +218,45 @@ public class GameField {
         }
 
         if(isDrawableTerrain) {
-            renderer.setView(camera);
-//            renderer.render();
-            renderer.getBatch().begin();
-            for(MapLayer mapLayer: map.getLayers()) {
-                if(mapLayer instanceof TiledMapTileLayer) {
-                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
-                    renderer.renderTileLayer(layer);
+            int halfSizeCellX = sizeCellX/2;
+            int halfSizeCellY = sizeCellY/2;
+            spriteBatch.setProjectionMatrix(camera.combined);
+            spriteBatch.begin();
+            for(int y = sizeFieldY-1; y >= 0; y--) {
+//                for(int x = sizeFieldX-1; x >= 0; x--) {
+//                for(int y = 0; y < sizeFieldY; y++) {
+                for(int x = 0; x < sizeFieldX; x++) {
+                    Array<TiledMapTile> tiledMapTiles = field[x][y].getTiledMapTiles();
+                    for(TiledMapTile tiledMapTile: tiledMapTiles) {
+                        TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+                        float pxlsX = (halfSizeCellX * y + x * halfSizeCellX);
+                        float pxlsY = (halfSizeCellY * y - x * halfSizeCellY);
+
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                    }
                 }
             }
-            renderer.getBatch().end();
+            spriteBatch.end();
+//            renderer.setView(camera);
+////            renderer.render();
+//            renderer.getBatch().begin();
+//            for(MapLayer mapLayer: map.getLayers()) {
+//                if(mapLayer instanceof TiledMapTileLayer) {
+//                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
+//                    renderer.renderTileLayer(layer);
+//                }
+//            }
+//            renderer.getBatch().end();
         }
 
         if(isDrawableGrid)
             drawGrid(camera);
         if(isDrawableRoutes)
             drawRoutes(camera);
-        if(isDrawableCreeps)
-            drawCreeps(camera);
         if(isDrawableTowers)
             drawTowers(camera);
+        if(isDrawableCreeps)
+            drawCreeps(camera);
         if(isDrawableGridNav)
             drawGridNav(camera);
         drawProjecTiles(camera);

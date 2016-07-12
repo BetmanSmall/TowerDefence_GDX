@@ -1,25 +1,32 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * Created by Андрей on 11.03.2016.
+ * Created by BetmanSmall on 11.03.2016.
  */
 public class Cell {
+    private Array<TiledMapTile> tiledMapTiles;
     private boolean empty;
     private boolean terrain;
     private Tower tower;
     private Array<Creep> creeps;
 
-//    private char pathFinder;
-//    private boolean spawnPoint;
-//    private boolean exitPoint;
-
-    Cell() {
+    public Cell() {
+        this.tiledMapTiles = new Array<TiledMapTile>();
         this.empty = true;
         this.terrain = false;
         this.tower = null;
         this.creeps = null;
+    }
+
+    public void addTiledMapTile(TiledMapTile tiledMapTile) {
+        tiledMapTiles.add(tiledMapTile);
+    }
+
+    public Array<TiledMapTile> getTiledMapTiles() {
+        return tiledMapTiles;
     }
 
     public boolean isEmpty() {
@@ -81,8 +88,6 @@ public class Cell {
         return null;
     }
 
-//    public int getCreep(Creep creep)
-
     public boolean setCreep(Creep creep) {
         if(empty) {
             creeps = new Array<Creep>();
@@ -109,27 +114,11 @@ public class Cell {
         return -1;
     }
 
-//    public char getPathFinder() {
-//        return pathFinder;
-//    }
-//
-//    public void setPathFinder(char pathFinder) {
-//        this.pathFinder = pathFinder;
-//    }
-//
-//    public boolean isSpawnPoint() {
-//        return spawnPoint;
-//    }
-//
-//    public void setSpawnPoint(boolean spawnPoint) {
-//        this.spawnPoint = spawnPoint;
-//    }
-//
-//    public boolean isExitPoint() {
-//        return exitPoint;
-//    }
-//
-//    public void setExitPoint(boolean exitPoint) {
-//        this.exitPoint = exitPoint;
-//    }
+    public void dispose() {
+        tiledMapTiles.clear();
+        tiledMapTiles = null;
+        tower = null;
+        creeps.clear();
+        creeps = null;
+    }
 }

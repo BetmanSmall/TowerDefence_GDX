@@ -313,8 +313,8 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
             gameField.isDrawableTerrain = !gameField.isDrawableTerrain;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTerrain:" + gameField.isDrawableTerrain);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK);");
+        } else if (Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().setMainMenu(this);
         }
     }
@@ -393,8 +393,8 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void dispose() {
-        gameField = null;
-        gameInterface = null;
+    public void dispose() { // TODO Нужно очищать всю память!
+//        gameField = null;
+//        gameInterface = null;
     }
 }
