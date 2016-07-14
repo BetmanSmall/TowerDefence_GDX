@@ -25,16 +25,18 @@ public class CreepsManager {
         return newCreep;
     }
 
-    public int getCreep(Creep creep) { return creeps.indexOf(creep, false); }
+    public int getCreep(Creep creep) {
+        return creeps.indexOf(creep, false);
+    }
 
     public Creep getCreep(int id) {
         return creeps.get(id);
     }
 
     public Creep getCreep(Node position) {
-        for(int i=0; i < creeps.size; i++) {
+        for (int i = 0; i < creeps.size; i++) {
             Node creepPosition = creeps.get(i).getNewPosition();
-            if(creepPosition.equals(position)) {
+            if (creepPosition.equals(position)) {
                 return creeps.get(i);
             }
         }
@@ -54,10 +56,10 @@ public class CreepsManager {
     }
 
     public boolean setRouteForCreeps(PathFinder pathFinder, GridPoint2 exitPoint) {
-        for(int i=0;i<creeps.size;i++) {
+        for (int i = 0; i < creeps.size; i++) {
             ArrayDeque<Node> adv = pathFinder.route(new int[]{creeps.get(i).getNewPosition().getX(), creeps.get(i).getNewPosition().getY()},
                     new int[]{exitPoint.x, exitPoint.y}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-            if(adv != null) {
+            if (adv != null) {
                 creeps.get(i).setRoute(adv);
             } else {
                 return false;
