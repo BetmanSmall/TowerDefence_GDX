@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -12,7 +13,10 @@ import java.util.ArrayList;
  */
 public class TowerDefence extends Game {
 
-    private ArrayList<Screen> mScreensArray = new ArrayList<Screen>();
+    /**
+     * List of all screens in the stack
+     */
+    private List<Screen> screensArray = new ArrayList<Screen>();
 
     private static volatile TowerDefence instance;
 
@@ -37,36 +41,50 @@ public class TowerDefence extends Game {
         addScreen(mainMenuScreen);
     }
 
+    /**
+     * @brief Add screen
+     * @param screen
+     */
     public void addScreen(Screen screen) {
         if (screen != null) {
-            mScreensArray.add(screen);
+            screensArray.add(screen);
             this.setScreen(screen);
         }
     }
 
+    /**
+     * @brief Remove screen from the top of the stack
+     */
     public void removeTopScreen() {
-        if (mScreensArray != null) {
-            int count = mScreensArray.size();
-            Screen screen = mScreensArray.get(count - 1);
-            if (screen != null) {
-                //screen.hide();
-                mScreensArray.remove(count - 1);
-                Screen popToScreen = mScreensArray.get(count - 2);
-                if (popToScreen != null) {
-                    this.setScreen(popToScreen);
+        if (screensArray != null) {
+            int count = screensArray.size();
+            if (count > 0) {
+                Screen screen = screensArray.get(count - 1);
+                if (screen != null) {
+                    //screen.hide();
+                    screensArray.remove(count - 1);
+                    Screen popToScreen = screensArray.get(count - 2);
+                    if (popToScreen != null) {
+                        this.setScreen(popToScreen);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Remove all screens from the stack
+     */
     public void removeAllScreens() {
-        if (mScreensArray != null) {
-            int size = mScreensArray.size();
-            for (int i = size - 1; i >= 0; i--) {
-                Screen screen = mScreensArray.get(i);
-                if (screen != null) {
-                    screen.hide();
-                    mScreensArray.remove(size - 1);
+        if (screensArray != null) {
+            int size = screensArray.size();
+            if (size > 0) {
+                for (int i = size - 1; i >= 0; i--) {
+                    Screen screen = screensArray.get(i);
+                    if (screen != null) {
+                        screen.hide();
+                        screensArray.remove(size - 1);
+                    }
                 }
             }
         }
