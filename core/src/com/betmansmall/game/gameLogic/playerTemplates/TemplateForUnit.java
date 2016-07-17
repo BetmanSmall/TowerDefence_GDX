@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class TemplateForUnit {
     private Faction faction;
+    private String templateName;
 
     public Integer bounty;
     public String  factionName;
@@ -27,6 +28,7 @@ public class TemplateForUnit {
 
     public TemplateForUnit(TiledMapTileSet tileSet) {
         try {
+            this.templateName = tileSet.getName();
             this.bounty =       Integer.parseInt(tileSet.getProperties().get("bounty", String.class));
             this.factionName =  tileSet.getProperties().get("factionName", String.class);
             this.healthPoints = Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
@@ -126,7 +128,9 @@ public class TemplateForUnit {
 
     private void validate() {
         // Need cheak range values
-        if(this.bounty == null)
+        if(this.templateName != null)
+            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'templateName'! Check the file");
+        else if(this.bounty == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'bounty'! Check the file");
         else if(this.factionName == null)
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
@@ -149,5 +153,8 @@ public class TemplateForUnit {
     }
     public String getFactionName() {
         return factionName;
+    }
+    public String getTemplateName() {
+        return this.templateName;
     }
 }

@@ -8,6 +8,20 @@
  <tileset firstgid="523" source="towers/tower3_cannon.tsx"/>
  <tileset firstgid="529" source="towers/tower4_cannon.tsx"/>
  <tileset firstgid="535" source="towers/tower5_scout.tsx"/>
+ <waves>
+	<wave spawntPointX="1" spawntPointY="31" exitPointX="61" exitPointY="32">
+		<unit templateName="unit1_grunt" amount="3"/>
+		<unit templateName="unit2_troll_axethrower" amount="2"/>
+		<unit templateName="unit1_grunt" amount="1"/>
+		<unit templateName="unit2_troll_axethrower" amount="4"/>
+	</wave>
+	<wave spawntPointX="6" spawntPointY="6" exitPointX="60" exitPointY="60">
+		<unit templateName="unit2_troll_axethrower" amount="4"/>
+		<unit templateName="unit1_grunt" amount="3"/>
+		<unit templateName="unit2_troll_axethrower" amount="2"/>
+		<unit templateName="unit1_grunt" amount="1"/>
+	</wave>
+ </waves>
  <layer name="background" width="64" height="64">
   <data encoding="csv">
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,

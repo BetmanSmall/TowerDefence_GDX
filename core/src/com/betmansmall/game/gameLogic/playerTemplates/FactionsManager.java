@@ -6,34 +6,16 @@ import com.badlogic.gdx.utils.Array;
  * Created by betmansmall on 23.02.2016.
  */
 public class FactionsManager {
-//    private static volatile FactionsManager instance;
-//
-//    private TemplateForTower currentTemplateTower;
-//
-//    public static FactionsManager getInstance() {
-//        FactionsManager localInstance = instance;
-//        if (localInstance == null) {
-//            synchronized (FactionsManager.class) {
-//                localInstance = instance;
-//                if (localInstance == null) {
-//                    instance = localInstance = new FactionsManager();
-//                }
-//            }
-//        }
-//        return localInstance;
-//    }
-
     private Array<Faction> factions;
 
     public FactionsManager() {
-//        instance = this; //TODO init with singleton
         factions = new Array<Faction>();
     }
 
     public void addUnitToFaction(TemplateForUnit unit) {
         String newFactionName = unit.getFactionName();
-        for(Faction faction: factions) {
-            if(faction.getName().equals(newFactionName)) {
+        for (Faction faction : factions) {
+            if (faction.getName().equals(newFactionName)) {
                 faction.getTemplateForUnits().add(unit);
                 unit.setFaction(faction);
                 return;
@@ -48,8 +30,8 @@ public class FactionsManager {
     public void addTowerToFaction(TemplateForTower tower) {
 //        Gdx.app.log("FactionsManager::addTowerToFaction()", " -- Tower name:" + tower.name);
         String newFactionName = tower.getFactionName();
-        for(Faction faction: factions) {
-            if(faction.getName().equals(newFactionName)) {
+        for (Faction faction : factions) {
+            if (faction.getName().equals(newFactionName)) {
                 faction.getTemplateForTowers().add(tower);
                 tower.setFaction(faction);
                 return;
@@ -63,9 +45,9 @@ public class FactionsManager {
 
     public TemplateForUnit getRandomTemplateForUnitFromFirstFaction() {
         Faction faction = factions.first();
-        if(faction != null) {
+        if (faction != null) {
             TemplateForUnit templateForUnit = faction.getTemplateForUnits().random();
-            if(templateForUnit != null) {
+            if (templateForUnit != null) {
                 return templateForUnit;
             }
         }
@@ -74,9 +56,9 @@ public class FactionsManager {
 
     public TemplateForTower getRandomTemplateForTowerFromFirstFaction() {
         Faction faction = factions.first();
-        if(faction != null) {
+        if (faction != null) {
             TemplateForTower templateForTower = faction.getTemplateForTowers().random();
-            if(templateForTower != null) {
+            if (templateForTower != null) {
                 return templateForTower;
             }
         }
@@ -85,10 +67,24 @@ public class FactionsManager {
 
     public TemplateForUnit getTemplateForUnitFromFirstFactionByIndex(int index) {
         Faction faction = factions.first();
-        if(faction != null) {
+        if (faction != null) {
             TemplateForUnit templateForUnit = faction.getTemplateForUnits().get(index);
-            if(templateForUnit != null) {
+            if (templateForUnit != null) {
                 return templateForUnit;
+            }
+        }
+        return null;
+    }
+
+    public TemplateForUnit getTemplateForUnitFromFirstFactionByName(String templateName) {
+        Faction faction = factions.first();
+        if (faction != null) {
+            for (TemplateForUnit templateForUnit : faction.getTemplateForUnits()) {
+                if (templateForUnit != null) {
+                    if (templateForUnit.getTemplateName().equals(templateName)) {
+                        return templateForUnit;
+                    }
+                }
             }
         }
         return null;
@@ -98,24 +94,13 @@ public class FactionsManager {
         return factions.first().getTemplateForTowers();
     }
 
-    public Array<TemplateForTower> getAllTowers(){
+    public Array<TemplateForTower> getAllTowers() {
         Array<TemplateForTower> allTowers = new Array<TemplateForTower>();
-        for(Faction faction : factions) {
-            for(TemplateForTower template : faction.getTemplateForTowers()) {
+        for (Faction faction : factions) {
+            for (TemplateForTower template : faction.getTemplateForTowers()) {
                 allTowers.add(template);
             }
         }
         return allTowers;
     }
-//    //Mukhin gad
-//    public TemplateForTower getCurrentTemplateTower() {
-//        if(currentTemplateTower == null) {
-//            currentTemplateTower = getAllTowers().get(0);
-//        }
-//        return currentTemplateTower;
-//    }
-//
-//    public void setCurrentTemplateTower(TemplateForTower currentTemplateTower) {
-//        this.currentTemplateTower = currentTemplateTower;
-//    }
 }
