@@ -4,12 +4,15 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by BetmanSmall on 13.10.2015.
  */
 public class TowerDefence extends Game {
-    public Screen mainMenu;
+
+    private ArrayList<Screen> mScreensArray = new ArrayList<Screen>();
 
     private static volatile TowerDefence instance;
 
@@ -30,14 +33,43 @@ public class TowerDefence extends Game {
     public void create() {
 //        Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         instance = this;
-        mainMenu = new MainMenuScreen(this);
-        setMainMenu(null);
+        Screen mainMenuScreen = new MainMenuScreen(this);
+        AddScreen(mainMenuScreen);
     }
 
-    public void setMainMenu(Screen toDel) {
-        this.setScreen(mainMenu);
-        if (toDel != null) {
-            toDel.dispose();
+    public void AddScreen(Screen screen) {
+        if (screen != null) {
+            mScreensArray.add(screen);
+            this.setScreen(screen);
+        }
+    }
+
+    public void RemoveTopScreen() {
+        if (mScreensArray != null) {
+            int count = mScreensArray.size();
+            Screen screen = mScreensArray.get(count - 1);
+            if (screen != null) {
+                //screen.hide();
+                mScreensArray.remove(count - 1);
+                Screen popToScreen = mScreensArray.get(count - 2);
+                if (popToScreen != null) {
+                    this.setScreen(popToScreen);
+                }
+            }
+        }
+    }
+
+    public void RemoveAllScreens() {
+        if (mScreensArray != null)
+        {
+            int size = mScreensArray.size();
+            for (int i = size - 1; i >= 0; i--) {
+                Screen screen = mScreensArray.get(i);
+                if (screen != null) {
+                    screen.hide();
+                    mScreensArray.remove(size - 1);
+                }
+            }
         }
     }
 
@@ -54,8 +86,7 @@ public class TowerDefence extends Game {
     @Override
     public void dispose() {
         super.dispose();
-        mainMenu.dispose();
-        getScreen().dispose();
+        RemoveAllScreens();
         closeApplication();
     }
 

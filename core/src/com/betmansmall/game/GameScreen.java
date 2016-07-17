@@ -310,9 +310,9 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
             gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.BACK) || Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK);");
-            TowerDefence.getInstance().setMainMenu(this);
+            TowerDefence.getInstance().RemoveTopScreen();
         }
     }
 
@@ -339,7 +339,7 @@ public class GameScreen implements Screen {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().setMainMenu(this);
+                TowerDefence.getInstance().RemoveTopScreen();
                 return;
             }
             if (defeatScreen == null)
@@ -351,7 +351,7 @@ public class GameScreen implements Screen {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().setMainMenu(this);
+                TowerDefence.getInstance().RemoveTopScreen();
                 return;
             }
             if (defeatScreen == null)
