@@ -16,6 +16,11 @@ public class WaveManager {
 
     WaveManager() {
         this.waves = new Array<Wave>();
+
+        Wave wave = new Wave(new GridPoint2(15, 15), new GridPoint2(32, 32));
+        wave.addTemplateForUnit("unit1_grunt");
+        wave.addTemplateForUnit("unit1_grunt");
+        waves.add(wave);
     }
 
     public void addWave(Wave wave) {

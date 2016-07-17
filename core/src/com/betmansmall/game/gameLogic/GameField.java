@@ -211,8 +211,8 @@ public class GameField {
     }
 
     public void dispose() {
-        renderer.dispose();
-        renderer = null;
+//        renderer.dispose();
+//        renderer = null;
     }
 
     public void render(float delta, OrthographicCamera camera) {
@@ -224,35 +224,38 @@ public class GameField {
         }
 
         if (isDrawableTerrain) {
-            int halfSizeCellX = sizeCellX / 2;
-            int halfSizeCellY = sizeCellY / 2;
-            spriteBatch.setProjectionMatrix(camera.combined);
-            spriteBatch.begin();
-            for (int y = sizeFieldY - 1; y >= 0; y--) {
-//                for(int x = sizeFieldX-1; x >= 0; x--) {
-//                for(int y = 0; y < sizeFieldY; y++) {
-                for (int x = 0; x < sizeFieldX; x++) {
-                    Array<TiledMapTile> tiledMapTiles = field[x][y].getTiledMapTiles();
-                    for (TiledMapTile tiledMapTile : tiledMapTiles) {
-                        TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                        float pxlsX = (halfSizeCellX * y + x * halfSizeCellX);
-                        float pxlsY = (halfSizeCellY * y - x * halfSizeCellY);
-
-                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                }
-            }
-            spriteBatch.end();
-//            renderer.setView(camera);
-////            renderer.render();
-//            renderer.getBatch().begin();
-//            for(MapLayer mapLayer: map.getLayers()) {
-//                if(mapLayer instanceof TiledMapTileLayer) {
-//                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
-//                    renderer.renderTileLayer(layer);
+//            int halfSizeCellX = sizeCellX / 2;
+//            int halfSizeCellY = sizeCellY / 2;
+//            spriteBatch.setProjectionMatrix(camera.combined);
+//            spriteBatch.begin();
+//            for (int y = sizeFieldY - 1; y >= 0; y--) {
+////                for(int x = sizeFieldX-1; x >= 0; x--) {
+////                for(int y = 0; y < sizeFieldY; y++) {
+//                for (int x = 0; x < sizeFieldX; x++) {
+//                    Array<TiledMapTile> tiledMapTiles = field[x][y].getTiledMapTiles();
+//                    for (TiledMapTile tiledMapTile : tiledMapTiles) {
+//                        TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+//                        float pxlsX = (halfSizeCellX * y + x * halfSizeCellX);
+//                        float pxlsY = (halfSizeCellY * y - x * halfSizeCellY);
+//
+//                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    }
 //                }
 //            }
-//            renderer.getBatch().end();
+//            spriteBatch.end();
+            renderer.setView(camera);
+////            renderer.render();
+            renderer.getBatch().begin();
+            for(MapLayer mapLayer: map.getLayers()) {
+                if(mapLayer instanceof TiledMapTileLayer) {
+                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
+                    String background = layer.getProperties().get("background", String.class);
+//                    if(background != null) {
+                        renderer.renderTileLayer(layer);
+//                    }
+                }
+            }
+            renderer.getBatch().end();
         }
 
         if (isDrawableGrid)
@@ -267,6 +270,20 @@ public class GameField {
             drawGridNav(camera);
         drawProjecTiles(camera);
         drawTowersUnderConstruction(camera);
+
+//        if (isDrawableTerrain) {
+//            renderer.getBatch().begin();
+//            for (MapLayer mapLayer : map.getLayers()) {
+//                if (mapLayer instanceof TiledMapTileLayer) {
+//                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
+//                    String background = layer.getProperties().get("background", String.class);
+//                    if (background == null) {
+//                        renderer.renderTileLayer(layer);
+//                    }
+//                }
+//            }
+//            renderer.getBatch().end();
+//        }
 
         if (animation != null) {
             stateTime += delta;
@@ -710,7 +727,7 @@ public class GameField {
     private void rerouteForAllCreeps() {
         pathFinder.loadCharMatrix(getCharMatrix());
         for (Creep creep : creepsManager.getAllCreeps()) {
-            ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), waveManager.exitPoints.first().x, waveManager.exitPoints.first().y);
+            ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), waveManager.getExitPoint().x, waveManager.getExitPoint().y); // TODO BAGA!
             if (route != null) {
                 route.removeFirst();
                 creep.setRoute(route);

@@ -38,7 +38,7 @@ public class Cell {
     }
 
     public boolean setTerrain() {
-        if(empty) {
+        if (empty) {
             terrain = true;
             empty = false;
             return true;
@@ -47,7 +47,7 @@ public class Cell {
     }
 
     public boolean removeTerrain() {
-        if(terrain) {
+        if (terrain) {
             terrain = false;
             empty = true;
             return true;
@@ -60,7 +60,7 @@ public class Cell {
     }
 
     public boolean setTower(Tower tower) {
-        if(empty) {
+        if (empty) {
             this.tower = tower;
             empty = false;
             return true;
@@ -69,7 +69,7 @@ public class Cell {
     }
 
     public boolean removeTower() {
-        if(tower != null) {
+        if (tower != null) {
             tower = null;
             empty = true;
             return true;
@@ -82,19 +82,19 @@ public class Cell {
     }
 
     public Creep getCreep() {
-        if(creeps != null) {
+        if (creeps != null) {
             return creeps.first();
         }
         return null;
     }
 
     public boolean setCreep(Creep creep) {
-        if(empty) {
+        if (empty) {
             creeps = new Array<Creep>();
             creeps.add(creep);
             empty = false;
             return true;
-        } else if(creeps != null) {
+        } else if (creeps != null) {
             creeps.add(creep);
             return true;
         }
@@ -102,9 +102,9 @@ public class Cell {
     }
 
     public int removeCreep(Creep creep) {
-        if(creeps != null) {
+        if (creeps != null) {
             creeps.removeValue(creep, false);
-            if(creeps.size == 0) {
+            if (creeps.size == 0) {
                 creeps = null;
                 empty = true;
                 return 0;
