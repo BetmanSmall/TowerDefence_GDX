@@ -311,7 +311,7 @@ public class GameScreen implements Screen {
             gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
         } else if (Gdx.input.isKeyPressed(Input.Keys.BACK) || Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().removeTopScreen();
         }
     }
