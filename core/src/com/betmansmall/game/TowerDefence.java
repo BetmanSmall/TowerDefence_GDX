@@ -34,17 +34,17 @@ public class TowerDefence extends Game {
 //        Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         instance = this;
         Screen mainMenuScreen = new MainMenuScreen(this);
-        AddScreen(mainMenuScreen);
+        addScreen(mainMenuScreen);
     }
 
-    public void AddScreen(Screen screen) {
+    public void addScreen(Screen screen) {
         if (screen != null) {
             mScreensArray.add(screen);
             this.setScreen(screen);
         }
     }
 
-    public void RemoveTopScreen() {
+    public void removeTopScreen() {
         if (mScreensArray != null) {
             int count = mScreensArray.size();
             Screen screen = mScreensArray.get(count - 1);
@@ -59,9 +59,8 @@ public class TowerDefence extends Game {
         }
     }
 
-    public void RemoveAllScreens() {
-        if (mScreensArray != null)
-        {
+    public void removeAllScreens() {
+        if (mScreensArray != null) {
             int size = mScreensArray.size();
             for (int i = size - 1; i >= 0; i--) {
                 Screen screen = mScreensArray.get(i);
@@ -86,7 +85,7 @@ public class TowerDefence extends Game {
     @Override
     public void dispose() {
         super.dispose();
-        RemoveAllScreens();
+        removeAllScreens();
         closeApplication();
     }
 

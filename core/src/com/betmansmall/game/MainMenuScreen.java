@@ -194,7 +194,7 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        towerDefence.AddScreen(new GameScreen());
+                        towerDefence.addScreen(new GameScreen());
                         break;
                     case 2:
                         //start game with NORMAL
