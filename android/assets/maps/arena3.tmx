@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="64" height="64" tilewidth="64" tileheight="32" nextobjectid="2">
- <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
+ <tileset firstgid="1" source="other/iso-64x64-outside_bad.tsx"/>
  <tileset firstgid="321" source="creeps/unit1_grunt.tsx"/>
  <tileset firstgid="416" source="creeps/unit2_troll_axethrower.tsx"/>
  <tileset firstgid="511" source="towers/tower1_scout.tsx"/>
@@ -8,21 +8,10 @@
  <tileset firstgid="523" source="towers/tower3_cannon.tsx"/>
  <tileset firstgid="529" source="towers/tower4_cannon.tsx"/>
  <tileset firstgid="535" source="towers/tower5_scout.tsx"/>
- <waves>
-	<wave spawntPointX="1" spawntPointY="31" exitPointX="61" exitPointY="32">
-		<unit templateName="unit1_grunt" amount="3"/>
-		<unit templateName="unit2_troll_axethrower" amount="2"/>
-		<unit templateName="unit1_grunt" amount="1"/>
-		<unit templateName="unit2_troll_axethrower" amount="4"/>
-	</wave>
-	<wave spawntPointX="6" spawntPointY="6" exitPointX="60" exitPointY="60">
-		<unit templateName="unit2_troll_axethrower" amount="4"/>
-		<unit templateName="unit1_grunt" amount="3"/>
-		<unit templateName="unit2_troll_axethrower" amount="2"/>
-		<unit templateName="unit1_grunt" amount="1"/>
-	</wave>
- </waves>
  <layer name="background" width="64" height="64">
+  <properties>
+   <property name="background" value="ground"/>
+  </properties>
   <data encoding="csv">
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
