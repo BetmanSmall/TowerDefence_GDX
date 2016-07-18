@@ -258,11 +258,11 @@ public class GameScreen implements Screen {
     private CameraController cameraController = new CameraController();
     private MyGestureDetector myGestureDetector = new MyGestureDetector(cameraController);
 
-    public GameScreen() {
+    public GameScreen(String mapName) {
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        gameField = new GameField("maps/arena3.tmx");
+        gameField = new GameField(mapName);       //"maps/arena3.tmx"
         gameInterface = new GameInterface(gameField);
 
         InputMultiplexer inputMultiplexer = gameInterface.setCommonInputHandler(new GestureDetector(cameraController));
