@@ -276,6 +276,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        Gdx.app.log("GameScreen::show()", " Called!");
         //Start position of camera
         camera.position.add((gameField.getSizeFieldX() * gameField.getSizeCellX()) / 2, 0, 0);
     }
@@ -313,9 +314,9 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
             gameField.isDrawableTerrain = !gameField.isDrawableTerrain;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTerrain:" + gameField.isDrawableTerrain);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK);");
-            TowerDefence.getInstance().setMainMenu(this);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.BACK) || Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            TowerDefence.getInstance().removeTopScreen();
         }
     }
 
@@ -342,7 +343,7 @@ public class GameScreen implements Screen {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().setMainMenu(this);
+                TowerDefence.getInstance().removeTopScreen();
                 return;
             }
             if (defeatScreen == null)
@@ -354,7 +355,7 @@ public class GameScreen implements Screen {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().setMainMenu(this);
+                TowerDefence.getInstance().removeTopScreen();
                 return;
             }
             if (defeatScreen == null)
@@ -369,10 +370,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        Gdx.app.log("GameScreen::resize()", "-- New width:" + width + " height:" + height);
         camera.viewportHeight = height;
         camera.viewportWidth = width;
         camera.update();
-        Gdx.app.log("GameScreen::resize()", "-- New width:" + width + " height:" + height);
         //gameInterface.getInterfaceStage().getViewport().update(width, height);
         //gameInterface.getInterfaceStage().getCamera().viewportHeight = height;
         //gameInterface.getInterfaceStage().getCamera().viewportWidth = width;
@@ -381,19 +382,22 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
+        Gdx.app.log("GameScreen::pause()", " Called!");
     }
 
     @Override
     public void resume() {
+        Gdx.app.log("GameScreen::resume()", " Called!");
     }
 
     @Override
     public void hide() {
-//        dispose();
+        Gdx.app.log("GameScreen::hide()", " Called!");
     }
 
     @Override
     public void dispose() {
+        Gdx.app.log("GameScreen::dispose()", " Called!");
         gameField = null;
         gameInterface = null;
     }

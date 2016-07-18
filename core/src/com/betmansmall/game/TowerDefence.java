@@ -3,13 +3,16 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by BetmanSmall on 13.10.2015.
  */
 public class TowerDefence extends Game {
-    public Screen mainMenu;
+    /**
+     * List of all screens in the stack
+     */
+    private Array<Screen> screensArray = new Array<Screen>();
 
     private static volatile TowerDefence instance;
 
@@ -28,16 +31,57 @@ public class TowerDefence extends Game {
 
     @Override
     public void create() {
-//        Gdx.graphics.setDisplayMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         instance = this;
-        mainMenu = new MainMenuScreen(this);
-        setMainMenu(null);
+        Screen mainMenuScreen = new MainMenuScreen(this);
+        addScreen(mainMenuScreen);
     }
 
-    public void setMainMenu(Screen toDel) {
-        this.setScreen(mainMenu);
-        if (toDel != null) {
-            toDel.dispose();
+    /**
+     * @param screen
+     * @brief Add screen
+     */
+    public void addScreen(Screen screen) {
+        if (screen != null) {
+            screensArray.add(screen);
+            this.setScreen(screen);
+        }
+    }
+
+    /**
+     * @brief Remove screen from the top of the stack
+     */
+    public void removeTopScreen() {
+        if (screensArray != null) {
+            int count = screensArray.size;
+            if (count > 0) {
+                Screen screen = screensArray.get(count - 1);
+                if (screen != null) {
+//                    screen.hide();
+                    screensArray.removeIndex(count - 1);
+                    Screen popToScreen = screensArray.get(count - 2);
+                    if (popToScreen != null) {
+                        this.setScreen(popToScreen);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Remove all screens from the stack
+     */
+    public void removeAllScreens() {
+        if (screensArray != null) {
+            int size = screensArray.size;
+            if (size > 0) {
+                for (int i = size - 1; i >= 0; i--) {
+                    Screen screen = screensArray.get(i);
+                    if (screen != null) {
+//                        screen.hide();
+                        screensArray.removeIndex(size - 1);
+                    }
+                }
+            }
         }
     }
 
@@ -53,13 +97,13 @@ public class TowerDefence extends Game {
 
     @Override
     public void dispose() {
+        Gdx.app.log("TowerDefence::dispose()", " Called!");
         super.dispose();
-        mainMenu.dispose();
-        getScreen().dispose();
+        removeAllScreens();
         closeApplication();
     }
 
-    public void closeApplication(){
+    public void closeApplication() {
         Gdx.app.exit();
     }
 }

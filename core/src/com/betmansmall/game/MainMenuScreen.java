@@ -68,8 +68,8 @@ public class MainMenuScreen implements Screen {
         menuButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::Button1", "Clicked!");
                 clickAnalyzer((short) 1);
-                Gdx.app.log("button 1", "clicked");
             }
         });
 
@@ -79,8 +79,8 @@ public class MainMenuScreen implements Screen {
         menuButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::Button2", "Clicked!");
                 clickAnalyzer((short) 2);
-                Gdx.app.log("button 2", "clicked");
             }
         });
 
@@ -90,8 +90,8 @@ public class MainMenuScreen implements Screen {
         menuButton3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::Button3", "Clicked!");
                 clickAnalyzer((short) 3);
-                Gdx.app.log("menu  button 3 ", "clicked");
             }
         });
 
@@ -102,11 +102,11 @@ public class MainMenuScreen implements Screen {
         returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::ReturnButton", "Clicked!");
                 if (menuLvl > 0) {
                     menuLvl -= 1;
                     switchMenuButtons();
                 }
-                Gdx.app.log("Return button ", "clicked");
             }
         });
         returnButton.setVisible(false);
@@ -117,9 +117,9 @@ public class MainMenuScreen implements Screen {
         homeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::HomeButton ", "Clicked!");
                 menuLvl = 0;
                 switchMenuButtons();
-                Gdx.app.log("Home button ", "clicked");
             }
         });
 
@@ -203,7 +203,7 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        towerDefence.setScreen(new GameScreen(mapName));
+                        towerDefence.addScreen(new GameScreen(mapName));
                         break;
                     case 2:
                         //start game with NORMAL
@@ -260,8 +260,8 @@ public class MainMenuScreen implements Screen {
         menuButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::Button1", "Clicked!");
                 clickAnalyzer((short) 1);
-                Gdx.app.log("button 1", "clicked");
             }
         });
 
@@ -271,8 +271,8 @@ public class MainMenuScreen implements Screen {
         menuButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::Button2", "Clicked!");
                 clickAnalyzer((short) 2);
-                Gdx.app.log("button 2", "clicked");
             }
         });
 
@@ -282,8 +282,8 @@ public class MainMenuScreen implements Screen {
         menuButton3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::Button3", "Clicked!");
                 clickAnalyzer((short) 3);
-                Gdx.app.log("menu  button 3 ", "clicked");
             }
         });
         mmStage.addActor(menuButton1);
@@ -293,6 +293,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+        Gdx.app.log("MainMenuScreen::show()", " Called!");
         Gdx.input.setInputProcessor(mmStage);
     }
 
@@ -320,6 +321,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        Gdx.app.log("MainMenuScreen::resize()", "-- New width:" + width + " height:" + height);
         buttonsUpdate();
 //        mmStage.getViewport().update(width, height, true);
 //        mmStage.setViewport(mmStage.getViewport());
@@ -327,20 +329,24 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void pause() {
+        Gdx.app.log("MainMenuScreen::pause()", " Called!");
     }
 
     @Override
     public void resume() {
+        Gdx.app.log("MainMenuScreen::resume()", " Called!");
     }
 
     @Override
     public void hide() {
+        Gdx.app.log("MainMenuScreen::hide()", " Called!");
         //Should not be here!
         //dispose();
     }
 
     @Override
     public void dispose() {
+        Gdx.app.log("MainMenuScreen::dispose()", " Called!");
         textureMB1.dispose();
         textureMB2.dispose();
         textureMB3.dispose();
