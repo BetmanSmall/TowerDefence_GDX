@@ -99,6 +99,7 @@ public class GameField {
         creepsManager = new CreepsManager();
         towersManager = new TowersManager();
         factionsManager = new FactionsManager();
+//        factionsManager.loadFactions();
 
         map = new MapLoader(waveManager).load(mapName);
         renderer = new IsometricTiledMapRenderer(map, spriteBatch);

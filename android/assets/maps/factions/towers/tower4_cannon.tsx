@@ -13,7 +13,7 @@
   <property name="size" value="1"/>
   <property name="type" value="tower"/>
  </properties>
- <image source="../textures/warcraft2/tilesets/summer/orc/buildings/cannon_tower_test.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/warcraft2/tilesets/summer/orc/buildings/cannon_tower_test.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

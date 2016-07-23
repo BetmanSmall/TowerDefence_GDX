@@ -1,6 +1,12 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.XmlReader.Element;
+
+import java.util.StringTokenizer;
 
 /**
  * Created by betmansmall on 23.02.2016.
@@ -102,5 +108,54 @@ public class FactionsManager {
             }
         }
         return allTowers;
+    }
+
+    public void loadFactions() {
+        FileHandle factionsDir = Gdx.files.internal("maps/factions");
+        for (FileHandle factionFile : factionsDir.list()) {
+            if (factionFile.extension().equals("fac")) {
+                loadFaction(factionFile);
+            }
+        }
+    }
+
+    private void loadFaction(FileHandle factionFile) {
+        try {
+            XmlReader xmlReader = new XmlReader();
+            Element root = xmlReader.parse(factionFile);
+            Element factionElement = root.getChildByName("faction");
+            if (factionElement != null) {
+                String factionName = factionElement.getAttribute("name", null);
+                if (factionName != null) {
+                    Faction faction = new Faction(factionName);
+                    Array<Element> templateForUnitElements = factionElement.getChildrenByName("templateForUnit");
+                    for (Element templateForUnitElement : templateForUnitElements) {
+                        String source = templateForUnitElement.getAttribute("source", null);
+                        if (source != null) {
+                            FileHandle templateFile = getRelativeFileHandle(factionFile, source);
+                            TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
+                            templateForUnit.setFaction(faction);
+                            faction.getTemplateForUnits().add(templateForUnit);
+                        }
+                    }
+                }
+            }
+        } catch (Exception exp) {
+            Gdx.app.error("FactionsManager::loadFaction()", " -- Could not load Faction: " + factionFile.path());
+        }
+    }
+
+    protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {
+        StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
+        FileHandle result = file.parent();
+        while (tokenizer.hasMoreElements()) {
+            String token = tokenizer.nextToken();
+            if (token.equals(".."))
+                result = result.parent();
+            else {
+                result = result.child(token);
+            }
+        }
+        return result;
     }
 }

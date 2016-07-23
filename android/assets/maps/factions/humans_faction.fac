@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faction name="Humans_Faction">
+	<templateForUnit source="units/unit3_footman.tsx"/>
+</faction>

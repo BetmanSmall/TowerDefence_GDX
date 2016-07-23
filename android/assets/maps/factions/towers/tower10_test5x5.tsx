@@ -13,7 +13,7 @@
   <property name="size" value="5"/>
   <property name="type" value="tower"/>
  </properties>
- <image source="../textures/tower3x3.png" trans="ff00ff" width="192" height="192"/>
+ <image source="../../textures/tower3x3.png" trans="ff00ff" width="192" height="192"/>
  <terraintypes>
   <terrain name="idle_UP" tile="0"/>
  </terraintypes>

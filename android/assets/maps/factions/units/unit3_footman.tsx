@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95" columns="5">
+<tileset name="unit3_footman" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="5"/>
-  <property name="factionName" value="Faction1"/>
-  <property name="healthPoints" value="145"/>
-  <property name="name" value="Troll Axethrower"/>
-  <property name="speed" value="0.3"/>
+  <property name="bounty" value="7"/>
+  <property name="factionName" value="Humans_Faction"/>
+  <property name="healthPoints" value="380"/>
+  <property name="name" value="Footman"/>
+  <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>
+ <image source="../../textures/warcraft2/human/unit/footman.png" trans="ff00ff" width="360" height="1368"/>
  <terraintypes>
   <terrain name="idle_UP" tile="0"/>
   <terrain name="idle_UP_RIGHT" tile="1"/>
@@ -397,7 +397,7 @@
    <frame tileid="57" duration="100"/>
    <frame tileid="67" duration="100"/>
    <frame tileid="62" duration="100"/>
-   <frame tileid="77" duration="100"/>
+   <frame tileid="72" duration="100"/>
    <frame tileid="77" duration="100"/>
    <frame tileid="82" duration="100"/>
    <frame tileid="87" duration="100"/>
@@ -431,7 +431,7 @@
    <frame tileid="59" duration="100"/>
    <frame tileid="69" duration="100"/>
    <frame tileid="64" duration="100"/>
-   <frame tileid="79" duration="100"/>
+   <frame tileid="74" duration="100"/>
    <frame tileid="79" duration="100"/>
    <frame tileid="84" duration="100"/>
    <frame tileid="89" duration="100"/>

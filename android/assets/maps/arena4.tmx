@@ -8,6 +8,7 @@
  <tileset firstgid="363" source="towers/tower3_cannon.tsx"/>
  <tileset firstgid="369" source="towers/tower4_cannon.tsx"/>
  <tileset firstgid="375" source="towers/tower5_scout.tsx"/>
+ <waves source="waves/waves1.ws"/>
  <layer name="layer0" width="64" height="64">
   <properties>
    <property name="background" value="ground"/>

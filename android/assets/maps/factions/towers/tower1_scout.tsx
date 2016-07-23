@@ -13,7 +13,7 @@
   <property name="size" value="2"/>
   <property name="type" value="tower"/>
  </properties>
- <image source="../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

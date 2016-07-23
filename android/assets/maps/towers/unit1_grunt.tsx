@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="unit1_f" tilewidth="72" tileheight="72" tilecount="95" columns="5">
+<tileset name="unit1_grunt" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
   <property name="bounty" value="7"/>
-  <property name="factionName" value="Humans_Faction"/>
+  <property name="factionName" value="Faction1"/>
   <property name="healthPoints" value="380"/>
-  <property name="name" value="Footman"/>
+  <property name="name" value="Grunt"/>
   <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../../textures/warcraft2/human/unit/footman.png" trans="ff00ff" width="360" height="1368"/>
+ <image source="../textures/warcraft2/orc/units/grunt.png" trans="ff00ff" width="360" height="1368"/>
  <terraintypes>
   <terrain name="idle_UP" tile="0"/>
   <terrain name="idle_UP_RIGHT" tile="1"/>
