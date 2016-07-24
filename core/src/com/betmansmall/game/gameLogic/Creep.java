@@ -42,7 +42,7 @@ public class Creep {
             this.templateForUnit = templateForUnit;
 
             this.direction = Direction.UP;
-            setAnimation("idle_");
+            setAnimation("walk_");
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
