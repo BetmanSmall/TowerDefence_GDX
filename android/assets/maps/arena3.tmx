@@ -10,10 +10,18 @@
  <tileset firstgid="668" source="towers/tower3_cannon.tsx"/>
  <tileset firstgid="674" source="towers/tower4_cannon.tsx"/>
  <tileset firstgid="680" source="towers/tower5_scout.tsx"/>
+ <tileset firstgid="686" source="creeps/unit5_daemon.tsx"/>
+ <tileset firstgid="761" source="creeps/unit6_death_knight.tsx"/>
+ <tileset firstgid="826" source="creeps/unit7_dragon.tsx"/>
+ <tileset firstgid="876" source="creeps/unit8_ogre.tsx"/>
+ <tileset firstgid="946" source="creeps/unit9_peon.tsx"/>
+ <tileset firstgid="1046" source="creeps/unit10_ballista.tsx"/>
+ <tileset firstgid="1096" source="creeps/unit11_elven_archer.tsx"/>
+ <tileset firstgid="1181" source="creeps/unit12_gryphon_rider.tsx"/>
+ <tileset firstgid="1246" source="creeps/unit13_knight.tsx"/>
+ <tileset firstgid="1316" source="creeps/unit14_mage.tsx"/>
+ <tileset firstgid="1396" source="creeps/unit15_peasant.tsx"/>
  <layer name="background" width="64" height="64">
-  <properties>
-   <property name="spawnPoint" value="1"/>
-  </properties>
   <data encoding="csv">
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,

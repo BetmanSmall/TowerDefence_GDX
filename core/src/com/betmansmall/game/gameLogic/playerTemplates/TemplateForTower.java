@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /**
  * Created by betmansmall on 22.02.2016.
@@ -125,5 +126,13 @@ public class TemplateForTower {
     }
     public String getFactionName() {
         return factionName;
+    }
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("TemplateForTower:[");
+        stringBuilder.append("name:");
+        stringBuilder.append(name);
+        return stringBuilder.toString();
     }
 }

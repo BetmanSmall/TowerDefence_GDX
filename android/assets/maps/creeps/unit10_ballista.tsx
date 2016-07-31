@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="unit4_catapult" tilewidth="64" tileheight="64" tilecount="50" columns="5">
+<tileset name="unit10_ballista" tilewidth="64" tileheight="64" tilecount="50" columns="5">
  <properties>
   <property name="bounty" value="7"/>
   <property name="factionName" value="Faction1"/>
   <property name="healthPoints" value="100"/>
-  <property name="name" value="Catapult"/>
+  <property name="name" value="Ballista"/>
   <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../textures/warcraft2/orc/units/catapult.png" width="320" height="640"/>
+ <image source="../textures/warcraft2/human/units/ballista.png" width="320" height="640"/>
  <tile id="0">
   <properties>
    <property name="actionAndDirection" value="walk3_UP"/>

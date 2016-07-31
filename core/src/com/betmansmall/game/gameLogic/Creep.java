@@ -55,7 +55,12 @@ public class Creep {
         for (int k = 0; k < staticTiledMapTiles.length; k++) {
             textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
         }
-        animation = new Animation(speed/staticTiledMapTiles.length, textureRegions);
+        Gdx.app.error("Creep::setAnimation()", " -- action" + action);
+        if(action.equals("death_")) {
+            animation = new Animation(0.2f, textureRegions);
+        } else {
+            animation = new Animation(speed/staticTiledMapTiles.length, textureRegions);
+        }
 //        Gdx.app.log("Creep::setAnimation()", " -- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
     }
 
@@ -186,6 +191,6 @@ public class Creep {
     }
 
     public TextureRegion getCurrentDeathFrame() {
-        return animation.getKeyFrame(deathElapsedTime, true);
+        return animation.getKeyFrame(deathElapsedTime, false);
     }
 }

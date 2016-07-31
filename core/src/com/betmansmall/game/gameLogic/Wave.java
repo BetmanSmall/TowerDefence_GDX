@@ -10,10 +10,10 @@ import java.util.ArrayDeque;
 public class Wave {
     public ArrayDeque<Integer> units;
 
-    Wave(Integer[] units) {
+    Wave(Array<Integer> units) {
         this.units = new ArrayDeque<Integer>();
-        for(int k = 0; k < units.length; k++) {
-            this.units.add(units[k]);
+        for(int k = 0; k < units.size; k++) {
+            this.units.add(units.get(k));
         }
     }
 }

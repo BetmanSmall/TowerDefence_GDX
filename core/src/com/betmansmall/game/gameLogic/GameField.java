@@ -115,7 +115,6 @@ public class GameField {
         halfSizeCellX = sizeCellX / 2;
         halfSizeCellY = sizeCellY / 2;
 
-        waveManager = new WaveManager();
         creepsManager = new CreepsManager();
         towersManager = new TowersManager();
         factionsManager = new FactionsManager();
@@ -126,8 +125,6 @@ public class GameField {
         if (greenCheckmark == null || redCross == null) {
             Gdx.app.error("GameField::GameField()", " -- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
         }
-
-        createField(sizeFieldX, sizeFieldY, map.getLayers());
 
         TiledMapTileSets tileSets = map.getTileSets();
         for (TiledMapTileSet tileSet : tileSets) {
@@ -153,6 +150,10 @@ public class GameField {
                 factionsManager.addTowerToFaction(templateForTower);
             }
         }
+
+        waveManager = new WaveManager(factionsManager.getCountTemplateForUnitsFromAllFactions());
+
+        createField(sizeFieldX, sizeFieldY, map.getLayers());
 
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
