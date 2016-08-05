@@ -32,10 +32,10 @@ public class GameScreen implements Screen {
     private boolean rightButtonClicked = false;
     private int lastMouseX = 0, lastMouseY = 0;
     private int deltaX = 0, deltaY = 0;
-    float velX, velY;
-    boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
-    float initialScale = 2f;
-    boolean lastCircleTouched = false;
+//    float velX, velY;
+//    boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
+//    float initialScale = 2f;
+//    boolean lastCircleTouched = false;
 
     private float currentDuration;
     private float MAX_DURATION_FOR_DEFEAT_SCREEN = 5f;
@@ -50,9 +50,9 @@ public class GameScreen implements Screen {
     class CameraController implements GestureListener {
         @Override
         public boolean touchDown(float x, float y, int pointer, int button) {
-//            Gdx.app.log("CameraController::touchDown()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-            flinging = false;
-            initialScale = camera.zoom;
+            Gdx.app.log("CameraController::touchDown()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+//            flinging = false;
+//            initialScale = camera.zoom;
             return false;
         }
 
@@ -63,26 +63,26 @@ public class GameScreen implements Screen {
             if (gameInterface.getCreepsRoulette().isButtonTouched(x, y) || gameInterface.getTowersRoulette().isButtonTouched(x, y)) {
                 return false;
             }
-
-            Vector3 touch = new Vector3(x, y, 0);
-            camera.unproject(touch);
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-
-            if (cellCoordinate != null) {
-                if (button == 0) {
-                    gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
-                } else if (button == 1) {
-                    gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
-//                  gameField.prepareBuildTower(cellCoordinate.x, cellCoordinate.y);
-//              } else if(button == 2) {
-//                  gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
-                } else if (button == 3) {
-                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
-                } else if (button == 4) {
-                    gameField.setSpawnPoint(cellCoordinate.x, cellCoordinate.y);
-                }
-            }
+//
+//            Vector3 touch = new Vector3(x, y, 0);
+//            camera.unproject(touch);
+//            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
+//            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
+//
+//            if (cellCoordinate != null) {
+//                if (button == 0) {
+//                    gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
+//                } else if (button == 1) {
+//                    gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
+////                  gameField.prepareBuildTower(cellCoordinate.x, cellCoordinate.y);
+////              } else if(button == 2) {
+////                  gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
+//                } else if (button == 3) {
+//                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
+//                } else if (button == 4) {
+//                    gameField.setSpawnPoint(cellCoordinate.x, cellCoordinate.y);
+//                }
+//            }
             return true;
         }
 
@@ -94,48 +94,48 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean fling(float velocityX, float velocityY, int button) {
-//            Gdx.app.log("CameraController::fling()", " -- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
-            if (!lastCircleTouched) {
-                flinging = true;
-                velX = camera.zoom * velocityX * 0.5f;
-                velY = camera.zoom * velocityY * 0.5f;
-            }
+            Gdx.app.log("CameraController::fling()", " -- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
+//            if (!lastCircleTouched) {
+//                flinging = true;
+//                velX = camera.zoom * velocityX * 0.5f;
+//                velY = camera.zoom * velocityY * 0.5f;
+//            }
             return false;
         }
 
         @Override
         public boolean pan(float x, float y, float deltaX, float deltaY) {
-//            Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY)) {
-                lastCircleTouched = true;
-                return true;
-            }
-            lastCircleTouched = false;
-            if(gameField.getUnderConstruction() == null || rightButtonClicked) {
-                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0) {
-                    camera.position.add(-deltaX * camera.zoom, 0, 0);
-                }
-                if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y) {
-                    camera.position.add(0, deltaY * camera.zoom, 0);
-                }
-            }
+            Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+//            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY)) {
+//                lastCircleTouched = true;
+//                return true;
+//            }
+//            lastCircleTouched = false;
+//            if(gameField.getUnderConstruction() == null || rightButtonClicked) {
+//                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0) {
+//                    camera.position.add(-deltaX * camera.zoom, 0, 0);
+//                }
+//                if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y) {
+//                    camera.position.add(0, deltaY * camera.zoom, 0);
+//                }
+//            }
             return false;
         }
 
         @Override
         public boolean panStop(float x, float y, int pointer, int button) {
-//            Gdx.app.log("CameraController::panStop()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+            Gdx.app.log("CameraController::panStop()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
             return false;
         }
 
         @Override
         public boolean zoom(float initialDistance, float distance) {
             Gdx.app.log("CameraController::zoom()", " -- initialDistance:" + initialDistance + " distance:" + distance);
-            float ratio = initialDistance / distance;
-            float newZoom = initialScale * ratio;
-            if (newZoom < MAX_ZOOM && newZoom > MIN_ZOOM) {
-                camera.zoom = newZoom;
-            }
+//            float ratio = initialDistance / distance;
+//            float newZoom = initialScale * ratio;
+//            if (newZoom < MAX_ZOOM && newZoom > MIN_ZOOM) {
+//                camera.zoom = newZoom;
+//            }
             return false;
         }
 
@@ -147,20 +147,20 @@ public class GameScreen implements Screen {
 
         public void update() {
             try {
-                if (gameField.getUnderConstruction() == null) {
-                    if (flinging) {
-                        velX *= 0.98f;
-                        velY *= 0.98f;
-                        if (camera.position.x + -velX * Gdx.graphics.getDeltaTime() > 0 && camera.position.x + -velX * Gdx.graphics.getDeltaTime() < MAX_DESTINATION_X)
-                            camera.position.add(-velX * Gdx.graphics.getDeltaTime(), 0, 0);
-                        if (Math.abs(camera.position.y + velY * Gdx.graphics.getDeltaTime()) < MAX_DESTINATION_Y)
-                            camera.position.add(0, velY * Gdx.graphics.getDeltaTime(), 0);
-                        if (Math.abs(velX) < 0.01f) velX = 0;
-                        if (Math.abs(velY) < 0.01f) velY = 0;
-                    }
-                }
+//                if (gameField.getUnderConstruction() == null) {
+//                    if (flinging) {
+//                        velX *= 0.98f;
+//                        velY *= 0.98f;
+//                        if (camera.position.x + -velX * Gdx.graphics.getDeltaTime() > 0 && camera.position.x + -velX * Gdx.graphics.getDeltaTime() < MAX_DESTINATION_X)
+//                            camera.position.add(-velX * Gdx.graphics.getDeltaTime(), 0, 0);
+//                        if (Math.abs(camera.position.y + velY * Gdx.graphics.getDeltaTime()) < MAX_DESTINATION_Y)
+//                            camera.position.add(0, velY * Gdx.graphics.getDeltaTime(), 0);
+//                        if (Math.abs(velX) < 0.01f) velX = 0;
+//                        if (Math.abs(velY) < 0.01f) velY = 0;
+//                    }
+//                }
             } catch (Exception exp) {
-                int a;
+                Gdx.app.error("CameraController::update()", " -- Exp: " + exp);
             }
         }
     }
@@ -203,9 +203,9 @@ public class GameScreen implements Screen {
                 rightButtonClicked = false;
             }
 //            CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
-            if (gameInterface.getCreepsRoulette().isButtonTouched(screenX, screenY) || gameInterface.getTowersRoulette().isButtonTouched(screenX, screenY)) {
-                return false;
-            }
+//            if (gameInterface.getCreepsRoulette().isButtonTouched(screenX, screenY) || gameInterface.getTowersRoulette().isButtonTouched(screenX, screenY)) {
+//                return false;
+//            }
 
 //            Vector3 touch = new Vector3(screenX, screenY, 0);
 //            camera.unproject(touch);
@@ -245,7 +245,7 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-//            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
+            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
 //            Gdx.app.log("MyGestureDetector::touchDragged(1)", " -- deltaX:" + deltaX + " deltaY:" + deltaY + " lastMouseX:" + lastMouseX + " lastMouseY:" + lastMouseY);
             deltaX = screenX - lastMouseX;
             deltaY = screenY - lastMouseY;
@@ -254,7 +254,7 @@ public class GameScreen implements Screen {
 //            Gdx.app.log("MyGestureDetector::touchDragged(2)", " -- deltaX:" + deltaX + " deltaY:" + deltaY + " lastMouseX:" + lastMouseX + " lastMouseY:" + lastMouseY);
 
             if (gameInterface.getTowersRoulette().makeRotation(screenX, screenY, deltaX, deltaY)) {
-                lastCircleTouched = true;
+//                lastCircleTouched = true;
                 return true;
             }
 

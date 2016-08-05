@@ -55,7 +55,7 @@ public class Creep {
         for (int k = 0; k < staticTiledMapTiles.length; k++) {
             textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
         }
-        Gdx.app.error("Creep::setAnimation()", " -- action" + action);
+        Gdx.app.error("Creep::setAnimation()", " -- action: " + action);
         if(action.equals("death_")) {
             animation = new Animation(0.2f, textureRegions);
         } else {
