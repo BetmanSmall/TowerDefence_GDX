@@ -8,7 +8,7 @@
   <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../../textures/warcraft2/human/unit/footman.png" trans="ff00ff" width="360" height="1368"/>
+ <image source="../../textures/warcraft2/human/units/footman.png" trans="ff00ff" width="360" height="1368"/>
  <terraintypes>
   <terrain name="idle_UP" tile="0"/>
   <terrain name="idle_UP_RIGHT" tile="1"/>

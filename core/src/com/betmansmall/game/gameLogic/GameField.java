@@ -99,7 +99,7 @@ public class GameField {
         creepsManager = new CreepsManager();
         towersManager = new TowersManager();
         factionsManager = new FactionsManager();
-//        factionsManager.loadFactions();
+        factionsManager.loadFactions();
 
         map = new MapLoader(waveManager).load(mapName);
         renderer = new IsometricTiledMapRenderer(map, spriteBatch);
@@ -118,30 +118,30 @@ public class GameField {
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
 
-        TiledMapTileSets tileSets = map.getTileSets();
-        for (TiledMapTileSet tileSet : tileSets) {
-            String tileSetName = tileSet.getName();
-            Gdx.app.log("GameField::GameField()", "-- TileSet:" + tileSetName);
-            if (tileSetName.contains("unit")) {
-                TemplateForUnit templateForUnit = new TemplateForUnit(tileSet);
-                factionsManager.addUnitToFaction(templateForUnit);
-                if (animation == null) {
-                    AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get("death_" + Direction.DOWN);
-                    StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
-                    Array<TextureRegion> textureRegions = new Array<TextureRegion>(staticTiledMapTiles.length);
-//                    Gdx.app.log("GameField::GameField()", " -- textureRegion.size:" + staticTiledMapTiles.length);
-                    for (int k = 0; k < staticTiledMapTiles.length; k++) {
-                        TextureRegion textureRegion = staticTiledMapTiles[k].getTextureRegion();
-                        textureRegions.add(textureRegion);
-                    }
-                    stateTime = 0f;
-                    animation = new Animation(0.25f, textureRegions);
-                }
-            } else if (tileSetName.contains("tower")) {
-                TemplateForTower templateForTower = new TemplateForTower(tileSet);
-                factionsManager.addTowerToFaction(templateForTower);
-            }
-        }
+//        TiledMapTileSets tileSets = map.getTileSets();
+//        for (TiledMapTileSet tileSet : tileSets) {
+//            String tileSetName = tileSet.getName();
+//            Gdx.app.log("GameField::GameField()", "-- TileSet:" + tileSetName);
+//            if (tileSetName.contains("unit")) {
+//                TemplateForUnit templateForUnit = new TemplateForUnit(tileSet);
+//                factionsManager.addUnitToFaction(templateForUnit);
+//                if (animation == null) {
+//                    AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get("death_" + Direction.DOWN);
+//                    StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+//                    Array<TextureRegion> textureRegions = new Array<TextureRegion>(staticTiledMapTiles.length);
+////                    Gdx.app.log("GameField::GameField()", " -- textureRegion.size:" + staticTiledMapTiles.length);
+//                    for (int k = 0; k < staticTiledMapTiles.length; k++) {
+//                        TextureRegion textureRegion = staticTiledMapTiles[k].getTextureRegion();
+//                        textureRegions.add(textureRegion);
+//                    }
+//                    stateTime = 0f;
+//                    animation = new Animation(0.25f, textureRegions);
+//                }
+//            } else if (tileSetName.contains("tower")) {
+//                TemplateForTower templateForTower = new TemplateForTower(tileSet);
+//                factionsManager.addTowerToFaction(templateForTower);
+//            }
+//        }
 
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);

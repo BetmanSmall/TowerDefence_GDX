@@ -123,20 +123,17 @@ public class FactionsManager {
         try {
             XmlReader xmlReader = new XmlReader();
             Element root = xmlReader.parse(factionFile);
-            Element factionElement = root.getChildByName("faction");
-            if (factionElement != null) {
-                String factionName = factionElement.getAttribute("name", null);
-                if (factionName != null) {
-                    Faction faction = new Faction(factionName);
-                    Array<Element> templateForUnitElements = factionElement.getChildrenByName("templateForUnit");
-                    for (Element templateForUnitElement : templateForUnitElements) {
-                        String source = templateForUnitElement.getAttribute("source", null);
-                        if (source != null) {
-                            FileHandle templateFile = getRelativeFileHandle(factionFile, source);
-                            TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
-                            templateForUnit.setFaction(faction);
-                            faction.getTemplateForUnits().add(templateForUnit);
-                        }
+            String factionName = root.getAttribute("name", null);
+            if (factionName != null) {
+                Faction faction = new Faction(factionName);
+                Array<Element> templateForUnitElements = root.getChildrenByName("templateForUnit");
+                for (Element templateForUnitElement : templateForUnitElements) {
+                    String source = templateForUnitElement.getAttribute("source", null);
+                    if (source != null) {
+                        FileHandle templateFile = getRelativeFileHandle(factionFile, source);
+                        TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
+                        templateForUnit.setFaction(faction);
+                        faction.getTemplateForUnits().add(templateForUnit);
                     }
                 }
             }

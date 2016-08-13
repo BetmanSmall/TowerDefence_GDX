@@ -2,6 +2,7 @@ package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+
+import java.util.StringTokenizer;
 
 /**
  * Created by betmansmall on 09.02.2016.
@@ -35,6 +38,12 @@ public class TemplateForUnit {
             Element templateORtileset = xmlReader.parse(templateFile);
             this.templateName = templateORtileset.getAttribute("name");
 
+            int firstgid = templateORtileset.getIntAttribute("firstgid", 1);
+            int tilewidth = templateORtileset.getIntAttribute("tilewidth", 0);
+            int tileheight = templateORtileset.getIntAttribute("tileheight", 0);
+            int spacing = templateORtileset.getIntAttribute("spacing", 0);
+            int margin = templateORtileset.getIntAttribute("margin", 0);
+
             Element properties = templateORtileset.getChildByName("properties");
             if (properties != null) {
                 for (Element property : properties.getChildrenByName("property")) {
@@ -57,7 +66,67 @@ public class TemplateForUnit {
             }
             Element imageElement = templateORtileset.getChildByName("image");
             String source = imageElement.getAttribute("source");
+            FileHandle textureFile = getRelativeFileHandle(templateFile, source);
+            Texture texture = new Texture(Gdx.files.internal(textureFile.path()));
 
+            int stopWidth = texture.getWidth() - tilewidth;
+            int stopHeight = texture.getHeight() - tileheight;
+            int id = firstgid;
+
+            ObjectMap<Integer, TiledMapTile> tiles = new ObjectMap<Integer, TiledMapTile>();
+            for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
+                for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
+                    TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
+                    TiledMapTile tile = new StaticTiledMapTile(tileRegion);
+                    tile.setId(id);
+                    tiles.put(id++, tile);
+                }
+            }
+
+            Array<Element> tileElements = templateORtileset.getChildrenByName("tile");
+
+            animations = new ObjectMap<String, AnimatedTiledMapTile>();
+            Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
+
+            for (Element tileElement : tileElements) {
+                int localtid = tileElement.getIntAttribute("id", 0);
+                TiledMapTile tile = tiles.get(localtid);
+                if (tile != null) {
+                    Element propertiesElement = tileElement.getChildByName("properties");
+                    if (propertiesElement != null) {
+                        for (Element property : propertiesElement.getChildrenByName("property")) {
+                            String name = property.getAttribute("name", null);
+                            String value = property.getAttribute("value", null);
+                            if (value == null) {
+                                value = property.getText();
+                            }
+                            tile.getProperties().put(name, value);
+                        }
+                    }
+
+                    Element animationElement = tileElement.getChildByName("animation");
+                    if (animationElement != null) {
+                        Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
+                        IntArray intervals = new IntArray();
+                        for (Element frameElement : animationElement.getChildrenByName("frame")) {
+                            staticTiles.add((StaticTiledMapTile) tiles.get(frameElement.getIntAttribute("tileid")));
+                            intervals.add(frameElement.getIntAttribute("duration"));
+                        }
+
+                        AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
+                        animatedTile.setId(tile.getId());
+                        animatedTiles.add(animatedTile);
+                        tile = animatedTile;
+
+                        String actionAndDirection = tile.getProperties().get("actionAndDirection", String.class);
+                        if(actionAndDirection != null) {
+                            animations.put(actionAndDirection, animatedTile);
+                        }
+                    }
+                }
+            }
+
+            validate();
         } catch (Exception exp) {
             Gdx.app.log("TemplateForUnit::TemplateForUnit()", " -- Could not load TemplateForUnit from " + templateFile.path());
             throw new Exception("TemplateForUnit::TemplateForUnit() -- Could not load TemplateForUnit from " + templateFile.path());
@@ -168,9 +237,11 @@ public class TemplateForUnit {
 
     private void validate() {
         // Need check range values
+
         if (this.templateName != null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'templateName'! Check the file");
-        } else if (this.bounty == null) {
+            Gdx.app.error("TemplateForUnit::validate()", "-- Load TemplateForUnit: " + this.templateName);
+        }
+        if (this.bounty == null) {
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'bounty'! Check the file");
         } else if (this.factionName == null) {
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
@@ -199,5 +270,19 @@ public class TemplateForUnit {
 
     public String getTemplateName() {
         return this.templateName;
+    }
+
+    protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {
+        StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
+        FileHandle result = file.parent();
+        while (tokenizer.hasMoreElements()) {
+            String token = tokenizer.nextToken();
+            if (token.equals(".."))
+                result = result.parent();
+            else {
+                result = result.child(token);
+            }
+        }
+        return result;
     }
 }
