@@ -17,10 +17,17 @@ public class WaveManager {
     WaveManager() {
         this.waves = new Array<Wave>();
 
-        Wave wave = new Wave(new GridPoint2(15, 15), new GridPoint2(32, 32));
+        Wave wave = new Wave(new GridPoint2(15, 15), new GridPoint2(45, 45));
         wave.addTemplateForUnit("unit1_grunt");
-        wave.addTemplateForUnit("unit1_grunt");
+        wave.addTemplateForUnit("unit2_troll_axethrower");
+        wave.addTemplateForUnit("unit3_footman");
         waves.add(wave);
+
+        Wave wave2 = new Wave(new GridPoint2(13, 15), new GridPoint2(55, 55));
+        wave2.addTemplateForUnit("unit3_footman");
+        wave2.addTemplateForUnit("unit2_troll_axethrower");
+        wave2.addTemplateForUnit("unit1_grunt");
+        waves.add(wave2);
     }
 
     public void addWave(Wave wave) {
@@ -64,6 +71,10 @@ public class WaveManager {
     }
 
     public int getNumberOfCreeps() {
-        return waves.first().units.size();
+        int creeps = 0;
+        for (Wave wave : waves) {
+            creeps += wave.units.size();
+        }
+        return creeps;
     }
 }

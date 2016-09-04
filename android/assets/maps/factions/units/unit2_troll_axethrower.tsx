@@ -140,7 +140,7 @@
  </tile>
  <tile id="10">
   <properties>
-   <property name="actionAndDirection" value="walk3_UP"/>
+   <property name="actionAndDirection" value="walk_UP"/>
   </properties>
   <animation>
    <frame tileid="10" duration="100"/>
@@ -153,7 +153,7 @@
  </tile>
  <tile id="11">
   <properties>
-   <property name="actionAndDirection" value="walk3_UP_RIGHT"/>
+   <property name="actionAndDirection" value="walk_UP_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="11" duration="100"/>
@@ -166,7 +166,7 @@
  </tile>
  <tile id="12">
   <properties>
-   <property name="actionAndDirection" value="walk3_RIGHT"/>
+   <property name="actionAndDirection" value="walk_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="12" duration="100"/>
@@ -179,7 +179,7 @@
  </tile>
  <tile id="13">
   <properties>
-   <property name="actionAndDirection" value="walk3_DOWN_RIGHT"/>
+   <property name="actionAndDirection" value="walk_DOWN_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="13" duration="100"/>
@@ -192,7 +192,7 @@
  </tile>
  <tile id="14">
   <properties>
-   <property name="actionAndDirection" value="walk3_DOWN"/>
+   <property name="actionAndDirection" value="walk_DOWN"/>
   </properties>
   <animation>
    <frame tileid="14" duration="100"/>
@@ -355,7 +355,7 @@
  </tile>
  <tile id="45">
   <properties>
-   <property name="actionAndDirection" value="death1_UP"/>
+   <property name="actionAndDirection" value="death_UP"/>
   </properties>
   <animation>
    <frame tileid="45" duration="100"/>
@@ -372,7 +372,7 @@
  </tile>
  <tile id="46">
   <properties>
-   <property name="actionAndDirection" value="death1_UP_RIGHT"/>
+   <property name="actionAndDirection" value="death_UP_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="46" duration="100"/>
@@ -389,7 +389,7 @@
  </tile>
  <tile id="47">
   <properties>
-   <property name="actionAndDirection" value="death1_RIGHT"/>
+   <property name="actionAndDirection" value="death_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="47" duration="100"/>
@@ -406,7 +406,7 @@
  </tile>
  <tile id="48">
   <properties>
-   <property name="actionAndDirection" value="death1_DOWN_RIGHT"/>
+   <property name="actionAndDirection" value="death_DOWN_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="48" duration="100"/>
@@ -423,7 +423,7 @@
  </tile>
  <tile id="49">
   <properties>
-   <property name="actionAndDirection" value="death1_DOWN"/>
+   <property name="actionAndDirection" value="death_DOWN"/>
   </properties>
   <animation>
    <frame tileid="49" duration="100"/>

@@ -38,7 +38,7 @@ public class TemplateForUnit {
             Element templateORtileset = xmlReader.parse(templateFile);
             this.templateName = templateORtileset.getAttribute("name");
 
-            int firstgid = templateORtileset.getIntAttribute("firstgid", 1);
+            int firstgid = templateORtileset.getIntAttribute("firstgid", 0);
             int tilewidth = templateORtileset.getIntAttribute("tilewidth", 0);
             int tileheight = templateORtileset.getIntAttribute("tileheight", 0);
             int spacing = templateORtileset.getIntAttribute("spacing", 0);
@@ -115,6 +115,7 @@ public class TemplateForUnit {
 
                         AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
                         animatedTile.setId(tile.getId());
+                        animatedTile.getProperties().putAll(tile.getProperties());
                         animatedTiles.add(animatedTile);
                         tile = animatedTile;
 

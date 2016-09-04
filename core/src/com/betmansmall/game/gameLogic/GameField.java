@@ -483,6 +483,24 @@ public class GameField {
                 }
             }
         }
+        float xPoint, yPoint;
+        GridPoint2 spawnPoint = waveManager.getSpawnPoint();
+        GridPoint2 exitPoint = waveManager.getExitPoint();
+
+        if(spawnPoint != null) {
+            shapeRenderer.setColor(Color.CYAN);
+            xPoint = halfSizeCellX * (spawnPoint.y + 1) + spawnPoint.x * halfSizeCellX;
+            yPoint = halfSizeCellY * (spawnPoint.y + 1) - spawnPoint.x * halfSizeCellY;
+            shapeRenderer.circle(xPoint, yPoint, 3);
+        }
+
+        if(exitPoint != null) {
+            shapeRenderer.setColor(Color.ORANGE);
+            xPoint = halfSizeCellX * (exitPoint.y + 1) + exitPoint.x * halfSizeCellX;
+            yPoint = halfSizeCellY * (exitPoint.y + 1) - exitPoint.x * halfSizeCellY;
+            shapeRenderer.circle(xPoint, yPoint, 3);
+        }
+
         shapeRenderer.end();
     }
 
@@ -606,12 +624,20 @@ public class GameField {
     }
 
     private void spawnCreep(float delta) {
+        GridPoint2 spawnPoint = waveManager.getSpawnPoint();
+        GridPoint2 exitPoint = waveManager.getExitPoint();
+        if(spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {
+            Gdx.app.log("GameField::spawnCreep()", " spawnPoint bad!");
+            return;
+        }
+        if(exitPoint == null || !field[exitPoint.x][exitPoint.y].isEmpty()) {
+            Gdx.app.log("GameField::spawnCreep()", " exitPoint bad!");
+            return;
+        }
         String templateName = waveManager.getNextNameTemplateForUnitForSpawnCreep(delta);
         if (templateName != null) {
-            GridPoint2 spawnPoint = waveManager.getSpawnPoint();
-            GridPoint2 exitPoint = waveManager.getExitPoint();
             if (spawnPoint != null && exitPoint != null) {
-                createCreep(spawnPoint.x, spawnPoint.y, factionsManager.getTemplateForUnitFromFirstFactionByName(templateName));
+                createCreep(spawnPoint.x, spawnPoint.y, factionsManager.getTemplateForUnitByName(templateName));
             }
         }
     }

@@ -96,6 +96,21 @@ public class FactionsManager {
         return null;
     }
 
+    public TemplateForUnit getTemplateForUnitByName(String templateName) {
+        for (Faction faction : factions) {
+            if (faction != null) {
+                for (TemplateForUnit templateForUnit : faction.getTemplateForUnits()) {
+                    if (templateForUnit != null) {
+                        if (templateForUnit.getTemplateName().equals(templateName)) {
+                            return templateForUnit;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public Array<TemplateForTower> getAllFirstTowersFromFirstFaction() {
         return factions.first().getTemplateForTowers();
     }
@@ -136,6 +151,7 @@ public class FactionsManager {
                         faction.getTemplateForUnits().add(templateForUnit);
                     }
                 }
+                factions.add(faction);
             }
         } catch (Exception exp) {
             Gdx.app.error("FactionsManager::loadFaction()", " -- Could not load Faction: " + factionFile.path());
