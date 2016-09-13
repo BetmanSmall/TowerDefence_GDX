@@ -624,18 +624,18 @@ public class GameField {
     }
 
     private void spawnCreep(float delta) {
-        GridPoint2 spawnPoint = waveManager.getSpawnPoint();
-        GridPoint2 exitPoint = waveManager.getExitPoint();
-        if(spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {
-            Gdx.app.log("GameField::spawnCreep()", " spawnPoint bad!");
-            return;
-        }
-        if(exitPoint == null || !field[exitPoint.x][exitPoint.y].isEmpty()) {
-            Gdx.app.log("GameField::spawnCreep()", " exitPoint bad!");
-            return;
-        }
         String templateName = waveManager.getNextNameTemplateForUnitForSpawnCreep(delta);
         if (templateName != null) {
+            GridPoint2 spawnPoint = waveManager.getSpawnPoint();
+            GridPoint2 exitPoint = waveManager.getExitPoint();
+            if(spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {
+                Gdx.app.log("GameField::spawnCreep()", " spawnPoint bad!");
+                return;
+            }
+            if(exitPoint == null || !field[exitPoint.x][exitPoint.y].isEmpty()) {
+                Gdx.app.log("GameField::spawnCreep()", " exitPoint bad!");
+                return;
+            }
             if (spawnPoint != null && exitPoint != null) {
                 createCreep(spawnPoint.x, spawnPoint.y, factionsManager.getTemplateForUnitByName(templateName));
             }
@@ -754,7 +754,7 @@ public class GameField {
     private void rerouteForAllCreeps() {
         pathFinder.loadCharMatrix(getCharMatrix());
         for (Creep creep : creepsManager.getAllCreeps()) {
-            ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), waveManager.getExitPoint().x, waveManager.getExitPoint().y); // TODO BAGA!
+            ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), creep.getRoute().getLast().getX(), creep.getRoute().getLast().getY()); // TODO BAGA!
             if (route != null) {
                 route.removeFirst();
                 creep.setRoute(route);
@@ -855,6 +855,10 @@ public class GameField {
 
     public Array<TemplateForTower> getAllFirstTowersFromFirstFaction() {
         return factionsManager.getAllFirstTowersFromFirstFaction();
+    }
+
+    public Array<TemplateForTower> getAllTowers() {
+        return factionsManager.getAllTowers();
     }
 
     public boolean createdUnderConstruction(TemplateForTower templateForTower) {

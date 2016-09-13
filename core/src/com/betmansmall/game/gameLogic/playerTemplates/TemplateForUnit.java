@@ -122,6 +122,13 @@ public class TemplateForUnit {
                         String actionAndDirection = tile.getProperties().get("actionAndDirection", String.class);
                         if(actionAndDirection != null) {
                             animations.put(actionAndDirection, animatedTile);
+                            if(actionAndDirection.equals("walk_" + Direction.UP_RIGHT)) {
+                                animations.put("walk_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                            } else if(actionAndDirection.equals("walk_" + Direction.RIGHT)) {
+                                animations.put("walk_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
+                            } else if(actionAndDirection.equals("walk_" + Direction.DOWN_RIGHT)) {
+                                animations.put("walk_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                            }
                         }
                     }
                 }
@@ -129,8 +136,8 @@ public class TemplateForUnit {
 
             validate();
         } catch (Exception exp) {
-            Gdx.app.log("TemplateForUnit::TemplateForUnit()", " -- Could not load TemplateForUnit from " + templateFile.path());
-            throw new Exception("TemplateForUnit::TemplateForUnit() -- Could not load TemplateForUnit from " + templateFile.path());
+            Gdx.app.log("TemplateForUnit::TemplateForUnit()", " -- Could not load TemplateForUnit from " + templateFile.path() + " Exp:" + exp);
+            throw new Exception("TemplateForUnit::TemplateForUnit() -- Could not load TemplateForUnit from " + templateFile.path() + " Exp:" + exp);
         }
     }
 
@@ -240,7 +247,7 @@ public class TemplateForUnit {
         // Need check range values
 
         if (this.templateName != null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Load TemplateForUnit: " + this.templateName);
+            Gdx.app.log("TemplateForUnit::validate()", "-- Load TemplateForUnit: " + this.templateName);
         }
         if (this.bounty == null) {
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'bounty'! Check the file");

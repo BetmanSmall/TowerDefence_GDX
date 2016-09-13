@@ -17,31 +17,31 @@
   <terrain name="idle_DOWN" tile="4"/>
   <terrain name="walk1_UP" tile="10"/>
   <terrain name="walk2_UP" tile="5"/>
-  <terrain name="walk3_UP" tile="10"/>
+  <terrain name="walk_UP" tile="10"/>
   <terrain name="walk4_UP" tile="20"/>
   <terrain name="walk5_UP" tile="15"/>
   <terrain name="walk6_UP" tile="20"/>
   <terrain name="walk1_UP_RIGHT" tile="11"/>
   <terrain name="walk2_UP_RIGHT" tile="6"/>
-  <terrain name="walk3_UP_RIGHT" tile="11"/>
+  <terrain name="walk_UP_RIGHT" tile="11"/>
   <terrain name="walk4_UP_RIGHT" tile="21"/>
   <terrain name="walk5_UP_RIGHT" tile="16"/>
   <terrain name="walk6_UP_RIGHT" tile="21"/>
   <terrain name="walk1_RIGHT" tile="12"/>
   <terrain name="walk2_RIGHT" tile="7"/>
-  <terrain name="walk3_RIGHT" tile="12"/>
+  <terrain name="walk_RIGHT" tile="12"/>
   <terrain name="walk4_RIGHT" tile="22"/>
   <terrain name="walk5_RIGHT" tile="17"/>
   <terrain name="walk6_RIGHT" tile="22"/>
   <terrain name="walk1_DOWN_RIGHT" tile="13"/>
   <terrain name="walk2_DOWN_RIGHT" tile="8"/>
-  <terrain name="walk3_DOWN_RIGHT" tile="13"/>
+  <terrain name="walk_DOWN_RIGHT" tile="13"/>
   <terrain name="walk4_DOWN_RIGHT" tile="23"/>
   <terrain name="walk5_DOWN_RIGHT" tile="18"/>
   <terrain name="walk6_DOWN_RIGHT" tile="23"/>
   <terrain name="walk1_DOWN" tile="14"/>
   <terrain name="walk2_DOWN" tile="9"/>
-  <terrain name="walk3_DOWN" tile="14"/>
+  <terrain name="walk_DOWN" tile="14"/>
   <terrain name="walk4_DOWN" tile="24"/>
   <terrain name="walk5_DOWN" tile="19"/>
   <terrain name="walk6_DOWN" tile="24"/>
@@ -65,19 +65,19 @@
   <terrain name="attack2_DOWN" tile="34"/>
   <terrain name="attack3_DOWN" tile="39"/>
   <terrain name="attack4_DOWN" tile="44"/>
-  <terrain name="death1_UP" tile="45"/>
+  <terrain name="death_UP" tile="45"/>
   <terrain name="death2_UP" tile="50"/>
   <terrain name="death3_UP" tile="55"/>
-  <terrain name="death1_UP_RIGHT" tile="46"/>
+  <terrain name="death_UP_RIGHT" tile="46"/>
   <terrain name="death2_UP_RIGHT" tile="51"/>
   <terrain name="death3_UP_RIGHT" tile="56"/>
-  <terrain name="death1_RIGHT" tile="47"/>
+  <terrain name="death_RIGHT" tile="47"/>
   <terrain name="death2_RIGHT" tile="52"/>
   <terrain name="death3_RIGHT" tile="57"/>
-  <terrain name="death1_DOWN_RIGHT" tile="48"/>
+  <terrain name="death_DOWN_RIGHT" tile="48"/>
   <terrain name="death2_DOWN_RIGHT" tile="53"/>
   <terrain name="death3_DOWN_RIGHT" tile="58"/>
-  <terrain name="death1_DOWN" tile="49"/>
+  <terrain name="death_DOWN" tile="49"/>
   <terrain name="death2_DOWN" tile="54"/>
   <terrain name="death3_DOWN" tile="59"/>
  </terraintypes>

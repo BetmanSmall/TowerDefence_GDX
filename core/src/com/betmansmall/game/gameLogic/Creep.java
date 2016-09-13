@@ -42,21 +42,25 @@ public class Creep {
             this.templateForUnit = templateForUnit;
 
             this.direction = Direction.UP;
-            setAnimation("idle_");
+            setAnimation("walk_");
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
     }
 
     private void setAnimation(String action) {
-        AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
-        StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
-        TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
-        for (int k = 0; k < staticTiledMapTiles.length; k++) {
-            textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
-        }
-        animation = new Animation(speed/staticTiledMapTiles.length, textureRegions);
+        try {
+            AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
+            StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+            TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
+            for (int k = 0; k < staticTiledMapTiles.length; k++) {
+                textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
+            }
+            animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
 //        Gdx.app.log("Creep::setAnimation()", " -- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
+        } catch (Exception exp) {
+            Gdx.app.log("Creep::setAnimation(" + action + direction + ")", " -- CreepName: " + templateForUnit.name + " Exp: " + exp);
+        }
     }
 
     public void dispose() {

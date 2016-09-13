@@ -96,7 +96,7 @@ public class TowersRoulette extends Roulette {
     }
 
     public void chooseTower(float isGreatedRound) {
-        Array<TemplateForTower> templateForTowers = gameField.getAllFirstTowersFromFirstFaction();
+        Array<TemplateForTower> templateForTowers = gameField.getAllTowers();
         TemplateForTower localTemplate = templateForTowers.get(0);
         float tmp;
         if(isGreatedRound  > 45 ) {
@@ -106,9 +106,10 @@ public class TowersRoulette extends Roulette {
         }
 
         int towerId = (int)(tmp % (90 * templateForTowers.size)) / 90;
-        if(towerId < templateForTowers.size)
+        if(towerId < templateForTowers.size) {
             localTemplate = templateForTowers.get(Math.abs(towerId));
-        Gdx.app.log("tag", "sette :" + localTemplate.name);
+        }
+        Gdx.app.log("TowersRoulette::chooseTower()", "User choose tower:" + localTemplate.name);
         gameField.createdUnderConstruction(localTemplate);
     }
 

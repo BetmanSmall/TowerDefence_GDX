@@ -1,86 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95" columns="5">
+<tileset name="unit13_knight" tilewidth="72" tileheight="72" tilecount="70" columns="5">
  <properties>
-  <property name="bounty" value="5"/>
-  <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="145"/>
-  <property name="name" value="Troll Axethrower"/>
-  <property name="speed" value="0.3"/>
+  <property name="bounty" value="15"/>
+  <property name="factionName" value="Humans_Faction"/>
+  <property name="healthPoints" value="150"/>
+  <property name="name" value="Knight"/>
+  <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>
- <terraintypes>
-  <terrain name="idle_UP" tile="0"/>
-  <terrain name="idle_UP_RIGHT" tile="1"/>
-  <terrain name="idle_RIGHT" tile="2"/>
-  <terrain name="idle_DOWN_RIGHT" tile="3"/>
-  <terrain name="idle_DOWN" tile="4"/>
-  <terrain name="walk1_UP" tile="10"/>
-  <terrain name="walk2_UP" tile="5"/>
-  <terrain name="walk_UP" tile="10"/>
-  <terrain name="walk4_UP" tile="20"/>
-  <terrain name="walk5_UP" tile="15"/>
-  <terrain name="walk6_UP" tile="20"/>
-  <terrain name="walk1_UP_RIGHT" tile="11"/>
-  <terrain name="walk2_UP_RIGHT" tile="6"/>
-  <terrain name="walk_UP_RIGHT" tile="11"/>
-  <terrain name="walk4_UP_RIGHT" tile="21"/>
-  <terrain name="walk5_UP_RIGHT" tile="16"/>
-  <terrain name="walk6_UP_RIGHT" tile="21"/>
-  <terrain name="walk1_RIGHT" tile="12"/>
-  <terrain name="walk2_RIGHT" tile="7"/>
-  <terrain name="walk_RIGHT" tile="12"/>
-  <terrain name="walk4_RIGHT" tile="22"/>
-  <terrain name="walk5_RIGHT" tile="17"/>
-  <terrain name="walk6_RIGHT" tile="22"/>
-  <terrain name="walk1_DOWN_RIGHT" tile="13"/>
-  <terrain name="walk2_DOWN_RIGHT" tile="8"/>
-  <terrain name="walk_DOWN_RIGHT" tile="13"/>
-  <terrain name="walk4_DOWN_RIGHT" tile="23"/>
-  <terrain name="walk5_DOWN_RIGHT" tile="18"/>
-  <terrain name="walk6_DOWN_RIGHT" tile="23"/>
-  <terrain name="walk1_DOWN" tile="14"/>
-  <terrain name="walk2_DOWN" tile="9"/>
-  <terrain name="walk_DOWN" tile="14"/>
-  <terrain name="walk4_DOWN" tile="24"/>
-  <terrain name="walk5_DOWN" tile="19"/>
-  <terrain name="walk6_DOWN" tile="24"/>
-  <terrain name="attack1_UP" tile="25"/>
-  <terrain name="attack2_UP" tile="30"/>
-  <terrain name="attack3_UP" tile="35"/>
-  <terrain name="attack4_UP" tile="40"/>
-  <terrain name="attack1_UP_RIGHT" tile="26"/>
-  <terrain name="attack2_UP_RIGHT" tile="31"/>
-  <terrain name="attack3_UP_RIGHT" tile="36"/>
-  <terrain name="attack4_UP_RIGHT" tile="41"/>
-  <terrain name="attack1_RIGHT" tile="27"/>
-  <terrain name="attack2_RIGHT" tile="32"/>
-  <terrain name="attack3_RIGHT" tile="37"/>
-  <terrain name="attack4_RIGHT" tile="42"/>
-  <terrain name="attack1_DOWN_RIGHT" tile="28"/>
-  <terrain name="attack2_DOWN_RIGHT" tile="33"/>
-  <terrain name="attack3_DOWN_RIGHT" tile="38"/>
-  <terrain name="attack4_DOWN_RIGHT" tile="43"/>
-  <terrain name="attack1_DOWN" tile="29"/>
-  <terrain name="attack2_DOWN" tile="34"/>
-  <terrain name="attack3_DOWN" tile="39"/>
-  <terrain name="attack4_DOWN" tile="44"/>
-  <terrain name="death_UP" tile="45"/>
-  <terrain name="death2_UP" tile="50"/>
-  <terrain name="death3_UP" tile="55"/>
-  <terrain name="death_UP_RIGHT" tile="46"/>
-  <terrain name="death2_UP_RIGHT" tile="51"/>
-  <terrain name="death3_UP_RIGHT" tile="56"/>
-  <terrain name="death_RIGHT" tile="47"/>
-  <terrain name="death2_RIGHT" tile="52"/>
-  <terrain name="death3_RIGHT" tile="57"/>
-  <terrain name="death_DOWN_RIGHT" tile="48"/>
-  <terrain name="death2_DOWN_RIGHT" tile="53"/>
-  <terrain name="death3_DOWN_RIGHT" tile="58"/>
-  <terrain name="death_DOWN" tile="49"/>
-  <terrain name="death2_DOWN" tile="54"/>
-  <terrain name="death3_DOWN" tile="59"/>
- </terraintypes>
+ <image source="../../textures/warcraft2/human/units/knight.png" trans="ff00ff" width="360" height="1008"/>
  <tile id="0">
   <properties>
    <property name="actionAndDirection" value="idle_UP"/>
@@ -361,13 +289,8 @@
    <frame tileid="45" duration="100"/>
    <frame tileid="50" duration="100"/>
    <frame tileid="55" duration="100"/>
-   <frame tileid="65" duration="100"/>
    <frame tileid="60" duration="100"/>
-   <frame tileid="70" duration="100"/>
-   <frame tileid="75" duration="100"/>
-   <frame tileid="80" duration="100"/>
-   <frame tileid="85" duration="100"/>
-   <frame tileid="90" duration="100"/>
+   <frame tileid="65" duration="100"/>
   </animation>
  </tile>
  <tile id="46">
@@ -378,13 +301,8 @@
    <frame tileid="46" duration="100"/>
    <frame tileid="51" duration="100"/>
    <frame tileid="56" duration="100"/>
-   <frame tileid="66" duration="100"/>
    <frame tileid="61" duration="100"/>
-   <frame tileid="71" duration="100"/>
-   <frame tileid="76" duration="100"/>
-   <frame tileid="81" duration="100"/>
-   <frame tileid="86" duration="100"/>
-   <frame tileid="91" duration="100"/>
+   <frame tileid="66" duration="100"/>
   </animation>
  </tile>
  <tile id="47">
@@ -395,13 +313,8 @@
    <frame tileid="47" duration="100"/>
    <frame tileid="52" duration="100"/>
    <frame tileid="57" duration="100"/>
-   <frame tileid="67" duration="100"/>
    <frame tileid="62" duration="100"/>
-   <frame tileid="77" duration="100"/>
-   <frame tileid="77" duration="100"/>
-   <frame tileid="82" duration="100"/>
-   <frame tileid="87" duration="100"/>
-   <frame tileid="92" duration="100"/>
+   <frame tileid="67" duration="100"/>
   </animation>
  </tile>
  <tile id="48">
@@ -412,13 +325,8 @@
    <frame tileid="48" duration="100"/>
    <frame tileid="53" duration="100"/>
    <frame tileid="58" duration="100"/>
-   <frame tileid="68" duration="100"/>
    <frame tileid="63" duration="100"/>
-   <frame tileid="73" duration="100"/>
-   <frame tileid="78" duration="100"/>
-   <frame tileid="83" duration="100"/>
-   <frame tileid="88" duration="100"/>
-   <frame tileid="93" duration="100"/>
+   <frame tileid="68" duration="100"/>
   </animation>
  </tile>
  <tile id="49">
@@ -429,63 +337,8 @@
    <frame tileid="49" duration="100"/>
    <frame tileid="54" duration="100"/>
    <frame tileid="59" duration="100"/>
-   <frame tileid="69" duration="100"/>
    <frame tileid="64" duration="100"/>
-   <frame tileid="79" duration="100"/>
-   <frame tileid="79" duration="100"/>
-   <frame tileid="84" duration="100"/>
-   <frame tileid="89" duration="100"/>
-   <frame tileid="94" duration="100"/>
+   <frame tileid="69" duration="100"/>
   </animation>
- </tile>
- <tile id="50">
-  <properties>
-   <property name="actionAndDirection" value="death2_UP"/>
-  </properties>
- </tile>
- <tile id="51">
-  <properties>
-   <property name="actionAndDirection" value="death2_UP_RIGHT"/>
-  </properties>
- </tile>
- <tile id="52">
-  <properties>
-   <property name="actionAndDirection" value="death2_RIGHT"/>
-  </properties>
- </tile>
- <tile id="53">
-  <properties>
-   <property name="actionAndDirection" value="death2_DOWN_RIGHT"/>
-  </properties>
- </tile>
- <tile id="54">
-  <properties>
-   <property name="actionAndDirection" value="death2_DOWN"/>
-  </properties>
- </tile>
- <tile id="55">
-  <properties>
-   <property name="actionAndDirection" value="death3_UP"/>
-  </properties>
- </tile>
- <tile id="56">
-  <properties>
-   <property name="actionAndDirection" value="death3_UP_RIGHT"/>
-  </properties>
- </tile>
- <tile id="57">
-  <properties>
-   <property name="actionAndDirection" value="death3_RIGHT"/>
-  </properties>
- </tile>
- <tile id="58">
-  <properties>
-   <property name="actionAndDirection" value="death3_DOWN_RIGHT"/>
-  </properties>
- </tile>
- <tile id="59">
-  <properties>
-   <property name="actionAndDirection" value="death3_DOWN"/>
-  </properties>
  </tile>
 </tileset>

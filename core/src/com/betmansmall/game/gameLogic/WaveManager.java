@@ -17,16 +17,26 @@ public class WaveManager {
     WaveManager() {
         this.waves = new Array<Wave>();
 
-        Wave wave = new Wave(new GridPoint2(15, 15), new GridPoint2(45, 45));
+//        Wave wave = new Wave(new GridPoint2(15, 15), new GridPoint2(45, 45));
+        Wave wave = new Wave(new GridPoint2(45, 45), new GridPoint2(15, 15));
         wave.addTemplateForUnit("unit1_grunt");
         wave.addTemplateForUnit("unit2_troll_axethrower");
-        wave.addTemplateForUnit("unit3_footman");
+        wave.addTemplateForUnit("unit4_catapult");
+        wave.addTemplateForUnit("unit5_daemon");
+        wave.addTemplateForUnit("unit6_death_knight");
+        wave.addTemplateForUnit("unit7_dragon");
+        wave.addTemplateForUnit("unit8_ogre");
+        wave.addTemplateForUnit("unit9_peon");
         waves.add(wave);
 
-        Wave wave2 = new Wave(new GridPoint2(13, 15), new GridPoint2(55, 55));
+        Wave wave2 = new Wave(new GridPoint2(10, 55), new GridPoint2(13, 15));
         wave2.addTemplateForUnit("unit3_footman");
-        wave2.addTemplateForUnit("unit2_troll_axethrower");
-        wave2.addTemplateForUnit("unit1_grunt");
+        wave2.addTemplateForUnit("unit10_ballista");
+        wave2.addTemplateForUnit("unit11_elven_archer");
+        wave2.addTemplateForUnit("unit12_gryphon_rider");
+        wave2.addTemplateForUnit("unit13_knight");
+        wave2.addTemplateForUnit("unit14_mage");
+        wave2.addTemplateForUnit("unit15_peasant");
         waves.add(wave2);
     }
 

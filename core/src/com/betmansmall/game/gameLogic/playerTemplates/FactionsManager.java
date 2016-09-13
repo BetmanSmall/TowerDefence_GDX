@@ -151,6 +151,16 @@ public class FactionsManager {
                         faction.getTemplateForUnits().add(templateForUnit);
                     }
                 }
+                Array<Element> templateForTowerElements = root.getChildrenByName("templateForTower");
+                for (Element templateForTowerElement : templateForTowerElements) {
+                    String source = templateForTowerElement.getAttribute("source", null);
+                    if (source != null) {
+                        FileHandle templateFile = getRelativeFileHandle(factionFile, source);
+                        TemplateForTower templateForTower = new TemplateForTower(templateFile);
+                        templateForTower.setFaction(faction);
+                        faction.getTemplateForTowers().add(templateForTower);
+                    }
+                }
                 factions.add(faction);
             }
         } catch (Exception exp) {

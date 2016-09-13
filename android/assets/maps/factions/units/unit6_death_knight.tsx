@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95" columns="5">
+<tileset name="unit6_death_knight" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="5"/>
-  <property name="factionName" value="Faction1"/>
-  <property name="healthPoints" value="145"/>
-  <property name="name" value="Troll Axethrower"/>
-  <property name="speed" value="0.3"/>
+  <property name="bounty" value="17"/>
+  <property name="factionName" value="Orcs_Faction"/>
+  <property name="healthPoints" value="175"/>
+  <property name="name" value="Death Knight"/>
+  <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>
+ <image source="../../textures/warcraft2/orc/units/death_knight.png" trans="ff00ff" width="360" height="936"/>
  <terraintypes>
   <terrain name="idle_UP" tile="0"/>
   <terrain name="idle_UP_RIGHT" tile="1"/>
@@ -17,31 +17,31 @@
   <terrain name="idle_DOWN" tile="4"/>
   <terrain name="walk1_UP" tile="10"/>
   <terrain name="walk2_UP" tile="5"/>
-  <terrain name="walk3_UP" tile="10"/>
+  <terrain name="walk_UP" tile="10"/>
   <terrain name="walk4_UP" tile="20"/>
   <terrain name="walk5_UP" tile="15"/>
   <terrain name="walk6_UP" tile="20"/>
   <terrain name="walk1_UP_RIGHT" tile="11"/>
   <terrain name="walk2_UP_RIGHT" tile="6"/>
-  <terrain name="walk3_UP_RIGHT" tile="11"/>
+  <terrain name="walk_UP_RIGHT" tile="11"/>
   <terrain name="walk4_UP_RIGHT" tile="21"/>
   <terrain name="walk5_UP_RIGHT" tile="16"/>
   <terrain name="walk6_UP_RIGHT" tile="21"/>
   <terrain name="walk1_RIGHT" tile="12"/>
   <terrain name="walk2_RIGHT" tile="7"/>
-  <terrain name="walk3_RIGHT" tile="12"/>
+  <terrain name="walk_RIGHT" tile="12"/>
   <terrain name="walk4_RIGHT" tile="22"/>
   <terrain name="walk5_RIGHT" tile="17"/>
   <terrain name="walk6_RIGHT" tile="22"/>
   <terrain name="walk1_DOWN_RIGHT" tile="13"/>
   <terrain name="walk2_DOWN_RIGHT" tile="8"/>
-  <terrain name="walk3_DOWN_RIGHT" tile="13"/>
+  <terrain name="walk_DOWN_RIGHT" tile="13"/>
   <terrain name="walk4_DOWN_RIGHT" tile="23"/>
   <terrain name="walk5_DOWN_RIGHT" tile="18"/>
   <terrain name="walk6_DOWN_RIGHT" tile="23"/>
   <terrain name="walk1_DOWN" tile="14"/>
   <terrain name="walk2_DOWN" tile="9"/>
-  <terrain name="walk3_DOWN" tile="14"/>
+  <terrain name="walk_DOWN" tile="14"/>
   <terrain name="walk4_DOWN" tile="24"/>
   <terrain name="walk5_DOWN" tile="19"/>
   <terrain name="walk6_DOWN" tile="24"/>
@@ -65,19 +65,19 @@
   <terrain name="attack2_DOWN" tile="34"/>
   <terrain name="attack3_DOWN" tile="39"/>
   <terrain name="attack4_DOWN" tile="44"/>
-  <terrain name="death1_UP" tile="45"/>
+  <terrain name="death_UP" tile="45"/>
   <terrain name="death2_UP" tile="50"/>
   <terrain name="death3_UP" tile="55"/>
-  <terrain name="death1_UP_RIGHT" tile="46"/>
+  <terrain name="death_UP_RIGHT" tile="46"/>
   <terrain name="death2_UP_RIGHT" tile="51"/>
   <terrain name="death3_UP_RIGHT" tile="56"/>
-  <terrain name="death1_RIGHT" tile="47"/>
+  <terrain name="death_RIGHT" tile="47"/>
   <terrain name="death2_RIGHT" tile="52"/>
   <terrain name="death3_RIGHT" tile="57"/>
-  <terrain name="death1_DOWN_RIGHT" tile="48"/>
+  <terrain name="death_DOWN_RIGHT" tile="48"/>
   <terrain name="death2_DOWN_RIGHT" tile="53"/>
   <terrain name="death3_DOWN_RIGHT" tile="58"/>
-  <terrain name="death1_DOWN" tile="49"/>
+  <terrain name="death_DOWN" tile="49"/>
   <terrain name="death2_DOWN" tile="54"/>
   <terrain name="death3_DOWN" tile="59"/>
  </terraintypes>
@@ -140,7 +140,7 @@
  </tile>
  <tile id="10">
   <properties>
-   <property name="actionAndDirection" value="walk3_UP"/>
+   <property name="actionAndDirection" value="walk_UP"/>
   </properties>
   <animation>
    <frame tileid="10" duration="100"/>
@@ -153,7 +153,7 @@
  </tile>
  <tile id="11">
   <properties>
-   <property name="actionAndDirection" value="walk3_UP_RIGHT"/>
+   <property name="actionAndDirection" value="walk_UP_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="11" duration="100"/>
@@ -166,7 +166,7 @@
  </tile>
  <tile id="12">
   <properties>
-   <property name="actionAndDirection" value="walk3_RIGHT"/>
+   <property name="actionAndDirection" value="walk_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="12" duration="100"/>
@@ -179,7 +179,7 @@
  </tile>
  <tile id="13">
   <properties>
-   <property name="actionAndDirection" value="walk3_DOWN_RIGHT"/>
+   <property name="actionAndDirection" value="walk_DOWN_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="13" duration="100"/>
@@ -192,7 +192,7 @@
  </tile>
  <tile id="14">
   <properties>
-   <property name="actionAndDirection" value="walk3_DOWN"/>
+   <property name="actionAndDirection" value="walk_DOWN"/>
   </properties>
   <animation>
    <frame tileid="14" duration="100"/>
@@ -355,87 +355,57 @@
  </tile>
  <tile id="45">
   <properties>
-   <property name="actionAndDirection" value="death1_UP"/>
+   <property name="actionAndDirection" value="death_UP"/>
   </properties>
   <animation>
    <frame tileid="45" duration="100"/>
    <frame tileid="50" duration="100"/>
    <frame tileid="55" duration="100"/>
-   <frame tileid="65" duration="100"/>
    <frame tileid="60" duration="100"/>
-   <frame tileid="70" duration="100"/>
-   <frame tileid="75" duration="100"/>
-   <frame tileid="80" duration="100"/>
-   <frame tileid="85" duration="100"/>
-   <frame tileid="90" duration="100"/>
   </animation>
  </tile>
  <tile id="46">
   <properties>
-   <property name="actionAndDirection" value="death1_UP_RIGHT"/>
+   <property name="actionAndDirection" value="death_UP_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="46" duration="100"/>
    <frame tileid="51" duration="100"/>
    <frame tileid="56" duration="100"/>
-   <frame tileid="66" duration="100"/>
    <frame tileid="61" duration="100"/>
-   <frame tileid="71" duration="100"/>
-   <frame tileid="76" duration="100"/>
-   <frame tileid="81" duration="100"/>
-   <frame tileid="86" duration="100"/>
-   <frame tileid="91" duration="100"/>
   </animation>
  </tile>
  <tile id="47">
   <properties>
-   <property name="actionAndDirection" value="death1_RIGHT"/>
+   <property name="actionAndDirection" value="death_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="47" duration="100"/>
    <frame tileid="52" duration="100"/>
    <frame tileid="57" duration="100"/>
-   <frame tileid="67" duration="100"/>
    <frame tileid="62" duration="100"/>
-   <frame tileid="77" duration="100"/>
-   <frame tileid="77" duration="100"/>
-   <frame tileid="82" duration="100"/>
-   <frame tileid="87" duration="100"/>
-   <frame tileid="92" duration="100"/>
   </animation>
  </tile>
  <tile id="48">
   <properties>
-   <property name="actionAndDirection" value="death1_DOWN_RIGHT"/>
+   <property name="actionAndDirection" value="death_DOWN_RIGHT"/>
   </properties>
   <animation>
    <frame tileid="48" duration="100"/>
    <frame tileid="53" duration="100"/>
    <frame tileid="58" duration="100"/>
-   <frame tileid="68" duration="100"/>
    <frame tileid="63" duration="100"/>
-   <frame tileid="73" duration="100"/>
-   <frame tileid="78" duration="100"/>
-   <frame tileid="83" duration="100"/>
-   <frame tileid="88" duration="100"/>
-   <frame tileid="93" duration="100"/>
   </animation>
  </tile>
  <tile id="49">
   <properties>
-   <property name="actionAndDirection" value="death1_DOWN"/>
+   <property name="actionAndDirection" value="death_DOWN"/>
   </properties>
   <animation>
    <frame tileid="49" duration="100"/>
    <frame tileid="54" duration="100"/>
    <frame tileid="59" duration="100"/>
-   <frame tileid="69" duration="100"/>
    <frame tileid="64" duration="100"/>
-   <frame tileid="79" duration="100"/>
-   <frame tileid="79" duration="100"/>
-   <frame tileid="84" duration="100"/>
-   <frame tileid="89" duration="100"/>
-   <frame tileid="94" duration="100"/>
   </animation>
  </tile>
  <tile id="50">
