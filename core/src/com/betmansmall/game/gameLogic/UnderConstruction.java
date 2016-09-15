@@ -53,7 +53,7 @@ public class UnderConstruction {
     }
 
     public boolean setEndCoors(int endX, int endY) {
-        Gdx.app.log("UnderConstruction::setEndCoors()", " -- endX:" + endX + " endY:" + endY);
+//        Gdx.app.log("UnderConstruction::setEndCoors()", " -- endX:" + endX + " endY:" + endY);
         this.endX = endX;
         this.endY = endY;
 
