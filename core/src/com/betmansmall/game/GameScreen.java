@@ -32,7 +32,7 @@ public class GameScreen implements Screen {
 
     private Texture defeatScreen;
 
-    public OrthographicCamera camera;
+    public static OrthographicCamera camera;
 
     private GameInterface gameInterface;
     private GameField gameField;

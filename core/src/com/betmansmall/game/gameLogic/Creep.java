@@ -2,9 +2,16 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.betmansmall.game.GameScreen;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
@@ -29,6 +36,8 @@ public class Creep {
     private Direction direction;
     private Animation animation;
 
+    private Body body;
+
     public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
         if(route != null) {
             this.route = route;
@@ -43,6 +52,34 @@ public class Creep {
 
             this.direction = Direction.UP;
             setAnimation("walk_");
+
+            int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
+            int halfSizeCellY = GameField.getSizeCellY() / 2;
+            float coorX = halfSizeCellX * oldPosition.getY() + oldPosition.getX() * halfSizeCellX;
+            float coorY = halfSizeCellY * oldPosition.getY() - oldPosition.getX() * halfSizeCellY;
+
+            BodyDef bodyDef = new BodyDef();
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+            bodyDef.position.set(coorX, coorY);
+            body = GameField.world.createBody(bodyDef);
+
+            PolygonShape polygonShape = new PolygonShape();
+            polygonShape.setAsBox(16f, 24f);
+            body.createFixture(polygonShape, 0.5f);
+            body.setUserData(this);
+//            body.setActive(trues);
+//            body.getFixtureList().get(0).setUserData("creep");
+//            body.createFixture(polygonShape, 0.0f);
+
+//            FixtureDef fixtureDef = new FixtureDef();
+//            fixtureDef.shape = polygonShape;
+//            fixtureDef.density = 0.5f;
+//            fixtureDef.friction = 0.4f;
+//            fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+//            fixtureDef.isSensor = true;
+
+//            Fixture fixture = body.createFixture(fixtureDef);
+            polygonShape.dispose();
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
@@ -73,8 +110,13 @@ public class Creep {
     }
 
     public void setGraphicalCoordinates(float x, float y) {
+//        Gdx.app.log("Creep::setGraphicalCoordinates(" + x + ", " + y + ");", " -- Start");
         this.graphicalCoordinateX = x;
         this.graphicalCoordinateY = y;
+        this.body.getPosition().set(x, y);
+        this.body.setTransform(x, y, body.getAngle());
+//        body.createFixture(polygonShape, 0.0f);
+//        Gdx.app.log("Creep::setGraphicalCoordinates(" + x + ", " + y + ");", " -- END");
     }
 
     public Node move(float delta) {
