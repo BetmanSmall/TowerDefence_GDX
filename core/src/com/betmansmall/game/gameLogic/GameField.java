@@ -14,19 +14,22 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 //import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
-import com.betmansmall.game.gameLogic.playerTemplates.Direction;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Tools;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
@@ -69,6 +72,9 @@ public class GameField {
     public boolean isDrawableRoutes = true;
     public boolean isDrawableGridNav = false;
 
+    private MyBox2dContactListener myBox2dContactListener;
+    private Box2DDebugRenderer debugRenderer;
+    public static World world;
     private Cell[][] field;
     private PathFinder pathFinder;
 
@@ -94,6 +100,46 @@ public class GameField {
     private float stateTime;
     //TEST ZONE2
 
+    public class MyBox2dContactListener implements ContactListener {
+        @Override
+        public void endContact(Contact contact) {
+            Gdx.app.log("MyBox2dContactListener", "endContact(" + contact + ");");
+        }
+
+        @Override
+        public void beginContact(Contact contact) {
+            Gdx.app.log("MyBox2dContactListener", "beginContact(" + contact + ");");
+            Creep creep = null;
+            Tower tower = null;
+            Object object1 = contact.getFixtureA().getUserData();
+            Object object2 = contact.getFixtureB().getUserData();
+            if(object1 instanceof Creep) {
+                creep = (Creep)object1;
+            } else if(object2 instanceof Creep) {
+                creep = (Creep)object2;
+            }
+            if(object1 instanceof Tower) {
+                tower = (Tower)object1;
+            } else if(object2 instanceof Tower) {
+                tower = (Tower) object2;
+            }
+            if(creep != null && tower != null) {
+                Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Creep:" + creep.getTemplateForUnit().name);
+                Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Tower:" + tower.getTemplateForTower().name);
+            }
+        }
+
+        @Override
+        public void preSolve(Contact contact, Manifold oldManifold) {
+//            Gdx.app.log("MyBox2dContactListener", "preSolve(" + contact + ", " + oldManifold + ");");
+        }
+
+        @Override
+        public void postSolve(Contact contact, ContactImpulse impulse) {
+//            Gdx.app.log("MyBox2dContactListener", "postSolve(" + contact + ", " + impulse+ ");");
+        }
+    };
+
     public GameField(String mapName) {
         waveManager = new WaveManager();
         creepsManager = new CreepsManager();
@@ -115,6 +161,11 @@ public class GameField {
         if (greenCheckmark == null || redCross == null) {
             Gdx.app.error("GameField::GameField()", " -- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
         }
+
+        myBox2dContactListener = new MyBox2dContactListener();
+        world = new World(new Vector2(0f, 0f), true);
+        world.setContactListener(myBox2dContactListener);
+        debugRenderer = new Box2DDebugRenderer();
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
 
@@ -221,7 +272,7 @@ public class GameField {
             spawnCreep(delta);
             stepAllCreep(delta);
             shotAllTowers(delta);
-            moveAllProjecTiles(delta);
+            moveAllShells(delta);
         }
 
         if (isDrawableTerrain) {
@@ -269,7 +320,7 @@ public class GameField {
             drawCreeps(camera);
         if (isDrawableGridNav)
             drawGridNav(camera);
-        drawProjecTiles(camera);
+        drawShells(camera);
         drawTowersUnderConstruction(camera);
 
 //        if (isDrawableTerrain) {
@@ -300,6 +351,9 @@ public class GameField {
         bitmapFont.setColor(Color.YELLOW);
         bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
         spriteBatch.end();
+
+        debugRenderer.render(world, camera.combined);
+        world.step(1/60f, 6, 2);
     }
 
     private void drawGrid(OrthographicCamera camera) {
@@ -361,6 +415,8 @@ public class GameField {
                 fVy -= (sizeCellY / 2 / speed) * (speed - elapsedTime);
             }
 
+            creep.setGraphicalCoordinates(fVx + halfSizeCellX , fVy + halfSizeCellY); // TODO GAVNO KODE
+
             TextureRegion curentFrame;
             if (creep.isAlive()) {
                 curentFrame = creep.getCurentFrame();
@@ -394,10 +450,9 @@ public class GameField {
 
             spriteBatch.setProjectionMatrix(camera.combined);
             spriteBatch.begin();
+//            Gdx.app.log("GameField", "drawCreeps(); -- spriteBatch.draw(" + fVx + ", " + fVy + ");");
             spriteBatch.draw(curentFrame, fVx, fVy);
             spriteBatch.end();
-
-            creep.setGraphicalCoordinates(fVx, fVy); // TODO GAVNO KODE
 
 //            Gdx.app.log("GameField::drawCreeps()", " -- x:" + x + " y:" + y + " x1:" + x1 + " y1:" + y1);
 //            Gdx.app.log("GameField::drawCreeps()", " -- sizeTexReg:" + creep.getCurentFrame().getRegionWidth() + "x" + creep.getCurentFrame().getRegionHeight());
@@ -504,15 +559,15 @@ public class GameField {
         shapeRenderer.end();
     }
 
-    private void drawProjecTiles(OrthographicCamera camera) {
+    private void drawShells(OrthographicCamera camera) {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         for (Tower tower : towersManager.getAllTowers()) {
-            for (ProjecTile projecTile : tower.projecTiles) {
-                TextureRegion textureRegion = projecTile.textureRegion;
-                float width = textureRegion.getRegionWidth() * projecTile.ammoSize;
-                float height = textureRegion.getRegionHeight() * projecTile.ammoSize;
-                spriteBatch.draw(textureRegion, projecTile.x, projecTile.y, width, height);
+            for (Shell shell : tower.shells) {
+                TextureRegion textureRegion = shell.textureRegion;
+                float width = textureRegion.getRegionWidth() * shell.ammoSize;
+                float height = textureRegion.getRegionHeight() * shell.ammoSize;
+                spriteBatch.draw(textureRegion, shell.x, shell.y, width, height);
             }
         }
         spriteBatch.end();
@@ -594,20 +649,20 @@ public class GameField {
 
             spriteBatch.draw(textureRegion, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
             spriteBatch.setColor(oldColor);
-            for (int x = startX; x <= finishX; x++) {
-                for (int y = startY; y <= finishY; y++) {
-                    pxlsX = halfSizeCellX * (buildY + y) + (buildX + x) * halfSizeCellX;
-                    pxlsY = halfSizeCellY * (buildY + y) - (buildX + x) * halfSizeCellY;
-
-                    if (cellIsEmpty(buildX + x, buildY + y)) {
-                        if (greenCheckmark != null)
-                            spriteBatch.draw(greenCheckmark, pxlsX, pxlsY, sizeCellX, sizeCellY * 2);
-                    } else {
-                        if (redCross != null)
-                            spriteBatch.draw(redCross, pxlsX, pxlsY, sizeCellX, sizeCellY * 2);
-                    }
-                }
-            }
+//            for (int x = startX; x <= finishX; x++) {
+//                for (int y = startY; y <= finishY; y++) {
+//                    pxlsX = halfSizeCellX * (buildY + y) + (buildX + x) * halfSizeCellX;
+//                    pxlsY = halfSizeCellY * (buildY + y) - (buildX + x) * halfSizeCellY;
+//
+//                    if (cellIsEmpty(buildX + x, buildY + y)) {
+//                        if (greenCheckmark != null)
+//                            spriteBatch.draw(greenCheckmark, pxlsX, pxlsY, sizeCellX, sizeCellY * 2);
+//                    } else {
+//                        if (redCross != null)
+//                            spriteBatch.draw(redCross, pxlsX, pxlsY, sizeCellX, sizeCellY * 2);
+//                    }
+//                }
+//            }
         }
         spriteBatch.end();
     }
@@ -794,13 +849,13 @@ public class GameField {
         for (Tower tower : towersManager.getAllTowers()) {
             if (tower.recharge(delta)) {
                 int radius = tower.getRadius();
+                GridPoint2 position = tower.getPosition();
                 for (int tmpX = -radius; tmpX <= radius; tmpX++) {
                     for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                        GridPoint2 position = tower.getPosition();
                         if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
                             Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
                             tower.shoot(creep);
-                            return;
+//                            return; // TODO ХУЙНЯ
                         }
                     }
                 }
@@ -808,9 +863,9 @@ public class GameField {
         }
     }
 
-    private void moveAllProjecTiles(float delta) {
+    private void moveAllShells(float delta) {
         for (Tower tower : towersManager.getAllTowers()) {
-            tower.moveAllProjecTiles(delta);
+            tower.moveAllShells(delta);
         }
     }
 

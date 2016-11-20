@@ -9,7 +9,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 /**
  * Created by betmansmall on 29.03.2016.
  */
-public class ProjecTile {
+public class Shell {
     public float x, y;
     public Creep creep;
     public float ammoDistance;
@@ -21,7 +21,7 @@ public class ProjecTile {
     public ObjectMap<String, TiledMapTile> ammunitionPictures;
     private int radius;
 
-    ProjecTile(float x, float y, Creep creep, TemplateForTower templateForTower) {
+    Shell(float x, float y, Creep creep, TemplateForTower templateForTower) {
         this.x = x;
         this.y = y;
         this.creep = creep;
