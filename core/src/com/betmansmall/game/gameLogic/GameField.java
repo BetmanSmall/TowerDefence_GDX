@@ -20,6 +20,7 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
@@ -29,6 +30,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
+import com.badlogic.gdx.math.Intersector; // AlexGor
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.lang.Object;
 
 /**
  * Created by betmansmall on 08.02.2016.
@@ -477,7 +480,7 @@ public class GameField {
                 TextureRegion textureRegion = projecTile.textureRegion;
                 float width = textureRegion.getRegionWidth() * projecTile.ammoSize;
                 float height = textureRegion.getRegionHeight() * projecTile.ammoSize;
-                spriteBatch.draw(textureRegion, projecTile.x, projecTile.y, width, height);
+                spriteBatch.draw(textureRegion, projecTile.currentPoint.x, projecTile.currentPoint.y, width, height);
             }
         }
         spriteBatch.end();
@@ -745,23 +748,19 @@ public class GameField {
         }
     }
 
-    private void shotAllTowers(float delta) {
+    private void shotAllTowers(float delta) { // AlexGor
         for (Tower tower : towersManager.getAllTowers()) {
             if (tower.recharge(delta)) {
-                int radius = tower.getRadius();
-                for (int tmpX = -radius; tmpX <= radius; tmpX++) {
-                    for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                        GridPoint2 position = tower.getPosition();
-                        if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
-                            Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
-                            tower.shoot(creep);
-                            return;
-                        }
+                for (Creep creep : creepsManager.getAllCreeps()) {
+                    if (Intersector.overlaps(tower.getCircle(), creep.getRect())) {
+                        if (tower.shoot(creep)) break;
                     }
                 }
             }
         }
-    }
+    } // AlexGor
+
+
 
     private void moveAllProjecTiles(float delta) {
         for (Tower tower : towersManager.getAllTowers()) {

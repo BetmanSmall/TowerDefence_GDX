@@ -8,6 +8,8 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
+import com.badlogic.gdx.math.Rectangle; // AlexGor
+import com.badlogic.gdx.math.Vector2;// AlexGor
 
 import java.util.ArrayDeque;
 
@@ -23,6 +25,10 @@ public class Creep {
     private float elapsedTime;
     private float deathElapsedTime;
     public float graphicalCoordinateX, graphicalCoordinateY;
+    private Rectangle rect; // AlexGor
+    private Vector2 oldPoint;
+    public Vector2 newPoint; // AlexGor
+
 
     private TemplateForUnit templateForUnit;
 
@@ -42,10 +48,15 @@ public class Creep {
             this.templateForUnit = templateForUnit;
 
             this.direction = Direction.UP;
+
             setAnimation("walk_");
+            this.rect = new Rectangle(); // AlexGor
+            this.oldPoint = new Vector2();
+            this.newPoint = new Vector2();
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
+
     }
 
     private void setAnimation(String action) {
@@ -71,6 +82,8 @@ public class Creep {
     public void setGraphicalCoordinates(float x, float y) {
         this.graphicalCoordinateX = x;
         this.graphicalCoordinateY = y;
+        rect.set(this.graphicalCoordinateX, this.graphicalCoordinateY, 40f, 70f); // AlexGor
+        //this.newPoint.set(x, y);
     }
 
     public Node move(float delta) {
@@ -83,8 +96,18 @@ public class Creep {
                 newPosition = route.pollFirst();
                 int oldX = oldPosition.getX(), oldY = oldPosition.getY();
                 int newX = newPosition.getX(), newY = newPosition.getY();
+
+                int halfSizeCellX = GameField.getSizeCellX() / 2;
+                int halfSizeCellY = GameField.getSizeCellY() / 2;
+                float fVxNew = halfSizeCellX * newY + newX * halfSizeCellX;
+                float fVyNew = halfSizeCellY * newY - newX * halfSizeCellY;
+                float fVxOld = halfSizeCellX * oldY + oldX * halfSizeCellX;
+                float fVyOld = halfSizeCellY * oldY - oldX * halfSizeCellY;
+                this.oldPoint.set(fVxOld, fVyOld);
+                this.newPoint.set(fVxNew, fVyNew);
                 if(newX < oldX && newY > oldY) {
                     direction = Direction.UP;
+
                 } else if (newX == oldX && newY > oldY) {
                     direction = Direction.UP_RIGHT;
                 } else if (newX > oldX && newY > oldY) {
@@ -106,6 +129,7 @@ public class Creep {
                     setAnimation("walk_");
                 }
             }
+
             return newPosition;
         } else {
             dispose();
@@ -144,6 +168,12 @@ public class Creep {
     }
     public Node getNewPosition() {
         return newPosition;
+    }
+
+    public Rectangle getRect() { return rect; } // AlexGor
+
+    public float getDistanceofCreep() {
+        return (float) Math.sqrt(oldPoint.dst2(newPoint));
     }
 
     public void setHp(int hp) {
