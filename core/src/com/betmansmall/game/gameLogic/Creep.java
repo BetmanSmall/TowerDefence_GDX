@@ -25,10 +25,9 @@ public class Creep {
     private float elapsedTime;
     private float deathElapsedTime;
     public float graphicalCoordinateX, graphicalCoordinateY;
-    private Rectangle rect; // AlexGor
-    private Vector2 oldPoint;
+    public Rectangle rect; // AlexGor
+    public Vector2 oldPoint;
     public Vector2 newPoint; // AlexGor
-
 
     private TemplateForUnit templateForUnit;
 
@@ -51,12 +50,11 @@ public class Creep {
 
             setAnimation("walk_");
             this.rect = new Rectangle(); // AlexGor
-            this.oldPoint = new Vector2();
-            this.newPoint = new Vector2();
+            this.oldPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
+            this.newPoint = new Vector2(newPosition.getX(), newPosition.getY());
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
-
     }
 
     private void setAnimation(String action) {
@@ -82,8 +80,8 @@ public class Creep {
     public void setGraphicalCoordinates(float x, float y) {
         this.graphicalCoordinateX = x;
         this.graphicalCoordinateY = y;
-        rect.set(this.graphicalCoordinateX, this.graphicalCoordinateY, 40f, 70f); // AlexGor
-        //this.newPoint.set(x, y);
+        rect.set(this.graphicalCoordinateX+GameField.getSizeCellX()/3, this.graphicalCoordinateY+GameField.getSizeCellY()/2, 30f, 50f); // AlexGor
+//        this.newPoint.set(x, y);
     }
 
     public Node move(float delta) {
@@ -99,15 +97,14 @@ public class Creep {
 
                 int halfSizeCellX = GameField.getSizeCellX() / 2;
                 int halfSizeCellY = GameField.getSizeCellY() / 2;
-                float fVxNew = halfSizeCellX * newY + newX * halfSizeCellX;
-                float fVyNew = halfSizeCellY * newY - newX * halfSizeCellY;
+                float fVxNew = halfSizeCellX * (newY+1) + newX * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
+                float fVyNew = halfSizeCellY * (newY+1) - newX * halfSizeCellY;
                 float fVxOld = halfSizeCellX * oldY + oldX * halfSizeCellX;
                 float fVyOld = halfSizeCellY * oldY - oldX * halfSizeCellY;
                 this.oldPoint.set(fVxOld, fVyOld);
                 this.newPoint.set(fVxNew, fVyNew);
                 if(newX < oldX && newY > oldY) {
                     direction = Direction.UP;
-
                 } else if (newX == oldX && newY > oldY) {
                     direction = Direction.UP_RIGHT;
                 } else if (newX > oldX && newY > oldY) {
@@ -147,7 +144,7 @@ public class Creep {
             }
             return false;
         }
-        return true;
+        return false;
     }
 
     public boolean changeDeathFrame(float delta) {

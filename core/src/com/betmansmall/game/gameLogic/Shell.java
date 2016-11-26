@@ -1,7 +1,9 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -11,28 +13,24 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by betmansmall on 29.03.2016.
  */
-public class ProjecTile {
-    private Vector2 stPoint, endPoint;
-    public Vector2 currentPoint;
-    public float x, y;
-    public float step;
+public class Shell {
+    public Vector2 currentPoint, endPoint;
+    public Vector2 velocity;
+
     public Creep creep;
     public float ammoDistance;
     public float ammoSize;
+    public float speedMax;
 
     public TemplateForTower templateForTower;
 
     public TextureRegion textureRegion;
     public ObjectMap<String, TiledMapTile> ammunitionPictures;
-    private int radius;
-    public float difBetweenX, difBetweenY;
-    public float stepOnX, stepOnY;
-    public Vector2 velocity;
 
-    ProjecTile(Vector2 startPoint, Vector2 targetPoint, Creep creep, TemplateForTower templateForTower) {
-        this.stPoint = startPoint;
-        this.endPoint = targetPoint;
-        this.currentPoint = stPoint;
+    Shell(Vector2 currentPoint, Vector2 endPoint, Creep creep, TemplateForTower templateForTower) {
+//        Gdx.app.log("Shell", "Shell(" + currentPoint + ", " + endPoint + ");");
+        this.currentPoint = currentPoint;
+        this.endPoint = endPoint;
 
         this.creep = creep;
         this.ammoDistance = templateForTower.ammoDistance;
@@ -42,28 +40,28 @@ public class ProjecTile {
 
         this.textureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
         this.ammunitionPictures = templateForTower.ammunitionPictures;
-        this.radius = 11;
-        this.difBetweenX = stPoint.x - endPoint.x;
-        this.difBetweenY = stPoint.y - endPoint.y;
-        stepOnX = difBetweenX / 10f;
-        stepOnY = difBetweenY / 10f;
+//        this.radius = 11;
+        this.speedMax = 300f;
+        velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), speedMax));
     }
 
-    public int flightOfShell (float delta) {
+    public int flightOfShell(float delta) {
         if(creep.isAlive()) {
+//            float creepCenterX = creep.graphicalCoordinateX + (creep.getCurentFrame().getRegionWidth() / 2);
+//            float creepCenterY = creep.graphicalCoordinateY + (creep.getCurentFrame().getRegionHeight() / 2);
 
-            float creepCenterX = creep.graphicalCoordinateX + (creep.getCurentFrame().getRegionWidth() / 2);
-            float creepCenterY = creep.graphicalCoordinateY + (creep.getCurentFrame().getRegionHeight() / 2);
-
-
-            this.currentPoint.add(this.stepOnX, this.stepOnY).nor();
-            float x1 = creepCenterX - (radius / 2);
-            float y1 = creepCenterY - (radius / 2);
-            float x2 = creepCenterX + (radius / 2);
-            float y2 = creepCenterY + (radius / 2);
+//        Gdx.app.log("Shell", "flightOfShell(" + delta + "); -- " + currentPoint + ", " + endPoint + ", " + velocity);
+        currentPoint.add(velocity.x * delta, velocity.y * delta);
+//        velocity.scl(1 - (0.98f * delta));
+        int radius = 11;
+            float x1 = endPoint.x - (radius / 2);
+            float y1 = endPoint.y - (radius / 2);
+            float x2 = endPoint.x + (radius / 2);
+            float y2 = endPoint.y + (radius / 2);
 
             if (currentPoint.x > x1 && currentPoint.x < x2) {
                 if (currentPoint.y > y1 && currentPoint.y < y2) {
+//                    Gdx.app.log("Shell", "flightOfShell(" + delta + "); -- " + currentPoint + ", " + endPoint + ", " + velocity);
                     return 0;
                 }
             }

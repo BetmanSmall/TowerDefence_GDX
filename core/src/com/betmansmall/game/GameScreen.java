@@ -103,9 +103,9 @@ public class GameScreen implements Screen {
         public boolean pan(float x, float y, float deltaX, float deltaY) {
             Vector3 touch = new Vector3(x, y, 0);
             camera.unproject(touch);
-            Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-            Gdx.app.log("CameraController::pan(1)", " -- x:" + camera.position.x + " y:" + camera.position.y);
-            Gdx.app.log("CameraController::pan(2)", " -- x:" + touch.x + " y:" + touch.y);
+//            Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+//            Gdx.app.log("CameraController::pan(1)", " -- x:" + camera.position.x + " y:" + camera.position.y);
+//            Gdx.app.log("CameraController::pan(2)", " -- x:" + touch.x + " y:" + touch.y);
             if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY)) {
                 lastCircleTouched = true;
                 return true;
@@ -195,19 +195,19 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean keyDown(int keycode) {
-            Gdx.app.log("MyGestureDetector::keyDown()", " -- keycode:" + keycode);
+//            Gdx.app.log("MyGestureDetector::keyDown()", " -- keycode:" + keycode);
             return false;
         }
 
         @Override
         public boolean keyUp(int keycode) {
-            Gdx.app.log("MyGestureDetector::keyUp()", " -- keycode:" + keycode);
+//            Gdx.app.log("MyGestureDetector::keyUp()", " -- keycode:" + keycode);
             return false;
         }
 
         @Override
         public boolean keyTyped(char character) {
-            Gdx.app.log("MyGestureDetector::keyTyped()", " -- character:" + character);
+//            Gdx.app.log("MyGestureDetector::keyTyped()", " -- character:" + character);
             return false;
         }
 

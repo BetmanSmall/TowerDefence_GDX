@@ -1,8 +1,8 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
@@ -23,10 +23,10 @@ public class Tower {
     private TemplateForTower templateForTower;
     private TiledMapTile idleTile;
 
-    public Array<ProjecTile> projecTiles;
+    public Array<Shell> shells;
 
     private Circle circle; //AlexGor
-    private Vector2 endPoint, firstPoint; //AlexGor
+//    private Vector2 bulletSpawnPoint; //AlexGor
 
     public Tower(GridPoint2 position, TemplateForTower templateForTower){
         this.position = position;
@@ -37,9 +37,9 @@ public class Tower {
 
         this.templateForTower = templateForTower;
         this.idleTile = templateForTower.idleTile;
-        this.projecTiles = new Array<ProjecTile>();
-        this.circle = new Circle(getGraphCorX(), getGraphCorY(), radius * 30f); // AlexGor
-        this.firstPoint = new Vector2(getGraphCorX() + getRegWidth(), getGraphCorY() + getRegHeight());
+        this.shells = new Array<Shell>();
+        this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.size*60f); // AlexGor
+//        this.bulletSpawnPoint = new Vector2(getGraphCorX(), getGraphCorY());
     }
 
     public boolean recharge(float delta) {
@@ -53,7 +53,7 @@ public class Tower {
 
     public boolean shoot(Creep creep) {
         if(elapsedReloadTime >= reloadTime) {
-            projecTiles.add(new ProjecTile(this.firstPoint, creep.newPoint, creep, templateForTower)); // AlexGor
+            shells.add(new Shell(new Vector2(getGraphCorX(), getGraphCorY()), new Vector2(creep.newPoint), creep, templateForTower)); // AlexGor
             elapsedReloadTime = 0f;
             return true;
         }
@@ -63,15 +63,15 @@ public class Tower {
 
 
     public void moveAllProjecTiles(float delta) {
-        for(ProjecTile projecTile: projecTiles) {
-            switch(projecTile.flightOfShell(delta)) {
+        for(Shell shell : shells) {
+            switch(shell.flightOfShell(delta)) {
                 case 0:
-                    if(projecTile.creep.die(damage)) {
-                        GameField.gamerGold += projecTile.creep.getTemplateForUnit().bounty;
+                    if(shell.creep.die(damage)) {
+                        GameField.gamerGold += shell.creep.getTemplateForUnit().bounty;
                     }
                 case -1:
-                    projecTile.dispose();
-                    projecTiles.removeValue(projecTile, false);
+                    shell.dispose();
+                    shells.removeValue(shell, false);
             }
         }
     }
@@ -80,13 +80,13 @@ public class Tower {
     private float getGraphCorX () {
         int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
         float pointX = halfSizeCellX * position.y + position.x * halfSizeCellX;
-        return pointX;
+        return pointX + halfSizeCellX;
     }
 
     private float getGraphCorY () {
         int halfSizeCellY = GameField.getSizeCellY() / 2;
         float pointY = halfSizeCellY * position.y - position.x * halfSizeCellY;
-        return pointY;
+        return pointY + halfSizeCellY*templateForTower.size;
     }
 
     private float getRegWidth () {
@@ -105,7 +105,9 @@ public class Tower {
         return position;
     }
 
-    public Circle getCircle() { return circle; } //AlexGor
+    public Circle getCircle() {
+        return circle;
+    } //AlexGor
 
     public void setDamage(int damage) {
         this.damage = damage;

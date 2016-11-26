@@ -19,8 +19,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
@@ -34,10 +35,6 @@ import com.badlogic.gdx.math.Intersector; // AlexGor
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -77,7 +74,7 @@ public class GameField {
     public boolean isDrawableCreeps = true;
     public boolean isDrawableTowers = true;
     public boolean isDrawableRoutes = true;
-    public boolean isDrawableGridNav = false;
+    public boolean isDrawableGridNav = true;
 
     private int halfSizeCellX;
     private int halfSizeCellY;
@@ -389,15 +386,16 @@ public class GameField {
             int hp = creep.getHp();
             hpBarWidth = hpBarWidth / maxHP * hp;
             shapeRenderer.rect(fVx + hpBarWidthSpace + spaceInHpBar, fVy + currentFrame.getRegionHeight() - hpBarTopSpace + spaceInHpBar, hpBarWidth - (spaceInHpBar * 2), hpBarHeight - (spaceInHpBar * 2));
+//            shapeRenderer.setColor(Color.BLUE);
+//            shapeRenderer.circle(fVx, fVy, 1f);
             shapeRenderer.end();
         }
 
+        creep.setGraphicalCoordinates(fVx, fVy);
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         spriteBatch.draw(currentFrame, fVx, fVy);
         spriteBatch.end();
-
-        creep.setGraphicalCoordinates(fVx, fVy);
     }
 
     private void drawCreeps(OrthographicCamera camera) {
@@ -463,24 +461,61 @@ public class GameField {
                     } else if (field[x][y].getCreep() != null) {
                         shapeRenderer.setColor(Color.GREEN);
                     } else if (field[x][y].getTower() != null) {
-                        shapeRenderer.setColor(Color.BLACK);
+                        shapeRenderer.setColor(Color.ORANGE);
                     }
-                    shapeRenderer.circle(fVx, fVy, 3);
+                    shapeRenderer.circle(fVx, fVy, 3f);
                 }
             }
         }
+
+        for(Tower tower: towersManager.getAllTowers()) {
+            shapeRenderer.setColor(Color.WHITE);
+            for(Shell shell : tower.shells) {
+                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, 1.5f);
+            }
+        }
+
+        shapeRenderer.setColor(Color.BLUE);
+        for(Creep creep : creepsManager.getAllCreeps()) {
+            shapeRenderer.circle(creep.graphicalCoordinateX, creep.graphicalCoordinateY, 1f);
+        }
+
+        shapeRenderer.setColor(Color.LIME);
+        for(Creep creep : creepsManager.getAllCreeps()) {
+            Rectangle rectangle = creep.getRect();
+            shapeRenderer.circle(rectangle.x, rectangle.y, 2f);
+        }
+
+        shapeRenderer.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        shapeRenderer.setColor(Color.RED);
+        for(Creep creep : creepsManager.getAllCreeps()) {
+            Rectangle rectangle = creep.getRect();
+            shapeRenderer.box(rectangle.x, rectangle.y, 0, rectangle.width, rectangle.height, 0);
+        }
+
+        shapeRenderer.setColor(Color.GREEN);
+        for(Tower tower: towersManager.getAllTowers()) {
+            Circle circle = tower.getCircle();
+            shapeRenderer.circle(circle.x, circle.y, circle.radius);
+        }
+
         shapeRenderer.end();
     }
 
     private void drawProjecTiles(OrthographicCamera camera) {
+//        Gdx.app.log("GameField", "drawProjecTiles();");
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         for (Tower tower : towersManager.getAllTowers()) {
-            for (ProjecTile projecTile : tower.projecTiles) {
-                TextureRegion textureRegion = projecTile.textureRegion;
-                float width = textureRegion.getRegionWidth() * projecTile.ammoSize;
-                float height = textureRegion.getRegionHeight() * projecTile.ammoSize;
-                spriteBatch.draw(textureRegion, projecTile.currentPoint.x, projecTile.currentPoint.y, width, height);
+            for (Shell shell : tower.shells) {
+                TextureRegion textureRegion = shell.textureRegion;
+                float width = textureRegion.getRegionWidth() * shell.ammoSize;
+                float height = textureRegion.getRegionHeight() * shell.ammoSize;
+                spriteBatch.draw(textureRegion, shell.currentPoint.x, shell.currentPoint.y, width, height);
+//                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw shell:" + shell.currentPoint);
             }
         }
         spriteBatch.end();
@@ -753,7 +788,10 @@ public class GameField {
             if (tower.recharge(delta)) {
                 for (Creep creep : creepsManager.getAllCreeps()) {
                     if (Intersector.overlaps(tower.getCircle(), creep.getRect())) {
-                        if (tower.shoot(creep)) break;
+//                        Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
+                        if (tower.shoot(creep)) {
+                            break;
+                        }
                     }
                 }
             }
