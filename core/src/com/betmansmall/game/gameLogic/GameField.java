@@ -82,7 +82,7 @@ public class GameField {
     private PathFinder pathFinder;
 
     private WaveManager waveManager;
-    private CreepsManager creepsManager;
+    static public CreepsManager creepsManager; // For Shell
     private TowersManager towersManager;
     private FactionsManager factionsManager;
 
@@ -468,12 +468,15 @@ public class GameField {
             }
         }
 
-        for(Tower tower: towersManager.getAllTowers()) {
-            shapeRenderer.setColor(Color.WHITE);
-            for(Shell shell : tower.shells) {
-                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, 1.5f);
-            }
-        }
+//        shapeRenderer.setColor(Color.WHITE);
+//        for(Tower tower: towersManager.getAllTowers()) {
+//            for(Shell shell : tower.shells) {
+////                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, 1.5f);
+////                if(null != shell.rectangle) {
+////                    shapeRenderer.circle(shell.rectangle.x, shell.rectangle.y, shell.rectangle.radius);
+////                }
+//            }
+//        }
 
         shapeRenderer.setColor(Color.BLUE);
         for(Creep creep : creepsManager.getAllCreeps()) {
@@ -496,10 +499,20 @@ public class GameField {
             shapeRenderer.box(rectangle.x, rectangle.y, 0, rectangle.width, rectangle.height, 0);
         }
 
-        shapeRenderer.setColor(Color.GREEN);
+//        shapeRenderer.setColor(Color.GREEN);
         for(Tower tower: towersManager.getAllTowers()) {
+            shapeRenderer.setColor(Color.GREEN);
             Circle circle = tower.getCircle();
             shapeRenderer.circle(circle.x, circle.y, circle.radius);
+            for(Shell shell: tower.shells) {
+                shapeRenderer.setColor(Color.WHITE);
+                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, 1.5f);
+                shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radius);
+//                shapeRenderer.setColor(Color.RED);
+//                if(null != shell.circle) {
+//                    shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radius);
+//                }
+            }
         }
 
         shapeRenderer.end();
@@ -512,9 +525,10 @@ public class GameField {
         for (Tower tower : towersManager.getAllTowers()) {
             for (Shell shell : tower.shells) {
                 TextureRegion textureRegion = shell.textureRegion;
-                float width = textureRegion.getRegionWidth() * shell.ammoSize;
-                float height = textureRegion.getRegionHeight() * shell.ammoSize;
-                spriteBatch.draw(textureRegion, shell.currentPoint.x, shell.currentPoint.y, width, height);
+//                float width = textureRegion.getRegionWidth() * shell.ammoSize;
+//                float height = textureRegion.getRegionHeight() * shell.ammoSize;
+//                spriteBatch.draw(textureRegion, shell.currentPoint.x, shell.currentPoint.y, width, height);
+//                spriteBatch.draw(textureRegion, shell.currentPoint.x, shell.currentPoint.y, shell.rectangle.width, shell.rectangle.height);
 //                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw shell:" + shell.currentPoint);
             }
         }

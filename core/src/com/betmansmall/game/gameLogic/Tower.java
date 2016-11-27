@@ -38,7 +38,7 @@ public class Tower {
         this.templateForTower = templateForTower;
         this.idleTile = templateForTower.idleTile;
         this.shells = new Array<Shell>();
-        this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.size*60f); // AlexGor
+        this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radius); // AlexGor
 //        this.bulletSpawnPoint = new Vector2(getGraphCorX(), getGraphCorY());
     }
 
@@ -66,9 +66,10 @@ public class Tower {
         for(Shell shell : shells) {
             switch(shell.flightOfShell(delta)) {
                 case 0:
-                    if(shell.creep.die(damage)) {
-                        GameField.gamerGold += shell.creep.getTemplateForUnit().bounty;
-                    }
+//                    if(shell.creep.die(damage)) {
+//                        GameField.gamerGold += shell.creep.getTemplateForUnit().bounty;
+//                    }
+//                    break;
                 case -1:
                     shell.dispose();
                     shells.removeValue(shell, false);

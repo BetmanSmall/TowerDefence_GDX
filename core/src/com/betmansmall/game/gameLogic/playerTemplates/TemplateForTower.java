@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class TemplateForTower {
     private Faction faction;
 
-    public Integer  ammoDistance;
+    public Integer ammoDistance;
     public Float    ammoSize;
     public Float    ammoSpeed;
     public Integer  cost;
