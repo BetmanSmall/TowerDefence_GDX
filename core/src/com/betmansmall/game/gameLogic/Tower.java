@@ -22,6 +22,7 @@ public class Tower {
 
     private TemplateForTower templateForTower;
     private TiledMapTile idleTile;
+    public int capacity;
 
     public Array<Shell> shells;
 
@@ -37,6 +38,7 @@ public class Tower {
 
         this.templateForTower = templateForTower;
         this.idleTile = templateForTower.idleTile;
+        this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
         this.shells = new Array<Shell>();
         this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radius); // AlexGor
 //        this.bulletSpawnPoint = new Vector2(getGraphCorX(), getGraphCorY());
@@ -78,13 +80,13 @@ public class Tower {
     }
 
     //AlexGor
-    private float getGraphCorX () {
+    public float getGraphCorX () {
         int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
         float pointX = halfSizeCellX * position.y + position.x * halfSizeCellX;
         return pointX + halfSizeCellX;
     }
 
-    private float getGraphCorY () {
+    public float getGraphCorY () {
         int halfSizeCellY = GameField.getSizeCellY() / 2;
         float pointY = halfSizeCellY * position.y - position.x * halfSizeCellY;
         return pointY + halfSizeCellY*templateForTower.size;

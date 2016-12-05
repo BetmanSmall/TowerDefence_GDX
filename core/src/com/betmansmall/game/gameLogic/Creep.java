@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Circle;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
@@ -25,7 +26,8 @@ public class Creep {
     private float elapsedTime;
     private float deathElapsedTime;
     public float graphicalCoordinateX, graphicalCoordinateY;
-    public Rectangle rect; // AlexGor
+//    public Rectangle rect; // AlexGor
+    public Circle circle;
     public Vector2 oldPoint;
     public Vector2 newPoint; // AlexGor
 
@@ -49,7 +51,8 @@ public class Creep {
             this.direction = Direction.UP;
 
             setAnimation("walk_");
-            this.rect = new Rectangle(); // AlexGor
+//            this.rect = new Rectangle(); // AlexGor
+            this.circle = new Circle();
             this.oldPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
             this.newPoint = new Vector2(newPosition.getX(), newPosition.getY());
         } else {
@@ -80,8 +83,10 @@ public class Creep {
     public void setGraphicalCoordinates(float x, float y) {
         this.graphicalCoordinateX = x;
         this.graphicalCoordinateY = y;
-        rect.set(this.graphicalCoordinateX+GameField.getSizeCellX()/3, this.graphicalCoordinateY+GameField.getSizeCellY()/2, 30f, 50f); // AlexGor
+//        rect.set(this.graphicalCoordinateX+GameField.getSizeCellX()/3, this.graphicalCoordinateY+GameField.getSizeCellY()/2, 30f, 50f); // AlexGor
+        circle.set(this.graphicalCoordinateX, this.graphicalCoordinateY, 16f); // AlexGor
 //        this.newPoint.set(x, y);
+//        Gdx.app.log("Creep", "setGraphicalCoordinates(" + x + ", " + y + ");");
     }
 
     public Node move(float delta) {
@@ -167,7 +172,10 @@ public class Creep {
         return newPosition;
     }
 
-    public Rectangle getRect() { return rect; } // AlexGor
+//    public Rectangle getRect() { return circle; } // AlexGor
+    public Circle getRect() {
+        return circle;
+    }
 
     public float getDistanceofCreep() {
         return (float) Math.sqrt(oldPoint.dst2(newPoint));

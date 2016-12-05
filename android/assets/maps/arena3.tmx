@@ -10,6 +10,7 @@
  <tileset firstgid="668" source="towers/tower3_cannon.tsx"/>
  <tileset firstgid="674" source="towers/tower4_cannon.tsx"/>
  <tileset firstgid="680" source="towers/tower5_scout.tsx"/>
+ <tileset firstgid="686" source="towers/tower_pit.tsx"/>
  <layer name="background" width="64" height="64">
   <properties>
    <property name="spawnPoint" value="1"/>

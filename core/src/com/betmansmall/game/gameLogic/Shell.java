@@ -28,17 +28,18 @@ public class Shell {
     public Vector2 currentPoint;
     public Vector2 endPoint;
     public Circle circle = null;
-        public Vector2 velocity;
+    public Vector2 velocity;
 
     Shell(Vector2 currentPoint, Vector2 endPoint, Creep creep, TemplateForTower templateForTower) {
 //        Gdx.app.log("Shell", "Shell(" + currentPoint + ", " + endPoint + ");");
         this.creep = creep;
-        this.ammoExpSize = templateForTower.ammoDistance;
+//        this.ammoExpSize = templateForTower.ammoDistance;
         this.ammoSize = templateForTower.ammoSize;
         this.ammoSpeed = templateForTower.ammoSpeed;
         this.templateForTower = templateForTower;
 
-        this.textureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
+        TiledMapTile tiledMapTile = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP);
+        this.textureRegion = tiledMapTile != null ? tiledMapTile.getTextureRegion() : templateForTower.idleTile.getTextureRegion();
         this.ammunitionPictures = templateForTower.ammunitionPictures;
 
         this.currentPoint = currentPoint;

@@ -3,7 +3,7 @@
  <properties>
   <property name="bounty" value="7"/>
   <property name="factionName" value="Faction1"/>
-  <property name="healthPoints" value="100"/>
+  <property name="healthPoints" value="500"/>
   <property name="name" value="Catepult"/>
   <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
