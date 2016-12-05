@@ -57,7 +57,7 @@ public class Shell {
                 for (Creep creep : GameField.creepsManager.getAllCreeps()) { // not good
                     if (Intersector.overlaps(circle, creep.getRect())) {
                         iIsAlive = false;
-                        Gdx.app.log("Shell", "flightOfShell(); -- overlaps(" + circle + ", " + creep.toString());
+//                        Gdx.app.log("Shell", "flightOfShell(); -- overlaps(" + circle + ", " + creep.toString());
                         if (creep.die(templateForTower.damage)) {
                             GameField.gamerGold += creep.getTemplateForUnit().bounty;
                         }

@@ -4,12 +4,12 @@
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Scout3"/>
   <property name="radius" value="100"/>
-  <property name="damage" value="100"/>
+  <property name="damage" value="200"/>
   <property name="size" value="3"/>
   <property name="cost" value="10"/>
-  <property name="ammoSize" value="50"/>
-  <property name="ammoSpeed" value="100"/>
-  <property name="reloadTime" value="1"/>
+  <property name="ammoSize" value="80"/>
+  <property name="ammoSpeed" value="80"/>
+  <property name="reloadTime" value="1.3"/>
   <property name="type" value="tower"/>
   <property name="ammoDistance" value="5"/>
  </properties>

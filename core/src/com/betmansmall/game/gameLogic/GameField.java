@@ -528,7 +528,7 @@ public class GameField {
 //                float width = textureRegion.getRegionWidth() * shell.ammoSize;
 //                float height = textureRegion.getRegionHeight() * shell.ammoSize;
 //                spriteBatch.draw(textureRegion, shell.currentPoint.x, shell.currentPoint.y, width, height);
-//                spriteBatch.draw(textureRegion, shell.currentPoint.x, shell.currentPoint.y, shell.rectangle.width, shell.rectangle.height);
+                spriteBatch.draw(textureRegion, shell.currentPoint.x - shell.circle.radius, shell.currentPoint.y - shell.circle.radius, shell.circle.radius*2, shell.circle.radius*2);
 //                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw shell:" + shell.currentPoint);
             }
         }
@@ -811,9 +811,7 @@ public class GameField {
             }
         }
     } // AlexGor
-
-
-
+    
     private void moveAllProjecTiles(float delta) {
         for (Tower tower : towersManager.getAllTowers()) {
             tower.moveAllProjecTiles(delta);
