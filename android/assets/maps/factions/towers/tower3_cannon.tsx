@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="tower3_cannon" tilewidth="64" tileheight="64" tilecount="6" columns="2">
  <properties>
-  <property name="ammoDistance" value="5"/>
-  <property name="ammoSize" value="0.5"/>
-  <property name="ammoSpeed" value="0.2"/>
-  <property name="cost" value="20"/>
-  <property name="damage" value="5"/>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Cannon1"/>
-  <property name="radius" value="5"/>
-  <property name="reloadTime" value="1"/>
-  <property name="size" value="2"/>
+  <property name="name" value="Scout3"/>
+  <property name="radius" value="100"/>
+  <property name="damage" value="200"/>
+  <property name="size" value="3"/>
+  <property name="cost" value="10"/>
+  <property name="ammoSize" value="80"/>
+  <property name="ammoSpeed" value="80"/>
+  <property name="reloadTime" value="1.3"/>
   <property name="type" value="tower"/>
+  <property name="ammoDistance" value="5"/>
  </properties>
  <image source="../../textures/warcraft2/tilesets/summer/orc/buildings/cannon_tower_test.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

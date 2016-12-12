@@ -5,7 +5,7 @@
   <property name="factionName" value="Orcs_Faction"/>
   <property name="healthPoints" value="145"/>
   <property name="name" value="Troll Axethrower"/>
-  <property name="speed" value="0.3"/>
+  <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>

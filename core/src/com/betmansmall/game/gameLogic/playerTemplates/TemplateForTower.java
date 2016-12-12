@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
 
@@ -22,17 +23,18 @@ public class TemplateForTower {
     private Faction faction;
     private String templateName;
 
-    public Integer  ammoDistance;
-    public Float    ammoSize;
-    public Float    ammoSpeed;
-    public Integer  cost;
-    public Integer  damage;
     public String   factionName;
     public String   name;
     public Integer  radius;
-    public Float    reloadTime;
+    public Integer  damage;
     public Integer  size;
+    public Integer  cost;
+    public Float    ammoSize;
+    public Float    ammoSpeed;
+    public Float    reloadTime;
     public String   type;
+    public Integer capacity;
+    public Integer ammoDistance;
 
     public TiledMapTile idleTile;
     public ObjectMap<String, TiledMapTile> ammunitionPictures;
@@ -155,17 +157,18 @@ public class TemplateForTower {
 
     public TemplateForTower(TiledMapTileSet tileSet) {
         try {
-            this.ammoDistance = Integer.parseInt(tileSet.getProperties().get("ammoDistance", String.class));
-            this.ammoSize =     Float.parseFloat(tileSet.getProperties().get("ammoSize", String.class));
-            this.ammoSpeed =    Float.parseFloat(tileSet.getProperties().get("ammoSpeed", String.class));
-            this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
-            this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
             this.factionName =  tileSet.getProperties().get("factionName", String.class);
             this.name =         tileSet.getProperties().get("name", String.class);
             this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
-            this.reloadTime =   Float.parseFloat(tileSet.getProperties().get("reloadTime", String.class));
+            this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
             this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
+            this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
+            this.ammoSize =     Float.parseFloat(tileSet.getProperties().get("ammoSize", String.class));
+            this.ammoSpeed =    Float.parseFloat(tileSet.getProperties().get("ammoSpeed", String.class));
+            this.reloadTime =   Float.parseFloat(tileSet.getProperties().get("reloadTime", String.class));
             this.type =         tileSet.getProperties().get("type", String.class);
+            this.capacity =     Integer.parseInt(tileSet.getProperties().get("capacity", String.class));
+            this.ammoDistance = Integer.parseInt(tileSet.getProperties().get("ammoDistance", String.class));
         } catch(Exception exp) {
             Gdx.app.error("TemplateForTower::TemplateForTower()", " -- Exp: " + exp + " Cheak the file!");
         }

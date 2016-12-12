@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="64" tileheight="32" nextobjectid="34">
  <tileset firstgid="1" source="other/terrain.tsx"/>
- <tileset firstgid="161" source="factions/units/unit1_grunt.tsx"/>
- <tileset firstgid="256" source="factions/units/unit2_troll_axethrower.tsx"/>
- <tileset firstgid="351" source="factions/towers/tower1_scout.tsx"/>
  <tileset firstgid="357" source="other/barracks.tsx"/>
  <tileset firstgid="359" source="other/fortress.tsx"/>
  <layer name="background" width="128" height="128">
