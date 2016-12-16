@@ -33,8 +33,9 @@ public class TemplateForTower {
     public Float    ammoSpeed;
     public Float    reloadTime;
     public String   type;
-    public Integer capacity;
-    public Integer ammoDistance;
+    public String   damageType;
+    public Integer  capacity;
+    public Integer  ammoDistance;
 
     public TiledMapTile idleTile;
     public ObjectMap<String, TiledMapTile> ammunitionPictures;
@@ -78,6 +79,8 @@ public class TemplateForTower {
                         this.size = Integer.parseInt(value);
                     } else if (key.equals("type")) {
                         this.type = value;
+                    } else if (key.equals("damageType")) {
+                        this.damageType = value;
                     }
                 }
             }
@@ -241,6 +244,8 @@ public class TemplateForTower {
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'size'! Check the file");
         else if(this.type == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'type'! Check the file");
+//        else if(this.damageType == null)
+//            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'damageType'! Check the file");
 
         if(idleTile == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'idleTile'! Check the file");

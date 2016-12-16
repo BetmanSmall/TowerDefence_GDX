@@ -126,11 +126,11 @@ public class FactionsManager {
     }
 
     public void loadFactions() {
-        FileHandle factionsDir = Gdx.files.internal("maps/factions");
-        for (FileHandle factionFile : factionsDir.list()) {
-            if (factionFile.extension().equals("fac")) {
-                loadFaction(factionFile);
-            }
+                FileHandle factionsDir = Gdx.files.internal("maps/factions");
+                for (FileHandle factionFile : factionsDir.list()) {
+                    if (factionFile.extension().equals("fac")) {
+                        loadFaction(factionFile);
+                    }
         }
     }
 

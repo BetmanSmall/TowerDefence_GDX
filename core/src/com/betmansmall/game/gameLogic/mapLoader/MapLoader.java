@@ -1,6 +1,21 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.betmansmall.game.gameLogic.mapLoader;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -20,39 +35,46 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import com.betmansmall.game.gameLogic.Wave;
-import com.betmansmall.game.gameLogic.WaveManager;
-
 import java.io.IOException;
 
+/** @brief synchronous loader for TMX maps created with the Tiled tool */
 public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
 
     public static class Parameters extends BaseTmxMapLoader.Parameters {
 
     }
 
-    WaveManager waveManager;
-
-    public MapLoader(WaveManager waveManager) {
+    public MapLoader () {
         super(new InternalFileHandleResolver());
-        this.waveManager = waveManager;
     }
 
-    public MapLoader(FileHandleResolver resolver) {
+    /** Creates loader
+     *
+     * @param resolver */
+    public MapLoader (FileHandleResolver resolver) {
         super(resolver);
     }
 
-    public TiledMap load(String fileName) {
+    /** Loads the {@link TiledMap} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
+     * constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate
+     * system.
+     * @param fileName the filename
+     * @return the TiledMap */
+    public TiledMap load (String fileName) {
         return load(fileName, new MapLoader.Parameters());
     }
 
-    public TiledMap load(String fileName, MapLoader.Parameters parameters) {
+    /** Loads the {@link TiledMap} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
+     * constructor of this class. By default it will resolve to an internal file.
+     * @param fileName the filename
+     * @param parameters specifies whether to use y-up, generate mip maps etc.
+     * @return the TiledMap */
+    public TiledMap load (String fileName, MapLoader.Parameters parameters) {
         try {
             this.convertObjectToTileSpace = parameters.convertObjectToTileSpace;
             this.flipY = parameters.flipY;
@@ -78,7 +100,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle tmxFile, MapLoader.Parameters parameter) {
+    public void loadAsync (AssetManager manager, String fileName, FileHandle tmxFile, MapLoader.Parameters parameter) {
         map = null;
 
         if (parameter != null) {
@@ -96,19 +118,17 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
     }
 
     @Override
-    public TiledMap loadSync(AssetManager manager, String fileName, FileHandle file, MapLoader.Parameters parameter) {
+    public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, MapLoader.Parameters parameter) {
         return map;
     }
 
-    /**
-     * Retrieves TiledMap resource dependencies
+    /** Retrieves TiledMap resource dependencies
      *
      * @param fileName
      * @param parameter not used for now
-     * @return dependencies for the given .tmx file
-     */
+     * @return dependencies for the given .tmx file */
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmxFile, Parameters parameter) {
+    public Array<AssetDescriptor> getDependencies (String fileName, FileHandle tmxFile, Parameters parameter) {
         Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
         try {
             root = xml.parse(tmxFile);
@@ -131,15 +151,12 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         }
     }
 
-    /**
-     * Loads the map data, given the XML root element and an {@link ImageResolver} used to return the tileset Textures
-     *
-     * @param root          the XML root element
-     * @param tmxFile       the Filehandle of the tmx file
+    /** Loads the map data, given the XML root element and an {@link ImageResolver} used to return the tileset Textures
+     * @param root the XML root element
+     * @param tmxFile the Filehandle of the tmx file
      * @param imageResolver the {@link ImageResolver}
-     * @return the {@link TiledMap}
-     */
-    protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
+     * @return the {@link TiledMap} */
+    protected TiledMap loadTilemap (Element root, FileHandle tmxFile, ImageResolver imageResolver) {
         TiledMap map = new TiledMap();
 
         String mapOrientation = root.getAttribute("orientation", null);
@@ -193,28 +210,6 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             loadTileSet(map, element, tmxFile, imageResolver);
             root.removeChild(element);
         }
-        Element waves = root.getChildByName("waves");
-        if (waves != null) {
-            Array<Element> waveElements = waves.getChildrenByName("wave");
-            for (Element waveElement : waveElements) {
-                int spawnPointX = waveElement.getIntAttribute("spawntPointX");
-                int spawnPointY = waveElement.getIntAttribute("spawntPointY");
-                int exitPointX = waveElement.getIntAttribute("exitPointX");
-                int exitPointY = waveElement.getIntAttribute("exitPointY");
-                Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
-                Array<Element> units = waveElement.getChildrenByName("unit");
-                for (Element unit : units) {
-                    String unitTemplateName = unit.getAttribute("templateName");
-                    int unitsAmount = Integer.parseInt(unit.getAttribute("amount"));
-                    for (int k = 0; k < unitsAmount; k++) {
-                        wave.addTemplateForUnit(unitTemplateName);
-                    }
-                }
-                waveManager.addWave(wave);
-            }
-        } else {
-            Gdx.app.error("MapLoader:loadTilemap()", "Can't found waves element!");
-        }
         for (int i = 0, j = root.getChildCount(); i < j; i++) {
             Element element = root.getChild(i);
             String name = element.getName();
@@ -222,21 +217,19 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                 loadTileLayer(map, element);
             } else if (name.equals("objectgroup")) {
                 loadObjectGroup(map, element);
-            } else if (name.equals("imagelayer")) {
+            }
+            else if (name.equals("imagelayer")) {
                 loadImageLayer(map, element, tmxFile, imageResolver);
             }
         }
         return map;
     }
 
-    /**
-     * Loads the tilesets
-     *
+    /** Loads the tilesets
      * @param root the root XML element
      * @return a list of filenames for images containing tiles
-     * @throws IOException
-     */
-    protected Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException {
+     * @throws IOException */
+    protected Array<FileHandle> loadTilesets (Element root, FileHandle tmxFile) throws IOException {
         Array<FileHandle> images = new Array<FileHandle>();
         for (Element tileset : root.getChildrenByName("tileset")) {
             String source = tileset.getAttribute("source", null);
@@ -273,14 +266,11 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         return images;
     }
 
-    /**
-     * Loads the images in image layers
-     *
+    /** Loads the images in image layers
      * @param root the root XML element
      * @return a list of filenames for images inside image layers
-     * @throws IOException
-     */
-    protected Array<FileHandle> loadImages(Element root, FileHandle tmxFile) throws IOException {
+     * @throws IOException */
+    protected Array<FileHandle> loadImages (Element root, FileHandle tmxFile) throws IOException {
         Array<FileHandle> images = new Array<FileHandle>();
 
         for (Element imageLayer : root.getChildrenByName("imagelayer")) {
@@ -299,14 +289,13 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         return images;
     }
 
-    /**
-     * Loads the specified tileset data, adding it to the collection of the specified map, given the XML element, the tmxFile and
+    /** Loads the specified tileset data, adding it to the collection of the specified map, given the XML element, the tmxFile and
      * an {@link ImageResolver} used to retrieve the tileset Textures.
-     * <p/>
+     *
      * <p>
      * Default tileset's property keys that are loaded by default are:
      * </p>
-     * <p/>
+     *
      * <ul>
      * <li><em>firstgid</em>, (int, defaults to 1) the first valid global id used for tile numbering</li>
      * <li><em>imagesource</em>, (String, defaults to empty string) the tileset source image filename</li>
@@ -317,17 +306,15 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
      * <li><em>margin</em>, (int, defaults to 0) the tileset margin</li>
      * <li><em>spacing</em>, (int, defaults to 0) the tileset spacing</li>
      * </ul>
-     * <p/>
+     *
      * <p>
      * The values are extracted from the specified Tmx file, if a value can't be found then the default is used.
      * </p>
-     *
-     * @param map           the Map whose tilesets collection will be populated
-     * @param element       the XML element identifying the tileset to load
-     * @param tmxFile       the Filehandle of the tmx file
-     * @param imageResolver the {@link ImageResolver}
-     */
-    protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+     * @param map the Map whose tilesets collection will be populated
+     * @param element the XML element identifying the tileset to load
+     * @param tmxFile the Filehandle of the tmx file
+     * @param imageResolver the {@link ImageResolver} */
+    protected void loadTileSet (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
         if (element.getName().equals("tileset")) {
             String name = element.get("name", null);
             int firstgid = element.getIntAttribute("firstgid", 1);
@@ -444,7 +431,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
 
                         Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
                         IntArray intervals = new IntArray();
-                        for (Element frameElement : animationElement.getChildrenByName("frame")) {
+                        for (Element frameElement: animationElement.getChildrenByName("frame")) {
                             staticTiles.add((StaticTiledMapTile) tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));
                             intervals.add(frameElement.getIntAttribute("duration"));
                         }

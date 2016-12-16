@@ -2,22 +2,12 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.betmansmall.game.GameScreen;
-import com.badlogic.gdx.math.Circle;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
-import com.badlogic.gdx.math.Rectangle; // AlexGor
-import com.badlogic.gdx.math.Vector2;// AlexGor
 
 import java.util.ArrayDeque;
 
@@ -33,17 +23,11 @@ public class Creep {
     private float elapsedTime;
     private float deathElapsedTime;
     public float graphicalCoordinateX, graphicalCoordinateY;
-//    public Rectangle rect; // AlexGor
-    public Circle circle;
-    public Vector2 oldPoint;
-    public Vector2 newPoint; // AlexGor
 
     private TemplateForUnit templateForUnit;
 
     private Direction direction;
     private Animation animation;
-
-    private Body body;
 
     public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
         if(route != null) {
@@ -58,62 +42,21 @@ public class Creep {
             this.templateForUnit = templateForUnit;
 
             this.direction = Direction.UP;
-//<<<<<<< HEAD
-//            setAnimation("walk_");
-//
-//            int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
-//            int halfSizeCellY = GameField.getSizeCellY() / 2;
-//            float coorX = halfSizeCellX * oldPosition.getY() + oldPosition.getX() * halfSizeCellX;
-//            float coorY = halfSizeCellY * oldPosition.getY() - oldPosition.getX() * halfSizeCellY;
-//
-//            BodyDef bodyDef = new BodyDef();
-//            bodyDef.type = BodyDef.BodyType.DynamicBody;
-//            bodyDef.position.set(coorX, coorY);
-//            body = GameField.world.createBody(bodyDef);
-//
-//            PolygonShape polygonShape = new PolygonShape();
-//            polygonShape.setAsBox(16f, 24f);
-//            body.createFixture(polygonShape, 0.5f);
-//            body.setUserData(this);
-////            body.setActive(trues);
-////            body.getFixtureList().get(0).setUserData("creep");
-////            body.createFixture(polygonShape, 0.0f);
-//
-////            FixtureDef fixtureDef = new FixtureDef();
-////            fixtureDef.shape = polygonShape;
-////            fixtureDef.density = 0.5f;
-////            fixtureDef.friction = 0.4f;
-////            fixtureDef.restitution = 0.6f; // Make it bounce a little bit
-////            fixtureDef.isSensor = true;
-//
-////            Fixture fixture = body.createFixture(fixtureDef);
-//            polygonShape.dispose();
-//=======
-
             setAnimation("walk_");
-//            this.rect = new Rectangle(); // AlexGor
-            this.circle = new Circle();
-            this.oldPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
-            this.newPoint = new Vector2(newPosition.getX(), newPosition.getY());
-//>>>>>>> new_input_code
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
     }
 
     private void setAnimation(String action) {
-        try {
-            AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
-            StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
-            TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
-            for (int k = 0; k < staticTiledMapTiles.length; k++) {
-                textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
-            }
-            animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
-//        Gdx.app.log("Creep::setAnimation()", " -- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
-        } catch (Exception exp) {
-            Gdx.app.log("Creep::setAnimation(" + action + direction + ")", " -- CreepName: " + templateForUnit.name + " Exp: " + exp);
+        AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
+        StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+        TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
+        for (int k = 0; k < staticTiledMapTiles.length; k++) {
+            textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
         }
+        animation = new Animation(speed/staticTiledMapTiles.length, textureRegions);
+//        Gdx.app.log("Creep::setAnimation()", " -- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
     }
 
     public void dispose() {
@@ -126,20 +69,8 @@ public class Creep {
     }
 
     public void setGraphicalCoordinates(float x, float y) {
-//        Gdx.app.log("Creep::setGraphicalCoordinates(" + x + ", " + y + ");", " -- Start");
         this.graphicalCoordinateX = x;
         this.graphicalCoordinateY = y;
-//<<<<<<< HEAD
-//        this.body.getPosition().set(x, y);
-//        this.body.setTransform(x, y, body.getAngle());
-////        body.createFixture(polygonShape, 0.0f);
-////        Gdx.app.log("Creep::setGraphicalCoordinates(" + x + ", " + y + ");", " -- END");
-//=======
-//        rect.set(this.graphicalCoordinateX+GameField.getSizeCellX()/3, this.graphicalCoordinateY+GameField.getSizeCellY()/2, 30f, 50f); // AlexGor
-        circle.set(this.graphicalCoordinateX, this.graphicalCoordinateY, 16f); // AlexGor
-//        this.newPoint.set(x, y);
-//        Gdx.app.log("Creep", "setGraphicalCoordinates(" + x + ", " + y + ");");
-//>>>>>>> new_input_code
     }
 
     public Node move(float delta) {
@@ -152,15 +83,6 @@ public class Creep {
                 newPosition = route.pollFirst();
                 int oldX = oldPosition.getX(), oldY = oldPosition.getY();
                 int newX = newPosition.getX(), newY = newPosition.getY();
-
-                int halfSizeCellX = GameField.getSizeCellX() / 2;
-                int halfSizeCellY = GameField.getSizeCellY() / 2;
-                float fVxNew = halfSizeCellX * (newY+1) + newX * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
-                float fVyNew = halfSizeCellY * (newY+1) - newX * halfSizeCellY;
-                float fVxOld = halfSizeCellX * oldY + oldX * halfSizeCellX;
-                float fVyOld = halfSizeCellY * oldY - oldX * halfSizeCellY;
-                this.oldPoint.set(fVxOld, fVyOld);
-                this.newPoint.set(fVxNew, fVyNew);
                 if(newX < oldX && newY > oldY) {
                     direction = Direction.UP;
                 } else if (newX == oldX && newY > oldY) {
@@ -184,7 +106,6 @@ public class Creep {
                     setAnimation("walk_");
                 }
             }
-
             return newPosition;
         } else {
             dispose();
@@ -202,7 +123,7 @@ public class Creep {
             }
             return false;
         }
-        return false;
+        return true;
     }
 
     public boolean changeDeathFrame(float delta) {
@@ -225,15 +146,6 @@ public class Creep {
         return newPosition;
     }
 
-//    public Rectangle getRect() { return circle; } // AlexGor
-    public Circle getRect() {
-        return circle;
-    }
-
-    public float getDistanceofCreep() {
-        return (float) Math.sqrt(oldPoint.dst2(newPoint));
-    }
-
     public void setHp(int hp) {
         this.hp = hp;
     }
@@ -241,9 +153,6 @@ public class Creep {
         return hp;
     }
     public boolean isAlive() {
-        if(animation == null) { // TODO Не верно, нужно исправить.
-            return false;
-        }
         return hp > 0 ? true : false;
     }
 

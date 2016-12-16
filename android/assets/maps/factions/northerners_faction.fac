@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faction name="Northerners">
+	<templateForUnit source="units/unit3_footman.tsx"/>
+	<templateForUnit source="units/unit15_peasant.tsx"/>
+	<templateForTower source="towers/tower_pit.tsx"/>
+	<templateForTower source="towers/icewall_block.tsx"/>
+</faction>

@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="tower_pit" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="archer_tower" tilewidth="64" tileheight="64" tilecount="6" columns="2">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Pit1"/>
-  <property name="radius" value="1"/>
-  <property name="damage" value="10000"/>
-  <property name="size" value="1"/>
-  <property name="cost" value="20"/>
-  <property name="ammoSize" value="20"/>
-  <property name="ammoSpeed" value="1000"/>
-  <property name="reloadTime" value="0"/>
-  <property name="type" value="towerTerrain"/>
-  <property name="capacity" value="10"/>
+  <property name="name" value="archer_tower"/>
+  <property name="radius" value="128"/>
+  <property name="damage" value="10"/>
+  <property name="size" value="2"/>
+  <property name="cost" value="5"/>
+  <property name="ammoSize" value="10"/>
+  <property name="ammoSpeed" value="100"/>
+  <property name="reloadTime" value="1"/>
+  <property name="type" value="tower"/>
   <property name="ammoDistance" value="5"/>
  </properties>
- <image source="../../textures/towers/factionN/pit.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/towers/factionP/archer_tower.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

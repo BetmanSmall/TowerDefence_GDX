@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faction name="Order_of_the_Phoenix">
+	<templateForUnit source="units/unit3_footman.tsx"/>
+	<templateForUnit source="units/unit12_gryphon_rider.tsx"/>
+	<templateForTower source="towers/mage_tower.tsx"/>
+	<templateForTower source="towers/archer_tower.tsx"/>
+</faction>
