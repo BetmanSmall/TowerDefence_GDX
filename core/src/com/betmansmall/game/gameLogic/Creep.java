@@ -36,7 +36,7 @@ public class Creep {
     private Direction direction;
     private Animation animation;
 
-    private Body body;
+//    private Body body;
 
     public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
         if(route != null) {
@@ -58,15 +58,15 @@ public class Creep {
             float coorX = halfSizeCellX * oldPosition.getY() + oldPosition.getX() * halfSizeCellX;
             float coorY = halfSizeCellY * oldPosition.getY() - oldPosition.getX() * halfSizeCellY;
 
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.DynamicBody;
-            bodyDef.position.set(coorX, coorY);
-            body = GameField.world.createBody(bodyDef);
-
-            PolygonShape polygonShape = new PolygonShape();
-            polygonShape.setAsBox(16f, 24f);
-            body.createFixture(polygonShape, 0.5f);
-            body.setUserData(this);
+//            BodyDef bodyDef = new BodyDef();
+//            bodyDef.type = BodyDef.BodyType.DynamicBody;
+//            bodyDef.position.set(coorX, coorY);
+//            body = GameField.world.createBody(bodyDef);
+//
+//            PolygonShape polygonShape = new PolygonShape();
+//            polygonShape.setAsBox(16f, 24f);
+//            body.createFixture(polygonShape, 0.5f);
+//            body.setUserData(this);
 //            body.setActive(trues);
 //            body.getFixtureList().get(0).setUserData("creep");
 //            body.createFixture(polygonShape, 0.0f);
@@ -79,7 +79,7 @@ public class Creep {
 //            fixtureDef.isSensor = true;
 
 //            Fixture fixture = body.createFixture(fixtureDef);
-            polygonShape.dispose();
+//            polygonShape.dispose();
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
@@ -113,8 +113,8 @@ public class Creep {
 //        Gdx.app.log("Creep::setGraphicalCoordinates(" + x + ", " + y + ");", " -- Start");
         this.graphicalCoordinateX = x;
         this.graphicalCoordinateY = y;
-        this.body.getPosition().set(x, y);
-        this.body.setTransform(x, y, body.getAngle());
+//        this.body.getPosition().set(x, y);
+//        this.body.setTransform(x, y, body.getAngle());
 //        body.createFixture(polygonShape, 0.0f);
 //        Gdx.app.log("Creep::setGraphicalCoordinates(" + x + ", " + y + ");", " -- END");
     }

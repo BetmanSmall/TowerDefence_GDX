@@ -3,7 +3,6 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,14 +10,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
-
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
+import com.betmansmall.game.gameLogic.GameField;
 
 public class GameScreen implements Screen {
     private static final float MAX_ZOOM = 50f; //max size

@@ -193,7 +193,45 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             loadTileSet(map, element, tmxFile, imageResolver);
             root.removeChild(element);
         }
+
+        for (int i = 0, j = root.getChildCount(); i < j; i++) {
+            Element element = root.getChild(i);
+            String name = element.getName();
+            if (name.equals("layer")) {
+                loadTileLayer(map, element);
+            } else if (name.equals("objectgroup")) {
+                loadObjectGroup(map, element);
+            } else if (name.equals("imagelayer")) {
+                loadImageLayer(map, element, tmxFile, imageResolver);
+            }
+        }
         Element waves = root.getChildByName("waves");
+        String sourceWaves = waves.getAttribute("source", null);
+        if (sourceWaves != null) {
+            FileHandle tsx = getRelativeFileHandle(tmxFile, sourceWaves);
+            try {
+                root = xml.parse(tsx);
+                Array<Element> waveElements = root.getChildrenByName("wave");
+                for (Element waveElement : waveElements) {
+                    int spawnPointX = waveElement.getIntAttribute("spawntPointX");
+                    int spawnPointY = waveElement.getIntAttribute("spawntPointY");
+                    int exitPointX = waveElement.getIntAttribute("exitPointX");
+                    int exitPointY = waveElement.getIntAttribute("exitPointY");
+                    Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
+                    Array<Element> units = waveElement.getChildrenByName("unit");
+                    for (Element unit : units) {
+                        String unitTemplateName = unit.getAttribute("templateName");
+                        int unitsAmount = Integer.parseInt(unit.getAttribute("amount"));
+                        for (int k = 0; k < unitsAmount; k++) {
+                            wave.addTemplateForUnit(unitTemplateName);
+                        }
+                    }
+                    waveManager.addWave(wave);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         if (waves != null) {
             Array<Element> waveElements = waves.getChildrenByName("wave");
             for (Element waveElement : waveElements) {
@@ -214,17 +252,6 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             }
         } else {
             Gdx.app.error("MapLoader:loadTilemap()", "Can't found waves element!");
-        }
-        for (int i = 0, j = root.getChildCount(); i < j; i++) {
-            Element element = root.getChild(i);
-            String name = element.getName();
-            if (name.equals("layer")) {
-                loadTileLayer(map, element);
-            } else if (name.equals("objectgroup")) {
-                loadObjectGroup(map, element);
-            } else if (name.equals("imagelayer")) {
-                loadImageLayer(map, element, tmxFile, imageResolver);
-            }
         }
         return map;
     }

@@ -14,7 +14,6 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-//import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
@@ -29,12 +28,13 @@ import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
-import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Tools;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 import java.util.ArrayDeque;
+
+//import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 /**
  * Created by betmansmall on 08.02.2016.
@@ -113,17 +113,17 @@ public class GameField {
             Tower tower = null;
             Object object1 = contact.getFixtureA().getUserData();
             Object object2 = contact.getFixtureB().getUserData();
-            if(object1 instanceof Creep) {
-                creep = (Creep)object1;
-            } else if(object2 instanceof Creep) {
-                creep = (Creep)object2;
+            if (object1 instanceof Creep) {
+                creep = (Creep) object1;
+            } else if (object2 instanceof Creep) {
+                creep = (Creep) object2;
             }
-            if(object1 instanceof Tower) {
-                tower = (Tower)object1;
-            } else if(object2 instanceof Tower) {
+            if (object1 instanceof Tower) {
+                tower = (Tower) object1;
+            } else if (object2 instanceof Tower) {
                 tower = (Tower) object2;
             }
-            if(creep != null && tower != null) {
+            if (creep != null && tower != null) {
                 Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Creep:" + creep.getTemplateForUnit().name);
                 Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Tower:" + tower.getTemplateForTower().name);
             }
@@ -138,7 +138,9 @@ public class GameField {
         public void postSolve(Contact contact, ContactImpulse impulse) {
 //            Gdx.app.log("MyBox2dContactListener", "postSolve(" + contact + ", " + impulse+ ");");
         }
-    };
+    }
+
+    ;
 
     public GameField(String mapName) {
         waveManager = new WaveManager();
@@ -162,10 +164,10 @@ public class GameField {
             Gdx.app.error("GameField::GameField()", " -- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
         }
 
-        myBox2dContactListener = new MyBox2dContactListener();
-        world = new World(new Vector2(0f, 0f), true);
-        world.setContactListener(myBox2dContactListener);
-        debugRenderer = new Box2DDebugRenderer();
+//        myBox2dContactListener = new MyBox2dContactListener();
+//        world = new World(new Vector2(0f, 0f), true);
+//        world.setContactListener(myBox2dContactListener);
+//        debugRenderer = new Box2DDebugRenderer();
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
 
@@ -298,12 +300,12 @@ public class GameField {
             renderer.setView(camera);
 ////            renderer.render();
             renderer.getBatch().begin();
-            for(MapLayer mapLayer: map.getLayers()) {
-                if(mapLayer instanceof TiledMapTileLayer) {
+            for (MapLayer mapLayer : map.getLayers()) {
+                if (mapLayer instanceof TiledMapTileLayer) {
                     TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
                     String background = layer.getProperties().get("background", String.class);
 //                    if(background != null) {
-                        renderer.renderTileLayer(layer);
+                    renderer.renderTileLayer(layer);
 //                    }
                 }
             }
@@ -352,8 +354,8 @@ public class GameField {
         bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
         spriteBatch.end();
 
-        debugRenderer.render(world, camera.combined);
-        world.step(1/60f, 6, 2);
+//        debugRenderer.render(world, camera.combined);
+//        world.step(1 / 60f, 6, 2);
     }
 
     private void drawGrid(OrthographicCamera camera) {
@@ -415,7 +417,7 @@ public class GameField {
                 fVy -= (sizeCellY / 2 / speed) * (speed - elapsedTime);
             }
 
-            creep.setGraphicalCoordinates(fVx + halfSizeCellX , fVy + halfSizeCellY); // TODO GAVNO KODE
+            creep.setGraphicalCoordinates(fVx + halfSizeCellX, fVy + halfSizeCellY); // TODO GAVNO KODE
 
             TextureRegion curentFrame;
             if (creep.isAlive()) {
@@ -542,14 +544,14 @@ public class GameField {
         GridPoint2 spawnPoint = waveManager.getSpawnPoint();
         GridPoint2 exitPoint = waveManager.getExitPoint();
 
-        if(spawnPoint != null) {
+        if (spawnPoint != null) {
             shapeRenderer.setColor(Color.CYAN);
             xPoint = halfSizeCellX * (spawnPoint.y + 1) + spawnPoint.x * halfSizeCellX;
             yPoint = halfSizeCellY * (spawnPoint.y + 1) - spawnPoint.x * halfSizeCellY;
             shapeRenderer.circle(xPoint, yPoint, 3);
         }
 
-        if(exitPoint != null) {
+        if (exitPoint != null) {
             shapeRenderer.setColor(Color.ORANGE);
             xPoint = halfSizeCellX * (exitPoint.y + 1) + exitPoint.x * halfSizeCellX;
             yPoint = halfSizeCellY * (exitPoint.y + 1) - exitPoint.x * halfSizeCellY;
@@ -683,11 +685,11 @@ public class GameField {
         if (templateName != null) {
             GridPoint2 spawnPoint = waveManager.getSpawnPoint();
             GridPoint2 exitPoint = waveManager.getExitPoint();
-            if(spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {
+            if (spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {
                 Gdx.app.log("GameField::spawnCreep()", " spawnPoint bad!");
                 return;
             }
-            if(exitPoint == null || !field[exitPoint.x][exitPoint.y].isEmpty()) {
+            if (exitPoint == null || !field[exitPoint.x][exitPoint.y].isEmpty()) {
                 Gdx.app.log("GameField::spawnCreep()", " exitPoint bad!");
                 return;
             }

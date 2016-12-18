@@ -26,7 +26,7 @@ public class Tower {
     private TiledMapTile idleTile;
     public Array<Shell> shells;
 
-    private Body body;
+//    private Body body;
 
     public Tower(GridPoint2 position, TemplateForTower templateForTower){
         this.position = position;
@@ -44,17 +44,17 @@ public class Tower {
         float coorX = halfSizeCellX * position.y + position.x * halfSizeCellX;
         float coorY = halfSizeCellY * position.y - position.x * halfSizeCellY;
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(coorX + halfSizeCellX, coorY + halfSizeCellY*2);
-        body = GameField.world.createBody(bodyDef);
+//        BodyDef bodyDef = new BodyDef();
+//        bodyDef.type = BodyDef.BodyType.StaticBody;
+//        bodyDef.position.set(coorX + halfSizeCellX, coorY + halfSizeCellY*2);
+//        body = GameField.world.createBody(bodyDef);
 //        body.setActive(true);
 //        body.getFixtureList().get(0).setUserData("tower");
 
-        CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(100f);
-        body.createFixture(circleShape, 0.0f);
-        body.setUserData(this);
+//        CircleShape circleShape = new CircleShape();
+//        circleShape.setRadius(100f);
+//        body.createFixture(circleShape, 0.0f);
+//        body.setUserData(this);
 //        body.setTransform(coorX + halfSizeCellX, coorY + halfSizeCellY*2, body.getAngle());
 
 //        FixtureDef fixtureDef = new FixtureDef();
@@ -65,7 +65,7 @@ public class Tower {
 //        fixtureDef.isSensor = true;
 //
 //        Fixture fixture = body.createFixture(fixtureDef);
-        circleShape.dispose();
+//        circleShape.dispose();
     }
 
     public void dispose() {
