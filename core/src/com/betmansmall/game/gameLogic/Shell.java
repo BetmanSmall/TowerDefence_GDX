@@ -65,12 +65,13 @@ public class Shell {
                         }
                     }
                 }
-            }
-            if(iIsAlive) {
-                return 1;
-            } else {
                 return 0;
             }
+//            if(iIsAlive) {
+                return 1;
+//            } else {
+//                return 0;
+//            }
         }
         return -1;
     }

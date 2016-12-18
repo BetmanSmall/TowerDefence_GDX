@@ -3,6 +3,7 @@
  <tileset firstgid="1" source="other/terrain.tsx"/>
  <tileset firstgid="357" source="other/barracks.tsx"/>
  <tileset firstgid="359" source="other/fortress.tsx"/>
+ <waves source="waves/waves2.ws"/>
  <layer name="background" width="128" height="128">
   <properties>
    <property name="background" value="ground"/>

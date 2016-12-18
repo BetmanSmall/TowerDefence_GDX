@@ -42,25 +42,29 @@ public class Tower {
 
         this.templateForTower = templateForTower;
         this.idleTile = templateForTower.idleTile;
-//<<<<<<< HEAD
         this.shells = new Array<Shell>();
 
-        int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
-        int halfSizeCellY = GameField.getSizeCellY() / 2;
-        float coorX = halfSizeCellX * position.y + position.x * halfSizeCellX;
-        float coorY = halfSizeCellY * position.y - position.x * halfSizeCellY;
+        this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
+        this.shells = new Array<Shell>();
+//        this.bulletSpawnPoint = new Vector2(getGraphCorX(), getGraphCorY());
+        this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radius); // AlexGor
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(coorX + halfSizeCellX, coorY + halfSizeCellY*2);
-        body = GameField.world.createBody(bodyDef);
+//<<<<<<< BOX2d block
+//        int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
+//        int halfSizeCellY = GameField.getSizeCellY() / 2;
+//        float coorX = halfSizeCellX * position.y + position.x * halfSizeCellX;
+//        float coorY = halfSizeCellY * position.y - position.x * halfSizeCellY;
+//        BodyDef bodyDef = new BodyDef();
+//        bodyDef.type = BodyDef.BodyType.StaticBody;
+//        bodyDef.position.set(coorX + halfSizeCellX, coorY + halfSizeCellY*2);
+//        body = GameField.world.createBody(bodyDef);
 //        body.setActive(true);
 //        body.getFixtureList().get(0).setUserData("tower");
 
-        CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(100f);
-        body.createFixture(circleShape, 0.0f);
-        body.setUserData(this);
+//        CircleShape circleShape = new CircleShape();
+//        circleShape.setRadius(100f);
+//        body.createFixture(circleShape, 0.0f);
+//        body.setUserData(this);
 //        body.setTransform(coorX + halfSizeCellX, coorY + halfSizeCellY*2, body.getAngle());
 
 //        FixtureDef fixtureDef = new FixtureDef();
@@ -71,13 +75,8 @@ public class Tower {
 //        fixtureDef.isSensor = true;
 //
 //        Fixture fixture = body.createFixture(fixtureDef);
-        circleShape.dispose();
-//=======
-        this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
-        this.shells = new Array<Shell>();
-        this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radius); // AlexGor
-//        this.bulletSpawnPoint = new Vector2(getGraphCorX(), getGraphCorY());
-//>>>>>>> new_input_code
+//        circleShape.dispose();
+//        =======
     }
 
     public void dispose() {

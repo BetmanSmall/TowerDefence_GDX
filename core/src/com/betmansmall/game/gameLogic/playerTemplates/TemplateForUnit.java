@@ -129,6 +129,13 @@ public class TemplateForUnit {
                             } else if(actionAndDirection.equals("walk_" + Direction.DOWN_RIGHT)) {
                                 animations.put("walk_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
                             }
+                            if(actionAndDirection.equals("death_" + Direction.UP_RIGHT)) {
+                                animations.put("death_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                            } else if(actionAndDirection.equals("death_" + Direction.RIGHT)) {
+                                animations.put("death_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
+                            } else if(actionAndDirection.equals("death_" + Direction.DOWN_RIGHT)) {
+                                animations.put("death_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                            }
                         }
                     }
                 }

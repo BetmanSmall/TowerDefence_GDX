@@ -4,17 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-
-import java.io.File;
-
-import javax.swing.JFileChooser;
 
 /**
  * Created by betma on 09.05.2016.
@@ -115,9 +110,9 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //        if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
-            camera.position.add(-deltaX * camera.zoom, 0, 0);
+        camera.position.add(-deltaX * camera.zoom, 0, 0);
 //        if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
-            camera.position.add(0, deltaY * camera.zoom, 0);
+        camera.position.add(0, deltaY * camera.zoom, 0);
         camera.update();
         return false;
     }

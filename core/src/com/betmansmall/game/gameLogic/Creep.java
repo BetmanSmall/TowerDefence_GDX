@@ -6,16 +6,16 @@ import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+//import com.badlogic.gdx.physics.box2d.Body;
+//import com.badlogic.gdx.physics.box2d.BodyDef;
+//import com.badlogic.gdx.physics.box2d.Fixture;
+//import com.badlogic.gdx.physics.box2d.FixtureDef;
+//import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.betmansmall.game.GameScreen;
-import com.badlogic.gdx.math.Circle;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle; // AlexGor
 import com.badlogic.gdx.math.Vector2;// AlexGor
 
@@ -43,7 +43,7 @@ public class Creep {
     private Direction direction;
     private Animation animation;
 
-    private Body body;
+//    private Body body;
 
     public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
         if(route != null) {
@@ -58,9 +58,12 @@ public class Creep {
             this.templateForUnit = templateForUnit;
 
             this.direction = Direction.UP;
-//<<<<<<< HEAD
-//            setAnimation("walk_");
-//
+            setAnimation("walk_");
+            this.circle = new Circle();
+            this.oldPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
+            this.newPoint = new Vector2(newPosition.getX(), newPosition.getY());
+
+//<<<<<<< BOX2d block//
 //            int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
 //            int halfSizeCellY = GameField.getSizeCellY() / 2;
 //            float coorX = halfSizeCellX * oldPosition.getY() + oldPosition.getX() * halfSizeCellX;
@@ -89,13 +92,6 @@ public class Creep {
 ////            Fixture fixture = body.createFixture(fixtureDef);
 //            polygonShape.dispose();
 //=======
-
-            setAnimation("walk_");
-//            this.rect = new Rectangle(); // AlexGor
-            this.circle = new Circle();
-            this.oldPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
-            this.newPoint = new Vector2(newPosition.getX(), newPosition.getY());
-//>>>>>>> new_input_code
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
