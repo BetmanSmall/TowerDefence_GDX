@@ -17,12 +17,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.World;
+//import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+//import com.badlogic.gdx.physics.box2d.Contact;
+//import com.badlogic.gdx.physics.box2d.ContactImpulse;
+//import com.badlogic.gdx.physics.box2d.ContactListener;
+//import com.badlogic.gdx.physics.box2d.Manifold;
+//import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Circle;
@@ -83,9 +83,9 @@ public class GameField {
     public boolean isDrawableRoutes = true;
     public boolean isDrawableGridNav = true;
 
-    private MyBox2dContactListener myBox2dContactListener;
-    private Box2DDebugRenderer debugRenderer;
-    public static World world;
+//    private MyBox2dContactListener myBox2dContactListener;
+//    private Box2DDebugRenderer debugRenderer;
+//    public static World world;
 
     private int halfSizeCellX;
     private int halfSizeCellY;
@@ -117,47 +117,45 @@ public class GameField {
     private float stateTime;
     //TEST ZONE2
 
-    public class MyBox2dContactListener implements ContactListener {
-        @Override
-        public void endContact(Contact contact) {
-            Gdx.app.log("MyBox2dContactListener", "endContact(" + contact + ");");
-        }
-
-        @Override
-        public void beginContact(Contact contact) {
-            Gdx.app.log("MyBox2dContactListener", "beginContact(" + contact + ");");
-            Creep creep = null;
-            Tower tower = null;
-            Object object1 = contact.getFixtureA().getUserData();
-            Object object2 = contact.getFixtureB().getUserData();
-            if (object1 instanceof Creep) {
-                creep = (Creep) object1;
-            } else if (object2 instanceof Creep) {
-                creep = (Creep) object2;
-            }
-            if (object1 instanceof Tower) {
-                tower = (Tower) object1;
-            } else if (object2 instanceof Tower) {
-                tower = (Tower) object2;
-            }
-            if (creep != null && tower != null) {
-                Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Creep:" + creep.getTemplateForUnit().name);
-                Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Tower:" + tower.getTemplateForTower().name);
-            }
-        }
-
-        @Override
-        public void preSolve(Contact contact, Manifold oldManifold) {
-//            Gdx.app.log("MyBox2dContactListener", "preSolve(" + contact + ", " + oldManifold + ");");
-        }
-
-        @Override
-        public void postSolve(Contact contact, ContactImpulse impulse) {
-//            Gdx.app.log("MyBox2dContactListener", "postSolve(" + contact + ", " + impulse+ ");");
-        }
-    }
-
-    ;
+//    public class MyBox2dContactListener implements ContactListener {
+//        @Override
+//        public void endContact(Contact contact) {
+//            Gdx.app.log("MyBox2dContactListener", "endContact(" + contact + ");");
+//        }
+//
+//        @Override
+//        public void beginContact(Contact contact) {
+//            Gdx.app.log("MyBox2dContactListener", "beginContact(" + contact + ");");
+//            Creep creep = null;
+//            Tower tower = null;
+//            Object object1 = contact.getFixtureA().getUserData();
+//            Object object2 = contact.getFixtureB().getUserData();
+//            if (object1 instanceof Creep) {
+//                creep = (Creep) object1;
+//            } else if (object2 instanceof Creep) {
+//                creep = (Creep) object2;
+//            }
+//            if (object1 instanceof Tower) {
+//                tower = (Tower) object1;
+//            } else if (object2 instanceof Tower) {
+//                tower = (Tower) object2;
+//            }
+//            if (creep != null && tower != null) {
+//                Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Creep:" + creep.getTemplateForUnit().name);
+//                Gdx.app.log("MyBox2dContactListener", "beginContact(); -- Tower:" + tower.getTemplateForTower().name);
+//            }
+//        }
+//
+//        @Override
+//        public void preSolve(Contact contact, Manifold oldManifold) {
+////            Gdx.app.log("MyBox2dContactListener", "preSolve(" + contact + ", " + oldManifold + ");");
+//        }
+//
+//        @Override
+//        public void postSolve(Contact contact, ContactImpulse impulse) {
+////            Gdx.app.log("MyBox2dContactListener", "postSolve(" + contact + ", " + impulse+ ");");
+//        }
+//    };
 
     public GameField(String mapName) {
         waveManager = new WaveManager();
