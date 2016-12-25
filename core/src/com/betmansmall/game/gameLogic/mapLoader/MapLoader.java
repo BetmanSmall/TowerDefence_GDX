@@ -206,31 +206,36 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             }
         }
         Element waves = root.getChildByName("waves");
-        String sourceWaves = waves.getAttribute("source", null);
-        if (sourceWaves != null) {
-            FileHandle tsx = getRelativeFileHandle(tmxFile, sourceWaves);
-            try {
-                root = xml.parse(tsx);
-                Array<Element> waveElements = root.getChildrenByName("wave");
-                for (Element waveElement : waveElements) {
-                    int spawnPointX = waveElement.getIntAttribute("spawntPointX");
-                    int spawnPointY = waveElement.getIntAttribute("spawntPointY");
-                    int exitPointX = waveElement.getIntAttribute("exitPointX");
-                    int exitPointY = waveElement.getIntAttribute("exitPointY");
-                    Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
-                    Array<Element> units = waveElement.getChildrenByName("unit");
-                    for (Element unit : units) {
-                        String unitTemplateName = unit.getAttribute("templateName");
-                        int unitsAmount = Integer.parseInt(unit.getAttribute("amount"));
-                        for (int k = 0; k < unitsAmount; k++) {
-                            wave.addTemplateForUnit(unitTemplateName);
+        if(waves != null) {
+            String sourceWaves = waves.getAttribute("source", null);
+            if (sourceWaves != null) {
+                FileHandle tsx = getRelativeFileHandle(tmxFile, sourceWaves);
+                try {
+                    root = xml.parse(tsx);
+                    Array<Element> waveElements = root.getChildrenByName("wave");
+                    for (Element waveElement : waveElements) {
+                        int spawnPointX = waveElement.getIntAttribute("spawntPointX");
+                        int spawnPointY = waveElement.getIntAttribute("spawntPointY");
+                        int exitPointX = waveElement.getIntAttribute("exitPointX");
+                        int exitPointY = waveElement.getIntAttribute("exitPointY");
+                        Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
+                        Array<Element> units = waveElement.getChildrenByName("unit");
+                        for (Element unit : units) {
+                            String unitTemplateName = unit.getAttribute("templateName");
+                            int unitsAmount = Integer.parseInt(unit.getAttribute("amount"));
+                            for (int k = 0; k < unitsAmount; k++) {
+                                wave.addTemplateForUnit(unitTemplateName);
+                            }
                         }
+                        waveManager.addWave(wave);
                     }
-                    waveManager.addWave(wave);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } else {
+//            waveManager.addWave();
+            Gdx.app.error("MapLoader", "loadTilemap(); -- not found waves block in map:" + tmxFile);
         }
         if (waves != null) {
             Array<Element> waveElements = waves.getChildrenByName("wave");

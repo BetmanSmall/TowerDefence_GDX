@@ -189,6 +189,29 @@ public class GameField {
 //        debugRenderer = new Box2DDebugRenderer();
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
+        if(waveManager.waves.size == 0) {
+            GridPoint2 spawnPoint = new GridPoint2(-1, -1);
+            for(int y = 0; y < sizeFieldY; y++) {
+                for (int x = 0; x < sizeFieldX; x++) {
+                    if (cellIsEmpty(x, y)) {
+                        spawnPoint.set(x, y);
+                    }
+                }
+            }
+            GridPoint2 exitPoint = new GridPoint2(-1, -1);
+            for(int y = sizeFieldY-1; y >= 0; y--) {
+                for (int x = sizeFieldX-1; x >= 0; x--) {
+                    if (cellIsEmpty(x, y)) {
+                        exitPoint.set(x, y);
+                    }
+                }
+            }
+            Wave wave = new Wave(spawnPoint, exitPoint);
+            for(int k = 0; k < 10; k++) {
+                wave.addTemplateForUnit(factionsManager.getRandomTemplateForUnitFromFirstFaction().getTemplateName());
+            }
+            waveManager.addWave(wave);
+        }
 
 //        TiledMapTileSets tileSets = map.getTileSets();
 //        for (TiledMapTileSet tileSet : tileSets) {

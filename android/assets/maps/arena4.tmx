@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="64" height="64" tilewidth="64" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
- <tileset firstgid="161" source="creeps/unit1_grunt.tsx"/>
- <tileset firstgid="256" source="creeps/unit2_troll_axethrower.tsx"/>
- <tileset firstgid="351" source="towers/tower1_scout.tsx"/>
- <tileset firstgid="357" source="towers/tower2_scout.tsx"/>
- <tileset firstgid="363" source="towers/tower3_cannon.tsx"/>
- <tileset firstgid="369" source="towers/tower4_cannon.tsx"/>
- <tileset firstgid="375" source="towers/tower5_scout.tsx"/>
  <waves source="waves/waves1.ws"/>
  <layer name="layer0" width="64" height="64">
   <properties>
