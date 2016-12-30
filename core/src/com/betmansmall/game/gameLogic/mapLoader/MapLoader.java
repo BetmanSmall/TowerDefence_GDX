@@ -485,19 +485,40 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             int spawnPointY = waveElement.getIntAttribute("spawntPointY");
             int exitPointX = waveElement.getIntAttribute("exitPointX");
             int exitPointY = waveElement.getIntAttribute("exitPointY");
-            int spawnInterval = waveElement.getIntAttribute("spawnInterval", 0);
+            float spawnInterval = waveElement.getFloat("spawnInterval", 0.0f);
             Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
             wave.spawnInterval = spawnInterval;
-            Array<Element> units = waveElement.getChildrenByName("unit");
-            for (Element unit : units) {
-                String unitTemplateName = unit.getAttribute("templateName");
-                int unitsAmount = unit.getIntAttribute("amount");
-                int delay = unit.getIntAttribute("delay", 0);
-                for (int k = 0; k < unitsAmount; k++) {
-                    wave.addTemplateForUnit(unitTemplateName);
-                    wave.addDelayForUnit(delay);
-                }
+            int actionsCount = waveElement.getChildCount();
+            for(int a = 0; a < actionsCount; a++) {
+                Element action = waveElement.getChild(a);
+//                String sAction = action.getName();
+//                if(sAction.equals("unit")) {
+                    float delay = action.getFloat("delay", 0.0f);
+                    if(delay > 0f) {
+                        wave.addAction("delay=" + delay);
+                    }
+                    String unitTemplateName = action.getAttribute("templateName");
+
+                    float interval = action.getFloat("interval", 0.0f);
+                    int amount = action.getInt("amount", 0);
+                    for(int u = 0; u < amount; u++) {
+                        if(interval > 0f) {
+                            wave.addAction("interval=" + interval);
+                        }
+                        wave.addAction(unitTemplateName);
+                    }
+//                }
             }
+//            Array<Element> units = waveElement.getChildrenByName("unit");
+//            for (Element unit : units) {
+//                String unitTemplateName = unit.getAttribute("templateName");
+//                int unitsAmount = unit.getIntAttribute("amount");
+//                int delay = unit.getIntAttribute("delay", 0);
+//                for (int k = 0; k < unitsAmount; k++) {
+//                    wave.addTemplateForUnit(unitTemplateName);
+//                    wave.addDelayForUnit(delay);
+//                }
+//            }
             waveManager.addWave(wave);
         }
     }

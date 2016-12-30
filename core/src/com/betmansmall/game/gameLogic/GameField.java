@@ -205,8 +205,9 @@ public class GameField {
                 }
             }
             Wave wave = new Wave(spawnPoint, exitPoint);
+//            wave.spawnInterval = 1f;
             for(int k = 0; k < 10; k++) {
-                wave.addTemplateForUnit(factionsManager.getRandomTemplateForUnitFromFirstFaction().getTemplateName());
+                wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().getTemplateName());
             }
             waveManager.addWave(wave);
         }
@@ -240,7 +241,7 @@ public class GameField {
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = true;
         gameSpeed = 1.0f;
-        maxOfMissedCreeps = 7;
+        maxOfMissedCreeps = 1000;
         missedCreeps = 0;
         gamerGold = 10000;
         // GAME INTERFACE ZONE2
@@ -803,6 +804,10 @@ public class GameField {
     private void spawnCreep(float delta) {
         String templateName = waveManager.getNextNameTemplateForUnitForSpawnCreep(delta);
         if (templateName != null) {
+            if(templateName.contains("delay")) {
+                Gdx.app.log("GameField", "spawnCreep(); -- " + templateName);
+                return;
+            }
             GridPoint2 spawnPoint = waveManager.getSpawnPoint();
             GridPoint2 exitPoint = waveManager.getExitPoint();
             if (spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {

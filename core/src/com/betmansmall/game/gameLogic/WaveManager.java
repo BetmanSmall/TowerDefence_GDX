@@ -2,6 +2,7 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
+import com.sun.org.apache.bcel.internal.generic.FLOAD;
 
 /**
  * Created by betmansmall on 29.03.2016.
@@ -9,7 +10,7 @@ import com.badlogic.gdx.utils.Array;
 public class WaveManager {
     public Array<Wave> waves;
 
-    public float intervalForSpawnCreeps = 1f;
+    public float intervalForSpawnCreeps = 0f;
     public float elapsedTimeForSpawn = 0f;
 
     WaveManager() {
@@ -20,28 +21,37 @@ public class WaveManager {
         this.waves.add(wave);
     }
 
+    /**
+     *
+     * @param delta
+     * @return
+     */
     public String getNextNameTemplateForUnitForSpawnCreep(float delta) {
         elapsedTimeForSpawn += delta;
         if (elapsedTimeForSpawn >= intervalForSpawnCreeps) {
             elapsedTimeForSpawn = 0f;
             if (waves.size != 0) {
-                String templateName = waves.first().units.pollFirst();
-                if (templateName == null) {
+                Wave wave = waves.first();
+                String action = wave.actions.pollFirst();
+                if(action == null) {
                     waves.removeIndex(0);
                     if (waves.size != 0) {
-                        return waves.first().units.pollFirst();
+                        return wave.actions.pollFirst();
                     } else {
                         return null;
                     }
+                } else if(action.contains("interval") || action.contains("delay") ) {
+                    intervalForSpawnCreeps = Float.parseFloat(action.substring(action.indexOf("=")+1, action.length())) + wave.spawnInterval;
+                    return action;
+                } else {
+                    intervalForSpawnCreeps = 0f;
+                    return action;
                 }
-                intervalForSpawnCreeps = waves.first().delay.pollFirst();
-                intervalForSpawnCreeps += waves.first().spawnInterval;
-                return templateName;
             } else {
                 return null;
             }
         }
-        return null;
+        return "delay:" + elapsedTimeForSpawn + " intervalForSpawnCreeps:" + intervalForSpawnCreeps;
     }
 
     public GridPoint2 getSpawnPoint() {
@@ -58,10 +68,10 @@ public class WaveManager {
         return null;
     }
 
-    public int getNumberOfCreeps() {
+    public int getNumberOfCreeps() { // not creeps | actions
         int creeps = 0;
         for (Wave wave : waves) {
-            creeps += wave.units.size();
+            creeps += wave.actions.size();
         }
         return creeps;
     }

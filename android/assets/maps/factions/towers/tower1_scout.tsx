@@ -7,7 +7,7 @@
   <property name="damage" value="5"/>
   <property name="size" value="1"/>
   <property name="cost" value="10"/>
-  <property name="ammoSize" value="5"/>
+  <property name="ammoSize" value="10"/>
   <property name="ammoSpeed" value="300"/>
   <property name="reloadTime" value="0.2"/>
   <property name="type" value="tower"/>
