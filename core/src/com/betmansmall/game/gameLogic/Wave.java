@@ -13,14 +13,20 @@ public class Wave {
     public ArrayDeque<String> units;
     public GridPoint2 spawnPoint;
     public GridPoint2 exitPoint;
+    public ArrayDeque<Integer> delay;
+    public int spawnInterval;
 
     public Wave(GridPoint2 spawnPoint, GridPoint2 exitPoint) {
         this.units = new ArrayDeque<String>();
+        this.delay = new ArrayDeque<Integer>();
         this.spawnPoint = spawnPoint;
         this.exitPoint = exitPoint;
     }
 
     public void addTemplateForUnit(String unit) {
         this.units.add(unit);
+    }
+    public void addDelayForUnit(int delay){
+        this.delay.add(delay);
     }
 }

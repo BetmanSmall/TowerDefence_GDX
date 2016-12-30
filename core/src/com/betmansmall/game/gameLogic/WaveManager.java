@@ -34,6 +34,8 @@ public class WaveManager {
                         return null;
                     }
                 }
+                intervalForSpawnCreeps = waves.first().delay.pollFirst();
+                intervalForSpawnCreeps += waves.first().spawnInterval;
                 return templateName;
             } else {
                 return null;

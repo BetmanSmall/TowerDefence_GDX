@@ -211,52 +211,16 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             if (sourceWaves != null) {
                 FileHandle tsx = getRelativeFileHandle(tmxFile, sourceWaves);
                 try {
-                    root = xml.parse(tsx);
-                    Array<Element> waveElements = root.getChildrenByName("wave");
-                    for (Element waveElement : waveElements) {
-                        int spawnPointX = waveElement.getIntAttribute("spawntPointX");
-                        int spawnPointY = waveElement.getIntAttribute("spawntPointY");
-                        int exitPointX = waveElement.getIntAttribute("exitPointX");
-                        int exitPointY = waveElement.getIntAttribute("exitPointY");
-                        Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
-                        Array<Element> units = waveElement.getChildrenByName("unit");
-                        for (Element unit : units) {
-                            String unitTemplateName = unit.getAttribute("templateName");
-                            int unitsAmount = Integer.parseInt(unit.getAttribute("amount"));
-                            for (int k = 0; k < unitsAmount; k++) {
-                                wave.addTemplateForUnit(unitTemplateName);
-                            }
-                        }
-                        waveManager.addWave(wave);
-                    }
+                    Element rootwaves = xml.parse(tsx);
+                    wavesParser(rootwaves);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            } else {
+                wavesParser(waves);
             }
         } else {
-//            waveManager.addWave();
             Gdx.app.error("MapLoader", "loadTilemap(); -- not found waves block in map:" + tmxFile);
-        }
-        if (waves != null) {
-            Array<Element> waveElements = waves.getChildrenByName("wave");
-            for (Element waveElement : waveElements) {
-                int spawnPointX = waveElement.getIntAttribute("spawntPointX");
-                int spawnPointY = waveElement.getIntAttribute("spawntPointY");
-                int exitPointX = waveElement.getIntAttribute("exitPointX");
-                int exitPointY = waveElement.getIntAttribute("exitPointY");
-                Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
-                Array<Element> units = waveElement.getChildrenByName("unit");
-                for (Element unit : units) {
-                    String unitTemplateName = unit.getAttribute("templateName");
-                    int unitsAmount = Integer.parseInt(unit.getAttribute("amount"));
-                    for (int k = 0; k < unitsAmount; k++) {
-                        wave.addTemplateForUnit(unitTemplateName);
-                    }
-                }
-                waveManager.addWave(wave);
-            }
-        } else {
-            Gdx.app.error("MapLoader:loadTilemap()", "Can't found waves element!");
         }
         return map;
     }
@@ -511,6 +475,30 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                 loadProperties(tileset.getProperties(), properties);
             }
             map.getTileSets().addTileSet(tileset);
+        }
+    }
+
+    public void wavesParser(Element waves) {
+        Array<Element> waveElements = waves.getChildrenByName("wave");
+        for (Element waveElement : waveElements) {
+            int spawnPointX = waveElement.getIntAttribute("spawntPointX");
+            int spawnPointY = waveElement.getIntAttribute("spawntPointY");
+            int exitPointX = waveElement.getIntAttribute("exitPointX");
+            int exitPointY = waveElement.getIntAttribute("exitPointY");
+            int spawnInterval = waveElement.getIntAttribute("spawnInterval", 0);
+            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
+            wave.spawnInterval = spawnInterval;
+            Array<Element> units = waveElement.getChildrenByName("unit");
+            for (Element unit : units) {
+                String unitTemplateName = unit.getAttribute("templateName");
+                int unitsAmount = unit.getIntAttribute("amount");
+                int delay = unit.getIntAttribute("delay", 0);
+                for (int k = 0; k < unitsAmount; k++) {
+                    wave.addTemplateForUnit(unitTemplateName);
+                    wave.addDelayForUnit(delay);
+                }
+            }
+            waveManager.addWave(wave);
         }
     }
 }

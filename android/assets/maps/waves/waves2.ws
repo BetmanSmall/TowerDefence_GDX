@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <waves>
-	<wave spawntPointX="3" spawntPointY="124" exitPointX="120" exitPointY="7" spawnInterval="1">
-		<unit delay="0" templateName="unit1_grunt" amount="1"/>
+	<wave spawntPointX="45" spawntPointY="45" exitPointX="15" exitPointY="15" spawnInterval="10">
+		<unit delay="1" templateName="unit1_grunt" amount="1"/>
 		<unit delay="1" templateName="unit2_troll_axethrower" amount="2"/>
 		<unit delay="2" templateName="unit4_catapult" amount="3"/>
 		<unit delay="3" templateName="unit5_daemon" amount="4"/>
