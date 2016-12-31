@@ -1,6 +1,7 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -219,7 +220,7 @@ public class MainMenuScreen implements Screen {
     }
 
     private void switchMenuButtons() {
-        Gdx.app.log("swithcButtons", " menuLvl =" + menuLvl);
+        Gdx.app.log("MainMenuScreen", "switchMenuButtons(); -- menuLvl:" + menuLvl);
         switch (menuLvl) {
             case 0:         //main menu
                 textureMB1 = new Texture(Gdx.files.internal("menubutons/play.png"));
@@ -232,21 +233,18 @@ public class MainMenuScreen implements Screen {
                 textureMB2 = new Texture((Gdx.files.internal("menubutons/single_map.png")));
                 textureMB3 = new Texture((Gdx.files.internal("menubutons/editor.png")));
                 buttonsUpdate();
-                Gdx.app.log("Draw", "shit1");
                 break;
             case 2:         //"Choose map" menu
                 textureMB1 = new Texture((Gdx.files.internal("menubutons/forest_lake.png")));
                 textureMB2 = new Texture((Gdx.files.internal("menubutons/map2.png")));
                 textureMB3 = new Texture((Gdx.files.internal("menubutons/map3.png")));
                 buttonsUpdate();
-                Gdx.app.log("Draw", "shit2");
                 break;
             case 3:         //"Difficulty" menu
                 textureMB1 = new Texture((Gdx.files.internal("menubutons/easy.png")));
                 textureMB2 = new Texture((Gdx.files.internal("menubutons/normal.png")));
                 textureMB3 = new Texture((Gdx.files.internal("menubutons/hard.png")));
                 buttonsUpdate();
-                Gdx.app.log("Draw", "shit3");
                 break;
             default:
                 break;
@@ -297,10 +295,23 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(mmStage);
     }
 
+    private void inputHandler(float delta) {
+//        Gdx.app.log("MainMenuScreen", "inputHandler(" + delta + ");");
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            menuLvl--;
+            if(menuLvl == -1) {
+                towerDefence.dispose();
+            }
+            switchMenuButtons();
+        }
+    }
+
     @Override
     public void render(float delta) {
 //        Gdx.app.log("MainMenuScreen::render()", "FPS: " + (1/delta) + "");
 //        Gdx.app.log("MainMenuScreen::render()", "-- delta:" + delta);
+        inputHandler(delta);
         if (mmStage != null) {
             Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
             mmStage.act(delta);

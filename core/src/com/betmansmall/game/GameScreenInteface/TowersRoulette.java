@@ -67,7 +67,7 @@ public class TowersRoulette extends Roulette {
             circleGroup.setOrigin(Gdx.graphics.getWidth(), 0);
         } else if(currentDevice == "desktop") {
             Gdx.app.log("Device settings: ", "Device is desktop");
-            rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_button.png"))).getDrawable());
+            rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_roulette_main.png"))).getDrawable());
             rouletteButton.setName("rouletteButton");
             rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
@@ -75,9 +75,13 @@ public class TowersRoulette extends Roulette {
             buttonGroup.addActor(rouletteButton);
             buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
             int towersNumber;
-            for(towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++){
+            for(towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++) {
                 //TODO PUT HERE A CODE TO FILL THE ARRAY WITH REAL TOWER IMAGES!
-                ImageButton templateButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_button.png"))).getDrawable());
+                TemplateForTower templateForTower = templateForTowers.get(towersNumber);
+
+//                ImageButton templateButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_roulette_main.png"))).getDrawable());
+//                ImageButton templateButton = new ImageButton(new Image(templateForTower.idleTile.getTextureRegion().getTexture()).getDrawable());
+                ImageButton templateButton = new ImageButton(new Image(templateForTower.idleTile.getTextureRegion()).getDrawable());
 
                 towerButtonsArray.add(templateButton);
                 towerButtonsArray.get(towersNumber).setSize(getLocalWidth(ROULETTE_RADIUS)/2, getLocalHeight(ROULETTE_RADIUS)/2);

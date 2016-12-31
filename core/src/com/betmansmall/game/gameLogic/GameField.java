@@ -505,6 +505,12 @@ public class GameField {
         fVx -= deltaX;
         fVy -= deltaY;
 
+//        creep.setGraphicalCoordinates(fVx, fVy);
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        spriteBatch.draw(currentFrame, fVx, fVy);
+        spriteBatch.end();
+
         if (creep.isAlive()) {
             shapeRenderer.setProjectionMatrix(camera.combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -524,12 +530,6 @@ public class GameField {
 //            shapeRenderer.circle(fVx, fVy, 1f);
             shapeRenderer.end();
         }
-
-//        creep.setGraphicalCoordinates(fVx, fVy);
-        spriteBatch.setProjectionMatrix(camera.combined);
-        spriteBatch.begin();
-        spriteBatch.draw(currentFrame, fVx, fVy);
-        spriteBatch.end();
     }
 
     private void drawCreeps(OrthographicCamera camera) {
@@ -811,11 +811,11 @@ public class GameField {
             GridPoint2 spawnPoint = waveManager.getSpawnPoint();
             GridPoint2 exitPoint = waveManager.getExitPoint();
             if (spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {
-                Gdx.app.log("GameField::spawnCreep()", " spawnPoint bad!");
+                Gdx.app.log("GameField", "spawnCreep(); -- SpawnPoint bad:" + spawnPoint);
                 return;
             }
             if (exitPoint == null || !field[exitPoint.x][exitPoint.y].isEmpty()) {
-                Gdx.app.log("GameField::spawnCreep()", " exitPoint bad!");
+                Gdx.app.log("GameField", "spawnCreep(); -- ExitPoint bad:" + exitPoint);
                 return;
             }
             if (spawnPoint != null && exitPoint != null) {

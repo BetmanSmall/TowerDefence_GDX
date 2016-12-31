@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.sun.org.apache.bcel.internal.generic.FLOAD;
@@ -40,10 +41,15 @@ public class WaveManager {
                     } else {
                         return null;
                     }
-                } else if(action.contains("interval") || action.contains("delay") ) {
+                } else if(action.contains("delay")) {
+                    intervalForSpawnCreeps = Float.parseFloat(action.substring(action.indexOf("=")+1, action.length()));// + wave.spawnInterval;
+                    Gdx.app.log("WaveManager", "getNextNameTemplateForUnitForSpawnCreep(); -- Delay after wave:" + intervalForSpawnCreeps + " sec.");
+                    return null;
+                } else if(action.contains("interval")) {
                     intervalForSpawnCreeps = Float.parseFloat(action.substring(action.indexOf("=")+1, action.length())) + wave.spawnInterval;
-                    return action;
-                } else {
+                    Gdx.app.log("WaveManager", "getNextNameTemplateForUnitForSpawnCreep(); -- Next creep spawn after:" + intervalForSpawnCreeps + " sec.");
+                    return null;
+                } else { // string contain templateName.
                     intervalForSpawnCreeps = 0f;
                     return action;
                 }
@@ -51,7 +57,8 @@ public class WaveManager {
                 return null;
             }
         }
-        return "delay:" + elapsedTimeForSpawn + " intervalForSpawnCreeps:" + intervalForSpawnCreeps;
+//        return "delay:" + elapsedTimeForSpawn + " intervalForSpawnCreeps:" + intervalForSpawnCreeps;
+        return null;
     }
 
     public GridPoint2 getSpawnPoint() {

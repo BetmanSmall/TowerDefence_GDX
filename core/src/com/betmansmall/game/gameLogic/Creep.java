@@ -40,7 +40,7 @@ public class Creep {
 
     private TemplateForUnit templateForUnit;
 
-    private Direction direction;
+    public Direction direction;
     private Animation animation;
 
 //    private Body body;

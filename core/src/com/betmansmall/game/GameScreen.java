@@ -342,14 +342,14 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
             gameField.isDrawableTerrain = !gameField.isDrawableTerrain;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTerrain:" + gameField.isDrawableTerrain);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.BACK) || Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().removeTopScreen();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_8)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8); -- gameField.gameSpeed:" + gameField.gameSpeed);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8); -- gameField.gameSpeed:" + gameField.gameSpeed);
             gameField.gameSpeed -= 0.1f;
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_9)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9); -- gameField.gameSpeed:" + gameField.gameSpeed);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9); -- gameField.gameSpeed:" + gameField.gameSpeed);
             gameField.gameSpeed += 0.1f;
         }
     }

@@ -93,7 +93,28 @@ public class Tower {
 
     public boolean shoot(Creep creep) {
         if(elapsedReloadTime >= reloadTime) {
-            shells.add(new Shell(new Vector2(getGraphCorX(), getGraphCorY()), new Vector2(creep.newPoint), creep, templateForTower)); // AlexGor
+            Vector2 endPoint = new Vector2(creep.newPoint);
+            Direction direction = creep.direction;
+            float delta = GameField.getSizeCellX();
+            float del = 3f;
+            if(direction == Direction.UP) {
+                endPoint.add(0, delta);
+            } else if(direction == Direction.UP_RIGHT) {
+                endPoint.add(delta/del, delta/del);
+            } else if(direction == Direction.RIGHT) {
+                endPoint.add(delta, 0);
+            } else if(direction == Direction.DOWN_RIGHT) {
+                endPoint.add(delta/del, -(delta/del));
+            } else if(direction == Direction.DOWN) {
+                endPoint.add(0, -delta);
+            } else if(direction == Direction.DOWN_LEFT) {
+                endPoint.add(-(delta/del), -(delta/del));
+            } else if(direction == Direction.LEFT) {
+                endPoint.add(-delta, 0);
+            } else if(direction == Direction.UP_LEFT) {
+                endPoint.add(-(delta/del), delta/del);
+            }
+            shells.add(new Shell(new Vector2(getGraphCorX(), getGraphCorY()), endPoint, creep, templateForTower)); // AlexGor
             elapsedReloadTime = 0f;
             return true;
         }
