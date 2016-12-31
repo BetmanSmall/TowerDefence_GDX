@@ -62,9 +62,11 @@ public class GameInterface {
         for(Actor actor : creepsRoulette.getGroup()) {
             stage.addActor(actor);
         }
-        for(Actor actor : towersRoulette.getGroup()) {
-            stage.addActor(actor);
-        }
+        try {
+            for (Actor actor : towersRoulette.getGroup()) {
+                stage.addActor(actor);
+            }
+        } catch(Error error){ Gdx.app.log("Error:", "no circle group");}
     }
 
     public InputMultiplexer setCommonInputHandler(InputProcessor inputProcessor) {

@@ -14,6 +14,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.betmansmall.game.GameScreenInteface.DeviceSettings;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 
@@ -23,6 +24,7 @@ public class GameScreen implements Screen {
     private float MAX_DESTINATION_X = 0f;
     private float MAX_DESTINATION_Y = 0f;
     private BitmapFont bitmapFont = new BitmapFont();
+    private DeviceSettings deviceSettings = new DeviceSettings();
 
     private float currentDuration;
     private float MAX_DURATION_FOR_DEFEAT_SCREEN = 5f;
@@ -103,7 +105,7 @@ public class GameScreen implements Screen {
 //            Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //            Gdx.app.log("CameraController::pan(1)", " -- x:" + camera.position.x + " y:" + camera.position.y);
 //            Gdx.app.log("CameraController::pan(2)", " -- x:" + touch.x + " y:" + touch.y);
-            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY)) {
+            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY) && deviceSettings.getDevice() == "android") {
                 lastCircleTouched = true;
                 return true;
             }

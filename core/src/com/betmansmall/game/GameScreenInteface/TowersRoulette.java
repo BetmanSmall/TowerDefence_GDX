@@ -25,12 +25,12 @@ public class TowersRoulette extends Roulette {
     private Group buttonGroup;
     private ImageButton rouletteButton;
     private ImageButton rouletteCircle;
+    private Array<ImageButton> towerButtonsArray;
     private static volatile Boolean IS_HIDE_TOWERS = true;
     private GameField gameField;
-    private RotateToAction rotateToAction;
-    private TemplateForTower templateForTower;
-    private  FactionsManager factionsManager;
-    private Faction faction;
+    private Array<TemplateForTower> templateForTowers;
+    private DeviceSettings deviceSettings;
+    private String currentDevice;
 
     public TowersRoulette(GameField gameField) {
         this.gameField = gameField;
@@ -38,30 +38,73 @@ public class TowersRoulette extends Roulette {
     }
 
     private void init() {
-        circleGroup  = new Group();
+        //Finding out the device which runs our program
+        deviceSettings = new DeviceSettings();
+        currentDevice = deviceSettings.getDevice();
+
+        //TEMPORARY VARIANT OF TAKING TOWERS
+        templateForTowers = gameField.getAllTowers();
+
         buttonGroup = new Group();
+        towerButtonsArray = new Array<ImageButton>();
 
-        rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_roulette_main.png"))).getDrawable());
-        rouletteButton.setName("rouletteButton");
-        rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
-        rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
-        rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
-        buttonGroup.addActor(rouletteButton);
-        buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
+        if(currentDevice == "android") {
+            Gdx.app.log("Device settings: ", "Device is android");
+            circleGroup = new Group();
+            rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_roulette_main.png"))).getDrawable());
+            rouletteButton.setName("rouletteButton");
+            rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
+            rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+            rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
+            buttonGroup.addActor(rouletteButton);
+            buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
 
-        rouletteCircle = new ImageButton(new Image(new Texture(Gdx.files.internal("img/golden_ring.png"))).getDrawable());
-        rouletteCircle.setSize(getLocalWidth(RING_RADIUS) * 2, getLocalHeight(RING_RADIUS) * 2);
-        rouletteCircle.setPosition(Gdx.graphics.getWidth() - rouletteCircle.getWidth() / 2, 0 - rouletteCircle.getHeight() / 2);
-        rouletteCircle.setVisible(false);
-        circleGroup.addActor(rouletteCircle);
-        circleGroup.setOrigin(Gdx.graphics.getWidth(), 0);
+            rouletteCircle = new ImageButton(new Image(new Texture(Gdx.files.internal("img/golden_ring.png"))).getDrawable());
+            rouletteCircle.setSize(getLocalWidth(RING_RADIUS) * 2, getLocalHeight(RING_RADIUS) * 2);
+            rouletteCircle.setPosition(Gdx.graphics.getWidth() - rouletteCircle.getWidth() / 2, 0 - rouletteCircle.getHeight() / 2);
+            rouletteCircle.setVisible(false);
+            circleGroup.addActor(rouletteCircle);
+            circleGroup.setOrigin(Gdx.graphics.getWidth(), 0);
+        } else if(currentDevice == "desktop") {
+            Gdx.app.log("Device settings: ", "Device is desktop");
+            rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_button.png"))).getDrawable());
+            rouletteButton.setName("rouletteButton");
+            rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
+            rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+            rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
+            buttonGroup.addActor(rouletteButton);
+            buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
+            int towersNumber;
+            for(towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++){
+                //TODO PUT HERE A CODE TO FILL THE ARRAY WITH REAL TOWER IMAGES!
+                ImageButton templateButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_button.png"))).getDrawable());
 
+                towerButtonsArray.add(templateButton);
+                towerButtonsArray.get(towersNumber).setSize(getLocalWidth(ROULETTE_RADIUS)/2, getLocalHeight(ROULETTE_RADIUS)/2);
+                towerButtonsArray.get(towersNumber).setPosition(
+                        rouletteButton.getX()
+                                - (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/2),
+                        rouletteButton.getY());
+                Gdx.app.log("Button position is :", "X = " + templateButton.getX() + " Y = " + templateButton.getX());
+                towerButtonsArray.get(towersNumber).setVisible(false);
+                buttonGroup.addActor(towerButtonsArray.get(towersNumber));
+            }
+            Gdx.app.log("Number of towers", ":" + towersNumber);
+        } else {
+            Gdx.app.log("Device settings: ", "Device is not recognized");
+        }
     }
 
     private void buttonClick() {
         IS_HIDE_TOWERS = !IS_HIDE_TOWERS;
-        rouletteCircle.setVisible(!IS_HIDE_TOWERS);
-        rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+        if(currentDevice == "android") {
+            rouletteCircle.setVisible(!IS_HIDE_TOWERS);
+            rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
+        } else { //IF DESKTOP
+            for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
+                towerButtonsArray.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
+            }
+        }
         if(IS_HIDE_TOWERS)
             gameField.cancelUnderConstruction();
     }
@@ -77,26 +120,27 @@ public class TowersRoulette extends Roulette {
             circleGroup.addAction(rotateBy(-trash, 0.5f));
         }
         //TODO implement neccessary part just workaround
-        chooseTower(trash);
+        chooseTowerAndroid(trash);
     }
 
     public boolean makeRotation(float x, float y, float deltaX, float deltaY) {
-        x = Gdx.graphics.getWidth()  - x;
-        y = Gdx.graphics.getHeight() - y;
-        if((x*x + y*y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))
-                && x <= getLocalWidth(RING_RADIUS) && y <= getLocalWidth(RING_RADIUS) && !IS_HIDE_TOWERS) {
-            if (!((x*x + y*y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
-                    && x <= getLocalWidth(ROULETTE_RADIUS) && y <= getLocalWidth(ROULETTE_RADIUS))) {
-                float rotation = -((deltaX < 0)? -1f : 1f) * ((deltaY < 0)? deltaY * (-1f) : deltaY);
-                circleGroup.rotateBy(rotation);
-                return true;
+        if(currentDevice == "android") {
+            x = Gdx.graphics.getWidth() - x;
+            y = Gdx.graphics.getHeight() - y;
+            if ((x * x + y * y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))
+                    && x <= getLocalWidth(RING_RADIUS) && y <= getLocalWidth(RING_RADIUS) && !IS_HIDE_TOWERS) {
+                if (!((x * x + y * y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
+                        && x <= getLocalWidth(ROULETTE_RADIUS) && y <= getLocalWidth(ROULETTE_RADIUS))) {
+                    float rotation = -((deltaX < 0) ? -1f : 1f) * ((deltaY < 0) ? deltaY * (-1f) : deltaY);
+                    circleGroup.rotateBy(rotation);
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public void chooseTower(float isGreatedRound) {
-        Array<TemplateForTower> templateForTowers = gameField.getAllTowers();
+    public void chooseTowerAndroid(float isGreatedRound) {
         TemplateForTower localTemplate = templateForTowers.get(0);
         float tmp;
         if(isGreatedRound  > 45 ) {
@@ -113,38 +157,73 @@ public class TowersRoulette extends Roulette {
         gameField.createdUnderConstruction(localTemplate);
     }
 
+    private void chooseTowerDesktop(float x, float y) {
+        TemplateForTower localTemplate = templateForTowers.get(0);
+        for(int towerNumber = 0; towerNumber < templateForTowers.size; towerNumber++) {
+            if (towerButtonsArray.get(towerNumber).isPressed()) {
+                Gdx.app.log("tower", " : " + towerNumber);
+                localTemplate = templateForTowers.get(towerNumber);
+                gameField.createdUnderConstruction(localTemplate);
+            }
+        }
+    }
+
     public boolean isButtonTouched(float x, float y) {
         boolean isTouched = false;
         x = Gdx.graphics.getWidth()  - x;
         y = Gdx.graphics.getHeight() - y;
+        Gdx.app.log("x :"+ x, " y :" + y);
 
         //RING PRESS DETECTION
         if((x*x + y*y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))
-                && x <= getLocalWidth(RING_RADIUS) && y <= getLocalWidth(RING_RADIUS) && !IS_HIDE_TOWERS) {
+                && x <= getLocalWidth(RING_RADIUS)
+                && y <= getLocalWidth(RING_RADIUS) && !IS_HIDE_TOWERS
+                && currentDevice == "android") {
             if (!((x*x + y*y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
-                    && x <= getLocalWidth(ROULETTE_RADIUS) && y <= getLocalWidth(ROULETTE_RADIUS))) {
+                    && x <= getLocalWidth(ROULETTE_RADIUS)
+                    && y <= getLocalWidth(ROULETTE_RADIUS))) {
                 isTouched = true;
-                Gdx.app.log("TAG", "RING");
                 if(isTouched) ringClick();
                 return isTouched;
             }
         }
 
-        //BUTTON PRESS DETECTION
-        if ((x*x + y*y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
-                && x <= getLocalWidth(ROULETTE_RADIUS) && y <= getLocalWidth(ROULETTE_RADIUS)) {
+        //BUTTON PRESS DETECTION ANDROID
+        if ((x * x + y * y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
+                && x <= getLocalWidth(ROULETTE_RADIUS)
+                && y <= getLocalWidth(ROULETTE_RADIUS)
+                && currentDevice == "android") {
             isTouched = true;
-//            Gdx.app.log("TAG", "ROULETTE");
-            // return isTouched;
-            if(isTouched) buttonClick();
+            if (isTouched) buttonClick();
             return isTouched;
         }
-//        Gdx.app.log("TAG", "NOTHING");
-        return false;
+        //BUTTON PRESS DETECTION DESKTOP
+        if ((x * y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
+                && x <= getLocalWidth(ROULETTE_RADIUS)
+                && y <= getLocalWidth(ROULETTE_RADIUS)) {
+            isTouched = true;
+            if (isTouched) buttonClick();
+            return isTouched;
+        }
+        //TOWER_BUTTON PRESS DETECTION
+        if(        x >= getLocalWidth(ROULETTE_RADIUS)* 1.5
+                && x <= (templateForTowers.size + 1) * getLocalWidth(ROULETTE_RADIUS)/2 + getLocalWidth(ROULETTE_RADIUS)
+                && y <= getLocalHeight(ROULETTE_RADIUS)/2){
+            Gdx.app.log("TOWER BUTTON","");
+            chooseTowerDesktop(x, y);
+            isTouched = true;
+            return isTouched;
+        }
+        return isTouched;
     }
+
 
     @Override
     public List<Group> getGroup() {
-        return Arrays.asList(buttonGroup, circleGroup);
+        if (currentDevice == "android"){
+            return Arrays.asList(buttonGroup, circleGroup);
+        } else {
+            return Arrays.asList(buttonGroup);
+        }
     }
 }
