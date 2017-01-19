@@ -32,9 +32,11 @@ public class TemplateForTower {
     public Float    ammoSize;
     public Float    ammoSpeed;
     public Float    reloadTime;
-    public String   type;
+    public TowerAttackType towerAttackType;
+    public ShellAttackType shellAttackType;
+    public ShellEffectType shellEffectType;
     public Integer capacity;
-    public Integer ammoDistance;
+//    public Integer ammoDistance;
 
     public TiledMapTile idleTile;
     public ObjectMap<String, TiledMapTile> ammunitionPictures;
@@ -56,28 +58,30 @@ public class TemplateForTower {
                 for (XmlReader.Element property : properties.getChildrenByName("property")) {
                     String key = property.getAttribute("name");
                     String value = property.getAttribute("value");
-                    if (key.equals("ammoDistance")) {
-                        this.ammoDistance = Integer.parseInt(value);
-                    } else if (key.equals("ammoSize")) {
-                        this.ammoSize = Float.parseFloat(value);
-                    } else if (key.equals("ammoSpeed")) {
-                        this.ammoSpeed = Float.parseFloat(value);
-                    } else if (key.equals("cost")) {
-                        this.cost = Integer.parseInt(value);
-                    } else if (key.equals("damage")) {
-                        this.damage = Integer.parseInt(value);
-                    } else if (key.equals("factionName")) {
+                    if (key.equals("factionName")) {
                         this.factionName = value;
                     } else if (key.equals("name")) {
                         this.name = value;
                     } else if (key.equals("radius")) {
                         this.radius = Integer.parseInt(value);
-                    } else if (key.equals("reloadTime")) {
-                        this.reloadTime = Float.parseFloat(value);
+                    } else if (key.equals("damage")) {
+                        this.damage = Integer.parseInt(value);
                     } else if (key.equals("size")) {
                         this.size = Integer.parseInt(value);
-                    } else if (key.equals("type")) {
-                        this.type = value;
+                    } else if (key.equals("cost")) {
+                        this.cost = Integer.parseInt(value);
+                    } else if (key.equals("ammoSize")) {
+                        this.ammoSize = Float.parseFloat(value);
+                    } else if (key.equals("ammoSpeed")) {
+                        this.ammoSpeed = Float.parseFloat(value);
+                    } else if (key.equals("reloadTime")) {
+                        this.reloadTime = Float.parseFloat(value);
+                    } else if (key.equals("towerAttackType")) {
+                        this.towerAttackType = TowerAttackType.getType(value);
+                    } else if (key.equals("shellAttackType")) {
+                        this.shellAttackType = ShellAttackType.getType(value);
+                    } else if (key.equals("shellEffectType")) {
+                        this.shellEffectType = ShellEffectType.getType(value);
                     }
                 }
             }
@@ -155,29 +159,29 @@ public class TemplateForTower {
         }
     }
 
-    public TemplateForTower(TiledMapTileSet tileSet) {
-        try {
-            this.factionName =  tileSet.getProperties().get("factionName", String.class);
-            this.name =         tileSet.getProperties().get("name", String.class);
-            this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
-            this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
-            this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
-            this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
-            this.ammoSize =     Float.parseFloat(tileSet.getProperties().get("ammoSize", String.class));
-            this.ammoSpeed =    Float.parseFloat(tileSet.getProperties().get("ammoSpeed", String.class));
-            this.reloadTime =   Float.parseFloat(tileSet.getProperties().get("reloadTime", String.class));
-            this.type =         tileSet.getProperties().get("type", String.class);
-            this.capacity =     Integer.parseInt(tileSet.getProperties().get("capacity", String.class));
-            this.ammoDistance = Integer.parseInt(tileSet.getProperties().get("ammoDistance", String.class));
-        } catch(Exception exp) {
-            Gdx.app.error("TemplateForTower::TemplateForTower()", " -- Exp: " + exp + " Cheak the file!");
-        }
-
-        this.ammunitionPictures = new ObjectMap<String, TiledMapTile>();
-
-        setTiledMapTiles(tileSet);
-        validate();
-    }
+//    public TemplateForTower(TiledMapTileSet tileSet) {
+//        try {
+//            this.factionName =  tileSet.getProperties().get("factionName", String.class);
+//            this.name =         tileSet.getProperties().get("name", String.class);
+//            this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
+//            this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
+//            this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
+//            this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
+//            this.ammoSize =     Float.parseFloat(tileSet.getProperties().get("ammoSize", String.class));
+//            this.ammoSpeed =    Float.parseFloat(tileSet.getProperties().get("ammoSpeed", String.class));
+//            this.reloadTime =   Float.parseFloat(tileSet.getProperties().get("reloadTime", String.class));
+////            this.type =         tileSet.getProperties().get("type", String.class);
+//            this.capacity =     Integer.parseInt(tileSet.getProperties().get("capacity", String.class));
+////            this.ammoDistance = Integer.parseInt(tileSet.getProperties().get("ammoDistance", String.class));
+//        } catch(Exception exp) {
+//            Gdx.app.error("TemplateForTower::TemplateForTower()", " -- Exp: " + exp + " Cheak the file!");
+//        }
+//
+//        this.ammunitionPictures = new ObjectMap<String, TiledMapTile>();
+//
+//        setTiledMapTiles(tileSet);
+//        validate();
+//    }
 
     private void setTiledMapTiles(TiledMapTileSet tileSet) {
         for(TiledMapTile tile: tileSet) {
@@ -219,28 +223,32 @@ public class TemplateForTower {
 
     private void validate() {
         // Need cheak range values
-        if(this.ammoDistance == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammoDistance'! Check the file");
-        else if(this.ammoSize == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammoSize'! Check the file");
-        else if(this.ammoSpeed == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammoSpeed'! Check the file");
-        else if(this.cost == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'cost'! Check the file");
-        else if(this.damage == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'damage'! Check the file");
-        else if(this.factionName == null)
+        if(this.factionName == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'factionName'! Check the file");
         else if(this.name == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'name'! Check the file");
         else if(this.radius == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'radius'! Check the file");
-        else if(this.reloadTime == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'reloadTime'! Check the file");
+        else if(this.damage == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'damage'! Check the file");
         else if(this.size == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'size'! Check the file");
-        else if(this.type == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'type'! Check the file");
+        else if(this.cost == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'cost'! Check the file");
+        else if(this.ammoSize == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammoSize'! Check the file");
+        else if(this.ammoSpeed == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammoSpeed'! Check the file");
+        else if(this.reloadTime == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'reloadTime'! Check the file");
+        else if(this.towerAttackType == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'towerAttackType'! Check the file");
+        else if(this.shellAttackType == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'shellAttackType'! Check the file");
+        else if(this.shellEffectType == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'shellEffectType'! Check the file");
+        else if(this.towerAttackType == TowerAttackType.Pit && this.capacity == null)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'capacity'! When towerAttackType==Pit");
 
         if(idleTile == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'idleTile'! Check the file");

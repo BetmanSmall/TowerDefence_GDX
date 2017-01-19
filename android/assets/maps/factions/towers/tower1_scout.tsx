@@ -10,8 +10,10 @@
   <property name="ammoSize" value="10"/>
   <property name="ammoSpeed" value="300"/>
   <property name="reloadTime" value="0.2"/>
-  <property name="type" value="tower"/>
-  <property name="ammoDistance" value="5"/>
+  <property name="towerAttack_Type" value="Range"/>
+  <property name="shellAttack_Type" value="SingleTarget"/>
+  <property name="shellEffect_Type" value="None"/>
+  <!-- <property name="ammoDistance" value="5"/> -->
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

@@ -37,6 +37,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Intersector; // AlexGor
+import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -293,7 +294,7 @@ public class GameField {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
                     if (field[x][y].isTerrain() || field[x][y].getTower() != null) {
-                        if(field[x][y].getTower() != null && field[x][y].getTower().getTemplateForTower().type.equals("towerTerrain")) {
+                        if(field[x][y].getTower() != null && field[x][y].getTower().getTemplateForTower().towerAttackType == TowerAttackType.Pit) {
                             charMatrix[y][x] = '.';
                         } else {
                             charMatrix[y][x] = 'T';
@@ -674,7 +675,7 @@ public class GameField {
         bitmapFont.getData().setScale(0.7f);
         shapeRenderer.setColor(Color.GREEN);
         for(Tower tower: towersManager.getAllTowers()) {
-            if(tower.getTemplateForTower().type.equals("towerTerrain")) {
+            if(tower.getTemplateForTower().towerAttackType == TowerAttackType.Pit) {
                 bitmapFont.draw(spriteBatch, String.valueOf(tower.capacity), tower.getGraphCorX(), tower.getGraphCorY());
             }
         }
@@ -891,14 +892,16 @@ public class GameField {
                     if (!cellIsEmpty(buildX + tmpX, buildY + tmpY))
                         return false;
 
+            // GOVNO CODE
             GridPoint2 position = new GridPoint2(buildX, buildY);
             Tower tower = towersManager.createTower(position, templateForTower);
-            Gdx.app.log("GameField", "createTower(); -- " + templateForTower.type);
-            if(!templateForTower.type.equals("towerTerrain")) {
+            Gdx.app.log("GameField", "createTower(); -- " + templateForTower.towerAttackType);
+            if(templateForTower.towerAttackType != TowerAttackType.Pit) {
                 for (int tmpX = startX; tmpX <= finishX; tmpX++)
                     for (int tmpY = startY; tmpY <= finishY; tmpY++)
                         field[buildX + tmpX][buildY + tmpY].setTower(tower);
             }
+            // GOVNO CODE
 
 //            rerouteForAllCreeps();
             gamerGold -= templateForTower.cost;
@@ -982,7 +985,7 @@ public class GameField {
 
     private void shotAllTowers(float delta) { // AlexGor
         for (Tower tower : towersManager.getAllTowers()) {
-            if(!tower.getTemplateForTower().type.equals("towerTerrain")) {
+            if(tower.getTemplateForTower().towerAttackType != TowerAttackType.Pit) {
                 if (tower.recharge(delta)) {
                     for (Creep creep : creepsManager.getAllCreeps()) {
                         if (Intersector.overlaps(tower.getCircle(), creep.getRect())) {
