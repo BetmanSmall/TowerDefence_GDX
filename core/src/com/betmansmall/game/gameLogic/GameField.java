@@ -792,14 +792,14 @@ public class GameField {
     }
 
     public void setSpawnPoint(int x, int y) {
+        createCreep(x, y, factionsManager.getRandomTemplateForUnitFromFirstFaction());
 //        spawnPoint = new GridPoint2(x, y);
 //        waveManager.spawnPoints.set(0, new GridPoint2(x, y));
     }
 
     public void setExitPoint(int x, int y) {
-//        exitPoint = new GridPoint2(x, y);
-//        waveManager.exitPoints.set(0, new GridPoint2(x, y));
-        rerouteForAllCreeps();
+        waveManager.setExitPoint(new GridPoint2(x, y));
+        rerouteForAllCreeps(new GridPoint2(x, y));
     }
 
     private void spawnCreep(float delta) {
@@ -945,14 +945,42 @@ public class GameField {
     }
 
     private void rerouteForAllCreeps() {
+        rerouteForAllCreeps(null);
+    }
+
+    private void rerouteForAllCreeps(GridPoint2 exitPoint) {
+        long start1 = System.nanoTime();
+        Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Start:" + start1);
         pathFinder.loadCharMatrix(getCharMatrix());
         for (Creep creep : creepsManager.getAllCreeps()) {
-            ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), creep.getRoute().getLast().getX(), creep.getRoute().getLast().getY()); // TODO BAGA!
-            if (route != null) {
-                route.removeFirst();
-                creep.setRoute(route);
-            }
+//            new Thread(new Runnable() {
+//                private Creep creep;
+//                private GridPoint2 exitPoint;
+//                public Runnable init(Creep creep, GridPoint2 exiPoint) {
+//                    this.creep = creep;
+//                    this.exitPoint = exiPoint;
+//                    return this;
+//                }
+//                @Override
+//                public void run() {
+//                    long start2 = System.nanoTime();
+//                    Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Thread(" + this.toString() + " Start:" + start2);
+                    if(exitPoint == null) {
+                        Node node = creep.getRoute().getLast();
+                        exitPoint = new GridPoint2(node.getX(), node.getY());
+                    }
+                    ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
+                    if (route != null) {
+                        route.removeFirst();
+                        creep.setRoute(route);
+                    }
+//                    long end2 = System.nanoTime();
+//                    Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Thread End:" + (end2-start2));
+//                }
+//            }.init(creep, exitPoint)).start();
         }
+        long end1 = System.nanoTime();
+        Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Time End:" + (end1-start1));
     }
 
     private void stepAllCreep(float delta) {

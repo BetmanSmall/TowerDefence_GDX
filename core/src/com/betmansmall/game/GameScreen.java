@@ -72,9 +72,9 @@ public class GameScreen implements Screen {
 //              } else if(button == 2) {
 //                  gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
                 } else if (button == 3) {
-                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
-                } else if (button == 4) {
                     gameField.setSpawnPoint(cellCoordinate.x, cellCoordinate.y);
+                } else if (button == 4) {
+                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
                 }
             }
             return false;

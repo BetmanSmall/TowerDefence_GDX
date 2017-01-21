@@ -75,6 +75,14 @@ public class WaveManager {
         return null;
     }
 
+    public boolean setExitPoint(GridPoint2 exitPoint) {
+        if(waves.size != 0) {
+            waves.first().exitPoint = exitPoint;
+            return true;
+        }
+        return false;
+    }
+
     public int getNumberOfCreeps() { // not creeps | actions
         int creeps = 0;
         for (Wave wave : waves) {
