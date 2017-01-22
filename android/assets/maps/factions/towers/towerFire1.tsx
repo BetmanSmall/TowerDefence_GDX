@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="FireTower1" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="towerFire1" tilewidth="64" tileheight="64" tilecount="6" columns="2">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Scout1"/>
+  <property name="name" value="Fire Tower 1"/>
   <property name="radius" value="200"/>
   <property name="damage" value="5"/>
   <property name="size" value="1"/>

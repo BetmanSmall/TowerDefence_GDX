@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
 
 import java.util.StringTokenizer;
@@ -254,6 +255,26 @@ public class TemplateForTower {
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'idleTile'! Check the file");
         else if(ammunitionPictures.size == 0)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammo'! Check the file");
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TemplateForTower[");
+        sb.append("factionName:" + factionName + ",");
+        sb.append("name:" + name + ",");
+        sb.append("radius:" + radius + ",");
+        sb.append("damage:" + damage + ",");
+        sb.append("size:" + size + ",");
+        sb.append("cost:" + cost + ",");
+        sb.append("ammoSize:" + ammoSize + ",");
+        sb.append("ammoSpeed:" + ammoSpeed + ",");
+        sb.append("reloadTime:" + reloadTime + ",");
+        sb.append("towerAttackType:" + towerAttackType + ",");
+        sb.append("shellAttackType:" + shellAttackType + ",");
+        sb.append("shellEffectType:" + shellEffectType + ",");
+        sb.append("capacity:" + capacity + ",");
+        sb.append("]");
+        return sb.toString();
     }
 
     public void setFaction(Faction faction) {

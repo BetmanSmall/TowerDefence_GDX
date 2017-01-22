@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="tower1_scout" tilewidth="64" tileheight="64" tilecount="6" columns="2">
  <properties>
-  <property name="factionName" value="Faction1"/>
+  <property name="factionName" value="Humans_Faction"/>
   <property name="name" value="Scout1"/>
   <property name="radius" value="200"/>
   <property name="damage" value="5"/>

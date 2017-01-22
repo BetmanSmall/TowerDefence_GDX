@@ -864,7 +864,7 @@ public class GameField {
 
     public void towerActions(int x, int y) {
         if (field[x][y].isEmpty()) {
-            createTower(x, y, factionsManager.getRandomTemplateForTowerFromFirstFaction());
+            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction());
         } else if (field[x][y].getTower() != null) {
             removeTower(x, y);
         }
@@ -895,7 +895,7 @@ public class GameField {
             // GOVNO CODE
             GridPoint2 position = new GridPoint2(buildX, buildY);
             Tower tower = towersManager.createTower(position, templateForTower);
-            Gdx.app.log("GameField", "createTower(); -- " + templateForTower.towerAttackType);
+            Gdx.app.log("GameField", "createTower(); -- templateForTower.towerAttackType:" + templateForTower.towerAttackType);
             if(templateForTower.towerAttackType != TowerAttackType.Pit) {
                 for (int tmpX = startX; tmpX <= finishX; tmpX++)
                     for (int tmpY = startY; tmpY <= finishY; tmpY++)

@@ -34,6 +34,7 @@ public class Tower {
     public Array<Shell> shells;
 
     public Tower(GridPoint2 position, TemplateForTower templateForTower){
+        Gdx.app.log("Tower", "Tower(" + position + ", " + templateForTower.toString() + ");");
         this.position = position;
         this.damage = templateForTower.damage;
         this.radius = templateForTower.radius;

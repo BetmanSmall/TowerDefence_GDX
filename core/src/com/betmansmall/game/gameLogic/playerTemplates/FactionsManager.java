@@ -71,6 +71,13 @@ public class FactionsManager {
         return null;
     }
 
+    public TemplateForTower getRandomTemplateForTowerFromAllFaction() {
+        Array<TemplateForTower> allTowers = getAllTowers();
+//        int r = 0 + (int) (Math.random() * allTowers.size);
+//        Gdx.app.log("TemplateForTower", "getRandomTemplateForTowerFromAllFaction(); -- r:" + r);
+//        return allTowers.get(r);
+        return allTowers.random();
+    }
     public TemplateForUnit getTemplateForUnitFromFirstFactionByIndex(int index) {
         Faction faction = factions.first();
         if (faction != null) {
