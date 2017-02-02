@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="tower2_scout" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="tower2_melee" tilewidth="128" tileheight="128" tilecount="6" columns="2">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Scout2"/>
-  <property name="radius" value="100"/>
-  <property name="damage" value="100"/>
-  <property name="size" value="2"/>
+  <property name="name" value="Melee1"/>
+  <property name="radius" value="1"/>
+  <property name="damage" value="5"/>
+  <property name="size" value="1"/>
   <property name="cost" value="10"/>
   <property name="ammoSize" value="20"/>
-  <property name="ammoSpeed" value="100"/>
+  <property name="ammoSpeed" value="10"/>
   <property name="reloadTime" value="0.8"/>
-  <property name="type" value="tower"/>
-  <property name="ammoDistance" value="5"/>
+  <property name="towerAttackType" value="Melee"/>
+  <property name="shellAttackType" value="SingleTarget"/>
+  <property name="shellEffectType" value="None"/>
+  <!-- <property name="ammoDistance" value="5"/> -->
  </properties>
- <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/tower_melee.png" trans="ff00ff" width="128" height="128"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

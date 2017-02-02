@@ -5,12 +5,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
+import com.betmansmall.game.gameLogic.playerTemplates.ShellAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
@@ -94,28 +91,7 @@ public class Tower {
 
     public boolean shoot(Creep creep) {
         if(elapsedReloadTime >= reloadTime) {
-            Vector2 endPoint = new Vector2(creep.newPoint);
-            Direction direction = creep.direction;
-            float delta = GameField.getSizeCellX();
-            float del = 3f;
-            if(direction == Direction.UP) {
-                endPoint.add(0, delta);
-            } else if(direction == Direction.UP_RIGHT) {
-                endPoint.add(delta/del, delta/del);
-            } else if(direction == Direction.RIGHT) {
-                endPoint.add(delta, 0);
-            } else if(direction == Direction.DOWN_RIGHT) {
-                endPoint.add(delta/del, -(delta/del));
-            } else if(direction == Direction.DOWN) {
-                endPoint.add(0, -delta);
-            } else if(direction == Direction.DOWN_LEFT) {
-                endPoint.add(-(delta/del), -(delta/del));
-            } else if(direction == Direction.LEFT) {
-                endPoint.add(-delta, 0);
-            } else if(direction == Direction.UP_LEFT) {
-                endPoint.add(-(delta/del), delta/del);
-            }
-            shells.add(new Shell(new Vector2(getGraphCorX(), getGraphCorY()), endPoint, creep, templateForTower)); // AlexGor
+            shells.add(new Shell(templateForTower, creep, new Vector2(getGraphCorX(), getGraphCorY()))); // AlexGor
             elapsedReloadTime = 0f;
             return true;
         }

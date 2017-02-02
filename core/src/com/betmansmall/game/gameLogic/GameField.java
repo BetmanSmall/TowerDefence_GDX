@@ -16,24 +16,20 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
 //import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 //import com.badlogic.gdx.physics.box2d.Contact;
 //import com.badlogic.gdx.physics.box2d.ContactImpulse;
 //import com.badlogic.gdx.physics.box2d.ContactListener;
 //import com.badlogic.gdx.physics.box2d.Manifold;
 //import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Intersector; // AlexGor
@@ -632,12 +628,12 @@ public class GameField {
 
         shapeRenderer.setColor(Color.BLUE);
         for(Creep creep : creepsManager.getAllCreeps()) {
-            shapeRenderer.circle(creep.graphicalCoordinateX, creep.graphicalCoordinateY, 1f);
+            shapeRenderer.circle(creep.currentPoint.x, creep.currentPoint.y, 1f);
         }
 
         shapeRenderer.setColor(Color.LIME);
         for(Creep creep : creepsManager.getAllCreeps()) {
-            Circle rectangle = creep.getRect();
+            Circle rectangle = creep.getCircle();
             shapeRenderer.circle(rectangle.x, rectangle.y, 2f);
         }
 
@@ -647,7 +643,7 @@ public class GameField {
 
         shapeRenderer.setColor(Color.RED);
         for(Creep creep : creepsManager.getAllCreeps()) {
-            Circle rectangle = creep.getRect();
+            Circle rectangle = creep.getCircle();
 //            shapeRenderer.box(rectangle.x, rectangle.y, 0, rectangle.width, rectangle.height, 0);
             shapeRenderer.circle(rectangle.x, rectangle.y, rectangle.radius);
         }
@@ -1013,18 +1009,8 @@ public class GameField {
 
     private void shotAllTowers(float delta) { // AlexGor
         for (Tower tower : towersManager.getAllTowers()) {
-            if(tower.getTemplateForTower().towerAttackType != TowerAttackType.Pit) {
-                if (tower.recharge(delta)) {
-                    for (Creep creep : creepsManager.getAllCreeps()) {
-                        if (Intersector.overlaps(tower.getCircle(), creep.getRect())) {
-//                            Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
-                            if (tower.shoot(creep)) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            } else {
+            TowerAttackType towerAttackType = tower.getTemplateForTower().towerAttackType;
+            if(towerAttackType == TowerAttackType.Pit) {
                 Creep creep = field[tower.getPosition().x][tower.getPosition().y].getCreep();
                 if(creep != null) {
                     Gdx.app.log("GameField", "shotAllTowers(); -- tower.capacity:" + tower.capacity + " creep.getHp:" + creep.getHp());
@@ -1034,6 +1020,30 @@ public class GameField {
                     tower.capacity--;
                     if(tower.capacity <= 0) {
                         towersManager.removeTower(tower);
+                    }
+                }
+            } else if(towerAttackType == TowerAttackType.Melee) {
+                int radius = tower.getRadius();
+                for (int tmpX = -radius; tmpX <= radius; tmpX++) {
+                    for (int tmpY = -radius; tmpY <= radius; tmpY++) {
+                        GridPoint2 position = tower.getPosition();
+                        if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
+                            Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
+//                            tower.shoot(creep);
+                            creep.die(tower.getDamage(), ShellEffectType.None);
+                            return;
+                        }
+                    }
+                }
+            } else if(towerAttackType == TowerAttackType.Range) {
+                if (tower.recharge(delta)) {
+                    for (Creep creep : creepsManager.getAllCreeps()) {
+                        if (Intersector.overlaps(tower.getCircle(), creep.getCircle())) {
+//                            Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
+                            if (tower.shoot(creep)) {
+                                break;
+                            }
+                        }
                     }
                 }
             }

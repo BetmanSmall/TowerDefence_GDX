@@ -8,7 +8,7 @@
 	<templateForUnit source="units/unit14_mage.tsx"/>
 	<templateForUnit source="units/unit15_peasant.tsx"/>
 	<templateForTower source="towers/tower1_scout.tsx"/>
-	<!-- <templateForTower source="towers/tower2_scout.tsx"/> -->
+	<templateForTower source="towers/tower2_melee.tsx"/>
 	<templateForTower source="towers/towerBomb.tsx"/>
 	<templateForTower source="towers/tower_pit.tsx"/>
 	<templateForTower source="towers/towerFire1.tsx"/>

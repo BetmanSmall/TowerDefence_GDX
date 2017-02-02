@@ -3,13 +3,13 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="towerBomb"/>
-  <property name="radius" value="100"/>
+  <property name="radius" value="150"/>
   <property name="damage" value="100"/>
-  <property name="size" value="3"/>
+  <property name="size" value="2"/>
   <property name="cost" value="10"/>
-  <property name="ammoSize" value="50"/>
-  <property name="ammoSpeed" value="70"/>
-  <property name="reloadTime" value="5"/>
+  <property name="ammoSize" value="20"/>
+  <property name="ammoSpeed" value="10"/>
+  <property name="reloadTime" value="1"/>
   <property name="towerAttackType" value="Range"/>
   <property name="shellAttackType" value="MultipleTarget"/>
   <property name="shellEffectType" value="None"/>
