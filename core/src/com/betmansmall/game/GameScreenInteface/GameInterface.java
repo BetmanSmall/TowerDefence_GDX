@@ -3,6 +3,8 @@ package com.betmansmall.game.GameScreenInteface;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.betmansmall.game.gameLogic.GameField;
@@ -43,7 +45,7 @@ public class GameInterface {
     public void setCreepsRoulette(CreepsRoulette creepsRoulette) {
         this.creepsRoulette = creepsRoulette;
     }
-
+    private BitmapFont bitmapFont = new BitmapFont();
     private TowersRoulette towersRoulette;
     private CreepsRoulette creepsRoulette;
     private Stage stage;
@@ -67,6 +69,7 @@ public class GameInterface {
                 stage.addActor(actor);
             }
         } catch(Error error){ Gdx.app.log("Error:", "no circle group");}
+
     }
 
     public InputMultiplexer setCommonInputHandler(InputProcessor inputProcessor) {
@@ -82,5 +85,7 @@ public class GameInterface {
 
     public void draw() {
         stage.draw();
+//        bitmapFont.setColor(Color.WHITE);
+//        bitmapFont.draw(getInterfaceStage().getBatch(),String.valueOf(" "),1,2);
     }
 }

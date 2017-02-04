@@ -371,7 +371,10 @@ public class GameScreen implements Screen {
             gameInterface.getInterfaceStage().getBatch().begin();
             bitmapFont.getData().setScale(4);
             bitmapFont.setColor(Color.YELLOW);
-            bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf("Gold amount: " + gameField.getGamerGold()), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
+            bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf("Gold amount: "
+                                + gameField.getGamerGold()),
+                                Gdx.graphics.getWidth() / 2 - 150,
+                                Gdx.graphics.getHeight() - 10);
             gameInterface.getInterfaceStage().getBatch().end();
         } else if (gameState.equals("Lose")) {
             currentDuration += delta;
