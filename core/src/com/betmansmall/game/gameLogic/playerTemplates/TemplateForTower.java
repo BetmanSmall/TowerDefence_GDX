@@ -10,7 +10,6 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
@@ -26,7 +25,8 @@ public class TemplateForTower {
 
     public String   factionName;
     public String   name;
-    public Integer  radius;
+    public Integer  radiusDetection;
+    public Float    radiusFlyShell;
     public Integer  damage;
     public Integer  size;
     public Integer  cost;
@@ -63,8 +63,10 @@ public class TemplateForTower {
                         this.factionName = value;
                     } else if (key.equals("name")) {
                         this.name = value;
-                    } else if (key.equals("radius")) {
-                        this.radius = Integer.parseInt(value);
+                    } else if (key.equals("radiusDetection")) {
+                        this.radiusDetection = Integer.parseInt(value);
+                    } else if (key.equals("radiusFlyShell")) {
+                        this.radiusFlyShell = Float.parseFloat(value);
                     } else if (key.equals("damage")) {
                         this.damage = Integer.parseInt(value);
                     } else if (key.equals("size")) {
@@ -82,7 +84,20 @@ public class TemplateForTower {
                     } else if (key.equals("shellAttackType")) {
                         this.shellAttackType = ShellAttackType.getType(value);
                     } else if (key.equals("shellEffectType")) {
-                        this.shellEffectType = ShellEffectType.getType(value);
+                        ShellEffectType.ShellEffectEnum shellEffectEnum = ShellEffectType.ShellEffectEnum.getType(value);
+                        this.shellEffectType = new ShellEffectType(shellEffectEnum);
+                    } else if (key.equals("shellEffectType_time")) {
+                        if(shellEffectType != null) {
+                            shellEffectType.time = Float.parseFloat(value);
+                        }
+                    } else if (key.equals("shellEffectType_damage")) {
+                        if(shellEffectType != null) {
+                            shellEffectType.damage = Float.parseFloat(value);
+                        }
+                    } else if (key.equals("shellEffectType_speed")) {
+                        if(shellEffectType != null) {
+                            shellEffectType.speed = Float.parseFloat(value);
+                        }
                     }
                 }
             }
@@ -164,7 +179,7 @@ public class TemplateForTower {
 //        try {
 //            this.factionName =  tileSet.getProperties().get("factionName", String.class);
 //            this.name =         tileSet.getProperties().get("name", String.class);
-//            this.radius =       Integer.parseInt(tileSet.getProperties().get("radius", String.class));
+//            this.radiusDetection =       Integer.parseInt(tileSet.getProperties().get("radiusDetection", String.class));
 //            this.damage =       Integer.parseInt(tileSet.getProperties().get("damage", String.class));
 //            this.size =         Integer.parseInt(tileSet.getProperties().get("size", String.class));
 //            this.cost =         Integer.parseInt(tileSet.getProperties().get("cost", String.class));
@@ -228,8 +243,10 @@ public class TemplateForTower {
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'factionName'! Check the file");
         else if(this.name == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'name'! Check the file");
-        else if(this.radius == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'radius'! Check the file");
+        else if(this.radiusDetection == null && this.towerAttackType != TowerAttackType.Pit)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'radiusDetection'! Check the file");
+        else if(this.radiusFlyShell == null)
+            this.radiusFlyShell = 0f;
         else if(this.damage == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'damage'! Check the file");
         else if(this.size == null)
@@ -244,10 +261,10 @@ public class TemplateForTower {
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'reloadTime'! Check the file");
         else if(this.towerAttackType == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'towerAttackType'! Check the file");
-        else if(this.shellAttackType == null)
+        else if(this.shellAttackType == null && this.towerAttackType != TowerAttackType.Pit)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'shellAttackType'! Check the file");
-        else if(this.shellEffectType == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'shellEffectType'! Check the file");
+//        else if(this.shellEffectType == null)
+//            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'shellEffectEnum'! Check the file");
         else if(this.towerAttackType == TowerAttackType.Pit && this.capacity == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'capacity'! When towerAttackType==Pit");
 
@@ -262,7 +279,8 @@ public class TemplateForTower {
         sb.append("TemplateForTower[");
         sb.append("factionName:" + factionName + ",");
         sb.append("name:" + name + ",");
-        sb.append("radius:" + radius + ",");
+        sb.append("radiusDetection:" + radiusDetection + ",");
+        sb.append("radiusFlyShell:" + radiusFlyShell + ",");
         sb.append("damage:" + damage + ",");
         sb.append("size:" + size + ",");
         sb.append("cost:" + cost + ",");
@@ -271,7 +289,7 @@ public class TemplateForTower {
         sb.append("reloadTime:" + reloadTime + ",");
         sb.append("towerAttackType:" + towerAttackType + ",");
         sb.append("shellAttackType:" + shellAttackType + ",");
-        sb.append("shellEffectType:" + shellEffectType + ",");
+        sb.append("shellEffectEnum:" + shellEffectType + ",");
         sb.append("capacity:" + capacity + ",");
         sb.append("]");
         return sb.toString();

@@ -3,7 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Melee1"/>
-  <property name="radius" value="1"/>
+  <property name="radiusDetection" value="1"/>
   <property name="damage" value="5"/>
   <property name="size" value="1"/>
   <property name="cost" value="10"/>
@@ -12,8 +12,7 @@
   <property name="reloadTime" value="0.8"/>
   <property name="towerAttackType" value="Melee"/>
   <property name="shellAttackType" value="SingleTarget"/>
-  <property name="shellEffectType" value="None"/>
-  <!-- <property name="ammoDistance" value="5"/> -->
+  <!-- <property name="shellEffectType" value="None"/> -->
  </properties>
  <image source="../../textures/tower_melee.png" trans="ff00ff" width="128" height="128"/>
  <terraintypes>

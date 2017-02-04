@@ -599,6 +599,15 @@ public class GameField {
             }
         }
 
+        shapeRenderer.setColor(Color.PINK);
+        for(Tower tower: towersManager.getAllTowers()) {
+            for(Shell shell : tower.shells) {
+                if(null != shell.endPoint2) {
+                    shapeRenderer.circle(shell.endPoint2.x, shell.endPoint2.y, shell.endPoint2.radius);
+                }
+            }
+        }
+
         shapeRenderer.setColor(Color.ORANGE);
         for(Tower tower: towersManager.getAllTowers()) {
             for(Shell shell : tower.shells) {
@@ -608,6 +617,7 @@ public class GameField {
                 }
             }
         }
+
         float xPoint, yPoint;
         GridPoint2 spawnPoint = waveManager.getSpawnPoint();
         GridPoint2 exitPoint = waveManager.getExitPoint();
@@ -656,10 +666,10 @@ public class GameField {
 //            for(Shell shell: tower.shells) {
 //                shapeRenderer.setColor(Color.WHITE);
 //                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, 1.5f);
-//                shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radius);
+//                shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radiusDetection);
 //                shapeRenderer.setColor(Color.RED);
 //                if(null != shell.circle) {
-//                    shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radius);
+//                    shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radiusDetection);
 //                }
 //            }
         }
@@ -1030,7 +1040,7 @@ public class GameField {
                         if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
                             Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
 //                            tower.shoot(creep);
-                            creep.die(tower.getDamage(), ShellEffectType.None);
+                            creep.die(tower.getDamage(), tower.getTemplateForTower().shellEffectType);
                             return;
                         }
                     }

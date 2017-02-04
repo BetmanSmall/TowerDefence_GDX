@@ -3,7 +3,8 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="towerBomb"/>
-  <property name="radius" value="150"/>
+  <property name="radiusDetection" value="150"/>
+  <property name="radiusFlyShell" value="150"/>
   <property name="damage" value="100"/>
   <property name="size" value="2"/>
   <property name="cost" value="10"/>
@@ -12,8 +13,7 @@
   <property name="reloadTime" value="1"/>
   <property name="towerAttackType" value="Range"/>
   <property name="shellAttackType" value="MultipleTarget"/>
-  <property name="shellEffectType" value="None"/>
-  <!-- <property name="ammoDistance" value="5"/> -->
+  <!-- <property name="shellEffectType" value="None"/> -->
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

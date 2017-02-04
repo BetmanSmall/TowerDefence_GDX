@@ -3,7 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Pit1"/>
-  <property name="radius" value="1"/>
+  <!-- <property name="radiusDetection" value="0"/> -->
   <property name="damage" value="10000"/>
   <property name="size" value="1"/>
   <property name="cost" value="10"/>
@@ -11,10 +11,9 @@
   <property name="ammoSpeed" value="1000"/>
   <property name="reloadTime" value="0"/>
   <property name="towerAttackType" value="Pit"/>
-  <property name="shellAttackType" value="None"/>
-  <property name="shellEffectType" value="None"/>
+  <!-- <property name="shellAttackType" value="None"/> -->
+  <!-- <property name="shellEffectType" value="None"/> -->
   <property name="capacity" value="10"/>
-  <!-- <property name="ammoDistance" value="5"/> -->
  </properties>
  <image source="../../textures/pit.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

@@ -14,6 +14,8 @@ public class WaveManager {
     public float intervalForSpawnCreeps = 0f;
     public float elapsedTimeForSpawn = 0f;
 
+    public GridPoint2 lastExitPoint;
+
     WaveManager() {
         this.waves = new Array<Wave>();
     }
@@ -71,11 +73,14 @@ public class WaveManager {
     public GridPoint2 getExitPoint() {
         if (waves.size != 0) {
             return waves.first().exitPoint;
+        } else if(lastExitPoint != null) {
+            return lastExitPoint;
         }
         return null;
     }
 
     public boolean setExitPoint(GridPoint2 exitPoint) {
+        this.lastExitPoint = exitPoint;
         if(waves.size != 0) {
             waves.first().exitPoint = exitPoint;
             return true;

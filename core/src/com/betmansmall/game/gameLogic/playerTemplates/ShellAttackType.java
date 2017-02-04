@@ -1,11 +1,14 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * Created by betma on 19.01.2017.
  */
 
 public enum ShellAttackType {
-    None("None"),
+    AutoTarget("AutoTarget"),
+    FirstTarget("FirstTarget"),
     SingleTarget("SingleTarget"),
     MultipleTarget("MultipleTarget");
 
@@ -26,6 +29,7 @@ public enum ShellAttackType {
                 return t;
             }
         }
+        Gdx.app.error("ShellAttackType", "getType(" + type + "); -- Bad type!");
         return null;
     }
 }

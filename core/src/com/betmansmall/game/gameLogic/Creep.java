@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 //import com.badlogic.gdx.physics.box2d.FixtureDef;
 //import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
@@ -40,7 +41,7 @@ public class Creep {
 
     public Direction direction;
     private Animation animation;
-    private Array<ShellEffectType> typesEffectOfCreep;
+    private Array<ShellEffectType> shellEffectTypes;
 
     public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
         if(route != null) {
@@ -60,7 +61,7 @@ public class Creep {
 
             this.direction = Direction.UP;
             setAnimation("walk_");
-            this.typesEffectOfCreep = new Array<ShellEffectType>();
+            this.shellEffectTypes = new Array<ShellEffectType>();
         } else {
             Gdx.app.error("Creep::Creep()", " -- route == null");
         }
@@ -137,6 +138,28 @@ public class Creep {
                     setAnimation("walk_");
                 }
             }
+            Gdx.app.log("Creep", "move(); -- Creep status:" + this.toString());
+            for(ShellEffectType shellEffectType : shellEffectTypes) {
+                if(!shellEffectType.used) {
+                    Gdx.app.log("Creep", "move(); -- Active shellEffectType:" + shellEffectType);
+                    shellEffectType.used = true;
+                    if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
+                        speed += shellEffectType.speed;
+                    } else if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
+//                        float smallDamage = shellEffectType.damage / delta;
+                        hp -= shellEffectType.damage;
+                    }
+                } else {
+                    if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
+                        hp -= shellEffectType.damage;
+                    }
+                }
+                shellEffectType.time -= delta;
+                if(shellEffectType.time <= 0) {
+                    Gdx.app.log("Creep", "move(); -- Remove shellEffectType:" + shellEffectType);
+                    shellEffectTypes.removeValue(shellEffectType, true);
+                }
+            }
             return newPosition;
         } else {
             dispose();
@@ -147,8 +170,8 @@ public class Creep {
     public boolean die(int damage, ShellEffectType shellEffectType) {
         if(hp > 0) {
             hp -= damage;
-            if(!typesEffectOfCreep.contains(shellEffectType, false)) {
-                typesEffectOfCreep.add(shellEffectType);
+            if(shellEffectType != null && !shellEffectTypes.contains(shellEffectType, false)) {
+                shellEffectTypes.add(new ShellEffectType(shellEffectType));
             }
             if(hp <= 0) {
                 deathElapsedTime = 0;
@@ -228,5 +251,25 @@ public class Creep {
 
     public TextureRegion getCurrentDeathFrame() {
         return animation.getKeyFrame(deathElapsedTime, true);
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Creep[");
+//        sb.append("route:" + route + ",");
+        sb.append("oldPosition:" + oldPosition + ",");
+        sb.append("newPosition:" + newPosition + ",");
+        sb.append("hp:" + hp + ",");
+        sb.append("speed:" + speed + ",");
+        sb.append("elapsedTime:" + elapsedTime + ",");
+        sb.append("deathElapsedTime:" + deathElapsedTime + ",");
+        sb.append("currentPoint:" + currentPoint + ",");
+        sb.append("circle:" + circle + ",");
+        sb.append("templateForUnit:" + templateForUnit + ",");
+        sb.append("direction:" + direction + ",");
+        sb.append("animation:" + animation + ",");
+        sb.append("shellEffectTypes:" + shellEffectTypes + ",");
+        sb.append("]");
+        return sb.toString();
     }
 }

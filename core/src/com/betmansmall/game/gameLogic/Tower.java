@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
-import com.betmansmall.game.gameLogic.playerTemplates.ShellAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
@@ -34,7 +33,7 @@ public class Tower {
         Gdx.app.log("Tower", "Tower(" + position + ", " + templateForTower.toString() + ");");
         this.position = position;
         this.damage = templateForTower.damage;
-        this.radius = templateForTower.radius;
+        this.radius = templateForTower.radiusDetection;
         this.reloadTime = templateForTower.reloadTime;
         this.elapsedReloadTime = 0;
 
@@ -45,7 +44,7 @@ public class Tower {
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
         this.shells = new Array<Shell>();
 //        this.bulletSpawnPoint = new Vector2(getGraphCorX(), getGraphCorY());
-        this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radius); // AlexGor
+        this.circle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radiusDetection); // AlexGor
 
 //<<<<<<< BOX2d block
 //        int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
