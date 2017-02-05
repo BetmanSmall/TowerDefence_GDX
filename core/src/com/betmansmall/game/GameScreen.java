@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.betmansmall.game.GameScreenInteface.DeviceSettings;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.UnderConstruction;
 
 public class GameScreen implements Screen {
     private static final float MAX_ZOOM = 50f; //max size
@@ -63,11 +64,11 @@ public class GameScreen implements Screen {
             GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
             GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
 
-            if (cellCoordinate != null) {
+            if (cellCoordinate != null && gameField.getUnderConstruction() == null) {
                 if (button == 0) {
-                    gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
-                } else if (button == 1) {
                     gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
+                } else if (button == 1) {
+                    gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
 //                  gameField.prepareBuildTower(cellCoordinate.x, cellCoordinate.y);
 //              } else if(button == 2) {
 //                  gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
@@ -212,14 +213,19 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//            Gdx.app.log("MyGestureDetector::touchDown()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+            Gdx.app.log("MyGestureDetector::touchDown()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
             Vector3 touch = new Vector3(screenX, screenY, 0);
             camera.unproject(touch);
             GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
             GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
             if (cellCoordinate != null) {
-                if (gameField.getUnderConstruction() != null) {
-                    gameField.getUnderConstruction().setStartCoors(cellCoordinate.x, cellCoordinate.y);
+                UnderConstruction underConstruction = gameField.getUnderConstruction();
+                if (underConstruction != null) {
+                    if(button == 0) {
+                        underConstruction.setStartCoors(cellCoordinate.x, cellCoordinate.y);
+                    } else if(button == 1){
+                        gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
+                    }
                 }
             }
             return false;
@@ -227,13 +233,15 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-//            Gdx.app.log("MyGestureDetector::touchUp()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-            Vector3 touch = new Vector3(screenX, screenY, 0);
-            camera.unproject(touch);
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-            if (cellCoordinate != null) {
-                gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
+            Gdx.app.log("MyGestureDetector::touchUp()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+            if(gameField != null && button == 0) {
+                Vector3 touch = new Vector3(screenX, screenY, 0);
+                camera.unproject(touch);
+                GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
+                GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
+                if (cellCoordinate != null) {
+                    gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
+                }
             }
             return false;
         }

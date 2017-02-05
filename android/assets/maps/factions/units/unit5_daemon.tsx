@@ -3,9 +3,9 @@
  <properties>
   <property name="bounty" value="20"/>
   <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="500"/>
+  <property name="healthPoints" value="400"/>
   <property name="name" value="Daemon"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.4"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/neutral/units/daemon.png" trans="ff00ff" width="360" height="1080"/>

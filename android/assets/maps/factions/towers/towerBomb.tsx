@@ -4,7 +4,7 @@
   <property name="factionName" value="Faction1"/>
   <property name="name" value="towerBomb"/>
   <property name="radiusDetection" value="150"/>
-  <property name="radiusFlyShell" value="150"/>
+  <!-- <property name="radiusFlyShell" value="150"/> -->
   <property name="damage" value="100"/>
   <property name="size" value="2"/>
   <property name="cost" value="10"/>

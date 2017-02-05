@@ -51,6 +51,19 @@ public class ShellEffectType {
         this.speed = shellEffectType.speed;
     }
 
+//    @Override
+//    public boolean equals(Object object) {
+//        if(object instanceof ShellEffectType) {
+//            ShellEffectType shellEffectType = (ShellEffectType) object;
+//            if (this.shellEffectEnum.equals(shellEffectType.shellEffectEnum)) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
+//        return false;
+//    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ShellEffectType[");

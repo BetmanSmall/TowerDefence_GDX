@@ -3,7 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Scout5"/>
-  <property name="radius" value="100"/>
+  <property name="radiusDetection" value="100"/>
   <property name="damage" value="100"/>
   <property name="size" value="3"/>
   <property name="cost" value="10"/>

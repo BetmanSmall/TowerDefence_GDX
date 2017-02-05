@@ -3,7 +3,7 @@
  <properties>
   <property name="bounty" value="5"/>
   <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="145"/>
+  <property name="healthPoints" value="150"/>
   <property name="name" value="Troll Axethrower"/>
   <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>

@@ -8,7 +8,7 @@
   <property name="damage" value="7"/>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Test1x1"/>
-  <property name="radius" value="1"/>
+  <property name="radiusDetection" value="1"/>
   <property name="reloadTime" value="0.4"/>
   <property name="size" value="1"/>
   <property name="type" value="tower"/>

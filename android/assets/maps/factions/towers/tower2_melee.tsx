@@ -4,7 +4,7 @@
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Melee1"/>
   <property name="radiusDetection" value="1"/>
-  <property name="damage" value="5"/>
+  <property name="damage" value="2"/>
   <property name="size" value="1"/>
   <property name="cost" value="10"/>
   <property name="ammoSize" value="20"/>

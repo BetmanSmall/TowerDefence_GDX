@@ -4,18 +4,18 @@
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Fire Tower 1"/>
   <property name="radiusDetection" value="150"/>
-  <property name="radiusFlyShell" value="200"/>
-  <property name="damage" value="20"/>
+  <property name="radiusFlyShell" value="300"/>
+  <property name="damage" value="10"/>
   <property name="size" value="1"/>
   <property name="cost" value="10"/>
   <property name="ammoSize" value="10"/>
-  <property name="ammoSpeed" value="11"/>
-  <property name="reloadTime" value="0.7"/>
+  <property name="ammoSpeed" value="15"/>
+  <property name="reloadTime" value="2"/>
   <property name="towerAttackType" value="Range"/>
   <property name="shellAttackType" value="FirstTarget"/>
   <property name="shellEffectType" value="FireEffect"/>
-  <property name="shellEffectType_time" value="0.3"/>
-  <property name="shellEffectType_damage" value="5"/>
+  <property name="shellEffectType_time" value="0.7"/>
+  <property name="shellEffectType_damage" value="1"/>
   <property name="shellEffectType_speed" value="2"/>
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower_fire.png" trans="ff00ff" width="128" height="192"/>

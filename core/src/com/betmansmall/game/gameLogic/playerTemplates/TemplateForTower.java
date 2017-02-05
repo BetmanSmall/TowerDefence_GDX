@@ -245,8 +245,9 @@ public class TemplateForTower {
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'name'! Check the file");
         else if(this.radiusDetection == null && this.towerAttackType != TowerAttackType.Pit)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'radiusDetection'! Check the file");
-        else if(this.radiusFlyShell == null)
-            this.radiusFlyShell = 0f;
+        else if(this.radiusFlyShell == null && this.shellAttackType != ShellAttackType.FirstTarget)
+            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'radiusFlyShell'! Check the file");
+//            this.radiusFlyShell = 0f;
         else if(this.damage == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'damage'! Check the file");
         else if(this.size == null)

@@ -4,7 +4,7 @@
   <property name="factionName" value="Humans_Faction"/>
   <property name="name" value="Scout1"/>
   <property name="radiusDetection" value="200"/>
-  <property name="radiusFlyShell" value="200"/>
+  <!-- <property name="radiusFlyShell" value="220"/> -->
   <property name="damage" value="10"/>
   <property name="size" value="1"/>
   <property name="cost" value="10"/>
