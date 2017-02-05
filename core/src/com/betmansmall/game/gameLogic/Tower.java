@@ -47,7 +47,7 @@ public class Tower {
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
         this.shells = new Array<Shell>();
         this.radiusDetectionСircle = new Circle(getGraphCorX(), getGraphCorY(), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
-        if(templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != null ) {
+        if(templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != null && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
             this.radiusFlyShellСircle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radiusFlyShell);
         }
     }

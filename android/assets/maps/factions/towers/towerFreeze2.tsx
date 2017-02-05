@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="towerFreeze1" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="towerFreeze2" tilewidth="64" tileheight="64" tilecount="6" columns="2">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Freeze Tower 1"/>
+  <property name="name" value="Freeze Tower 2"/>
   <property name="radiusDetection" value="150"/>
   <property name="radiusFlyShell" value="150"/>
   <property name="damage" value="0"/>
@@ -12,11 +12,11 @@
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="1"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="AutoTarget"/>
+  <property name="shellAttackType" value="FirstTarget"/>
   <property name="shellEffectType" value="FreezeEffect"/>
   <property name="shellEffectType_time" value="3"/>
   <!-- <property name="shellEffectType_damage" value="5"/> -->
-  <property name="shellEffectType_speed" value="0.3"/>
+  <property name="shellEffectType_speed" value="0.6"/>
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower_freeze.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

@@ -42,7 +42,7 @@ public class Creep {
 
     public Direction direction;
     private Animation animation;
-    private Array<ShellEffectType> shellEffectTypes;
+    public Array<ShellEffectType> shellEffectTypes;
 
     public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
         if(route != null) {
@@ -115,8 +115,8 @@ public class Creep {
                         hp -= shellEffectType.damage;
                     }
                 }
-                shellEffectType.time -= delta;
-                if(shellEffectType.time <= 0) {
+                shellEffectType.elapsedTime += delta;
+                if(shellEffectType.elapsedTime >= shellEffectType.time) {
 //                    Gdx.app.log("Creep", "move(); -- Remove shellEffectType:" + shellEffectType);
                     if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
                         float smallSpeed = speed/100f;
@@ -163,7 +163,7 @@ public class Creep {
 //                } else if (newX < oldX && newY == oldY) {
 //                }
 
-            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
+//            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
             Direction oldDirection = direction;
             if (newX < oldX && newY > oldY) {
                 direction = Direction.UP;
@@ -200,7 +200,7 @@ public class Creep {
 //                float centerVy = halfSizeCellY * centerY - centerX * halfSizeCellY;
 // =================================================
 
-            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
+//            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
             currentPoint.set(fVx, fVy);
             circle.set(fVx, fVy, 16f); // AlexGor
 
@@ -218,9 +218,7 @@ public class Creep {
     public boolean die(int damage, ShellEffectType shellEffectType) {
         if(hp > 0) {
             hp -= damage;
-            if(shellEffectType != null && !shellEffectTypes.contains(shellEffectType, false)) {
-                shellEffectTypes.add(new ShellEffectType(shellEffectType));
-            }
+            addEffect(shellEffectType);
             if(hp <= 0) {
                 deathElapsedTime = 0;
                 setAnimation("death_");
@@ -229,6 +227,15 @@ public class Creep {
             return false;
         }
         return false;
+    }
+
+    private boolean addEffect(ShellEffectType shellEffectType) {
+        if(shellEffectType != null){
+            if(!shellEffectTypes.contains(shellEffectType, false)) {
+                shellEffectTypes.add(new ShellEffectType(shellEffectType));
+            }
+        }
+        return true;
     }
 
     public boolean changeDeathFrame(float delta) {

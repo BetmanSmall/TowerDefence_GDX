@@ -36,17 +36,20 @@ public class ShellEffectType {
 
     public ShellEffectEnum shellEffectEnum;
     public float time;
+    public float elapsedTime;
     public float damage;
     public float speed;
     public boolean used = false;
 
     public ShellEffectType(ShellEffectEnum shellEffectEnum) {
         this.shellEffectEnum = shellEffectEnum;
+        this.elapsedTime = 0;
     }
 
     public ShellEffectType(ShellEffectType shellEffectType) {
         this.shellEffectEnum = shellEffectType.shellEffectEnum;
         this.time = shellEffectType.time;
+        this.elapsedTime = shellEffectType.elapsedTime;
         this.damage = shellEffectType.damage;
         this.speed = shellEffectType.speed;
     }
@@ -69,6 +72,7 @@ public class ShellEffectType {
         sb.append("ShellEffectType[");
         sb.append("shellEffectEnum:" + shellEffectEnum + ",");
         sb.append("time:" + time + ",");
+        sb.append("elapsedTime:" + elapsedTime + ",");
         sb.append("damage:" + damage + ",");
         sb.append("speed:" + speed + ",");
         sb.append("damage:" + damage + ",");

@@ -10,13 +10,13 @@
   <property name="cost" value="10"/>
   <property name="ammoSize" value="10"/>
   <property name="ammoSpeed" value="15"/>
-  <property name="reloadTime" value="2"/>
+  <property name="reloadTime" value="1.5"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="FirstTarget"/>
+  <property name="shellAttackType" value="AutoTarget"/>
   <property name="shellEffectType" value="FireEffect"/>
-  <property name="shellEffectType_time" value="0.7"/>
-  <property name="shellEffectType_damage" value="1"/>
-  <property name="shellEffectType_speed" value="2"/>
+  <property name="shellEffectType_time" value="2"/>
+  <property name="shellEffectType_damage" value="0.5"/>
+  <!-- <property name="shellEffectType_speed" value="2"/> -->
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower_fire.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>
