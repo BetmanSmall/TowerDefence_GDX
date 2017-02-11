@@ -3,16 +3,24 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
-import com.sun.org.apache.bcel.internal.generic.FLOAD;
 
 /**
  * Created by betmansmall on 29.03.2016.
  */
 public class WaveManager {
-    public Array<Wave> waves;
+    class TemplateNameAndPoints {
+        public String templateName;
+        public GridPoint2 spawnPoint;
+        public GridPoint2 exitPoint;
 
-    public float intervalForSpawnCreeps = 0f;
-    public float elapsedTimeForSpawn = 0f;
+        TemplateNameAndPoints(String templateName, GridPoint2 spawnPoint, GridPoint2 exitPoint) {
+            this.templateName = templateName;
+            this.spawnPoint = spawnPoint;
+            this.exitPoint = exitPoint;
+        }
+    }
+
+    public Array<Wave> waves;
 
     public GridPoint2 lastExitPoint;
 
@@ -24,43 +32,19 @@ public class WaveManager {
         this.waves.add(wave);
     }
 
-    /**
-     *
-     * @param delta
-     * @return
-     */
-    public String getNextNameTemplateForUnitForSpawnCreep(float delta) {
-        elapsedTimeForSpawn += delta;
-        if (elapsedTimeForSpawn >= intervalForSpawnCreeps) {
-            elapsedTimeForSpawn = 0f;
-            if (waves.size != 0) {
-                Wave wave = waves.first();
-                String action = wave.actions.pollFirst();
-                if(action == null) {
-                    waves.removeIndex(0);
-                    if (waves.size != 0) {
-                        return wave.actions.pollFirst();
-                    } else {
-                        return null;
-                    }
-                } else if(action.contains("delay")) {
-                    intervalForSpawnCreeps = Float.parseFloat(action.substring(action.indexOf("=")+1, action.length()));// + wave.spawnInterval;
-                    Gdx.app.log("WaveManager", "getNextNameTemplateForUnitForSpawnCreep(); -- Delay after wave:" + intervalForSpawnCreeps + " sec.");
-                    return null;
-                } else if(action.contains("interval")) {
-                    intervalForSpawnCreeps = Float.parseFloat(action.substring(action.indexOf("=")+1, action.length())) + wave.spawnInterval;
-                    Gdx.app.log("WaveManager", "getNextNameTemplateForUnitForSpawnCreep(); -- Next creep spawn after:" + intervalForSpawnCreeps + " sec.");
-                    return null;
-                } else { // string contain templateName.
-                    intervalForSpawnCreeps = 0f;
-                    return action;
+    public Array<TemplateNameAndPoints> getAllCreepsForSpawn(float delta) {
+        Array<TemplateNameAndPoints> allCreepsForSpawn = new Array<TemplateNameAndPoints>();
+        for (Wave wave : waves) {
+            if(!wave.actions.isEmpty()) {
+                String templateName = wave.getTemplateNameForSpawn(delta);
+                if (templateName != null) {
+                    allCreepsForSpawn.add(new TemplateNameAndPoints(templateName, wave.spawnPoint, wave.exitPoint));
                 }
             } else {
-                return null;
+                waves.removeValue(wave, true);
             }
         }
-//        return "delay:" + elapsedTimeForSpawn + " intervalForSpawnCreeps:" + intervalForSpawnCreeps;
-        return null;
+        return allCreepsForSpawn;
     }
 
     public GridPoint2 getSpawnPoint() {
@@ -73,7 +57,7 @@ public class WaveManager {
     public GridPoint2 getExitPoint() {
         if (waves.size != 0) {
             return waves.first().exitPoint;
-        } else if(lastExitPoint != null) {
+        } else if (lastExitPoint != null) {
             return lastExitPoint;
         }
         return null;
@@ -81,7 +65,7 @@ public class WaveManager {
 
     public boolean setExitPoint(GridPoint2 exitPoint) {
         this.lastExitPoint = exitPoint;
-        if(waves.size != 0) {
+        if (waves.size != 0) {
             waves.first().exitPoint = exitPoint;
             return true;
         }
@@ -94,5 +78,18 @@ public class WaveManager {
             creeps += wave.actions.size();
         }
         return creeps;
+    }
+
+    public void validationPoints(int sizeFieldX, int sizeFieldY) {
+        for(Wave wave : waves) {
+            if (wave.spawnPoint == null || wave.spawnPoint.x < 0 || wave.spawnPoint.x >= sizeFieldX || wave.spawnPoint.y < 0 || wave.spawnPoint.y >= sizeFieldY) {
+                Gdx.app.error("GameField", "validationPoints(); -- SpawnPoint bad:" + wave.spawnPoint);
+                waves.removeValue(wave, true);
+            }
+            if (wave.exitPoint == null || wave.exitPoint.x < 0 || wave.exitPoint.x >= sizeFieldX || wave.exitPoint.y < 0 || wave.exitPoint.y >= sizeFieldY) {
+                Gdx.app.error("GameField", "validationPoints(); -- ExitPoint bad:" + wave.exitPoint);
+                waves.removeValue(wave, true);
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@
 	<!-- delay - время между последним крипом из предыдущей пачки крипов и нашима первым + spawnInterval + interval -->
 	<!-- а интервал - время между крипами одного типа + spawnInterval -->
 	<!-- а spawnInterval - дополнительное или же одно единственное время между всеми крипами в этой волне. WaveInterval | to be continue... -->
-	<wave spawntPointX="3" spawntPointY="124" exitPointX="120" exitPointY="7" spawnInterval="0">
+	<wave spawntPointX="3" spawntPointY="124" exitPointX="120" exitPointY="7" spawnInterval="0" startToMove="0">
 		<unit templateName="unit1_grunt" interval="0" amount="3"/>
 		<unit delay="0" templateName="unit2_troll_axethrower" interval="0" amount="2"/>
 		<unit delay="0" templateName="unit4_catapult" interval="0" amount="1"/>

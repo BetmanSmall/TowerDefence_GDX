@@ -167,6 +167,7 @@ public class GameField {
 
         sizeFieldX = map.getProperties().get("width", Integer.class);
         sizeFieldY = map.getProperties().get("height", Integer.class);
+        waveManager.validationPoints(sizeFieldX, sizeFieldY);
         sizeCellX = map.getProperties().get("tilewidth", Integer.class);
         sizeCellY = map.getProperties().get("tileheight", Integer.class);
         halfSizeCellX = sizeCellX / 2;
@@ -202,7 +203,7 @@ public class GameField {
                     }
                 }
             }
-            Wave wave = new Wave(spawnPoint, exitPoint);
+            Wave wave = new Wave(spawnPoint, exitPoint, 0f);
 //            wave.spawnInterval = 1f;
             for(int k = 0; k < 10; k++) {
                 wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().getTemplateName());
@@ -316,7 +317,7 @@ public class GameField {
     public void render(float delta, OrthographicCamera camera) {
         delta = delta*gameSpeed;
         if (!gamePaused) {
-            spawnCreep(delta);
+            spawnCreeps(delta);
             stepAllCreep(delta);
             shotAllTowers(delta);
             moveAllShells(delta);
@@ -801,7 +802,7 @@ public class GameField {
     }
 
     public void setSpawnPoint(int x, int y) {
-        createCreep(x, y, factionsManager.getRandomTemplateForUnitFromFirstFaction());
+        createCreep(new GridPoint2(x, y), factionsManager.getRandomTemplateForUnitFromFirstFaction(), null);
 //        spawnPoint = new GridPoint2(x, y);
 //        waveManager.spawnPoints.set(0, new GridPoint2(x, y));
     }
@@ -811,47 +812,38 @@ public class GameField {
         rerouteForAllCreeps(new GridPoint2(x, y));
     }
 
-    private void spawnCreep(float delta) {
-        String templateName = waveManager.getNextNameTemplateForUnitForSpawnCreep(delta);
-        if (templateName != null) {
-            if(templateName.contains("delay")) {
-                Gdx.app.log("GameField", "spawnCreep(); -- " + templateName);
-                return;
-            }
-            GridPoint2 spawnPoint = waveManager.getSpawnPoint();
-            GridPoint2 exitPoint = waveManager.getExitPoint();
-            if (spawnPoint == null || !field[spawnPoint.x][spawnPoint.y].isEmpty()) {
-                Gdx.app.log("GameField", "spawnCreep(); -- SpawnPoint bad:" + spawnPoint);
-                return;
-            }
-            if (exitPoint == null || !field[exitPoint.x][exitPoint.y].isEmpty()) {
-                Gdx.app.log("GameField", "spawnCreep(); -- ExitPoint bad:" + exitPoint);
-                return;
-            }
-            if (spawnPoint != null && exitPoint != null) {
-                TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateName);
-                if(templateForUnit != null) {
-                    createCreep(spawnPoint.x, spawnPoint.y, templateForUnit);
-                } else {
-                    Gdx.app.error("GameField", "spawnCreep(); -- templateForUnit == null | templateName:" + templateName);
-                }
+    private void spawnCreeps(float delta) {
+        Array<WaveManager.TemplateNameAndPoints> allCreepsForSpawn = waveManager.getAllCreepsForSpawn(delta);
+        for(WaveManager.TemplateNameAndPoints templateNameAndPoints : allCreepsForSpawn) {
+            spawnCreep(templateNameAndPoints);
+        }
+    }
+
+    private void spawnCreep(WaveManager.TemplateNameAndPoints templateNameAndPoints) {
+        if (templateNameAndPoints != null) {
+            TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateNameAndPoints.templateName);
+            if(templateForUnit != null) {
+                createCreep(templateNameAndPoints.spawnPoint, templateForUnit, templateNameAndPoints.exitPoint);
+            } else {
+                Gdx.app.error("GameField", "spawnCreep(); -- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
             }
         }
     }
 
     public void createCreep(int x, int y) {
-        createCreep(x, y, factionsManager.getRandomTemplateForUnitFromFirstFaction());
+        createCreep(new GridPoint2(x, y), factionsManager.getRandomTemplateForUnitFromFirstFaction(), null);
     }
 
-    private void createCreep(int x, int y, TemplateForUnit templateForUnit) {
-        GridPoint2 exitPoint = waveManager.getExitPoint();
+    private void createCreep(GridPoint2 spawnPoint, TemplateForUnit templateForUnit, GridPoint2 exitPoint) {
+        if(exitPoint == null) {
+            exitPoint = waveManager.getExitPoint();
+        }
         if (exitPoint != null) {
             pathFinder.loadCharMatrix(getCharMatrix());
-            ArrayDeque<Node> route = pathFinder.route(x, y, exitPoint.x, exitPoint.y);
-
+            ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
             if (route != null) {
                 Creep creep = creepsManager.createCreep(route, templateForUnit);
-                field[x][y].setCreep(creep); // TODO field maybe out array
+                field[spawnPoint.x][spawnPoint.y].setCreep(creep); // TODO field maybe out array
 //            Gdx.app.log("GameField::createCreep()", " -- x:" + x + " y:" + y + " eX:" + waveManager.exitPoints.first().x + " eY:" + waveManager.exitPoints.first().y);
 //            Gdx.app.log("GameField::createCreep()", " -- route:" + route);
             }
@@ -962,23 +954,15 @@ public class GameField {
         Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Start:" + start1);
         pathFinder.loadCharMatrix(getCharMatrix());
         for (Creep creep : creepsManager.getAllCreeps()) {
-//            new Thread(new Runnable() {
-//                private Creep creep;
-//                private GridPoint2 exitPoint;
-//                public Runnable init(Creep creep, GridPoint2 exiPoint) {
-//                    this.creep = creep;
-//                    this.exitPoint = exiPoint;
-//                    return this;
-//                }
-//                @Override
-//                public void run() {
-//                    long start2 = System.nanoTime();
-//                    Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Thread(" + this.toString() + " Start:" + start2);
+                    ArrayDeque<Node> route;
                     if(exitPoint == null) {
                         Node node = creep.getRoute().getLast();
-                        exitPoint = new GridPoint2(node.getX(), node.getY());
+                        GridPoint2 localExitPoint  = new GridPoint2(node.getX(), node.getY());
+                        route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
+
+                    } else {
+                        route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
                     }
-                    ArrayDeque<Node> route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
                     if (route != null) {
                         route.removeFirst();
                         creep.setRoute(route);
@@ -986,7 +970,7 @@ public class GameField {
 //                    long end2 = System.nanoTime();
 //                    Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Thread End:" + (end2-start2));
 //                }
-//            }.init(creep, exitPoint)).start();
+//            }.init(creep, outExitPoint)).start();
         }
         long end1 = System.nanoTime();
         Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Time End:" + (end1-start1));

@@ -55,6 +55,13 @@ public class Cell {
         return false;
     }
 
+    public boolean isPassable() {
+        if (empty || creeps != null) {
+            return true;
+        }
+        return false;
+    }
+
     public Tower getTower() {
         return tower;
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="64" height="64" tilewidth="64" tileheight="32" nextobjectid="2">
  <tileset firstgid="1" source="other/iso-64x64-outside_bad.tsx"/>
- <waves source="waves/waves3.ws"/>
+ <waves source="waves/waves1.ws"/>
  <layer name="background" width="64" height="64">
   <properties>
    <property name="background" value="ground"/>
