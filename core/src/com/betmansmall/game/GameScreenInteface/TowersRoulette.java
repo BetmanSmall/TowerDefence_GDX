@@ -104,14 +104,14 @@ public class TowersRoulette extends Roulette {
                         rouletteButton.getX(),
                         rouletteButton.getY()
                                 + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f));
-                Gdx.app.log("Button position is :", "X = " + templateButton.getX() + " Y = " + templateButton.getX());
+//                Gdx.app.log("Button position is :", "X = " + templateButton.getX() + " Y = " + templateButton.getX());
                 towerButtonsArray.get(towersNumber).setVisible(false);
                 towerFrames.get(towersNumber).setVisible(false);
                 buttonGroup.addActor(towerButtonsArray.get(towersNumber));
                 buttonGroup.addActor(towerFrames.get(towersNumber));
             }
             Gdx.app.log("Number of towers", ":" + towersNumber);
-            Gdx.app.log("Number of frames", ":" + towerFrames.size);
+//            Gdx.app.log("Number of frames", ":" + towerFrames.size);
         } else {
             Gdx.app.log("Device settings: ", "Device is not recognized");
         }

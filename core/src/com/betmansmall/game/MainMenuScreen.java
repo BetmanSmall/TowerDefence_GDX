@@ -161,6 +161,11 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //Campaign menu
+                        towerDefence.gameLevelMaps.add("maps/arena4.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena3.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena2.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena.tmx");
+                        towerDefence.nextGameLevel();
                         break;
                     case 2:
                         menuLvl = 2;
@@ -184,7 +189,7 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena2.tmx";
+                        mapName = "maps/arena3.tmx";
                         break;
                     case 2:
                         //Choose map2

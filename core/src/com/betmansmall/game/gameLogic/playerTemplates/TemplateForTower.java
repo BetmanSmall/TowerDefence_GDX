@@ -239,6 +239,8 @@ public class TemplateForTower {
 
     private void validate() {
         // Need cheak range values
+        if(this.templateName != null)
+            Gdx.app.log("TemplateForTower::validate()", "-- Load TemplateForTower: " + this.templateName);
         if(this.factionName == null)
             Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'factionName'! Check the file");
         else if(this.name == null)

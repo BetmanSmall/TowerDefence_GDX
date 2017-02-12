@@ -388,7 +388,7 @@ public class GameScreen implements Screen {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().removeTopScreen();
+                TowerDefence.getInstance().nextGameLevel();
                 return;
             }
             if (defeatScreen == null)
@@ -400,7 +400,7 @@ public class GameScreen implements Screen {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().removeTopScreen();
+                TowerDefence.getInstance().nextGameLevel();
                 return;
             }
             if (defeatScreen == null)

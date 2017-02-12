@@ -56,7 +56,7 @@ public class Cell {
     }
 
     public boolean isPassable() {
-        if (empty || creeps != null) {
+        if (empty || (!terrain && tower != null) || creeps != null) {
             return true;
         }
         return false;

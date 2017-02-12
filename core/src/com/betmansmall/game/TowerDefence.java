@@ -16,6 +16,22 @@ public class TowerDefence extends Game {
 
     private static volatile TowerDefence instance;
 
+    public Array<String> gameLevelMaps = new Array<String>();
+
+    public void nextGameLevel() {
+        if(gameLevelMaps.size != 0) {
+            removeTopScreen();
+            addScreen(new GameScreen(gameLevelMaps.first()));
+            gameLevelMaps.removeIndex(0);
+        } else {
+            if(screensArray.size > 1) {
+                removeTopScreen();
+            } else {
+                addScreen(new MainMenuScreen(instance));
+            }
+        }
+    }
+
     public static TowerDefence getInstance() {
         TowerDefence localInstance = instance;
         if (localInstance == null) {
@@ -58,9 +74,12 @@ public class TowerDefence extends Game {
                 if (screen != null) {
 //                    screen.hide();
                     screensArray.removeIndex(count - 1);
-                    Screen popToScreen = screensArray.get(count - 2);
-                    if (popToScreen != null) {
-                        this.setScreen(popToScreen);
+                    count = screensArray.size;
+                    if(count > 0) {
+                        Screen popToScreen = screensArray.get(count - 1);
+                        if (popToScreen != null) {
+                            this.setScreen(popToScreen);
+                        }
                     }
                 }
             }

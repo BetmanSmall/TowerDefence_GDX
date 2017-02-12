@@ -12,7 +12,7 @@
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="1.5"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="AutoTarget"/>
+  <property name="shellAttackType" value="FirstTarget"/>
   <property name="shellEffectType" value="FireEffect"/>
   <property name="shellEffectType_time" value="2"/>
   <property name="shellEffectType_damage" value="0.5"/>

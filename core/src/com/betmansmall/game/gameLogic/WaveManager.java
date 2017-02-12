@@ -47,20 +47,20 @@ public class WaveManager {
         return allCreepsForSpawn;
     }
 
-    public GridPoint2 getSpawnPoint() {
-        if (waves.size != 0) {
-            return waves.first().spawnPoint;
+    public Array<GridPoint2> getAllSpawnPoint() {
+        Array<GridPoint2> points = new Array<GridPoint2>();
+        for (Wave wave : waves) {
+            points.add(wave.spawnPoint);
         }
-        return null;
+        return points;
     }
 
-    public GridPoint2 getExitPoint() {
-        if (waves.size != 0) {
-            return waves.first().exitPoint;
-        } else if (lastExitPoint != null) {
-            return lastExitPoint;
+    public Array<GridPoint2> getAllExitPoint() {
+        Array<GridPoint2> points = new Array<GridPoint2>();
+        for (Wave wave : waves) {
+            points.add(wave.exitPoint);
         }
-        return null;
+        return points;
     }
 
     public boolean setExitPoint(GridPoint2 exitPoint) {
@@ -80,16 +80,28 @@ public class WaveManager {
         return creeps;
     }
 
-    public void validationPoints(int sizeFieldX, int sizeFieldY) {
-        for(Wave wave : waves) {
-            if (wave.spawnPoint == null || wave.spawnPoint.x < 0 || wave.spawnPoint.x >= sizeFieldX || wave.spawnPoint.y < 0 || wave.spawnPoint.y >= sizeFieldY) {
-                Gdx.app.error("GameField", "validationPoints(); -- SpawnPoint bad:" + wave.spawnPoint);
-                waves.removeValue(wave, true);
+    public void validationPoints(Cell[][] field) {
+        if(field != null) {
+            int sizeFieldY = field.length;
+            int sizeFieldX = field[0].length;
+            int wavesCount = waves.size;
+            for (int w = 0; w < waves.size; w++) {
+                Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ");", " -- wavesCount:(" + wavesCount + ":" + waves.size + ")");
+                Wave wave = waves.get(w);
+                GridPoint2 spawnPoint = wave.spawnPoint;
+                GridPoint2 exitPoint = wave.exitPoint;
+                Gdx.app.log("WaveManager::validationPoints();", " -- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
+                if (spawnPoint == null || spawnPoint.x < 0 || spawnPoint.x >= sizeFieldX || spawnPoint.y < 0 || spawnPoint.y >= sizeFieldY || !field[spawnPoint.x][spawnPoint.y].isPassable()) {
+                    Gdx.app.log("GameField", "validationPoints(); -- SpawnPoint bad:" + spawnPoint + " wave:" + wave);
+                    waves.removeValue(wave, true);
+                    w--;
+                } else if (exitPoint == null || exitPoint.x < 0 || exitPoint.x >= sizeFieldX || exitPoint.y < 0 || exitPoint.y >= sizeFieldY || !field[exitPoint.x][exitPoint.y].isPassable()) {
+                    Gdx.app.log("GameField", "validationPoints(); -- ExitPoint bad:" + exitPoint + " wave:" + wave);
+                    waves.removeValue(wave, true);
+                    w--;
+                }
             }
-            if (wave.exitPoint == null || wave.exitPoint.x < 0 || wave.exitPoint.x >= sizeFieldX || wave.exitPoint.y < 0 || wave.exitPoint.y >= sizeFieldY) {
-                Gdx.app.error("GameField", "validationPoints(); -- ExitPoint bad:" + wave.exitPoint);
-                waves.removeValue(wave, true);
-            }
+            Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ");", " -- wavesCount:(" + wavesCount + ":" + waves.size + ")");
         }
     }
 }

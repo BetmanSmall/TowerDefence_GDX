@@ -270,9 +270,10 @@ public class TemplateForUnit {
             Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'type'! Check the file");
         }
 
-        for (String key : animations.keys()) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Dir:" + key + " Lenght:" + animations.get(key).getFrameTiles().length);
-        }
+//        speed = 0.1f;
+//        for (String key : animations.keys()) {
+//            Gdx.app.log("TemplateForUnit::validate()", "-- Dir:" + key + " Lenght:" + animations.get(key).getFrameTiles().length);
+//        }
     }
 
     public void setFaction(Faction faction) {
