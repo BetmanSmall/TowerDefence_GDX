@@ -5,7 +5,7 @@
   <property name="name" value="Freeze Tower 2"/>
   <property name="radiusDetection" value="150"/>
   <property name="radiusFlyShell" value="0"/>
-  <property name="damage" value="0"/>
+  <property name="damage" value="10"/>
   <property name="size" value="1"/>
   <property name="cost" value="10"/>
   <property name="ammoSize" value="10"/>

@@ -217,7 +217,9 @@ public class GameField {
                             if (cell != null) {
                                 TiledMapTile tiledMapTile = cell.getTile();
                                 if (tiledMapTile != null) {
-                                    field[x][y].addTiledMapTile(tiledMapTile);
+                                    if(layer.getProperties().get("background") == null) {
+                                        field[x][y].addTiledMapTile(tiledMapTile);
+                                    }
                                     if (tiledMapTile.getProperties().get("terrain") != null) {
                                         field[x][y].setTerrain();
                                     } else if (tiledMapTile.getProperties().get("spawnPoint") != null) {
@@ -240,6 +242,51 @@ public class GameField {
                 }
             }
         }
+
+//        if(sizeFieldX == sizeFieldY) {
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < sizeFieldY; y++) {
+//                for(int x = 0; x < sizeFieldX; x++) {
+//                    newCells[sizeFieldX-y-1][x] = field[x][y];
+//                }
+//            }
+//            field = newCells;
+//        } else {
+//            int oldWidth = sizeFieldX;
+//            int oldHeight = sizeFieldY;
+//            sizeFieldX = sizeFieldY;
+//            sizeFieldY = oldWidth;
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < oldHeight; y++) {
+//                for(int x = 0; x < oldWidth; x++) {
+//                    newCells[sizeFieldX*(x)+(sizeFieldX-y-1)] = field[oldWidth*y+x];
+//                }
+//            }
+//            field = newCells;
+//        }
+
+//        if(sizeFieldX == sizeFieldY) {
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < sizeFieldY; y++) {
+//                for(int x = 0; x < sizeFieldX; x++) {
+////                    newCells[sizeFieldX*(sizeFieldY-x-1)+(y)] = field[sizeFieldX*y+x];
+//                    newCells[sizeFieldY-x-1][y] = field[x][y];
+//                }
+//            }
+//            field = newCells;
+//        } else {
+//            int oldWidth = sizeFieldX;
+//            int oldHeight = sizeFieldY;
+//            sizeFieldX = sizeFieldY;
+//            sizeFieldY = oldWidth;
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < oldHeight; y++) {
+//                for(int x = 0; x < oldWidth; x++) {
+//                    newCells[sizeFieldX*(sizeFieldY-x-1)+(y)] = field[oldWidth*y+x];
+//                }
+//            }
+//            field = newCells;
+//        }
         Gdx.app.log("GameField::createField();", " -- pathFinder:" + pathFinder);
         pathFinder = new PathFinder();
         pathFinder.loadCharMatrix(getCharMatrix());
@@ -283,61 +330,79 @@ public class GameField {
         }
 
         if (isDrawableTerrain) {
-//            int halfSizeCellX = sizeCellX / 2;
-//            int halfSizeCellY = sizeCellY / 2;
-//            for (int y = sizeFieldY - 1; y >= 0; y--) {
-////                for(int x = sizeFieldX-1; x >= 0; x--) {
-////                for(int y = 0; y < sizeFieldY; y++) {
-//                for (int x = 0; x < sizeFieldX; x++) {
-//                    Array<TiledMapTile> tiledMapTiles = field[x][y].getTiledMapTiles();
-//                    for (TiledMapTile tiledMapTile : tiledMapTiles) {
-//                        TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-//                        float pxlsX = (halfSizeCellX * y + x * halfSizeCellX);
-//                        float pxlsY = (halfSizeCellY * y - x * halfSizeCellY);
-//
-//                        spriteBatch.setProjectionMatrix(camera.combined);
-//                        spriteBatch.begin();
-//                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-//                        spriteBatch.end();
-//                    }
-//                    Array<Creep> creeps = field[x][y].getCreeps();
-//                    if(creeps != null) {
-//                        for (Creep creep : creeps) {
-//                            drawCreep(creep, camera);
-//                        }
-//                    }
-//                    Tower tower = field[x][y].getTower();
-//                    if(tower != null) {
-//                        drawTower(tower, camera);
-//                    }
-//                }
-//            }
             renderer.setView(camera);
             renderer.render();
-//            renderer.getBatch().begin();
-//            for (MapLayer mapLayer : map.getLayers()) {
-//                if (mapLayer instanceof TiledMapTileLayer) {
-//                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
-//                    String background = layer.getProperties().get("background", String.class);
-////                    if(background != null) {
-//                        renderer.renderTileLayer(layer);
-////                    }
-//                }
-//            }
-//            renderer.getBatch().end();
+            renderer.getBatch().begin();
+            for (MapLayer mapLayer : map.getLayers()) {
+                if (mapLayer instanceof TiledMapTileLayer) {
+                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
+                    String background = layer.getProperties().get("background", String.class);
+                    if(background != null) {
+                        renderer.renderTileLayer(layer);
+                    }
+                }
+            }
+            renderer.getBatch().end();
+
+            spriteBatch.setProjectionMatrix(camera.combined);
+            spriteBatch.begin();
+            int x = 0, y = 0;
+            int length = sizeFieldY;
+            int isometricSpaceX = (sizeCellX/2) * sizeFieldY;
+            int isometricSpaceY = 0;
+            while (x < length) {
+                if(x == length - 1 && y == length - 1) {
+//            for (int y = sizeFieldY - 1; y >= 0; y--) {
+////            for(int y = 0; y < sizeFieldY; y++) {
+////                for(int x = sizeFieldX-1; x >= 0; x--) {
+//                for (int x = 0; x < sizeFieldX; x++) {
+//                    Gdx.app.log("GameField::render();", " -- хуй");
+                } else {
+                    Array<TiledMapTile> tiledMapTiles = field[x][y].getTiledMapTiles();
+                    for (TiledMapTile tiledMapTile : tiledMapTiles) {
+                        TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+                        float pxlsX = (halfSizeCellX * y + x * halfSizeCellX);
+                        float pxlsY = (halfSizeCellY * y - x * halfSizeCellY);
+
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                        Gdx.app.log("GameField::render();", " -- x:" + x + " y:" + y + " length:" + length);
+                    }
+                    Array<Creep> creeps = field[x][y].getCreeps();
+                    if(creeps != null) {
+                        for (Creep creep : creeps) {
+                            drawCreep(creep, spriteBatch);
+                        }
+                    }
+                    Tower tower = field[x][y].getTower();
+                    if(tower != null) {
+                        drawTower(tower, spriteBatch);
+                    }
+                }
+                if(x == length - 1) {
+                    x = y + 1;
+                    y = length - 1;
+                } else if(y == 0) {
+                    y = x + 1;
+                    x = 0;
+                } else {
+                    x++;
+                    y--;
+                }
+            }
+            spriteBatch.end();
         }
 
         if (isDrawableGrid)
             drawGrid(camera);
-        //just workaround
-        if (isDrawableCreeps && isDrawableTowers) {
-            drawCreepsAndTowers(camera);
-        } else {
-            if (isDrawableTowers)
-                drawTowers(camera);
-            if (isDrawableCreeps)
-                drawCreeps(camera);
-        }
+//        // just workaround
+//        if (isDrawableCreeps && isDrawableTowers) {
+//            drawCreepsAndTowers(camera);
+//        } else {
+//            if (isDrawableTowers)
+//                drawTowers(camera);
+//            if (isDrawableCreeps)
+//                drawCreeps(camera);
+//        }
         if (isDrawableRoutes)
             drawRoutes(camera);
         if (isDrawableGridNav)
@@ -398,14 +463,14 @@ public class GameField {
         }
     }
 
-    private void drawCreepsAndTowers(OrthographicCamera camera) {
+    private void drawCreepsAndTowers(SpriteBatch spriteBatch) {
         getPriorityMap();
         for (Object obj : priorityMap.values()) {
             if (obj instanceof Tower) {
-                drawTower((Tower) obj, camera);
+                drawTower((Tower) obj, spriteBatch);
             } else {
                 for (Creep creep : (List<Creep>) obj) {
-                    drawCreep(creep, camera);
+                    drawCreep(creep, spriteBatch);
                 }
             }
         }
@@ -429,7 +494,7 @@ public class GameField {
         shapeRenderer.end();
     }
 
-    private void drawCreep(Creep creep, OrthographicCamera camera) { //TODO Need to refactor this
+    private void drawCreep(Creep creep, SpriteBatch spriteBatch) { //TODO Need to refactor this
         float fVx = creep.currentPoint.x;
         float fVy = creep.currentPoint.y;
 //        Gdx.app.log("GameField::drawCreep();", " -- olDfVx:" + olDfVx + " olDfVy:" + olDfVy);
@@ -445,62 +510,62 @@ public class GameField {
         fVx -= deltaX;
         fVy -= deltaY;
 
-        spriteBatch.setProjectionMatrix(camera.combined);
-        spriteBatch.begin();
+//        spriteBatch.setProjectionMatrix(camera.combined);
+//        spriteBatch.begin();
         spriteBatch.draw(currentFrame, fVx, fVy);
-        spriteBatch.end();
+//        spriteBatch.end();
 
-        if (creep.isAlive()) {
-            float hpBarSpace = 0.8f;
-            float effectBarWidthSpace = hpBarSpace * 2;
-            float effectBarHeightSpace = hpBarSpace * 2;
-            float hpBarHPWidth = 30f;
-            float effectBarWidth = hpBarHPWidth - effectBarWidthSpace * 2;
-            float hpBarHeight = 7f;
-            float effectBarHeight = hpBarHeight - (effectBarHeightSpace * 2);
-            float hpBarWidthIndent = (currentFrame.getRegionWidth() - hpBarHPWidth) / 2;
-            float hpBarTopIndent = hpBarHeight;
-
-            shapeRenderer.setProjectionMatrix(camera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.BLACK);
-            shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrame.getRegionHeight() - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
-            shapeRenderer.setColor(Color.GREEN);
-            int maxHP = creep.getTemplateForUnit().healthPoints;
-            int hp = creep.getHp();
-            hpBarHPWidth = hpBarHPWidth / maxHP * hp;
-            shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrame.getRegionHeight() - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
-
-//            shapeRenderer.setColor(Color.BLUE);
-//            shapeRenderer.circle(creep.olDfVx, creep.olDfVy, 1f);
-
-            float allTime = 0f;
-            for (ShellEffectType shellEffectType : creep.shellEffectTypes)
-                allTime += shellEffectType.time;
-
-            float effectWidth = effectBarWidth / allTime;
-            float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
-            float efY = fVy + currentFrame.getRegionHeight() - hpBarTopIndent + effectBarHeightSpace;
-            float effectBlockWidth = effectBarWidth / creep.shellEffectTypes.size;
-            for (int effectIndex = 0; effectIndex < creep.shellEffectTypes.size; effectIndex++) {
-                ShellEffectType shellEffectType = creep.shellEffectTypes.get(effectIndex);
-                if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
-                    shapeRenderer.setColor(Color.RED);
-                } else if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
-                    shapeRenderer.setColor(Color.ROYAL);
-                }
-                float efWidth = effectBlockWidth - effectWidth * shellEffectType.elapsedTime;
-                shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
-                efX += effectBlockWidth;
-//                Gdx.app.log("GameField::drawCreep();", " -- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
-            }
-            shapeRenderer.end();
-        }
+//        if (creep.isAlive()) {
+//            float hpBarSpace = 0.8f;
+//            float effectBarWidthSpace = hpBarSpace * 2;
+//            float effectBarHeightSpace = hpBarSpace * 2;
+//            float hpBarHPWidth = 30f;
+//            float effectBarWidth = hpBarHPWidth - effectBarWidthSpace * 2;
+//            float hpBarHeight = 7f;
+//            float effectBarHeight = hpBarHeight - (effectBarHeightSpace * 2);
+//            float hpBarWidthIndent = (currentFrame.getRegionWidth() - hpBarHPWidth) / 2;
+//            float hpBarTopIndent = hpBarHeight;
+//
+//            shapeRenderer.setProjectionMatrix(camera.combined);
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//            shapeRenderer.setColor(Color.BLACK);
+//            shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrame.getRegionHeight() - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
+//            shapeRenderer.setColor(Color.GREEN);
+//            int maxHP = creep.getTemplateForUnit().healthPoints;
+//            int hp = creep.getHp();
+//            hpBarHPWidth = hpBarHPWidth / maxHP * hp;
+//            shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrame.getRegionHeight() - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+//
+////            shapeRenderer.setColor(Color.BLUE);
+////            shapeRenderer.circle(creep.olDfVx, creep.olDfVy, 1f);
+//
+//            float allTime = 0f;
+//            for (ShellEffectType shellEffectType : creep.shellEffectTypes)
+//                allTime += shellEffectType.time;
+//
+//            float effectWidth = effectBarWidth / allTime;
+//            float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
+//            float efY = fVy + currentFrame.getRegionHeight() - hpBarTopIndent + effectBarHeightSpace;
+//            float effectBlockWidth = effectBarWidth / creep.shellEffectTypes.size;
+//            for (int effectIndex = 0; effectIndex < creep.shellEffectTypes.size; effectIndex++) {
+//                ShellEffectType shellEffectType = creep.shellEffectTypes.get(effectIndex);
+//                if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
+//                    shapeRenderer.setColor(Color.RED);
+//                } else if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
+//                    shapeRenderer.setColor(Color.ROYAL);
+//                }
+//                float efWidth = effectBlockWidth - effectWidth * shellEffectType.elapsedTime;
+//                shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
+//                efX += effectBlockWidth;
+////                Gdx.app.log("GameField::drawCreep();", " -- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
+//            }
+//            shapeRenderer.end();
+//        }
     }
 
-    private void drawCreeps(OrthographicCamera camera) {
+    private void drawCreeps(SpriteBatch spriteBatch) {
         for (Creep creep : creepsManager.getAllCreeps()) {
-            drawCreep(creep, camera);
+            drawCreep(creep, spriteBatch);
         }
     }
 
@@ -526,23 +591,23 @@ public class GameField {
         shapeRenderer.end();
     }
 
-    private void drawTower(Tower tower, OrthographicCamera camera) {
+    private void drawTower(Tower tower, SpriteBatch spriteBatch) {
 //        Gdx.app.log("GameField", "drawTower(" + tower + ", " + camera + ");");
-        spriteBatch.setProjectionMatrix(camera.combined);
+//        spriteBatch.setProjectionMatrix(camera.combined);
         int x = tower.getPosition().x;
         int y = tower.getPosition().y;
         int towerSize = tower.getTemplateForTower().size;
         float pxlsX = (halfSizeCellX * y + x * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
         float pxlsY = (halfSizeCellY * y - x * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
         TextureRegion currentFrame = tower.getCurentFrame();
-        spriteBatch.begin();
+//        spriteBatch.begin();
         spriteBatch.draw(currentFrame, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-        spriteBatch.end();
+//        spriteBatch.end();
     }
 
-    private void drawTowers(OrthographicCamera camera) {
+    private void drawTowers(SpriteBatch spriteBatch) {
         for (Tower tower : towersManager.getAllTowers()) {
-            drawTower(tower, camera);
+            drawTower(tower, spriteBatch);
         }
     }
 
