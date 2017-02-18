@@ -47,7 +47,7 @@ public class Shell {
         this.currentPoint = currentPoint;
         circle = new Circle(currentPoint.x, currentPoint.y, ammoSize);
         if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
-            this.endPoint = new Vector2(creep.currentPoint);
+            this.endPoint = new Vector2(creep.currentPoint.x + creep.displacement.x, creep.currentPoint.y + creep.displacement.y);
             Direction direction = creep.direction;
             float delta = GameField.getSizeCellX();
             float del = 1.8f;
@@ -102,6 +102,7 @@ public class Shell {
             } else if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
                 float displacementX = velocity.x * delta * ammoSpeed;
                 float displacementY = velocity.y * delta * ammoSpeed;
+
                 currentPoint.add(displacementX, displacementY);
                 circle.setPosition(currentPoint);
                 endPoint2.setPosition(new Vector2(endPoint).add(displacementX, displacementY));

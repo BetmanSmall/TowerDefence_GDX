@@ -34,8 +34,11 @@ public class Creep {
     private float deltaInNormalSpeed;
     private float deathElapsedTime;
 
-    public Vector2 currentPoint; // AlexGor
+    public Vector2 currentPoint;
+    public Vector2 backStepPoint;// AlexGor
     public Circle circle;
+    public Vector2 velocity;
+    public Vector2 displacement;
 //    public Vector2 oldPoint;
 
     private TemplateForUnit templateForUnit;
@@ -55,6 +58,7 @@ public class Creep {
             this.deathElapsedTime = 0;
 
             this.currentPoint = new Vector2(newPosition.getX(), newPosition.getY());
+            this.backStepPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
             this.circle = new Circle();
 //            this.oldPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
 
@@ -201,8 +205,14 @@ public class Creep {
 // =================================================
 
 //            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
+            backStepPoint = currentPoint;
             currentPoint.set(fVx, fVy);
             circle.set(fVx, fVy, 16f); // AlexGor
+
+            velocity = new Vector2(backStepPoint.x - currentPoint.x,
+                    backStepPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(backStepPoint.x,
+                    backStepPoint.y), speed));
+            displacement = new Vector2(velocity.x * delta * speed, velocity.y * delta * speed);
 
 //                Gdx.app.log("Creep::move()", " -- oldDirection:" + oldDirection + " newDirection:" + direction);
             if(!direction.equals(oldDirection)) {
