@@ -68,7 +68,7 @@ public class GameInterface {
             for (Actor actor : towersRoulette.getGroup()) {
                 stage.addActor(actor);
             }
-        } catch(Error error){ Gdx.app.log("Error:", "no circle group");}
+        } catch(Error error){ Gdx.app.log("Error:", "no circle1 group");}
 
     }
 

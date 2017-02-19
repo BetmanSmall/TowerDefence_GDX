@@ -111,7 +111,7 @@ public class GameScreen implements Screen {
                 return true;
             }
             lastCircleTouched = false;
-            if (gameField.getUnderConstruction() == null) {
+            if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
 //                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
                     camera.position.add(-deltaX * camera.zoom, 0, 0);
 //                if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
@@ -314,7 +314,8 @@ public class GameScreen implements Screen {
     public void show() {
         Gdx.app.log("GameScreen::show()", " Called!");
         //Start position of camera
-        camera.position.add((gameField.getSizeFieldX() * gameField.getSizeCellX()) / 2, 0, 0);
+//        camera.position.add((gameField.getSizeFieldX() * gameField.getSizeCellX()) / 2, 0, 0);
+        camera.position.set(0f, 0f, 0f);
     }
 
     private void inputHandler(float delta) {
@@ -359,6 +360,18 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9); -- gameField.gameSpeed:" + gameField.gameSpeed);
             gameField.gameSpeed += 0.1f;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnLeft();");
+            gameField.turnLeft();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnRight();");
+            gameField.turnRight();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipX();");
+            gameField.flipX();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipY();");
+            gameField.flipY();
         }
     }
 

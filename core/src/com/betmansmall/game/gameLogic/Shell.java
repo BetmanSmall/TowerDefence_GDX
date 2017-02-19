@@ -1,6 +1,5 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Circle;
@@ -47,7 +46,7 @@ public class Shell {
         this.currentPoint = currentPoint;
         circle = new Circle(currentPoint.x, currentPoint.y, ammoSize);
         if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
-            this.endPoint = new Vector2(creep.currentPoint);
+            this.endPoint = new Vector2(creep.circle1.x, creep.circle1.y);
             Direction direction = creep.direction;
             float delta = GameField.getSizeCellX();
             float del = 1.8f;
@@ -69,7 +68,7 @@ public class Shell {
                 endPoint.add(-(delta / del), delta / del);
             }
         } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
-            this.endPoint = creep.currentPoint;
+            this.endPoint = new Vector2(creep.circle1.x, creep.circle1.y); // LOL break
         }
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
         endPoint2 = new Circle(endPoint, 3f);
@@ -91,8 +90,8 @@ public class Shell {
                 currentPoint.add(velocity.x * delta * ammoSpeed, velocity.y * delta * ammoSpeed);
                 circle.setPosition(currentPoint);
                 endPoint2.setPosition(new Vector2(endPoint));
-                // endPoint2 == endPoint == creep.currentPoint ~= creep.circle
-                if(Intersector.overlaps(circle, creep.circle)) {
+                // endPoint2 == endPoint == creep.currentPoint ~= creep.circle1
+                if(Intersector.overlaps(circle, creep.circle1)) {
                     if (creep.die(templateForTower.damage, templateForTower.shellEffectType)) {
                         GameField.gamerGold += creep.getTemplateForUnit().bounty;
                     }
@@ -125,7 +124,7 @@ public class Shell {
     private boolean tryToHitCreeps() {
         boolean hit = false;
         for (Creep creep : GameField.creepsManager.getAllCreeps()) { // not good
-            if (Intersector.overlaps(circle, creep.getCircle())) {
+            if (Intersector.overlaps(circle, creep.getCircle1())) {
                 hit = true;
                 if (creep.die(templateForTower.damage, templateForTower.shellEffectType)) {
                     GameField.gamerGold += creep.getTemplateForUnit().bounty;

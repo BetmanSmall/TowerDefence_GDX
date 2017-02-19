@@ -23,7 +23,7 @@ public class WhichCell {
         this.sizeCellY = sizeCellY;
     }
 
-    public GridPoint2 whichCell(GridPoint2 gameCoordinate) {
+    public GridPoint2 whichCell(GridPoint2 grafCoordinate) {
         int halfSizeCellX = sizeCellX/2;
         int halfSizeCellY = sizeCellY/2;
         for(int tileX = 0; tileX < sizeFieldX; tileX++) {
@@ -36,8 +36,25 @@ public class WhichCell {
                 tilePoints.add(new Vector2(posX + halfSizeCellX, posY + halfSizeCellY));
                 tilePoints.add(new Vector2(posX + sizeCellX, posY));
                 tilePoints.add(new Vector2(posX + halfSizeCellX, posY - halfSizeCellY));
-                if(estimation(tilePoints, gameCoordinate)) {
-                    return new GridPoint2(tileX, tileY);
+                if(estimation(tilePoints, grafCoordinate)) {
+                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
+                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":1");
+                    return gameCoord;
+                }
+////                float posX = (tileX*halfSizeCellX) + (tileY*halfSizeCellX);
+////                float posY = -(tileX*halfSizeCellY) + (tileY*halfSizeCellY) + halfSizeCellY;
+                posX = (tileX*halfSizeCellX) - (tileY*halfSizeCellX) - halfSizeCellX;
+                posY = -(tileX*halfSizeCellY) - (tileY*halfSizeCellY);
+
+                ArrayList<Vector2> tilePoints2 = new ArrayList<Vector2>();
+                tilePoints2.add(new Vector2(posX, posY));
+                tilePoints2.add(new Vector2(posX + halfSizeCellX, posY + halfSizeCellY));
+                tilePoints2.add(new Vector2(posX + sizeCellX, posY));
+                tilePoints2.add(new Vector2(posX + halfSizeCellX, posY - halfSizeCellY));
+                if(estimation(tilePoints2, grafCoordinate)) {
+                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
+                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":2");
+                    return gameCoord;
                 }
             }
         }

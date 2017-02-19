@@ -140,7 +140,7 @@ public class GameField {
         waveManager.validationPoints(field);
         if (waveManager.waves.size == 0) {
             GridPoint2 spawnPoint = new GridPoint2(-1, -1);
-            for (int y = 0; y < sizeFieldY; y++) {
+            for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = 0; x < sizeFieldX; x++) {
                     if (cellIsEmpty(x, y)) {
                         spawnPoint.set(x, y);
@@ -240,15 +240,15 @@ public class GameField {
                 }
             }
         }
-        turnRight();
+//        turnRight();
         flipY();
-        turnRight();
+//        turnRight();
         Gdx.app.log("GameField::createField();", " -- pathFinder:" + pathFinder);
         pathFinder = new PathFinder();
         pathFinder.loadCharMatrix(getCharMatrix());
     }
 
-    private void turnRight() {
+    public void turnRight() {
         if(sizeFieldX == sizeFieldY) {
             Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
             for(int y = 0; y < sizeFieldY; y++) {
@@ -273,13 +273,13 @@ public class GameField {
         }
     }
 
-    private void turnLeft() {
+    public void turnLeft() {
         if(sizeFieldX == sizeFieldY) {
             Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
             for(int y = 0; y < sizeFieldY; y++) {
                 for(int x = 0; x < sizeFieldX; x++) {
 //                    newCells[sizeFieldX*(sizeFieldY-x-1)+(y)] = field[sizeFieldX*y+x];
-                    newCells[sizeFieldY-x-1][y] = field[x][y];
+                    newCells[y][sizeFieldY-x-1] = field[x][y];
                 }
             }
             field = newCells;
@@ -299,7 +299,7 @@ public class GameField {
         }
     }
 
-    private void flipX() {
+    public void flipX() {
         Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
         for (int y = 0; y < sizeFieldY; y++) {
             for (int x = 0; x < sizeFieldX; x++) {
@@ -309,7 +309,7 @@ public class GameField {
         field = newCells;
     }
 
-    private void flipY() {
+    public void flipY() {
         Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
         for(int y = 0; y < sizeFieldY; y++) {
             for(int x = 0; x < sizeFieldX; x++) {
@@ -370,7 +370,6 @@ public class GameField {
 //                }
 //            }
 //            renderer.getBatch().end();
-
             spriteBatch.setProjectionMatrix(camera.combined);
             spriteBatch.begin();
             drawBackGrounds(spriteBatch);
@@ -396,6 +395,10 @@ public class GameField {
         drawShells(camera);
         drawTowersUnderConstruction(camera);
 
+        shapeRenderer.setColor(Color.FIREBRICK);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.circle(0f, 0f, 1.5f);
+        shapeRenderer.end();
         if (animation != null) {
             stateTime += delta;
             TextureRegion currentFrame = animation.getKeyFrame(stateTime, true); // #16
@@ -406,8 +409,9 @@ public class GameField {
             spriteBatch.end();
         }
         spriteBatch.begin();
-        bitmapFont.getData().setScale(4);
         bitmapFont.setColor(Color.YELLOW);
+        bitmapFont.draw(spriteBatch, String.valueOf("0, 0"), 0, 0);
+        bitmapFont.getData().setScale(4);
         bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
         spriteBatch.end();
     }
@@ -420,9 +424,13 @@ public class GameField {
                 Array<TiledMapTile> tiledMapTiles = field[x][y].backgroundTiles;
                 for (TiledMapTile tiledMapTile : tiledMapTiles) {
                     TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                    float pxlsX = (-(halfSizeCellX * y) + x * halfSizeCellX);
-                    float pxlsY = (-(halfSizeCellY * y) - x * halfSizeCellY);
+                    float pxlsX = halfSizeCellX * y + x * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
+                    float pxlsY = halfSizeCellY * y - x * halfSizeCellY;
+                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
 
+                    pxlsX = (-(halfSizeCellX * (y+1)) + x * halfSizeCellX);
+                    pxlsY = (-(halfSizeCellY * (y+1)) - x * halfSizeCellY);
                     spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
 //                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
                 }
@@ -440,9 +448,13 @@ public class GameField {
                 Array<TiledMapTile> tiledMapTiles = field[x][y].foregroundTiles;
                 for (TiledMapTile tiledMapTile : tiledMapTiles) {
                     TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                    float pxlsX = (-(halfSizeCellX * y) + x * halfSizeCellX);
-                    float pxlsY = (-(halfSizeCellY * y) - x * halfSizeCellY);
+                    float pxlsX = halfSizeCellX * y + x * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
+                    float pxlsY = halfSizeCellY * y - x * halfSizeCellY;
+                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawForeGroundWithCreepsAndTowers();", " -- x:" + x + " y:" + y + " length:" + length);
 
+                    pxlsX = (-(halfSizeCellX * (y+1)) + x * halfSizeCellX);
+                    pxlsY = (-(halfSizeCellY * (y+1)) - x * halfSizeCellY);
                     spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
 //                    Gdx.app.log("GameField::drawForeGroundWithCreepsAndTowers();", " -- x:" + x + " y:" + y + " length:" + length);
                 }
@@ -471,19 +483,23 @@ public class GameField {
     }
 
     private void drawGrid(OrthographicCamera camera) {
-        int widthForTop = sizeFieldY * halfSizeCellX; // A - B
-        int heightForTop = sizeFieldY * halfSizeCellY; // B - Top
-        int widthForBottom = sizeFieldX * halfSizeCellX; // A - C
-        int heightForBottom = sizeFieldX * halfSizeCellY; // C - Bottom
-
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
 
+        int widthForTop = sizeFieldY * halfSizeCellX; // A - B
+        int heightForTop = sizeFieldY * halfSizeCellY; // B - Top
+        int widthForBottom = sizeFieldX * halfSizeCellX; // A - C
+        int heightForBottom = sizeFieldX * halfSizeCellY; // C - Bottom
         for (int x = 0; x <= sizeFieldX; x++)
             shapeRenderer.line(x * halfSizeCellX, halfSizeCellY - x * halfSizeCellY, widthForTop + x * halfSizeCellX, halfSizeCellY + heightForTop - x * halfSizeCellY);
         for (int y = 0; y <= sizeFieldY; y++)
             shapeRenderer.line(y * halfSizeCellX, halfSizeCellY + y * halfSizeCellY, widthForBottom + y * halfSizeCellX, halfSizeCellY - heightForBottom + y * halfSizeCellY);
+        // --------------------
+        for (int x = 0; x <= sizeFieldX; x++)
+            shapeRenderer.line(halfSizeCellX*x, -(halfSizeCellY*x) + halfSizeCellY, -widthForBottom + x*halfSizeCellX, halfSizeCellY - heightForBottom - x*halfSizeCellY);
+        for (int y = 0; y <= sizeFieldY; y++)
+            shapeRenderer.line(-(halfSizeCellX*y), -(halfSizeCellY*y) + halfSizeCellY, widthForTop - (y*halfSizeCellX), halfSizeCellY - heightForTop - y*halfSizeCellY);
 
         shapeRenderer.end();
     }
@@ -528,10 +544,7 @@ public class GameField {
 //    }
 
     private void drawCreep(Creep creep, SpriteBatch spriteBatch) { //TODO Need to refactor this
-        float fVx = creep.currentPoint.x;
-        float fVy = creep.currentPoint.y;
-//        Gdx.app.log("GameField::drawCreep();", " -- olDfVx:" + olDfVx + " olDfVy:" + olDfVy);
-//        Gdx.app.log("GameField::drawCreep();", " -- fVx:" + fVx + " fVy:" + fVy);
+//        Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ");", " -- Start!");
         TextureRegion currentFrame;
         if (creep.isAlive()) {
             currentFrame = creep.getCurentFrame();
@@ -540,13 +553,14 @@ public class GameField {
         }
         int deltaX = (currentFrame.getRegionWidth()) / 2;
         int deltaY = (currentFrame.getRegionHeight()) / 2;
-        fVx -= deltaX;
-        fVy -= deltaY;
 
-//        spriteBatch.setProjectionMatrix(camera.combined);
-//        spriteBatch.begin();
+        float fVx = creep.circle1.x - deltaX;
+        float fVy = creep.circle1.y - deltaY;
         spriteBatch.draw(currentFrame, fVx, fVy);
-//        spriteBatch.end();
+
+        fVx = creep.circle2.x - deltaX;
+        fVy = creep.circle2.y - deltaY;
+        spriteBatch.draw(currentFrame, fVx, fVy);
 
 //        if (creep.isAlive()) {
 //            float hpBarSpace = 0.8f;
@@ -570,7 +584,7 @@ public class GameField {
 //            shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrame.getRegionHeight() - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
 //
 ////            shapeRenderer.setColor(Color.BLUE);
-////            shapeRenderer.circle(creep.olDfVx, creep.olDfVy, 1f);
+////            shapeRenderer.circle1(creep.olDfVx, creep.olDfVy, 1f);
 //
 //            float allTime = 0f;
 //            for (ShellEffectType shellEffectType : creep.shellEffectTypes)
@@ -607,9 +621,9 @@ public class GameField {
             if (route != null) {
                 for (Node coor : route) {
                     int vX = coor.getX();
-                    int vY = coor.getY() + 1; // LibGDX some problems. Have offset (0,0) coor.
-                    float fVx = halfSizeCellX * vY + vX * halfSizeCellX;
-                    float fVy = halfSizeCellY * vY - vX * halfSizeCellY;
+                    int vY = coor.getY(); // LibGDX some problems. Have offset (0,0) coor.
+                    float fVx = halfSizeCellX * (vY+1) + vX * halfSizeCellX;
+                    float fVy = halfSizeCellY * (vY+1) - vX * halfSizeCellY;
                     shapeRenderer.circle(fVx, fVy, 5);
                     fVx = (-(halfSizeCellX * vY) + vX * halfSizeCellX);
                     fVy = (-(halfSizeCellY * vY) - vX * halfSizeCellY);
@@ -635,8 +649,8 @@ public class GameField {
         float pxlsX = (halfSizeCellX * y + x * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
         float pxlsY = (halfSizeCellY * y - x * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
         spriteBatch.draw(currentFrame, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-        pxlsX = (-(halfSizeCellX * y) + x * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
-        pxlsY = (-(halfSizeCellY * y) - x * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
+        pxlsX = (-(halfSizeCellX*y) + x*halfSizeCellX) - halfSizeCellX * (towerSize - 1);
+        pxlsY = (-(halfSizeCellY*y) - x*halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
         spriteBatch.draw(currentFrame, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
     }
 
@@ -659,6 +673,18 @@ public class GameField {
                     }
                     shapeRenderer.circle(fVx, fVy, 3f);
                 }
+                fVx = -(halfSizeCellX*y) + x*halfSizeCellX;
+                fVy = -(halfSizeCellY*y) - x*halfSizeCellY;
+                if (!field[x][y].isEmpty()) {
+                    if (field[x][y].isTerrain()) {
+                        shapeRenderer.setColor(Color.RED);
+                    } else if (field[x][y].getCreep() != null) {
+                        shapeRenderer.setColor(Color.GREEN);
+                    } else if (field[x][y].getTower() != null) {
+                        shapeRenderer.setColor(Color.ORANGE);
+                    }
+                    shapeRenderer.circle(fVx, fVy, 3f);
+                }
             }
         }
 
@@ -670,6 +696,9 @@ public class GameField {
             xPoint = halfSizeCellX * (spawnPoint.y + 1) + spawnPoint.x * halfSizeCellX;
             yPoint = halfSizeCellY * (spawnPoint.y + 1) - spawnPoint.x * halfSizeCellY;
             shapeRenderer.circle(xPoint, yPoint, 3);
+            xPoint = -(halfSizeCellX*spawnPoint.y) + spawnPoint.x * halfSizeCellX;
+            yPoint = -(halfSizeCellY*spawnPoint.y) - spawnPoint.x * halfSizeCellY;
+            shapeRenderer.circle(xPoint, yPoint, 3);
         }
 
         Array<GridPoint2> exitPoints = waveManager.getAllExitPoint();
@@ -678,16 +707,20 @@ public class GameField {
             xPoint = halfSizeCellX * (exitPoint.y + 1) + exitPoint.x * halfSizeCellX;
             yPoint = halfSizeCellY * (exitPoint.y + 1) - exitPoint.x * halfSizeCellY;
             shapeRenderer.circle(xPoint, yPoint, 3);
+            xPoint = -(halfSizeCellX*exitPoint.y) + exitPoint.x * halfSizeCellX;
+            yPoint = -(halfSizeCellY*exitPoint.y) - exitPoint.x * halfSizeCellY;
+            shapeRenderer.circle(xPoint, yPoint, 3);
         }
 
         shapeRenderer.setColor(Color.BLUE);
         for (Creep creep : creepsManager.getAllCreeps()) {
-            shapeRenderer.circle(creep.currentPoint.x, creep.currentPoint.y, 1f);
+            shapeRenderer.circle(creep.circle1.x, creep.circle1.y, 1f);
+            shapeRenderer.circle(creep.circle2.x, creep.circle2.y, 1f);
         }
 
         shapeRenderer.setColor(Color.LIME);
         for (Creep creep : creepsManager.getAllCreeps()) {
-            Circle rectangle = creep.getCircle();
+            Circle rectangle = creep.getCircle1();
             shapeRenderer.circle(rectangle.x, rectangle.y, 2f);
         }
 
@@ -715,7 +748,7 @@ public class GameField {
 
         shapeRenderer.setColor(Color.RED);
         for (Creep creep : creepsManager.getAllCreeps()) {
-            Circle rectangle = creep.getCircle();
+            Circle rectangle = creep.getCircle1();
 //            shapeRenderer.box(rectangle.x, rectangle.y, 0, rectangle.width, rectangle.height, 0);
             shapeRenderer.circle(rectangle.x, rectangle.y, rectangle.radius);
         }
@@ -727,10 +760,10 @@ public class GameField {
 //            for(Shell shell: tower.shells) {
 //                shapeRenderer.setColor(Color.WHITE);
 //                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, 1.5f);
-//                shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radiusDetection);
+//                shapeRenderer.circle1(shell.circle1.x, shell.circle1.y, shell.circle1.radiusDetection);
 //                shapeRenderer.setColor(Color.RED);
-//                if(null != shell.circle) {
-//                    shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radiusDetection);
+//                if(null != shell.circle1) {
+//                    shapeRenderer.circle1(shell.circle1.x, shell.circle1.y, shell.circle1.radiusDetection);
 //                }
 //            }
         }
@@ -838,16 +871,14 @@ public class GameField {
             }
         }
         if (drawFull) {
-            float pxlsX = (halfSizeCellX * (buildY) + (buildX) * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
-            float pxlsY = (halfSizeCellY * (buildY) - (buildX) * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
-
             if (canBuild)
                 spriteBatch.setColor(0, 1f, 0, 0.55f);
             else
                 spriteBatch.setColor(1f, 0, 0, 0.55f);
 
+            float pxlsX = (halfSizeCellX * (buildY) + (buildX) * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
+            float pxlsY = (halfSizeCellY * (buildY) - (buildX) * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
             spriteBatch.draw(textureRegion, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-            spriteBatch.setColor(oldColor);
             for (int x = startX; x <= finishX; x++) {
                 for (int y = startY; y <= finishY; y++) {
                     pxlsX = halfSizeCellX * (buildY + y) + (buildX + x) * halfSizeCellX;
@@ -861,6 +892,23 @@ public class GameField {
                     }
                 }
             }
+            pxlsX = (-(halfSizeCellX*buildY) + (buildX) * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
+            pxlsY = (-(halfSizeCellY*buildY) - (buildX) * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
+            spriteBatch.draw(textureRegion, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+            for (int x = startX; x <= finishX; x++) {
+                for (int y = startY; y <= finishY; y++) {
+                    pxlsX = -(halfSizeCellX*(buildY+y)) + (buildX + x) * halfSizeCellX;
+                    pxlsY = -(halfSizeCellY*(buildY+y)) - (buildX + x) * halfSizeCellY;
+                    if (cellIsEmpty(buildX + x, buildY + y)) {
+                        if (greenCheckmark != null)
+                            spriteBatch.draw(greenCheckmark, pxlsX, pxlsY, sizeCellX, sizeCellY * 2);
+                    } else {
+                        if (redCross != null)
+                            spriteBatch.draw(redCross, pxlsX, pxlsY, sizeCellX, sizeCellY * 2);
+                    }
+                }
+            }
+            spriteBatch.setColor(oldColor);
         }
         spriteBatch.end();
     }
@@ -1108,7 +1156,7 @@ public class GameField {
             } else if (towerAttackType == TowerAttackType.Range) {
                 if (tower.recharge(delta)) {
                     for (Creep creep : creepsManager.getAllCreeps()) {
-                        if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.getCircle())) {
+                        if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.getCircle1())) {
 //                            Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
                             if (tower.shoot(creep)) {
                                 break;
