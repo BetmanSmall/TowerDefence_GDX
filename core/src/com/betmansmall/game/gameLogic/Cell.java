@@ -7,27 +7,29 @@ import com.badlogic.gdx.utils.Array;
  * Created by BetmanSmall on 11.03.2016.
  */
 public class Cell {
-    private Array<TiledMapTile> tiledMapTiles;
+    public Array<TiledMapTile> backgroundTiles;
+    public Array<TiledMapTile> foregroundTiles;
     private boolean empty;
     private boolean terrain;
     private Tower tower;
     private Array<Creep> creeps;
 
     public Cell() {
-        this.tiledMapTiles = new Array<TiledMapTile>();
+        this.backgroundTiles = new Array<TiledMapTile>();
+        this.foregroundTiles = new Array<TiledMapTile>();
         this.empty = true;
         this.terrain = false;
         this.tower = null;
         this.creeps = null;
     }
 
-    public void addTiledMapTile(TiledMapTile tiledMapTile) {
-        tiledMapTiles.add(tiledMapTile);
-    }
-
-    public Array<TiledMapTile> getTiledMapTiles() {
-        return tiledMapTiles;
-    }
+//    public void addTiledMapTile(TiledMapTile tiledMapTile) {
+//        tiledMapTiles.add(tiledMapTile);
+//    }
+//
+//    public Array<TiledMapTile> getTiledMapTiles() {
+//        return tiledMapTiles;
+//    }
 
     public boolean isEmpty() {
         return empty;
@@ -122,8 +124,10 @@ public class Cell {
     }
 
     public void dispose() {
-        tiledMapTiles.clear();
-        tiledMapTiles = null;
+        backgroundTiles.clear();
+        foregroundTiles.clear();
+        backgroundTiles = null;
+        foregroundTiles = null;
         tower = null;
         creeps.clear();
         creeps = null;

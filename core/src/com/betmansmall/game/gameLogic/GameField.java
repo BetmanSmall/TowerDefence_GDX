@@ -24,21 +24,17 @@ import com.badlogic.gdx.math.GridPoint2;
 //import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
-import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Intersector; // AlexGor
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.lang.Object;
@@ -218,7 +214,9 @@ public class GameField {
                                 TiledMapTile tiledMapTile = cell.getTile();
                                 if (tiledMapTile != null) {
                                     if(layer.getProperties().get("background") == null) {
-                                        field[x][y].addTiledMapTile(tiledMapTile);
+                                        field[x][y].foregroundTiles.add(tiledMapTile);
+                                    } else {
+                                        field[x][y].backgroundTiles.add(tiledMapTile);
                                     }
                                     if (tiledMapTile.getProperties().get("terrain") != null) {
                                         field[x][y].setTerrain();
@@ -242,16 +240,25 @@ public class GameField {
                 }
             }
         }
+        turnRight();
+        flipY();
+        turnRight();
+        Gdx.app.log("GameField::createField();", " -- pathFinder:" + pathFinder);
+        pathFinder = new PathFinder();
+        pathFinder.loadCharMatrix(getCharMatrix());
+    }
 
-//        if(sizeFieldX == sizeFieldY) {
-//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
-//            for(int y = 0; y < sizeFieldY; y++) {
-//                for(int x = 0; x < sizeFieldX; x++) {
-//                    newCells[sizeFieldX-y-1][x] = field[x][y];
-//                }
-//            }
-//            field = newCells;
-//        } else {
+    private void turnRight() {
+        if(sizeFieldX == sizeFieldY) {
+            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+            for(int y = 0; y < sizeFieldY; y++) {
+                for(int x = 0; x < sizeFieldX; x++) {
+                    newCells[sizeFieldX-y-1][x] = field[x][y];
+                }
+            }
+            field = newCells;
+        } else {
+            Gdx.app.log("GameField::turnRight();", " -- Not work!");
 //            int oldWidth = sizeFieldX;
 //            int oldHeight = sizeFieldY;
 //            sizeFieldX = sizeFieldY;
@@ -263,18 +270,21 @@ public class GameField {
 //                }
 //            }
 //            field = newCells;
-//        }
+        }
+    }
 
-//        if(sizeFieldX == sizeFieldY) {
-//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
-//            for(int y = 0; y < sizeFieldY; y++) {
-//                for(int x = 0; x < sizeFieldX; x++) {
-////                    newCells[sizeFieldX*(sizeFieldY-x-1)+(y)] = field[sizeFieldX*y+x];
-//                    newCells[sizeFieldY-x-1][y] = field[x][y];
-//                }
-//            }
-//            field = newCells;
-//        } else {
+    private void turnLeft() {
+        if(sizeFieldX == sizeFieldY) {
+            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+            for(int y = 0; y < sizeFieldY; y++) {
+                for(int x = 0; x < sizeFieldX; x++) {
+//                    newCells[sizeFieldX*(sizeFieldY-x-1)+(y)] = field[sizeFieldX*y+x];
+                    newCells[sizeFieldY-x-1][y] = field[x][y];
+                }
+            }
+            field = newCells;
+        } else {
+            Gdx.app.log("GameField::turnLeft();", " -- Not work!");
 //            int oldWidth = sizeFieldX;
 //            int oldHeight = sizeFieldY;
 //            sizeFieldX = sizeFieldY;
@@ -286,10 +296,27 @@ public class GameField {
 //                }
 //            }
 //            field = newCells;
-//        }
-        Gdx.app.log("GameField::createField();", " -- pathFinder:" + pathFinder);
-        pathFinder = new PathFinder();
-        pathFinder.loadCharMatrix(getCharMatrix());
+        }
+    }
+
+    private void flipX() {
+        Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+        for (int y = 0; y < sizeFieldY; y++) {
+            for (int x = 0; x < sizeFieldX; x++) {
+                newCells[sizeFieldX - x - 1][y] = field[x][y];
+            }
+        }
+        field = newCells;
+    }
+
+    private void flipY() {
+        Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+        for(int y = 0; y < sizeFieldY; y++) {
+            for(int x = 0; x < sizeFieldX; x++) {
+                newCells[x][sizeFieldY-y-1] = field[x][y];
+            }
+        }
+        field = newCells;
     }
 
     public char[][] getCharMatrix() {
@@ -330,65 +357,24 @@ public class GameField {
         }
 
         if (isDrawableTerrain) {
-            renderer.setView(camera);
-            renderer.render();
-            renderer.getBatch().begin();
-            for (MapLayer mapLayer : map.getLayers()) {
-                if (mapLayer instanceof TiledMapTileLayer) {
-                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
-                    String background = layer.getProperties().get("background", String.class);
-                    if(background != null) {
-                        renderer.renderTileLayer(layer);
-                    }
-                }
-            }
-            renderer.getBatch().end();
+//            renderer.setView(camera);
+//            renderer.render();
+//            renderer.getBatch().begin();
+//            for (MapLayer mapLayer : map.getLayers()) {
+//                if (mapLayer instanceof TiledMapTileLayer) {
+//                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
+//                    String background = layer.getProperties().get("background", String.class);
+//                    if(background != null) {
+//                        renderer.renderTileLayer(layer);
+//                    }
+//                }
+//            }
+//            renderer.getBatch().end();
 
             spriteBatch.setProjectionMatrix(camera.combined);
             spriteBatch.begin();
-            int x = 0, y = 0;
-            int length = sizeFieldY;
-            int isometricSpaceX = (sizeCellX/2) * sizeFieldY;
-            int isometricSpaceY = 0;
-            while (x < length) {
-                if(x == length - 1 && y == length - 1) {
-//            for (int y = sizeFieldY - 1; y >= 0; y--) {
-////            for(int y = 0; y < sizeFieldY; y++) {
-////                for(int x = sizeFieldX-1; x >= 0; x--) {
-//                for (int x = 0; x < sizeFieldX; x++) {
-//                    Gdx.app.log("GameField::render();", " -- хуй");
-                } else {
-                    Array<TiledMapTile> tiledMapTiles = field[x][y].getTiledMapTiles();
-                    for (TiledMapTile tiledMapTile : tiledMapTiles) {
-                        TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                        float pxlsX = (halfSizeCellX * y + x * halfSizeCellX);
-                        float pxlsY = (halfSizeCellY * y - x * halfSizeCellY);
-
-                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                        Gdx.app.log("GameField::render();", " -- x:" + x + " y:" + y + " length:" + length);
-                    }
-                    Array<Creep> creeps = field[x][y].getCreeps();
-                    if(creeps != null) {
-                        for (Creep creep : creeps) {
-                            drawCreep(creep, spriteBatch);
-                        }
-                    }
-                    Tower tower = field[x][y].getTower();
-                    if(tower != null) {
-                        drawTower(tower, spriteBatch);
-                    }
-                }
-                if(x == length - 1) {
-                    x = y + 1;
-                    y = length - 1;
-                } else if(y == 0) {
-                    y = x + 1;
-                    x = 0;
-                } else {
-                    x++;
-                    y--;
-                }
-            }
+            drawBackGrounds(spriteBatch);
+            drawForeGroundWithCreepsAndTowers(spriteBatch);
             spriteBatch.end();
         }
 
@@ -410,20 +396,6 @@ public class GameField {
         drawShells(camera);
         drawTowersUnderConstruction(camera);
 
-//        if (isDrawableTerrain) {
-//            renderer.getBatch().begin();
-//            for (MapLayer mapLayer : map.getLayers()) {
-//                if (mapLayer instanceof TiledMapTileLayer) {
-//                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
-//                    String background = layer.getProperties().get("background", String.class);
-//                    if (background == null) {
-//                        renderer.renderTileLayer(layer);
-//                    }
-//                }
-//            }
-//            renderer.getBatch().end();
-//        }
-
         if (animation != null) {
             stateTime += delta;
             TextureRegion currentFrame = animation.getKeyFrame(stateTime, true); // #16
@@ -438,40 +410,62 @@ public class GameField {
         bitmapFont.setColor(Color.YELLOW);
         bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
         spriteBatch.end();
-
-//        debugRenderer.render(world, camera.combined);
-//        world.step(1 / 60f, 6, 2);
     }
 
-    private void getPriorityMap() {
-        priorityMap.clear();
-        for (Tower tower : towersManager.getAllTowers()) {
-            priorityMap.put(tower.getPosition().x * 1000 - tower.getPosition().y, tower);
-        }
-        for (Creep creep : creepsManager.getAllCreeps()) {
-            List list;
-            Integer key = creep.getNewPosition().getX() * 1000 - creep.getNewPosition().getY();
-            if (priorityMap.containsKey(key) && (priorityMap.get(key) instanceof List)) {
-                list = (List) priorityMap.get(key);
-                list.add(creep);
-                priorityMap.put(key, list);
-            } else {
-                list = new ArrayList<Object>();
-                list.add(creep);
-                priorityMap.put(creep.getNewPosition().getX() * 1000 - creep.getNewPosition().getY(), list);
+    private void drawBackGrounds(SpriteBatch spriteBatch) {
+        for (int y = 0; y < sizeFieldY; y++) {
+//            for (int y = sizeFieldY - 1; y >= 0; y--) {
+////                for(int x = sizeFieldX-1; x >= 0; x--) {
+            for (int x = 0; x < sizeFieldX; x++) {
+                Array<TiledMapTile> tiledMapTiles = field[x][y].backgroundTiles;
+                for (TiledMapTile tiledMapTile : tiledMapTiles) {
+                    TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+                    float pxlsX = (-(halfSizeCellX * y) + x * halfSizeCellX);
+                    float pxlsY = (-(halfSizeCellY * y) - x * halfSizeCellY);
+
+                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+                }
             }
         }
     }
 
-    private void drawCreepsAndTowers(SpriteBatch spriteBatch) {
-        getPriorityMap();
-        for (Object obj : priorityMap.values()) {
-            if (obj instanceof Tower) {
-                drawTower((Tower) obj, spriteBatch);
+    private void drawForeGroundWithCreepsAndTowers(SpriteBatch spriteBatch) {
+        int x = 0, y = 0;
+        int length = sizeFieldY;
+        while (x < length) {
+            if(x == length - 1 && y == length - 1) {
+//                Gdx.app.log("GameField::render();", " -- хуй");
             } else {
-                for (Creep creep : (List<Creep>) obj) {
-                    drawCreep(creep, spriteBatch);
+                Array<TiledMapTile> tiledMapTiles = field[x][y].foregroundTiles;
+                for (TiledMapTile tiledMapTile : tiledMapTiles) {
+                    TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+                    float pxlsX = (-(halfSizeCellX * y) + x * halfSizeCellX);
+                    float pxlsY = (-(halfSizeCellY * y) - x * halfSizeCellY);
+
+                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawForeGroundWithCreepsAndTowers();", " -- x:" + x + " y:" + y + " length:" + length);
                 }
+                Array<Creep> creeps = field[x][y].getCreeps();
+                if(creeps != null) {
+                    for (Creep creep : creeps) {
+                        drawCreep(creep, spriteBatch);
+                    }
+                }
+                Tower tower = field[x][y].getTower();
+                if(tower != null) {
+                    drawTower(tower, spriteBatch);
+                }
+            }
+            if(x == length - 1) {
+                x = y + 1;
+                y = length - 1;
+            } else if(y == 0) {
+                y = x + 1;
+                x = 0;
+            } else {
+                x++;
+                y--;
             }
         }
     }
@@ -493,6 +487,45 @@ public class GameField {
 
         shapeRenderer.end();
     }
+
+//    private void drawCreepsAndTowers(SpriteBatch spriteBatch) {
+//        getPriorityMap();
+//        for (Object obj : priorityMap.values()) {
+//            if (obj instanceof Tower) {
+//                drawTower((Tower) obj, spriteBatch);
+//            } else {
+//                for (Creep creep : (List<Creep>) obj) {
+//                    drawCreep(creep, spriteBatch);
+//                }
+//            }
+//        }
+//    }
+//
+//    private void getPriorityMap() {
+//        priorityMap.clear();
+//        for (Tower tower : towersManager.getAllTowers()) {
+//            priorityMap.put(tower.getPosition().x * 1000 - tower.getPosition().y, tower);
+//        }
+//        for (Creep creep : creepsManager.getAllCreeps()) {
+//            List list;
+//            Integer key = creep.getNewPosition().getX() * 1000 - creep.getNewPosition().getY();
+//            if (priorityMap.containsKey(key) && (priorityMap.get(key) instanceof List)) {
+//                list = (List) priorityMap.get(key);
+//                list.add(creep);
+//                priorityMap.put(key, list);
+//            } else {
+//                list = new ArrayList<Object>();
+//                list.add(creep);
+//                priorityMap.put(creep.getNewPosition().getX() * 1000 - creep.getNewPosition().getY(), list);
+//            }
+//        }
+//    }
+
+//    private void drawCreeps(SpriteBatch spriteBatch) {
+//        for (Creep creep : creepsManager.getAllCreeps()) {
+//            drawCreep(creep, spriteBatch);
+//        }
+//    }
 
     private void drawCreep(Creep creep, SpriteBatch spriteBatch) { //TODO Need to refactor this
         float fVx = creep.currentPoint.x;
@@ -563,12 +596,6 @@ public class GameField {
 //        }
     }
 
-    private void drawCreeps(SpriteBatch spriteBatch) {
-        for (Creep creep : creepsManager.getAllCreeps()) {
-            drawCreep(creep, spriteBatch);
-        }
-    }
-
     private void drawRoutes(OrthographicCamera camera) {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -583,7 +610,9 @@ public class GameField {
                     int vY = coor.getY() + 1; // LibGDX some problems. Have offset (0,0) coor.
                     float fVx = halfSizeCellX * vY + vX * halfSizeCellX;
                     float fVy = halfSizeCellY * vY - vX * halfSizeCellY;
-
+                    shapeRenderer.circle(fVx, fVy, 5);
+                    fVx = (-(halfSizeCellX * vY) + vX * halfSizeCellX);
+                    fVy = (-(halfSizeCellY * vY) - vX * halfSizeCellY);
                     shapeRenderer.circle(fVx, fVy, 5);
                 }
             }
@@ -591,24 +620,24 @@ public class GameField {
         shapeRenderer.end();
     }
 
+//    private void drawTowers(SpriteBatch spriteBatch) {
+//        for (Tower tower : towersManager.getAllTowers()) {
+//            drawTower(tower, spriteBatch);
+//        }
+//    }
+
     private void drawTower(Tower tower, SpriteBatch spriteBatch) {
 //        Gdx.app.log("GameField", "drawTower(" + tower + ", " + camera + ");");
-//        spriteBatch.setProjectionMatrix(camera.combined);
         int x = tower.getPosition().x;
         int y = tower.getPosition().y;
         int towerSize = tower.getTemplateForTower().size;
+        TextureRegion currentFrame = tower.getCurentFrame();
         float pxlsX = (halfSizeCellX * y + x * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
         float pxlsY = (halfSizeCellY * y - x * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
-        TextureRegion currentFrame = tower.getCurentFrame();
-//        spriteBatch.begin();
         spriteBatch.draw(currentFrame, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-//        spriteBatch.end();
-    }
-
-    private void drawTowers(SpriteBatch spriteBatch) {
-        for (Tower tower : towersManager.getAllTowers()) {
-            drawTower(tower, spriteBatch);
-        }
+        pxlsX = (-(halfSizeCellX * y) + x * halfSizeCellX) - halfSizeCellX * (towerSize - 1);
+        pxlsY = (-(halfSizeCellY * y) - x * halfSizeCellY) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
+        spriteBatch.draw(currentFrame, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
     }
 
     private void drawGridNav(OrthographicCamera camera) {

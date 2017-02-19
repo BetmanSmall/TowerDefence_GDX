@@ -141,8 +141,10 @@ public class Creep {
             int sizeCellY = GameField.getSizeCellY();
             float halfSizeCellX = sizeCellX/2;
             float halfSizeCellY = sizeCellY/2;
-            float fVx = halfSizeCellX * (newY+1) + newX * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
-            float fVy = halfSizeCellY * (newY+1) - newX * halfSizeCellY;
+//            float fVx = halfSizeCellX * (newY+1) + newX * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
+//            float fVy = halfSizeCellY * (newY+1) - newX * halfSizeCellY;
+            float fVx = (-(halfSizeCellX * (newY+1)) + newX * halfSizeCellX);
+            float fVy = (-(halfSizeCellY * (newY+1)) - newX * halfSizeCellY);
 //                float fVxOld = halfSizeCellX * oldY + oldX * halfSizeCellX;
 //                float fVyOld = halfSizeCellY * oldY - oldX * halfSizeCellY;
 //                this.oldPoint.set(fVxOld, fVyOld);
