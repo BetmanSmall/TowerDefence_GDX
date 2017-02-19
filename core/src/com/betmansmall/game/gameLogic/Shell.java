@@ -48,26 +48,6 @@ public class Shell {
         circle = new Circle(currentPoint.x, currentPoint.y, ammoSize);
         if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
             this.endPoint = new Vector2(creep.currentPoint.x + creep.displacement.x, creep.currentPoint.y + creep.displacement.y);
-            Direction direction = creep.direction;
-            float delta = GameField.getSizeCellX();
-            float del = 1.8f;
-            if (direction == Direction.UP) {
-                endPoint.add(0, delta);
-            } else if (direction == Direction.UP_RIGHT) {
-                endPoint.add(delta / del, delta / del);
-            } else if (direction == Direction.RIGHT) {
-                endPoint.add(delta, 0);
-            } else if (direction == Direction.DOWN_RIGHT) {
-                endPoint.add(delta / del, -(delta / del));
-            } else if (direction == Direction.DOWN) {
-                endPoint.add(0, -delta);
-            } else if (direction == Direction.DOWN_LEFT) {
-                endPoint.add(-(delta / del), -(delta / del));
-            } else if (direction == Direction.LEFT) {
-                endPoint.add(-delta, 0);
-            } else if (direction == Direction.UP_LEFT) {
-                endPoint.add(-(delta / del), delta / del);
-            }
         } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
             this.endPoint = creep.currentPoint;
         }

@@ -212,7 +212,7 @@ public class Creep {
             velocity = new Vector2(backStepPoint.x - currentPoint.x,
                     backStepPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(backStepPoint.x,
                     backStepPoint.y), speed));
-            displacement = new Vector2(velocity.x * delta * speed, velocity.y * delta * speed);
+            displacement = new Vector2(velocity.x * delta, velocity.y * delta);
 
 //                Gdx.app.log("Creep::move()", " -- oldDirection:" + oldDirection + " newDirection:" + direction);
             if(!direction.equals(oldDirection)) {
