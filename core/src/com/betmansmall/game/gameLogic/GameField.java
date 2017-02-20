@@ -70,12 +70,12 @@ public class GameField {
         return sizeCellY;
     }
 
-    public int isDrawableBackground = 1;
-    public int isDrawableForeground = 1;
-    public boolean isDrawableGrid = true;
+    public int isDrawableBackground = 5;
+    public int isDrawableForeground = 5;
+    public int isDrawableGrid = 5;
     public boolean isDrawableCreeps = true;
     public boolean isDrawableTowers = true;
-    public boolean isDrawableRoutes = true;
+//    public boolean isDrawableRoutes = true;
     public boolean isDrawableGridNav = true;
 
     private int halfSizeCellX;
@@ -260,17 +260,17 @@ public class GameField {
             field = newCells;
         } else {
             Gdx.app.log("GameField::turnRight();", " -- Not work!");
-//            int oldWidth = sizeFieldX;
-//            int oldHeight = sizeFieldY;
-//            sizeFieldX = sizeFieldY;
-//            sizeFieldY = oldWidth;
-//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
-//            for(int y = 0; y < oldHeight; y++) {
-//                for(int x = 0; x < oldWidth; x++) {
-//                    newCells[sizeFieldX*(x)+(sizeFieldX-y-1)] = field[oldWidth*y+x];
-//                }
-//            }
-//            field = newCells;
+            int oldWidth = sizeFieldX;
+            int oldHeight = sizeFieldY;
+            sizeFieldX = sizeFieldY;
+            sizeFieldY = oldWidth;
+            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+            for(int y = 0; y < oldHeight; y++) {
+                for(int x = 0; x < oldWidth; x++) {
+                    newCells[sizeFieldX-y-1][x] = field[x][y];
+                }
+            }
+            field = newCells;
         }
     }
 
@@ -279,24 +279,24 @@ public class GameField {
             Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
             for(int y = 0; y < sizeFieldY; y++) {
                 for(int x = 0; x < sizeFieldX; x++) {
-//                    newCells[sizeFieldX*(sizeFieldY-x-1)+(y)] = field[sizeFieldX*y+x];
                     newCells[y][sizeFieldY-x-1] = field[x][y];
                 }
             }
             field = newCells;
         } else {
             Gdx.app.log("GameField::turnLeft();", " -- Not work!");
-//            int oldWidth = sizeFieldX;
-//            int oldHeight = sizeFieldY;
-//            sizeFieldX = sizeFieldY;
-//            sizeFieldY = oldWidth;
-//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
-//            for(int y = 0; y < oldHeight; y++) {
-//                for(int x = 0; x < oldWidth; x++) {
+            int oldWidth = sizeFieldX;
+            int oldHeight = sizeFieldY;
+            sizeFieldX = sizeFieldY;
+            sizeFieldY = oldWidth;
+            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+            for(int y = 0; y < oldHeight; y++) {
+                for(int x = 0; x < oldWidth; x++) {
 //                    newCells[sizeFieldX*(sizeFieldY-x-1)+(y)] = field[oldWidth*y+x];
-//                }
-//            }
-//            field = newCells;
+                    newCells[y][sizeFieldY-x-1] = field[x][y];
+                }
+            }
+            field = newCells;
         }
     }
 
@@ -382,7 +382,7 @@ public class GameField {
         }
         spriteBatch.end();
 
-        if (isDrawableGrid)
+        if (isDrawableGrid > 0)
             drawGrid(camera);
 //        // just workaround
 //        if (isDrawableCreeps && isDrawableTowers) {
@@ -393,10 +393,10 @@ public class GameField {
 //            if (isDrawableCreeps)
 //                drawCreeps(camera);
 //        }
-        if (isDrawableRoutes)
+        if (isDrawableGridNav) {
             drawRoutes(camera);
-        if (isDrawableGridNav)
             drawGridNav(camera);
+        }
         drawShells(camera);
         drawTowersUnderConstruction(camera);
 
@@ -468,12 +468,16 @@ public class GameField {
     }
 
     private void drawForeGroundWithCreepsAndTowers(SpriteBatch spriteBatch) {
-        int x = 0, y = 0;
-        int length = sizeFieldY;
-        while (x < length) {
-            if(x == length - 1 && y == length - 1) {
-//                Gdx.app.log("GameField::render();", " -- хуй");
-            } else {
+        for (int y = 0; y < sizeFieldY; y++) {
+//            for (int y = sizeFieldY - 1; y >= 0; y--) {
+////                for(int x = sizeFieldX-1; x >= 0; x--) {
+            for (int x = 0; x < sizeFieldX; x++) {
+//        int x = 0, y = 0;
+//        int length = sizeFieldY;
+//        while (x < length) {
+//            if(x == length - 1 && y == length - 1) {
+////                Gdx.app.log("GameField::render();", " -- хуй");
+//            } else {
                 Array<Creep> creeps = field[x][y].getCreeps();
                 if(creeps != null) {
                     for (Creep creep : creeps) {
@@ -522,16 +526,16 @@ public class GameField {
                     }
                 }
             }
-            if(x == length - 1) {
-                x = y + 1;
-                y = length - 1;
-            } else if(y == 0) {
-                y = x + 1;
-                x = 0;
-            } else {
-                x++;
-                y--;
-            }
+//            if(x == length - 1) {
+//                x = y + 1;
+//                y = length - 1;
+//            } else if(y == 0) {
+//                y = x + 1;
+//                x = 0;
+//            } else {
+//                x++;
+//                y--;
+//            }
         }
     }
 
@@ -544,16 +548,32 @@ public class GameField {
         int heightForTop = sizeFieldY * halfSizeCellY; // B - Top
         int widthForBottom = sizeFieldX * halfSizeCellX; // A - C
         int heightForBottom = sizeFieldX * halfSizeCellY; // C - Bottom
-        for (int x = 0; x <= sizeFieldX; x++)
-            shapeRenderer.line(x * halfSizeCellX, halfSizeCellY - x * halfSizeCellY, widthForTop + x * halfSizeCellX, halfSizeCellY + heightForTop - x * halfSizeCellY);
-        for (int y = 0; y <= sizeFieldY; y++)
-            shapeRenderer.line(y * halfSizeCellX, halfSizeCellY + y * halfSizeCellY, widthForBottom + y * halfSizeCellX, halfSizeCellY - heightForBottom + y * halfSizeCellY);
-        // --------------------
-        for (int x = 0; x <= sizeFieldX; x++)
-            shapeRenderer.line(halfSizeCellX*x, -(halfSizeCellY*x) + halfSizeCellY, -widthForBottom + x*halfSizeCellX, halfSizeCellY - heightForBottom - x*halfSizeCellY);
-        for (int y = 0; y <= sizeFieldY; y++)
-            shapeRenderer.line(-(halfSizeCellX*y), -(halfSizeCellY*y) + halfSizeCellY, widthForTop - (y*halfSizeCellX), halfSizeCellY - heightForTop - y*halfSizeCellY);
+//        Gdx.app.log("GameField::drawGrid(camera);", " -- widthForTop:" + widthForTop + " heightForTop:" + heightForTop + " widthForBottom:" + widthForBottom + " heightForBottom:" + heightForBottom);
 
+        if(isDrawableGrid == 1 || isDrawableGrid == 5) {
+            for (int x = 0; x <= sizeFieldX; x++)
+                shapeRenderer.line( (halfSizeCellX*x),-(halfSizeCellY*x)+halfSizeCellY,-(widthForTop)+(halfSizeCellX*x),   -(heightForTop)-(x*halfSizeCellY)+halfSizeCellY);
+            for (int y = 0; y <= sizeFieldY; y++)
+                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y)+halfSizeCellY, (widthForBottom)-(halfSizeCellX*y),-(heightForBottom)-(halfSizeCellY*y)+halfSizeCellY);
+        }
+        if(isDrawableGrid == 2 || isDrawableGrid == 5) {
+            for (int x = 0; x <= sizeFieldX; x++)
+                shapeRenderer.line((halfSizeCellX*x),-(halfSizeCellY*x)+halfSizeCellY,(widthForTop)+(halfSizeCellX*x),    (heightForTop)-(x*halfSizeCellY)+halfSizeCellY);
+            for (int y = 0; y <= sizeFieldY; y++)
+                shapeRenderer.line((halfSizeCellX*y), (halfSizeCellY*y)+halfSizeCellY,(widthForBottom)+(halfSizeCellX*y),-(heightForBottom)+(halfSizeCellY*y)+halfSizeCellY);
+        }
+        if(isDrawableGrid == 3 || isDrawableGrid == 5) {
+            for (int x = 0; x <= sizeFieldY; x++) // WHT??? sizeFieldY check groundDraw
+                shapeRenderer.line(-(halfSizeCellX*x),(halfSizeCellY*x)+halfSizeCellY, (widthForBottom)-(halfSizeCellX*x),(heightForBottom)+(x*halfSizeCellY)+halfSizeCellY);
+            for (int y = 0; y <= sizeFieldX; y++) // WHT??? sizeFieldX check groundDraw
+                shapeRenderer.line( (halfSizeCellX*y),(halfSizeCellY*y)+halfSizeCellY,-(widthForTop)+(halfSizeCellX*y),   (heightForTop)+(halfSizeCellY*y)+halfSizeCellY);
+        }
+        if(isDrawableGrid == 4 || isDrawableGrid == 5) {
+            for (int x = 0; x <= sizeFieldY; x++) // WHT??? sizeFieldY check groundDraw
+                shapeRenderer.line(-(halfSizeCellX*x), (halfSizeCellY*x)+halfSizeCellY,-(widthForBottom)-(halfSizeCellX*x),   -(heightForBottom)+(x*halfSizeCellY)+halfSizeCellY);
+            for (int y = 0; y <= sizeFieldX; y++) // WHT??? sizeFieldX check groundDraw
+                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y)+halfSizeCellY,-(widthForTop)-(halfSizeCellX*y),(heightForTop)-(halfSizeCellY*y)+halfSizeCellY);
+        }
         shapeRenderer.end();
     }
 

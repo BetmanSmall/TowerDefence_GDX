@@ -19,8 +19,8 @@ public class TowerDefence extends Game {
     public Array<String> gameLevelMaps = new Array<String>();
 
     public void nextGameLevel() {
-        if(gameLevelMaps.size != 0) {
-            removeTopScreen();
+        if(gameLevelMaps.size > 0) {
+//            removeTopScreen();
             addScreen(new GameScreen(gameLevelMaps.first()));
             gameLevelMaps.removeIndex(0);
         } else {

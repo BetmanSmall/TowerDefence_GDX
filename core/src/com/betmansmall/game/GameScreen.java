@@ -334,7 +334,10 @@ public class GameScreen implements Screen {
             gameInterface.getCreepsRoulette().buttonClick();
             Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUM_0");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            gameField.isDrawableGrid = !gameField.isDrawableGrid;
+            gameField.isDrawableGrid++;
+            if(gameField.isDrawableGrid > 5) {
+                gameField.isDrawableGrid = 0;
+            }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             gameField.isDrawableCreeps = !gameField.isDrawableCreeps;
@@ -343,23 +346,21 @@ public class GameScreen implements Screen {
             gameField.isDrawableTowers = !gameField.isDrawableTowers;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-            gameField.isDrawableRoutes = !gameField.isDrawableRoutes;
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableRoutes:" + gameField.isDrawableRoutes);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
             gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
             gameField.isDrawableBackground++;
             if(gameField.isDrawableBackground > 5) {
                 gameField.isDrawableBackground = 0;
             }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
             gameField.isDrawableForeground++;
             if(gameField.isDrawableForeground > 5) {
                 gameField.isDrawableForeground = 0;
             }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
+//        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().removeTopScreen();

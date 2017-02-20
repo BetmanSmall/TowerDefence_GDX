@@ -60,6 +60,9 @@ public class WaveManager {
         for (Wave wave : waves) {
             points.add(wave.exitPoint);
         }
+        if (lastExitPoint != null) {
+            points.add(lastExitPoint);
+        }
         return points;
     }
 
