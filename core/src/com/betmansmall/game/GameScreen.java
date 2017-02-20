@@ -349,8 +349,17 @@ public class GameScreen implements Screen {
             gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
-            gameField.isDrawableTerrain = !gameField.isDrawableTerrain;
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTerrain:" + gameField.isDrawableTerrain);
+            gameField.isDrawableBackground++;
+            if(gameField.isDrawableBackground > 5) {
+                gameField.isDrawableBackground = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
+            gameField.isDrawableForeground++;
+            if(gameField.isDrawableForeground > 5) {
+                gameField.isDrawableForeground = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().removeTopScreen();

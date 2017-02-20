@@ -70,7 +70,8 @@ public class GameField {
         return sizeCellY;
     }
 
-    public boolean isDrawableTerrain = true;
+    public int isDrawableBackground = 1;
+    public int isDrawableForeground = 1;
     public boolean isDrawableGrid = true;
     public boolean isDrawableCreeps = true;
     public boolean isDrawableTowers = true;
@@ -356,7 +357,7 @@ public class GameField {
             moveAllShells(delta);
         }
 
-        if (isDrawableTerrain) {
+//        if (isDrawableTerrain) {
 //            renderer.setView(camera);
 //            renderer.render();
 //            renderer.getBatch().begin();
@@ -370,12 +371,16 @@ public class GameField {
 //                }
 //            }
 //            renderer.getBatch().end();
-            spriteBatch.setProjectionMatrix(camera.combined);
-            spriteBatch.begin();
+//        }
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        if(isDrawableBackground > 0) {
             drawBackGrounds(spriteBatch);
-            drawForeGroundWithCreepsAndTowers(spriteBatch);
-            spriteBatch.end();
         }
+        if(isDrawableForeground > 0) {
+            drawForeGroundWithCreepsAndTowers(spriteBatch);
+        }
+        spriteBatch.end();
 
         if (isDrawableGrid)
             drawGrid(camera);
@@ -424,15 +429,39 @@ public class GameField {
                 Array<TiledMapTile> tiledMapTiles = field[x][y].backgroundTiles;
                 for (TiledMapTile tiledMapTile : tiledMapTiles) {
                     TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                    float pxlsX = halfSizeCellX * y + x * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
-                    float pxlsY = halfSizeCellY * y - x * halfSizeCellY;
-                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
 
-                    pxlsX = (-(halfSizeCellX * (y+1)) + x * halfSizeCellX);
-                    pxlsY = (-(halfSizeCellY * (y+1)) - x * halfSizeCellY);
-                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                    float pxlsX, pxlsY;
+                    if(isDrawableBackground == 1 || isDrawableBackground == 5) {
+//                    // Нижняя карта
+                        pxlsX = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX)); // По Y прибавляем еденицу хз почему бага наверное
+                        pxlsY = (-(halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
 //                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+                    }
+
+                    if(isDrawableBackground == 2 || isDrawableBackground == 5) {
+//                    // Правая карта
+                        pxlsX = ( (halfSizeCellX * y) + (x * halfSizeCellX));
+                        pxlsY = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+                    }
+
+                    if(isDrawableBackground == 3 || isDrawableBackground == 5) {
+//                    // Верхняя карта
+                        pxlsX = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX)); // По Y прибавляем еденицу хз почему бага наверное
+                        pxlsY = ( (halfSizeCellY * (y + 1)) + (x * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+                    }
+
+                    if(isDrawableBackground == 4 || isDrawableBackground == 5) {
+//                    // Левая карта
+                        pxlsX = (-(halfSizeCellX * (y + 1)) - ((x + 1) * halfSizeCellX));
+                        pxlsY = ( (halfSizeCellY * (y + 1)) - ((x + 1) * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+                    }
                 }
             }
         }
@@ -445,19 +474,6 @@ public class GameField {
             if(x == length - 1 && y == length - 1) {
 //                Gdx.app.log("GameField::render();", " -- хуй");
             } else {
-                Array<TiledMapTile> tiledMapTiles = field[x][y].foregroundTiles;
-                for (TiledMapTile tiledMapTile : tiledMapTiles) {
-                    TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                    float pxlsX = halfSizeCellX * y + x * halfSizeCellX; // По Y прибавляем еденицу хз почему бага наверное
-                    float pxlsY = halfSizeCellY * y - x * halfSizeCellY;
-                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-//                    Gdx.app.log("GameField::drawForeGroundWithCreepsAndTowers();", " -- x:" + x + " y:" + y + " length:" + length);
-
-                    pxlsX = (-(halfSizeCellX * (y+1)) + x * halfSizeCellX);
-                    pxlsY = (-(halfSizeCellY * (y+1)) - x * halfSizeCellY);
-                    spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-//                    Gdx.app.log("GameField::drawForeGroundWithCreepsAndTowers();", " -- x:" + x + " y:" + y + " length:" + length);
-                }
                 Array<Creep> creeps = field[x][y].getCreeps();
                 if(creeps != null) {
                     for (Creep creep : creeps) {
@@ -467,6 +483,43 @@ public class GameField {
                 Tower tower = field[x][y].getTower();
                 if(tower != null) {
                     drawTower(tower, spriteBatch);
+                }
+                Array<TiledMapTile> tiledMapTiles = field[x][y].foregroundTiles;
+                for (TiledMapTile tiledMapTile : tiledMapTiles) {
+                    TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+
+                    float pxlsX, pxlsY;
+                    if(isDrawableForeground == 1 || isDrawableForeground == 5) {
+//                    // Нижняя карта
+                        pxlsX = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX)); // По Y прибавляем еденицу хз почему бага наверное
+                        pxlsY = (-(halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawForeGroundWithCreepsAndTowers();", " -- x:" + x + " y:" + y + " length:" + length);
+                    }
+
+                    if(isDrawableForeground == 2 || isDrawableForeground == 5) {
+//                    // Правая карта
+                        pxlsX = ( (halfSizeCellX * y) + (x * halfSizeCellX));
+                        pxlsY = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawForeGroundWithCreepsAndTowers();", " -- x:" + x + " y:" + y + " length:" + length);
+                    }
+
+                    if(isDrawableForeground == 3 || isDrawableForeground == 5) {
+//                    // Верхняя карта
+                        pxlsX = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX)); // По Y прибавляем еденицу хз почему бага наверное
+                        pxlsY = ( (halfSizeCellY * (y + 1)) + (x * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+                    }
+
+                    if(isDrawableForeground == 4 || isDrawableForeground == 5) {
+//                    // Левая карта
+                        pxlsX = (-(halfSizeCellX * (y + 1)) - ((x + 1) * halfSizeCellX));
+                        pxlsY = ( (halfSizeCellY * (y + 1)) - ((x + 1) * halfSizeCellY));
+                        spriteBatch.draw(textureRegion, pxlsX, pxlsY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+                    }
                 }
             }
             if(x == length - 1) {
