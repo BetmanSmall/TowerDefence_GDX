@@ -340,13 +340,22 @@ public class GameScreen implements Screen {
             }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            gameField.isDrawableCreeps = !gameField.isDrawableCreeps;
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableCreeps:" + gameField.isDrawableCreeps);
+            GameField.isDrawableCreeps++;
+            if(GameField.isDrawableCreeps > 5) {
+                GameField.isDrawableCreeps = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- GameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            gameField.isDrawableTowers = !gameField.isDrawableTowers;
+            gameField.isDrawableTowers++;
+            if(gameField.isDrawableTowers > 5) {
+                gameField.isDrawableTowers = 0;
+            }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-            gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
+            gameField.isDrawableGridNav++;
+            if(gameField.isDrawableGridNav > 5) {
+                gameField.isDrawableGridNav = 0;
+            }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
             gameField.isDrawableBackground++;

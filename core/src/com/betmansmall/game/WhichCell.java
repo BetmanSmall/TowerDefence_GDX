@@ -29,7 +29,7 @@ public class WhichCell {
         for(int tileX = 0; tileX < sizeFieldX; tileX++) {
             for(int tileY = 0; tileY < sizeFieldY; tileY++) {
                 float posX, posY;
-                posX = (tileX*halfSizeCellX) - (tileY*halfSizeCellX) - halfSizeCellX;
+                posX =  (tileX*halfSizeCellX) - (tileY*halfSizeCellX) - halfSizeCellX;
                 posY = -(tileX*halfSizeCellY) - (tileY*halfSizeCellY);
                 ArrayList<Vector2> tilePoints1 = new ArrayList<Vector2>();
                 tilePoints1.add(new Vector2(posX, posY));
@@ -41,7 +41,7 @@ public class WhichCell {
                     Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":1");
                     return gameCoord;
                 }
-                posX = (tileX*halfSizeCellX) + (tileY*halfSizeCellX);
+                posX =  (tileX*halfSizeCellX) + (tileY*halfSizeCellX);
                 posY = -(tileX*halfSizeCellY) + (tileY*halfSizeCellY) + halfSizeCellY;
                 ArrayList<Vector2> tilePoints2 = new ArrayList<Vector2>();
                 tilePoints2.add(new Vector2(posX, posY));
@@ -65,18 +65,18 @@ public class WhichCell {
                     Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":3");
                     return gameCoord;
                 }
-//                posX = (tileX*halfSizeCellX) - (tileY*halfSizeCellX) + halfSizeCellX;
-//                posY = (tileX*halfSizeCellY) + (tileY*halfSizeCellY) + halfSizeCellY*2;
-//                ArrayList<Vector2> tilePoints4 = new ArrayList<Vector2>();
-//                tilePoints4.add(new Vector2(posX, posY));
-//                tilePoints4.add(new Vector2(posX - halfSizeCellX, posY - halfSizeCellY));
-//                tilePoints4.add(new Vector2(posX - sizeCellX, posY));
-//                tilePoints4.add(new Vector2(posX - halfSizeCellX, posY + halfSizeCellY));
-//                if(estimation(tilePoints4, grafCoordinate)) {
-//                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
-//                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":4");
-//                    return gameCoord;
-//                }
+                posX = -(tileX*halfSizeCellX) - (tileY*halfSizeCellX);
+                posY = -(tileX*halfSizeCellY) + (tileY*halfSizeCellY) + halfSizeCellY;
+                ArrayList<Vector2> tilePoints4 = new ArrayList<Vector2>();
+                tilePoints4.add(new Vector2(posX, posY));
+                tilePoints4.add(new Vector2(posX - halfSizeCellX, posY - halfSizeCellY));
+                tilePoints4.add(new Vector2(posX - sizeCellX, posY));
+                tilePoints4.add(new Vector2(posX - halfSizeCellX, posY + halfSizeCellY));
+                if(estimation(tilePoints4, grafCoordinate)) {
+                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
+                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":4");
+                    return gameCoord;
+                }
             }
         }
         return null;
