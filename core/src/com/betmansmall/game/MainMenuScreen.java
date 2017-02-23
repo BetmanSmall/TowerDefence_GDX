@@ -189,7 +189,7 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena3.tmx";
+                        mapName = "maps/arena666.tmx";
                         break;
                     case 2:
                         //Choose map2
