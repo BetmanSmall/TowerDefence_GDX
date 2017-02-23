@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.GridPoint2;
 //import com.badlogic.gdx.physics.box2d.Manifold;
 //import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
@@ -74,7 +75,7 @@ public class GameField {
     public int isDrawableForeground = 5;
     public int isDrawableGrid = 5;
     public static int isDrawableCreeps = 5;
-    public int isDrawableTowers = 5;
+    public static int isDrawableTowers = 5;
 //    public boolean isDrawableRoutes = true;
     public int isDrawableGridNav = 5;
 
@@ -838,45 +839,80 @@ public class GameField {
 
         float xPoint, yPoint;
         Array<GridPoint2> spawnPoints = waveManager.getAllSpawnPoint();
-
         shapeRenderer.setColor(Color.ORANGE);
         for (GridPoint2 spawnPoint : spawnPoints) {
-            xPoint = halfSizeCellX * (spawnPoint.y + 1) + spawnPoint.x * halfSizeCellX;
-            yPoint = halfSizeCellY * (spawnPoint.y + 1) - spawnPoint.x * halfSizeCellY;
-            shapeRenderer.circle(xPoint, yPoint, 3);
-            xPoint = -(halfSizeCellX*spawnPoint.y) + spawnPoint.x * halfSizeCellX;
-            yPoint = -(halfSizeCellY*spawnPoint.y) - spawnPoint.x * halfSizeCellY;
-            shapeRenderer.circle(xPoint, yPoint, 3);
+            int x = spawnPoint.x;
+            int y = spawnPoint.y;
+            if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
+                xPoint = ((halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
+                yPoint = ((halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
+            if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
+                xPoint = (-(halfSizeCellX * y) + (x * halfSizeCellX));
+                yPoint = (-(halfSizeCellY * y) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
+            if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
+                xPoint = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
+                yPoint = ((halfSizeCellY * (y + 1)) +(x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
+            if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
+                xPoint = (-(halfSizeCellX * y) - (x * halfSizeCellX));
+                yPoint = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
         }
 
         Array<GridPoint2> exitPoints = waveManager.getAllExitPoint();
         shapeRenderer.setColor(Color.BLUE);
         for (GridPoint2 exitPoint : exitPoints) {
-            xPoint = halfSizeCellX * (exitPoint.y + 1) + exitPoint.x * halfSizeCellX;
-            yPoint = halfSizeCellY * (exitPoint.y + 1) - exitPoint.x * halfSizeCellY;
-            shapeRenderer.circle(xPoint, yPoint, 3);
-            xPoint = -(halfSizeCellX*exitPoint.y) + exitPoint.x * halfSizeCellX;
-            yPoint = -(halfSizeCellY*exitPoint.y) - exitPoint.x * halfSizeCellY;
-            shapeRenderer.circle(xPoint, yPoint, 3);
+            int x = exitPoint.x;
+            int y = exitPoint.y;
+            if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
+                xPoint = ((halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
+                yPoint = ((halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
+            if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
+                xPoint = (-(halfSizeCellX * y) + (x * halfSizeCellX));
+                yPoint = (-(halfSizeCellY * y) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
+            if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
+                xPoint = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
+                yPoint = ( (halfSizeCellY * (y + 1)) + (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
+            if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
+                xPoint = (-(halfSizeCellX * y) - (x * halfSizeCellX));
+                yPoint = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
         }
 
-        shapeRenderer.setColor(Color.BLUE);
-        for (Creep creep : creepsManager.getAllCreeps()) {
-            shapeRenderer.circle(creep.circle1.x, creep.circle1.y, 1f);
-            shapeRenderer.circle(creep.circle2.x, creep.circle2.y, 1f);
-        }
+//        shapeRenderer.setColor(Color.BLUE);
+//        for (Creep creep : creepsManager.getAllCreeps()) {
+//            shapeRenderer.circle(creep.circle1.x, creep.circle1.y, 1f);
+//            shapeRenderer.circle(creep.circle2.x, creep.circle2.y, 1f);
+//            shapeRenderer.circle(creep.circle3.x, creep.circle3.y, 1f);
+//            shapeRenderer.circle(creep.circle4.x, creep.circle4.y, 1f);
+//        }
 
-        shapeRenderer.setColor(Color.LIME);
-        for (Creep creep : creepsManager.getAllCreeps()) {
-            Circle rectangle = creep.getCircle1();
-            shapeRenderer.circle(rectangle.x, rectangle.y, 2f);
-        }
+//        shapeRenderer.setColor(Color.LIME);
+//        for (Creep creep : creepsManager.getAllCreeps()) {
+//            shapeRenderer.circle(creep.circle1.x, creep.circle1.y, 2f);
+//            shapeRenderer.circle(creep.circle2.x, creep.circle2.y, 2f);
+//            shapeRenderer.circle(creep.circle3.x, creep.circle3.y, 2f);
+//            shapeRenderer.circle(creep.circle4.x, creep.circle4.y, 2f);
+//        }
 
         shapeRenderer.setColor(Color.PINK);
         for (Tower tower : towersManager.getAllTowers()) {
             for (Shell shell : tower.shells) {
-                if (null != shell.endPoint2) {
-                    shapeRenderer.circle(shell.endPoint2.x, shell.endPoint2.y, shell.endPoint2.radius);
+                if (null != shell.endPoint) {
+                    shapeRenderer.circle(shell.endPoint.x, shell.endPoint.y, shell.endPoint.radius);
                 }
             }
         }
@@ -896,15 +932,16 @@ public class GameField {
 
         shapeRenderer.setColor(Color.RED);
         for (Creep creep : creepsManager.getAllCreeps()) {
-            Circle rectangle = creep.getCircle1();
-//            shapeRenderer.box(rectangle.x, rectangle.y, 0, rectangle.width, rectangle.height, 0);
-            shapeRenderer.circle(rectangle.x, rectangle.y, rectangle.radius);
+            shapeRenderer.circle(creep.circle1.x, creep.circle1.y, creep.circle1.radius);
+            shapeRenderer.circle(creep.circle2.x, creep.circle2.y, creep.circle2.radius);
+            shapeRenderer.circle(creep.circle3.x, creep.circle3.y, creep.circle3.radius);
+            shapeRenderer.circle(creep.circle4.x, creep.circle4.y, creep.circle4.radius);
         }
 
         shapeRenderer.setColor(Color.GREEN);
         for (Tower tower : towersManager.getAllTowers()) {
-            Circle radiusDetectionСircle = tower.radiusDetectionСircle;
-            shapeRenderer.circle(radiusDetectionСircle.x, radiusDetectionСircle.y, radiusDetectionСircle.radius);
+            Vector2 pos = tower.getTowerPosition();
+            shapeRenderer.circle(pos.x, pos.y, tower.radiusDetectionСircle.radius);
 //            for(Shell shell: tower.shells) {
 //                shapeRenderer.setColor(Color.WHITE);
 //                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, 1.5f);
@@ -920,7 +957,8 @@ public class GameField {
         for (Tower tower : towersManager.getAllTowers()) {
             Circle radiusFlyShellСircle = tower.radiusFlyShellСircle;
             if (radiusFlyShellСircle != null) {
-                shapeRenderer.circle(radiusFlyShellСircle.x, radiusFlyShellСircle.y, radiusFlyShellСircle.radius);
+                Vector2 pos = tower.getTowerPosition();
+                shapeRenderer.circle(pos.x, pos.y, tower.radiusFlyShellСircle.radius);
             }
         }
         shapeRenderer.end();
@@ -931,7 +969,8 @@ public class GameField {
 //        shapeRenderer.setColor(Color.GREEN);
         for (Tower tower : towersManager.getAllTowers()) {
             if (tower.getTemplateForTower().towerAttackType == TowerAttackType.Pit) {
-                bitmapFont.draw(spriteBatch, String.valueOf(tower.capacity), tower.getGraphCorX(), tower.getGraphCorY());
+                Vector2 pos = tower.getTowerPosition();
+                bitmapFont.draw(spriteBatch, String.valueOf(tower.capacity), pos.x, pos.y);
             }
         }
         spriteBatch.end();
@@ -1304,7 +1343,7 @@ public class GameField {
             } else if (towerAttackType == TowerAttackType.Range) {
                 if (tower.recharge(delta)) {
                     for (Creep creep : creepsManager.getAllCreeps()) {
-                        if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.getCircle1())) {
+                        if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.circle1)) {
 //                            Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
                             if (tower.shoot(creep)) {
                                 break;

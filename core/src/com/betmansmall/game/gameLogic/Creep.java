@@ -5,11 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-//import com.badlogic.gdx.physics.box2d.Body;
-//import com.badlogic.gdx.physics.box2d.BodyDef;
-//import com.badlogic.gdx.physics.box2d.Fixture;
-//import com.badlogic.gdx.physics.box2d.FixtureDef;
-//import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -369,10 +364,6 @@ public class Creep {
     }
     public Node getNewPosition() {
         return newPosition;
-    }
-
-    public Circle getCircle1() {
-        return circle1;
     }
 
     public void setHp(int hp) {

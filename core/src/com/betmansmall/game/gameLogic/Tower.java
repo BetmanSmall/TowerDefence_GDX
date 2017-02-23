@@ -17,38 +17,25 @@ import com.badlogic.gdx.math.Vector2; //AlexGor
  */
 public class Tower {
     private GridPoint2 position;
-//    private int damage;
-//    private int radiusDetection;
-//    private float radiusFlyShell;
-//    private float reloadTime;
     private float elapsedReloadTime;
-
     private TemplateForTower templateForTower;
-    private TiledMapTile idleTile;
-    public int capacity;
 
-    public Circle radiusDetectionСircle; //AlexGor
-    public Circle radiusFlyShellСircle;
+    public int capacity;
     public Array<Shell> shells;
+    public Circle radiusDetectionСircle;
+    public Circle radiusFlyShellСircle;
 
     public Tower(GridPoint2 position, TemplateForTower templateForTower){
         Gdx.app.log("Tower", "Tower(" + position + ", " + templateForTower.toString() + ");");
         this.position = position;
-//        this.damage = templateForTower.damage;
-//        this.radiusDetection = templateForTower.radiusDetection;
-//        this.radiusFlyShell = templateForTower.radiusFlyShell;
-//        this.reloadTime = templateForTower.reloadTime;
         this.elapsedReloadTime = 0;
-
         this.templateForTower = templateForTower;
-        this.idleTile = templateForTower.idleTile;
-        this.shells = new Array<Shell>();
 
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
         this.shells = new Array<Shell>();
-        this.radiusDetectionСircle = new Circle(getGraphCorX(), getGraphCorY(), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
+        this.radiusDetectionСircle = new Circle(getTowerPosition(1), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
         if(templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != null && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-            this.radiusFlyShellСircle = new Circle(getGraphCorX(), getGraphCorY(), templateForTower.radiusFlyShell);
+            this.radiusFlyShellСircle = new Circle(getTowerPosition(1), templateForTower.radiusFlyShell);
         }
     }
 
@@ -65,7 +52,7 @@ public class Tower {
 
     public boolean shoot(Creep creep) {
         if(elapsedReloadTime >= templateForTower.reloadTime) {
-            shells.add(new Shell(templateForTower, creep, new Vector2(getGraphCorX(), getGraphCorY()))); // AlexGor
+            shells.add(new Shell(templateForTower, creep, getTowerPosition())); // AlexGor
             elapsedReloadTime = 0f;
             return true;
         }
@@ -98,17 +85,30 @@ public class Tower {
         }
     }
 
-    //AlexGor
-    public float getGraphCorX () {
-        int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
-        float pointX = halfSizeCellX * position.y + position.x * halfSizeCellX;
-        return pointX + halfSizeCellX;
+    public Vector2 getTowerPosition() {
+        return getTowerPosition(GameField.isDrawableTowers);
     }
 
-    public float getGraphCorY () {
+    public Vector2 getTowerPosition(int map) {
+        int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
         int halfSizeCellY = GameField.getSizeCellY() / 2;
-        float pointY = halfSizeCellY * position.y - position.x * halfSizeCellY;
-        return pointY + halfSizeCellY*templateForTower.size;
+        float pointX = 0f, pointY = 0f;
+        int x = position.x;
+        int y = position.y;
+        if(map == 1) {
+            pointX = (-(halfSizeCellX * y) + (x * halfSizeCellX));
+            pointY = (-(halfSizeCellY * y) - (x * halfSizeCellY));
+        } else if(map == 2) {
+            pointX = ( (halfSizeCellX * y) + (x * halfSizeCellX));
+            pointY = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+        } if(map == 3) {
+            pointX = (-(halfSizeCellX * y) + (x * halfSizeCellX));
+            pointY = ( (halfSizeCellY * y) + (x * halfSizeCellY));
+        } else if(map == 4) {
+            pointX = (-(halfSizeCellX * y) - (x * halfSizeCellX));
+            pointY = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+        }
+        return new Vector2(pointX + halfSizeCellX, pointY + halfSizeCellY*templateForTower.size);
     }
 
     private float getRegWidth () {
@@ -156,6 +156,6 @@ public class Tower {
     }
 
     public TextureRegion getCurentFrame() {
-        return idleTile.getTextureRegion();
+        return templateForTower.idleTile.getTextureRegion();
     }
 }
