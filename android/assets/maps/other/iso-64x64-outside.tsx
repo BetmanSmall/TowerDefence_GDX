@@ -329,41 +329,65 @@
  <tile id="132">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="2"/>
+   <property name="treeName" value="Elka1"/>
+   <property name="treeWidth" value="1"/>
   </properties>
  </tile>
  <tile id="133">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="2"/>
+   <property name="treeName" value="Elka2"/>
+   <property name="treeWidth" value="1"/>
   </properties>
  </tile>
  <tile id="150">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="3"/>
+   <property name="treeName" value="Tree1"/>
+   <property name="treeWidth" value="1"/>
   </properties>
  </tile>
  <tile id="151">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="3"/>
+   <property name="treeName" value="Tree2"/>
+   <property name="treeWidth" value="1"/>
   </properties>
  </tile>
  <tile id="152">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="2"/>
+   <property name="treeName" value="Tree3"/>
+   <property name="treeWidth" value="1"/>
   </properties>
  </tile>
  <tile id="153">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="2"/>
+   <property name="treeName" value="Tree4"/>
+   <property name="treeWidth" value="1"/>
   </properties>
  </tile>
  <tile id="155">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="2"/>
+   <property name="treeName" value="BigTree1"/>
+   <property name="treeWidth" value="3"/>
   </properties>
  </tile>
  <tile id="158">
   <properties>
    <property name="terrain" value=""/>
+   <property name="treeHeight" value="3"/>
+   <property name="treeName" value="BigTree2"/>
+   <property name="treeWidth" value="3"/>
   </properties>
  </tile>
 </tileset>

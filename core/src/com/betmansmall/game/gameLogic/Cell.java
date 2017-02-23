@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 
@@ -7,8 +8,18 @@ import com.badlogic.gdx.utils.Array;
  * Created by BetmanSmall on 11.03.2016.
  */
 public class Cell {
+    public class Tree {
+        TextureRegion textureRegion;
+        int width, height;
+        public Tree(TextureRegion textureRegion, int width, int height) {
+            this.textureRegion = textureRegion;
+            this.width = width;
+            this.height = height;
+        }
+    }
     public Array<TiledMapTile> backgroundTiles;
     public Array<TiledMapTile> foregroundTiles;
+    public Array<Tree> trees;
     private boolean empty;
     private boolean terrain;
     private Tower tower;
@@ -17,6 +28,7 @@ public class Cell {
     public Cell() {
         this.backgroundTiles = new Array<TiledMapTile>();
         this.foregroundTiles = new Array<TiledMapTile>();
+        this.trees = new Array<Tree>();
         this.empty = true;
         this.terrain = false;
         this.tower = null;

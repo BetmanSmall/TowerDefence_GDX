@@ -16,12 +16,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
-//import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-//import com.badlogic.gdx.physics.box2d.Contact;
-//import com.badlogic.gdx.physics.box2d.ContactImpulse;
-//import com.badlogic.gdx.physics.box2d.ContactListener;
-//import com.badlogic.gdx.physics.box2d.Manifold;
-//import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -71,13 +65,13 @@ public class GameField {
         return sizeCellY;
     }
 
-    public int isDrawableBackground = 5;
-    public int isDrawableForeground = 5;
-    public int isDrawableGrid = 5;
-    public static int isDrawableCreeps = 5;
-    public static int isDrawableTowers = 5;
+    public int isDrawableBackground = 1;
+    public int isDrawableForeground = 1;
+    public int isDrawableGrid = 1;
+    public static int isDrawableCreeps = 1;
+    public static int isDrawableTowers = 1;
 //    public boolean isDrawableRoutes = true;
-    public int isDrawableGridNav = 5;
+    public int isDrawableGridNav = 1;
 
     private int halfSizeCellX;
     private int halfSizeCellY;
@@ -133,11 +127,6 @@ public class GameField {
             Gdx.app.error("GameField::GameField()", " -- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
         }
 
-//        myBox2dContactListener = new MyBox2dContactListener();
-//        world = new World(new Vector2(0f, 0f), true);
-//        world.setContactListener(myBox2dContactListener);
-//        debugRenderer = new Box2DDebugRenderer();
-
         createField(sizeFieldX, sizeFieldY, map.getLayers());
         waveManager.validationPoints(field);
         if (waveManager.waves.size == 0) {
@@ -165,31 +154,6 @@ public class GameField {
             }
             waveManager.addWave(wave);
         }
-
-//        TiledMapTileSets tileSets = map.getTileSets();
-//        for (TiledMapTileSet tileSet : tileSets) {
-//            String tileSetName = tileSet.getName();
-//            Gdx.app.log("GameField::GameField()", "-- TileSet:" + tileSetName);
-//            if (tileSetName.contains("unit")) {
-//                TemplateForUnit templateForUnit = new TemplateForUnit(tileSet);
-//                factionsManager.addUnitToFaction(templateForUnit);
-//                if (animation == null) {
-//                    AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get("death_" + Direction.DOWN);
-//                    StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
-//                    Array<TextureRegion> textureRegions = new Array<TextureRegion>(staticTiledMapTiles.length);
-////                    Gdx.app.log("GameField::GameField()", " -- textureRegion.size:" + staticTiledMapTiles.length);
-//                    for (int k = 0; k < staticTiledMapTiles.length; k++) {
-//                        TextureRegion textureRegion = staticTiledMapTiles[k].getTextureRegion();
-//                        textureRegions.add(textureRegion);
-//                    }
-//                    stateTime = 0f;
-//                    animation = new Animation(0.25f, textureRegions);
-//                }
-//            } else if (tileSetName.contains("tower")) {
-//                TemplateForTower templateForTower = new TemplateForTower(tileSet);
-//                factionsManager.addTowerToFaction(templateForTower);
-//            }
-//        }
 
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
@@ -232,6 +196,20 @@ public class GameField {
 //                                        waveManager.exitPoints.add(new GridPoint2(x, y));
 //                                    field[x][y].setTerrain();
                                         Gdx.app.log("GameField::GameField()", "-- Set exitPoint: (" + x + ", " + y + ")");
+                                    }
+                                    if(tiledMapTile.getProperties().get("treeName") != null) {
+                                        String treeName = tiledMapTile.getProperties().get("treeName", String.class);
+                                        int treeWidth = Integer.parseInt(tiledMapTile.getProperties().get("treeWidth", "1", String.class));
+                                        int treeHeight = Integer.parseInt(tiledMapTile.getProperties().get("treeHeight", "1", String.class));
+                                        Gdx.app.log("GameField::createField();", " -- New Tree:" + treeName + "[" + treeWidth + "," + treeHeight + "]:{" + x + "," + y + "}");
+                                        float regionX = tiledMapTile.getTextureRegion().getRegionX();
+                                        float regionY = tiledMapTile.getTextureRegion().getRegionY();
+                                        float regionWidth = tiledMapTile.getTextureRegion().getRegionWidth();
+                                        float regionHeight = tiledMapTile.getTextureRegion().getRegionWidth();
+                                        Gdx.app.log("GameField::createField();", " -- regionX:" + regionX + " regionY:" + regionY + " regionWidth:" + regionWidth + " regionHeight:" + regionHeight);
+                                        TextureRegion textureRegion = new TextureRegion(tiledMapTile.getTextureRegion());
+                                        textureRegion.setRegion(regionX - ((treeWidth>2) ? (treeWidth-2)*regionWidth : 0), regionY - ((treeHeight>1) ? (treeHeight-1)*regionHeight : 0), treeWidth*regionWidth, treeHeight*regionHeight);
+//                                        Cell.Tree tree = new Cell.Tree(textureRegion, treeWidth, treeHeight);
                                     }
                                 }
                             }
@@ -624,29 +602,31 @@ public class GameField {
         } else {
             currentFrame = creep.getCurrentDeathFrame();
         }
-        int deltaX = (currentFrame.getRegionWidth()) / 2;
-        int deltaY = (currentFrame.getRegionHeight()) / 2;
+//        int deltaX = (currentFrame.getRegionWidth()) / 2;
+//        int deltaY = (currentFrame.getRegionHeight()) / 2;
+        int deltaX = (sizeCellX) / 2;
+        int deltaY = (sizeCellY) / 2;
 
         float fVx, fVy;
         if(isDrawableCreeps == 1 || isDrawableCreeps == 5) {
             fVx = creep.circle1.x - deltaX;
             fVy = creep.circle1.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy);
+            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX,  sizeCellX);
         }
         if(isDrawableCreeps == 2 || isDrawableCreeps == 5) {
             fVx = creep.circle2.x - deltaX;
             fVy = creep.circle2.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy);
+            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX,  sizeCellX);
         }
         if(isDrawableCreeps == 3 || isDrawableCreeps == 5) {
             fVx = creep.circle3.x - deltaX;
             fVy = creep.circle3.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy);
+            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX,  sizeCellX);
         }
         if(isDrawableCreeps == 4 || isDrawableCreeps == 5) {
             fVx = creep.circle4.x - deltaX;
             fVy = creep.circle4.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy);
+            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX,  sizeCellX);
         }
 //        if (creep.isAlive()) {
 //            float hpBarSpace = 0.8f;
@@ -749,8 +729,8 @@ public class GameField {
         TextureRegion currentFrame = tower.getCurentFrame();
         float pxlsX, pxlsY;
         if(isDrawableTowers == 1 || isDrawableTowers == 5) {
-            pxlsX = (-(halfSizeCellX * y) + (x * halfSizeCellX)) - halfSizeCellX * (towerSize - 1);
-            pxlsY = (-(halfSizeCellY * y) - (x * halfSizeCellY)) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
+            pxlsX = (-(halfSizeCellX * (y+1)) + (x * halfSizeCellX)) - halfSizeCellX * (towerSize - 1);
+            pxlsY = (-(halfSizeCellY * (y+1)) - (x * halfSizeCellY)) - halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 1 : 2));
             spriteBatch.draw(currentFrame, pxlsX, pxlsY, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
         }
         if(isDrawableTowers == 2 || isDrawableTowers == 5) {
@@ -844,23 +824,23 @@ public class GameField {
             int x = spawnPoint.x;
             int y = spawnPoint.y;
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                xPoint = ((halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
-                yPoint = ((halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
-                shapeRenderer.circle(xPoint, yPoint, 3);
-            }
-            if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
                 xPoint = (-(halfSizeCellX * y) + (x * halfSizeCellX));
                 yPoint = (-(halfSizeCellY * y) - (x * halfSizeCellY));
                 shapeRenderer.circle(xPoint, yPoint, 3);
             }
+            if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
+                xPoint = ( (halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
+                yPoint = ( (halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
             if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                xPoint = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
-                yPoint = ((halfSizeCellY * (y + 1)) +(x * halfSizeCellY));
+                xPoint = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX)) + halfSizeCellX;
+                yPoint = ( (halfSizeCellY * (y + 1)) + (x * halfSizeCellY)) + halfSizeCellY;
                 shapeRenderer.circle(xPoint, yPoint, 3);
             }
             if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                xPoint = (-(halfSizeCellX * y) - (x * halfSizeCellX));
-                yPoint = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+                xPoint = (-(halfSizeCellX * (y + 1)) - (x * halfSizeCellX));
+                yPoint = ( (halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
                 shapeRenderer.circle(xPoint, yPoint, 3);
             }
         }
@@ -871,23 +851,23 @@ public class GameField {
             int x = exitPoint.x;
             int y = exitPoint.y;
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                xPoint = ((halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
-                yPoint = ((halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
-                shapeRenderer.circle(xPoint, yPoint, 3);
-            }
-            if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
                 xPoint = (-(halfSizeCellX * y) + (x * halfSizeCellX));
                 yPoint = (-(halfSizeCellY * y) - (x * halfSizeCellY));
                 shapeRenderer.circle(xPoint, yPoint, 3);
             }
+            if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
+                xPoint = ( (halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
+                yPoint = ( (halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
+                shapeRenderer.circle(xPoint, yPoint, 3);
+            }
             if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                xPoint = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX));
-                yPoint = ( (halfSizeCellY * (y + 1)) + (x * halfSizeCellY));
+                xPoint = (-(halfSizeCellX * (y + 1)) + (x * halfSizeCellX)) + halfSizeCellX;
+                yPoint = ( (halfSizeCellY * (y + 1)) + (x * halfSizeCellY)) + halfSizeCellY;
                 shapeRenderer.circle(xPoint, yPoint, 3);
             }
             if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                xPoint = (-(halfSizeCellX * y) - (x * halfSizeCellX));
-                yPoint = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+                xPoint = (-(halfSizeCellX * (y + 1)) - (x * halfSizeCellX));
+                yPoint = ( (halfSizeCellY * (y + 1)) - (x * halfSizeCellY));
                 shapeRenderer.circle(xPoint, yPoint, 3);
             }
         }
