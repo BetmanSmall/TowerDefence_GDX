@@ -190,7 +190,7 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena3.tmx";
+                        mapName = "maps/arena666.tmx";
                         break;
                     case 2:
                         //Choose map2
@@ -310,6 +310,15 @@ public class MainMenuScreen implements Screen {
                 towerDefence.dispose();
             }
             switchMenuButtons();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
+            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.NUMPAD_1);");
+            clickAnalyzer((short)1);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
+            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.NUMPAD_2);");
+            clickAnalyzer((short)2);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
+            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.NUMPAD_3);");
+            clickAnalyzer((short)3);
         }
     }
 

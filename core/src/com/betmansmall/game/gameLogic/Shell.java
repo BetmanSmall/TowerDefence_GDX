@@ -67,7 +67,16 @@ public class Shell {
             }
             this.endPoint = new Circle(endPoint, 3f);
         } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
-            this.endPoint = new Circle(creep.circle1.x, creep.circle1.y, 3.f); // LOL break
+            if(GameField.isDrawableCreeps == 1 || GameField.isDrawableCreeps == 5 || GameField.isDrawableCreeps == 0)
+                this.endPoint = creep.circle1;
+            else if(GameField.isDrawableCreeps == 2)
+                this.endPoint = creep.circle1;
+            else if(GameField.isDrawableCreeps == 3)
+                this.endPoint = creep.circle1;
+            else if(GameField.isDrawableCreeps == 4)
+                this.endPoint = creep.circle1;
+//            this.endPoint.setRadius(3f);
+//            this.endPoint = creep.currentPoint // LOL break
         }
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
     }

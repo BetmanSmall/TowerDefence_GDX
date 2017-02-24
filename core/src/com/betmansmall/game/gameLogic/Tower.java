@@ -92,23 +92,28 @@ public class Tower {
     public Vector2 getTowerPosition(int map) {
         int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
         int halfSizeCellY = GameField.getSizeCellY() / 2;
-        float pointX = 0f, pointY = 0f;
-        int x = position.x;
-        int y = position.y;
+        float pxlsX = 0f, pxlsY = 0f;
+        int cellX = position.x;
+        int cellY = position.y;
+//        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellX));
+//        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellY));
+////        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : (templateForTower.size-1)*halfSizeCellX);
+////        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : (templateForTower.size-1)*halfSizeCellY);
         if(map == 1) {
-            pointX = (-(halfSizeCellX * y) + (x * halfSizeCellX));
-            pointY = (-(halfSizeCellY * y) - (x * halfSizeCellY));
+            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
+            pxlsY = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY));
         } else if(map == 2) {
-            pointX = ( (halfSizeCellX * y) + (x * halfSizeCellX));
-            pointY = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+            pxlsX = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX;
+            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
         } if(map == 3) {
-            pointX = (-(halfSizeCellX * y) + (x * halfSizeCellX));
-            pointY = ( (halfSizeCellY * y) + (x * halfSizeCellY));
+            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
+            pxlsY = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY*2;
         } else if(map == 4) {
-            pointX = (-(halfSizeCellX * y) - (x * halfSizeCellX));
-            pointY = ( (halfSizeCellY * y) - (x * halfSizeCellY));
+            pxlsX = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX;
+            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
         }
-        return new Vector2(pointX + halfSizeCellX, pointY + halfSizeCellY*templateForTower.size);
+//        return new Vector2(pxlsX - halfSizeCellX, pxlsY + halfSizeCellY*templateForTower.size);
+        return new Vector2(pxlsX, pxlsY);
     }
 
     private float getRegWidth () {
