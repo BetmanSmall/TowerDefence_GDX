@@ -164,6 +164,111 @@ public class Creep {
             float fVx, fVy;
             Direction oldDirection = direction;
             int isDrawableCreeps = GameField.isDrawableCreeps;
+            if(isDrawableCreeps == 4 || isDrawableCreeps == 5) {
+                fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
+                fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY)) + halfSizeCellY;
+                if (newX < oldX && newY > oldY) {
+                    direction = Direction.UP;
+                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
+                } else if (newX < oldX && newY == oldY) {
+                    direction = Direction.UP_RIGHT;
+                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX < oldX && newY < oldY) {
+                    direction = Direction.RIGHT;
+                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+                } else if (newX == oldX && newY < oldY) {
+                    direction = Direction.DOWN_RIGHT;
+                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY < oldY) {
+                    direction = Direction.DOWN;
+                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY == oldY) {
+                    direction = Direction.DOWN_LEFT;
+                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY > oldY) {
+                    direction = Direction.LEFT;
+                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
+                } else if (newX == oldX && newY > oldY) {
+                    direction = Direction.UP_LEFT;
+                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                }
+                currentPoint.set(fVx, fVy);
+                circle4.set(fVx, fVy, 16f);
+            }
+            if(isDrawableCreeps == 3 || isDrawableCreeps == 5) {
+                fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
+                fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY*2;
+                if (newX < oldX && newY > oldY) {
+                    direction = Direction.UP;
+                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY == oldY) {
+                    direction = Direction.UP_RIGHT;
+                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY < oldY) {
+                    direction = Direction.RIGHT;
+                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+                } else if (newX == oldX && newY < oldY) {
+                    direction = Direction.DOWN_RIGHT;
+                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX < oldX && newY < oldY) {
+                    direction = Direction.DOWN;
+                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
+                } else if (newX < oldX && newY == oldY) {
+                    direction = Direction.DOWN_LEFT;
+                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX < oldX && newY > oldY) {
+                    direction = Direction.LEFT;
+                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
+                } else if (newX == oldX && newY > oldY) {
+                    direction = Direction.UP_LEFT;
+                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                }
+                currentPoint.set(fVx, fVy);
+                circle3.set(fVx, fVy, 16f);
+            }
+            if(isDrawableCreeps == 2 || isDrawableCreeps == 5) {
+                fVx = (halfSizeCellX * newY) + (newX * halfSizeCellX) + halfSizeCellX;
+                fVy = (halfSizeCellY * newY) - (newX * halfSizeCellY) + halfSizeCellY;
+                if (newX < oldX && newY > oldY) {
+                    direction = Direction.UP;
+                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
+                } else if (newX == oldX && newY > oldY) {
+                    direction = Direction.UP_RIGHT;
+                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY > oldY) {
+                    direction = Direction.RIGHT;
+                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY == oldY) {
+                    direction = Direction.DOWN_RIGHT;
+                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX > oldX && newY < oldY) {
+                    direction = Direction.DOWN;
+                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
+                } else if (newX == oldX && newY < oldY) {
+                    direction = Direction.DOWN_LEFT;
+                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                } else if (newX < oldX && newY < oldY) {
+                    direction = Direction.LEFT;
+                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
+                } else if (newX < oldX && newY == oldY) {
+                    direction = Direction.UP_LEFT;
+                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
+                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                }
+                currentPoint.set(fVx, fVy);
+                circle2.set(fVx, fVy, 16f);
+            }
             if(isDrawableCreeps == 1 || isDrawableCreeps == 5) {
                 fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
                 fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY));
@@ -198,111 +303,6 @@ public class Creep {
                 }
                 currentPoint.set(fVx, fVy);
                 circle1.set(fVx, fVy, 16f);
-            }
-            if(isDrawableCreeps == 2 || isDrawableCreeps == 5) {
-                fVx = (halfSizeCellX * (newY + 1)) + (newX * halfSizeCellX); // По Y прибавляем еденицу хз почему бага наверное
-                fVy = (halfSizeCellY * (newY + 1)) - (newX * halfSizeCellY);
-                if (newX < oldX && newY > oldY) {
-                    direction = Direction.UP;
-                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
-                } else if (newX == oldX && newY > oldY) {
-                    direction = Direction.UP_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY > oldY) {
-                    direction = Direction.RIGHT;
-                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY == oldY) {
-                    direction = Direction.DOWN_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY < oldY) {
-                    direction = Direction.DOWN;
-                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
-                } else if (newX == oldX && newY < oldY) {
-                    direction = Direction.DOWN_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX < oldX && newY < oldY) {
-                    direction = Direction.LEFT;
-                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
-                } else if (newX < oldX && newY == oldY) {
-                    direction = Direction.UP_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                }
-                currentPoint.set(fVx, fVy);
-                circle2.set(fVx, fVy, 16f);
-            }
-            if(isDrawableCreeps == 3 || isDrawableCreeps == 5) {
-                fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
-                fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY));
-                if (newX < oldX && newY < oldY) {
-                    direction = Direction.UP;
-                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
-                } else if (newX == oldX && newY < oldY) {
-                    direction = Direction.UP_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY < oldY) {
-                    direction = Direction.RIGHT;
-                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY == oldY) {
-                    direction = Direction.DOWN_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY > oldY) {
-                    direction = Direction.DOWN;
-                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
-                } else if (newX == oldX && newY > oldY) {
-                    direction = Direction.DOWN_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX < oldX && newY > oldY) {
-                    direction = Direction.LEFT;
-                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
-                } else if (newX < oldX && newY == oldY) {
-                    direction = Direction.UP_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                }
-                currentPoint.set(fVx, fVy);
-                circle3.set(fVx, fVy, 16f);
-            }
-            if(isDrawableCreeps == 4 || isDrawableCreeps == 5) {
-                fVx = (-(halfSizeCellX * (newY + 1)) - (newX * halfSizeCellX)); // По Y прибавляем еденицу хз почему бага наверное
-                fVy = ( (halfSizeCellY * (newY + 1)) - (newX * halfSizeCellY));
-                if (newX < oldX && newY > oldY) {
-                    direction = Direction.UP;
-                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
-                } else if (newX == oldX && newY > oldY) {
-                    direction = Direction.UP_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY > oldY) {
-                    direction = Direction.RIGHT;
-                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY == oldY) {
-                    direction = Direction.DOWN_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX > oldX && newY < oldY) {
-                    direction = Direction.DOWN;
-                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
-                } else if (newX == oldX && newY < oldY) {
-                    direction = Direction.DOWN_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                } else if (newX < oldX && newY < oldY) {
-                    direction = Direction.LEFT;
-                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
-                } else if (newX < oldX && newY == oldY) {
-                    direction = Direction.UP_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
-                }
-                currentPoint.set(fVx, fVy);
-                circle4.set(fVx, fVy, 16f);
             }
 //                Trush --- позже разгрибу
 //                int centerX = creep.getNewPosition().getX(), centerY = creep.getNewPosition().getY();
