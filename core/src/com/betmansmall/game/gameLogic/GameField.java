@@ -72,6 +72,7 @@ public class GameField {
     public static int isDrawableTowers = 1;
 //    public boolean isDrawableRoutes = true;
     public int isDrawableGridNav = 1;
+    public int drawOrder = 0;
 
     private int halfSizeCellX;
     private int halfSizeCellY;
@@ -400,78 +401,137 @@ public class GameField {
     }
 
     private void drawBackGrounds(SpriteBatch spriteBatch) {
-        Vector2 pos = new Vector2();
-        for (int y = 0; y < sizeFieldY; y++) {
-//            for (int y = sizeFieldY - 1; y >= 0; y--) {
-////                for(int x = sizeFieldX-1; x >= 0; x--) {
+        if(drawOrder == 0) {
+            for (int y = 0; y < sizeFieldY; y++) {
+                for (int x = 0; x < sizeFieldX; x++) {
+                    drawBackGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 1) {
             for (int x = 0; x < sizeFieldX; x++) {
-                Array<TiledMapTile> tiledMapTiles = field[x][y].backgroundTiles;
-                for (TiledMapTile tiledMapTile : tiledMapTiles) {
-                    TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                    if(isDrawableBackground == 1 || isDrawableBackground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 1)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                    if(isDrawableBackground == 2 || isDrawableBackground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 2)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                    if(isDrawableBackground == 3 || isDrawableBackground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 3)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                    if(isDrawableBackground == 4 || isDrawableBackground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 4)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
+                for (int y = 0; y < sizeFieldY; y++) {
+                    drawBackGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 2) {
+            for (int y = sizeFieldY-1; y >= 0; y--) {
+                for (int x = sizeFieldX-1; x >= 0; x--) {
+                    drawBackGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 3) {
+            for (int x = sizeFieldX-1; x >= 0; x--) {
+                for (int y = sizeFieldY-1; y >= 0; y--) {
+                    drawBackGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 4) {
+            for (int y = sizeFieldY-1; y >= 0; y--) {
+                for (int x = 0; x < sizeFieldX; x++) {
+                    drawBackGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 5) {
+            for (int x = 0; x < sizeFieldX; x++) {
+                for (int y = sizeFieldY-1; y >= 0; y--) {
+                    drawBackGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 6) {
+            for (int y = 0; y < sizeFieldY; y++) {
+                for (int x = sizeFieldX-1; x >= 0; x--) {
+                    drawBackGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 7) {
+            for (int x = sizeFieldX-1; x >= 0; x--) {
+                for (int y = 0; y < sizeFieldY; y++) {
+                    drawBackGroundCell(spriteBatch, x, y);
                 }
             }
         }
     }
 
-    private void drawForeGroundWithCreepsAndTowers(SpriteBatch spriteBatch) {
+    private void drawBackGroundCell(SpriteBatch spriteBatch, int cellX, int cellY) {
         Vector2 pos = new Vector2();
-        for (int y = 0; y < sizeFieldY; y++) {
-//            for (int y = sizeFieldY - 1; y >= 0; y--) {
-////                for(int x = sizeFieldX-1; x >= 0; x--) {
+        Array<TiledMapTile> tiledMapTiles = field[cellX][cellY].backgroundTiles;
+        for (TiledMapTile tiledMapTile : tiledMapTiles) {
+            TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+            if (isDrawableBackground == 1 || isDrawableBackground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 1)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if (isDrawableBackground == 2 || isDrawableBackground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 2)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if (isDrawableBackground == 3 || isDrawableBackground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 3)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if (isDrawableBackground == 4 || isDrawableBackground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 4)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+        }
+    }
+
+    private void drawForeGroundWithCreepsAndTowers(SpriteBatch spriteBatch) {
+        if(drawOrder == 0) {
+            for (int y = 0; y < sizeFieldY; y++) {
+                for (int x = 0; x < sizeFieldX; x++) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 1) {
             for (int x = 0; x < sizeFieldX; x++) {
+                for (int y = 0; y < sizeFieldY; y++) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 2) {
+            for (int y = sizeFieldY-1; y >= 0; y--) {
+                for (int x = sizeFieldX-1; x >= 0; x--) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 3) {
+            for (int x = sizeFieldX-1; x >= 0; x--) {
+                for (int y = sizeFieldY-1; y >= 0; y--) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 4) {
+            for (int y = sizeFieldY-1; y >= 0; y--) {
+                for (int x = 0; x < sizeFieldX; x++) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 5) {
+            for (int x = 0; x < sizeFieldX; x++) {
+                for (int y = sizeFieldY-1; y >= 0; y--) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 6) {
+            for (int y = 0; y < sizeFieldY; y++) {
+                for (int x = sizeFieldX-1; x >= 0; x--) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 7) {
+            for (int x = sizeFieldX-1; x >= 0; x--) {
+                for (int y = 0; y < sizeFieldY; y++) {
+                    drawForeGroundWithCreepsAndTowerCell(spriteBatch, x, y);
+                }
+            }
+        }
 //        int x = 0, y = 0;
-//        int length = sizeFieldY;
+//        int length = sizeFieldX;
 //        while (x < length) {
 //            if(x == length - 1 && y == length - 1) {
 ////                Gdx.app.log("GameField::render();", " -- хуй");
 //            } else {
-                Array<Creep> creeps = field[x][y].getCreeps();
-                if(creeps != null) {
-                    for (Creep creep : creeps) {
-                        drawCreep(creep, spriteBatch);
-                    }
-                }
-                Tower tower = field[x][y].getTower();
-                if(tower != null) {
-                    drawTower(tower, spriteBatch);
-                }
-                Array<TiledMapTile> tiledMapTiles = field[x][y].foregroundTiles;
-                for (TiledMapTile tiledMapTile : tiledMapTiles) {
-                    TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-                    if(isDrawableForeground == 1 || isDrawableForeground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 1)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                    if(isDrawableForeground == 2 || isDrawableForeground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 2)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                    if(isDrawableForeground == 3 || isDrawableForeground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 3)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                    if(isDrawableForeground == 4 || isDrawableForeground == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 4)).add(-halfSizeCellX, -halfSizeCellY);
-                        spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
-                    }
-                }
-            }
 //            if(x == length - 1) {
 //                x = y + 1;
 //                y = length - 1;
@@ -482,6 +542,40 @@ public class GameField {
 //                x++;
 //                y--;
 //            }
+//        }
+    }
+
+    private void drawForeGroundWithCreepsAndTowerCell(SpriteBatch spriteBatch, int cellX, int cellY) {
+        Vector2 pos = new Vector2();
+        Array<Creep> creeps = field[cellX][cellY].getCreeps();
+        if(creeps != null) {
+            for (Creep creep : creeps) {
+                drawCreep(creep, spriteBatch);
+            }
+        }
+        Tower tower = field[cellX][cellY].getTower();
+        if(tower != null) {
+            drawTower(tower, spriteBatch);
+        }
+        Array<TiledMapTile> tiledMapTiles = field[cellX][cellY].foregroundTiles;
+        for (TiledMapTile tiledMapTile : tiledMapTiles) {
+            TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+            if(isDrawableForeground == 1 || isDrawableForeground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 1)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if(isDrawableForeground == 2 || isDrawableForeground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 2)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if(isDrawableForeground == 3 || isDrawableForeground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 3)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if(isDrawableForeground == 4 || isDrawableForeground == 5) {
+                pos.set(getGraphicCoordinates(cellX, cellY, 4)).add(-halfSizeCellX, -halfSizeCellY);
+                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
         }
     }
 

@@ -374,6 +374,13 @@ public class GameScreen implements Screen {
                 gameField.isDrawableForeground = 0;
             }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7);");
+            gameField.drawOrder++;
+            if(gameField.drawOrder > 7) {
+                gameField.drawOrder = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.drawOrder:" + gameField.drawOrder);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().removeTopScreen();
