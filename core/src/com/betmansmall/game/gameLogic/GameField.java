@@ -72,7 +72,7 @@ public class GameField {
     public static int isDrawableTowers = 1;
 //    public boolean isDrawableRoutes = true;
     public int isDrawableGridNav = 1;
-    public int drawOrder = 0;
+    public int drawOrder = 8;
 
     private int halfSizeCellX;
     private int halfSizeCellY;
@@ -457,6 +457,29 @@ public class GameField {
                     drawBackGroundCell(spriteBatch, x, y);
                 }
             }
+        } else if(drawOrder == 8) {
+            int x = 0, y = 0;
+            int length = (sizeFieldX > sizeFieldY) ? sizeFieldX : sizeFieldY;
+            while (x < length) {
+                if (x == length - 1 && y == length - 1) {
+//                    Gdx.app.log("GameField::drawBackGrounds();", " -- хуй");
+                    drawBackGroundCell(spriteBatch, x, y);
+                } else {
+                    if(x < sizeFieldX && y < sizeFieldY) {
+                        drawBackGroundCell(spriteBatch, x, y);
+                    }
+                }
+                if (x == length - 1) {
+                    x = y + 1;
+                    y = length - 1;
+                } else if (y == 0) {
+                    y = x + 1;
+                    x = 0;
+                } else {
+                    x++;
+                    y--;
+                }
+            }
         }
     }
 
@@ -533,38 +556,34 @@ public class GameField {
                     drawForeGroundCellWithCreepsAndTower(spriteBatch, x, y);
                 }
             }
+        } else if(drawOrder == 8) {
+            int x = 0, y = 0;
+            int length = (sizeFieldX > sizeFieldY) ? sizeFieldX : sizeFieldY;
+            while (x < length) {
+                if (x == length - 1 && y == length - 1) {
+//                    Gdx.app.log("GameField::drawForeGroundsWithCreepsAndTowers();", " -- хуй");
+                    drawForeGroundCellWithCreepsAndTower(spriteBatch, x, y);
+                } else {
+                    if(x < sizeFieldX && y < sizeFieldY) {
+                        drawForeGroundCellWithCreepsAndTower(spriteBatch, x, y);
+                    }
+                }
+                if (x == length - 1) {
+                    x = y + 1;
+                    y = length - 1;
+                } else if (y == 0) {
+                    y = x + 1;
+                    x = 0;
+                } else {
+                    x++;
+                    y--;
+                }
+            }
         }
-//        int x = 0, y = 0;
-//        int length = sizeFieldX;
-//        while (x < length) {
-//            if(x == length - 1 && y == length - 1) {
-////                Gdx.app.log("GameField::render();", " -- хуй");
-//            } else {
-//            if(x == length - 1) {
-//                x = y + 1;
-//                y = length - 1;
-//            } else if(y == 0) {
-//                y = x + 1;
-//                x = 0;
-//            } else {
-//                x++;
-//                y--;
-//            }
-//        }
     }
 
     private void drawForeGroundCellWithCreepsAndTower(SpriteBatch spriteBatch, int cellX, int cellY) {
         Vector2 pos = new Vector2();
-        Array<Creep> creeps = field[cellX][cellY].getCreeps();
-        if(creeps != null) {
-            for (Creep creep : creeps) {
-                drawCreep(creep, spriteBatch);
-            }
-        }
-        Tower tower = field[cellX][cellY].getTower();
-        if(tower != null) {
-            drawTower(tower, spriteBatch);
-        }
         Array<TiledMapTile> tiledMapTiles = field[cellX][cellY].foregroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
@@ -584,6 +603,16 @@ public class GameField {
                 pos.set(getGraphicCoordinates(cellX, cellY, 4)).add(-halfSizeCellX, -halfSizeCellY);
                 spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
+        }
+        Array<Creep> creeps = field[cellX][cellY].getCreeps();
+        if(creeps != null) {
+            for (Creep creep : creeps) {
+                drawCreep(creep, spriteBatch);
+            }
+        }
+        Tower tower = field[cellX][cellY].getTower();
+        if(tower != null) {
+            drawTower(tower, spriteBatch);
         }
     }
 

@@ -377,7 +377,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
             Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7);");
             gameField.drawOrder++;
-            if(gameField.drawOrder > 7) {
+            if(gameField.drawOrder > 8) {
                 gameField.drawOrder = 0;
             }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.drawOrder:" + gameField.drawOrder);
