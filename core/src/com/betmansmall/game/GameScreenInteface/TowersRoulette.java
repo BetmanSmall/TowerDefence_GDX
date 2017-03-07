@@ -34,6 +34,7 @@ public class TowersRoulette extends Roulette {
     private Array<TemplateForTower> templateForTowers;
     private DeviceSettings deviceSettings;
     private String currentDevice;
+    private int scrollSpeed = 9;
 
     public TowersRoulette(GameField gameField) {
         this.gameField = gameField;
@@ -133,12 +134,14 @@ public class TowersRoulette extends Roulette {
     }
 
     public void scrollTowers(int amount) {
-        if(templateForTowers.size > 5) {
-            for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
-                towerButtonsArray.get(towersNumber).setPosition(towerButtonsArray.get(towersNumber).getX(),
-                        towerButtonsArray.get(towersNumber).getY() - amount*6);
-                towerFrames.get(towersNumber).setPosition(towerFrames.get(towersNumber).getX(),
-                        towerFrames.get(towersNumber).getY() - amount*6);
+        if(gameField.getUnderConstruction() != null) {
+            if(templateForTowers.size > 5) {
+                for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
+                    towerButtonsArray.get(towersNumber).setPosition(towerButtonsArray.get(towersNumber).getX(),
+                            towerButtonsArray.get(towersNumber).getY() - amount * scrollSpeed);
+                    towerFrames.get(towersNumber).setPosition(towerFrames.get(towersNumber).getX(),
+                            towerFrames.get(towersNumber).getY() - amount * scrollSpeed);
+                }
             }
         }
     }

@@ -45,10 +45,17 @@ public class CreepsRoulette extends Roulette {
         pauseButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/pausebutton.png"))).getDrawable());
         pauseButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
         pauseButton.setPosition(0, 0);
-        pauseButton.setVisible(IS_PAUSE);
 
         group.addActor(pauseButton);
         group.addActor(playButton);
+
+        if(IS_PAUSE) {
+            pauseButton.setZIndex(0);
+            playButton.setZIndex(1);
+        } else {
+            pauseButton.setZIndex(1);
+            playButton.setZIndex(0);
+        }
     }
 
     public void buttonClick() {

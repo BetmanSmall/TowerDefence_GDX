@@ -278,7 +278,7 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean scrolled(int amount) {
-            if (gameField.getUnderConstruction() != null) {
+            if (gameField.getUnderConstruction() == null) {
                 gameInterface.getTowersRoulette().scrollTowers(amount);
             }
             if (gameField.getUnderConstruction() == null) {
