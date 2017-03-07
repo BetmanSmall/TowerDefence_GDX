@@ -105,8 +105,8 @@ public class TowersRoulette extends Roulette {
                         rouletteButton.getY()
                                 + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f));
 //                Gdx.app.log("Button position is :", "X = " + templateButton.getX() + " Y = " + templateButton.getX());
-                towerButtonsArray.get(towersNumber).setVisible(false);
-                towerFrames.get(towersNumber).setVisible(false);
+                towerButtonsArray.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
+                towerFrames.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
                 buttonGroup.addActor(towerButtonsArray.get(towersNumber));
                 buttonGroup.addActor(towerFrames.get(towersNumber));
             }
@@ -132,6 +132,16 @@ public class TowersRoulette extends Roulette {
             gameField.cancelUnderConstruction();
     }
 
+    public void scrollTowers(int amount) {
+        if(templateForTowers.size > 5) {
+            for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
+                towerButtonsArray.get(towersNumber).setPosition(towerButtonsArray.get(towersNumber).getX(),
+                        towerButtonsArray.get(towersNumber).getY() - amount*6);
+                towerFrames.get(towersNumber).setPosition(towerFrames.get(towersNumber).getX(),
+                        towerFrames.get(towersNumber).getY() - amount*6);
+            }
+        }
+    }
     private void ringClick(){
 //        Gdx.app.log("TAG", "Tower is selected");
         rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));

@@ -278,15 +278,19 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean scrolled(int amount) {
-            Gdx.app.log("MyGestureDetector::scrolled()", " -- amount:" + amount);
-            if (amount == 1) {
-                if (camera.zoom <= MAX_ZOOM)
-                    camera.zoom += 0.1f;
-            } else if (amount == -1) {
-                if (camera.zoom >= MIN_ZOOM)
-                    camera.zoom -= 0.1f;
+            if (gameField.getUnderConstruction() != null) {
+                gameInterface.getTowersRoulette().scrollTowers(amount);
             }
-            camera.update();
+            if (gameField.getUnderConstruction() == null) {
+                if (amount == 1) {
+                    if (camera.zoom <= MAX_ZOOM)
+                        camera.zoom += 0.1f;
+                } else if (amount == -1) {
+                    if (camera.zoom >= MIN_ZOOM)
+                        camera.zoom -= 0.1f;
+                }
+                camera.update();
+            }
             return false;
         }
     }
@@ -462,6 +466,7 @@ public class GameScreen implements Screen {
         camera.viewportHeight = height;
         camera.viewportWidth = width;
         camera.update();
+        gameInterface.stageUpdate();
         //gameInterface.getInterfaceStage().getViewport().update(width, height);
         //gameInterface.getInterfaceStage().getCamera().viewportHeight = height;
         //gameInterface.getInterfaceStage().getCamera().viewportWidth = width;
