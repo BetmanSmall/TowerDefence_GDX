@@ -26,14 +26,16 @@ public class Creep {
     private int hp;
     private float speed;
     private float stepsInTime;
-//    private float deltaInNormalSpeed;
     private float deathElapsedTime;
 
     public Vector2 currentPoint;
+    public Vector2 backStepPoint;// AlexGor
     public Circle circle1;
     public Circle circle2;
     public Circle circle3;
     public Circle circle4;
+    public Vector2 velocity;
+    public Vector2 displacement;
 
     private TemplateForUnit templateForUnit;
 
@@ -52,6 +54,7 @@ public class Creep {
             this.deathElapsedTime = 0;
 
             this.currentPoint = new Vector2(newPosition.getX(), newPosition.getY());
+            this.backStepPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
             this.circle1 = new Circle();
             this.circle2 = new Circle();
             this.circle3 = new Circle();
@@ -99,14 +102,12 @@ public class Creep {
 //                    Gdx.app.log("Creep", "move(); -- Active shellEffectType:" + shellEffectType);
                     shellEffectType.used = true;
                     if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
-//                        deltaInNormalSpeed = stepsInTime;
                         float smallSpeed = speed/100f;
                         float percentSteps = stepsInTime/smallSpeed;
                         speed += shellEffectType.speed;
                         smallSpeed = speed/100f;
                         stepsInTime = smallSpeed*percentSteps;
                     } else if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
-//                        float smallDamage = shellEffectType.damage / delta;
                         hp -= shellEffectType.damage;
                     }
                 } else {
@@ -134,22 +135,15 @@ public class Creep {
                 newPosition = route.pollFirst();
             }
 
-            int oldX = oldPosition.getX(), oldY = oldPosition.getY();
-            int newX = newPosition.getX(), newY = newPosition.getY();
-            int sizeCellX = GameField.getSizeCellX();
-            int sizeCellY = GameField.getSizeCellY();
-            float halfSizeCellX = sizeCellX/2;
-            float halfSizeCellY = sizeCellY/2;
+            // Dead CODE | MANUAL
 //                float fVxOld = halfSizeCellX * oldY + oldX * halfSizeCellX;
 //                float fVyOld = halfSizeCellY * oldY - oldX * halfSizeCellY;
 //                this.oldPoint.set(fVxOld, fVyOld);
 //                this.currentPoint.set(fVx, fVy);
-
 //                int oldX = oldPosition.getX(), oldY = oldPosition.getY();
 //                int newX = newPosition.getX(), newY = newPosition.getY();
 //                float fVx = halfSizeCellX * (newY+1) + newX * halfSizeCellX;
 //                float fVy = halfSizeCellY * (newY+1) - newX * halfSizeCellY;
-
 //                if(newX < oldX && newY > oldY) {
 //                } else if (newX == oldX && newY > oldY) {
 //                } else if (newX > oldX && newY > oldY) {
@@ -160,8 +154,15 @@ public class Creep {
 //                } else if (newX < oldX && newY == oldY) {
 //                }
 //            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
+            // --- MANUAL ---
 
-            float fVx, fVy;
+            int oldX = oldPosition.getX(), oldY = oldPosition.getY();
+            int newX = newPosition.getX(), newY = newPosition.getY();
+            int sizeCellX = GameField.getSizeCellX();
+            int sizeCellY = GameField.getSizeCellY();
+            float halfSizeCellX = sizeCellX/2;
+            float halfSizeCellY = sizeCellY/2;
+            float fVx = 0, fVy = 0;
             Direction oldDirection = direction;
             int isDrawableCreeps = GameField.isDrawableCreeps;
             if(isDrawableCreeps == 4 || isDrawableCreeps == 5) {
@@ -304,15 +305,16 @@ public class Creep {
                 currentPoint.set(fVx, fVy);
                 circle1.set(fVx, fVy, 16f);
             }
-//                Trush --- позже разгрибу
-//                int centerX = creep.getNewPosition().getX(), centerY = creep.getNewPosition().getY();
-//                float centerVx = halfSizeCellX * centerY + centerX * halfSizeCellX;
-//                float centerVy = halfSizeCellY * centerY - centerX * halfSizeCellY;
-//            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
-//            currentPoint.set(fVx, fVy);
-// =================================================
 
-//            Gdx.app.log("Creep::move()", " -- oldDirection:" + oldDirection + " newDirection:" + direction);
+            backStepPoint = currentPoint;
+            currentPoint.set(fVx, fVy);
+
+            velocity = new Vector2(backStepPoint.x - currentPoint.x,
+                    backStepPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(backStepPoint.x,
+                    backStepPoint.y), speed));
+            displacement = new Vector2(velocity.x * delta, velocity.y * delta);
+
+//            Gdx.app.log("Creep::move()", " -- direction:" + direction + " oldDirection:" + oldDirection);
             if(!direction.equals(oldDirection)) {
                 setAnimation("walk_");
             }

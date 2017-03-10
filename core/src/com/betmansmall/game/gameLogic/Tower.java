@@ -2,7 +2,6 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
@@ -33,9 +32,9 @@ public class Tower {
 
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
         this.shells = new Array<Shell>();
-        this.radiusDetectionСircle = new Circle(getTowerPosition(1), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
+        this.radiusDetectionСircle = new Circle(getCenterGraphicCoord(1), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
         if(templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != null && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-            this.radiusFlyShellСircle = new Circle(getTowerPosition(1), templateForTower.radiusFlyShell);
+            this.radiusFlyShellСircle = new Circle(getCenterGraphicCoord(1), templateForTower.radiusFlyShell);
         }
     }
 
@@ -52,7 +51,7 @@ public class Tower {
 
     public boolean shoot(Creep creep) {
         if(elapsedReloadTime >= templateForTower.reloadTime) {
-            shells.add(new Shell(templateForTower, creep, getTowerPosition())); // AlexGor
+            shells.add(new Shell(templateForTower, creep, getCenterGraphicCoord())); // AlexGor
             elapsedReloadTime = 0f;
             return true;
         }
@@ -85,16 +84,18 @@ public class Tower {
         }
     }
 
-    public Vector2 getTowerPosition() {
-        return getTowerPosition(GameField.isDrawableTowers);
+    public Vector2 getCenterGraphicCoord() {
+        return getCenterGraphicCoord(GameField.isDrawableTowers);
     }
 
-    public Vector2 getTowerPosition(int map) {
+    public Vector2 getCenterGraphicCoord(int map) {
+        return getCenterGraphicCoord(position.x, position.y, map);
+    }
+
+    public Vector2 getCenterGraphicCoord(int cellX, int cellY, int map) { // TODO need create 'getCenterGraphicCoord(int map)' func!
         int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
         int halfSizeCellY = GameField.getSizeCellY() / 2;
         float pxlsX = 0f, pxlsY = 0f;
-        int cellX = position.x;
-        int cellY = position.y;
 //        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellX));
 //        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellY));
 ////        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : (templateForTower.size-1)*halfSizeCellX);
@@ -114,7 +115,7 @@ public class Tower {
         }
 //        return new Vector2(pxlsX - halfSizeCellX, pxlsY + halfSizeCellY*templateForTower.size);
         return new Vector2(pxlsX, pxlsY);
-    }
+    } // -------------------------------------------------------------- TODD It is analog GameField::getGraphicCoordinates() func!
 
     private float getRegWidth () {
         TextureRegion tmpTextureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();

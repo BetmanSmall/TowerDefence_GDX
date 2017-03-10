@@ -1,6 +1,7 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,8 +21,9 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     private static final float MAX_ZOOM = 50f; //max size
     private static final float MIN_ZOOM = 0.2f; // 2x zoom
-    private float MAX_DESTINATION_X = 0f;
-    private float MAX_DESTINATION_Y = 0f;
+    private float initialScale = 2f;
+//    private float MAX_DESTINATION_X = 0f;
+//    private float MAX_DESTINATION_Y = 0f;
 //    private BitmapFont bitmapFont = new BitmapFont();
 
     private OrthographicCamera camera;
@@ -53,9 +55,14 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-//        camera.update();
+        camera.update();
         renderer.setView(camera);
         renderer.render();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            Gdx.app.log("MapEditorScreen::render()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            TowerDefence.getInstance().removeTopScreen();
+        }
     }
 
     @Override
@@ -88,6 +95,8 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
+        Gdx.app.log("MapEditorScreen::touchDown()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        initialScale = camera.zoom;
         return false;
     }
 
@@ -124,6 +133,12 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
+        Gdx.app.log("MapEditorScreen::zoom()", " -- initialDistance:" + initialDistance + " distance:" + distance);
+        float ratio = initialDistance / distance;
+        float newZoom = initialScale * ratio;
+        if (newZoom < MAX_ZOOM && newZoom > MIN_ZOOM) {
+            camera.zoom = newZoom;
+        }
         return false;
     }
 

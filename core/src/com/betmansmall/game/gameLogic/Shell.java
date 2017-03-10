@@ -44,28 +44,32 @@ public class Shell {
         this.currentPoint = new Vector2(currentPoint.x, currentPoint.y);
         this.circle = new Circle(currentPoint, ammoSize);
         if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
-            Vector2 endPoint = new Vector2(creep.circle1.x, creep.circle1.y);
-            Direction direction = creep.direction;
-            float delta = GameField.getSizeCellX();
-            float del = 1.8f;
-            if (direction == Direction.UP) {
-                endPoint.add(0, delta);
-            } else if (direction == Direction.UP_RIGHT) {
-                endPoint.add(delta / del, delta / del);
-            } else if (direction == Direction.RIGHT) {
-                endPoint.add(delta, 0);
-            } else if (direction == Direction.DOWN_RIGHT) {
-                endPoint.add(delta / del, -(delta / del));
-            } else if (direction == Direction.DOWN) {
-                endPoint.add(0, -delta);
-            } else if (direction == Direction.DOWN_LEFT) {
-                endPoint.add(-(delta / del), -(delta / del));
-            } else if (direction == Direction.LEFT) {
-                endPoint.add(-delta, 0);
-            } else if (direction == Direction.UP_LEFT) {
-                endPoint.add(-(delta / del), delta / del);
-            }
-            this.endPoint = new Circle(endPoint, 3f);
+//<<<<<<< HEAD
+//            Vector2 endPoint = new Vector2(creep.circle1.x, creep.circle1.y);
+//            Direction direction = creep.direction;
+//            float delta = GameField.getSizeCellX();
+//            float del = 1.8f;
+//            if (direction == Direction.UP) {
+//                endPoint.add(0, delta);
+//            } else if (direction == Direction.UP_RIGHT) {
+//                endPoint.add(delta / del, delta / del);
+//            } else if (direction == Direction.RIGHT) {
+//                endPoint.add(delta, 0);
+//            } else if (direction == Direction.DOWN_RIGHT) {
+//                endPoint.add(delta / del, -(delta / del));
+//            } else if (direction == Direction.DOWN) {
+//                endPoint.add(0, -delta);
+//            } else if (direction == Direction.DOWN_LEFT) {
+//                endPoint.add(-(delta / del), -(delta / del));
+//            } else if (direction == Direction.LEFT) {
+//                endPoint.add(-delta, 0);
+//            } else if (direction == Direction.UP_LEFT) {
+//                endPoint.add(-(delta / del), delta / del);
+//            }
+//            this.endPoint = new Circle(endPoint, 3f);
+//=======
+            this.endPoint = new Circle(creep.currentPoint.x + creep.displacement.x, creep.currentPoint.y + creep.displacement.y, 3f);
+//>>>>>>> InDevelop
         } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
             if(GameField.isDrawableCreeps == 1 || GameField.isDrawableCreeps == 5 || GameField.isDrawableCreeps == 0)
                 this.endPoint = creep.circle1;
@@ -95,6 +99,7 @@ public class Shell {
             if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
                 float displacementX = velocity.x * delta * ammoSpeed;
                 float displacementY = velocity.y * delta * ammoSpeed;
+
                 currentPoint.add(displacementX, displacementY);
                 circle.setPosition(currentPoint);
 

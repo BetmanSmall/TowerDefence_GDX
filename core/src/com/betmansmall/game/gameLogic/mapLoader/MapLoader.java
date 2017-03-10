@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
@@ -207,15 +208,20 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         }
         Element waves = root.getChildByName("waves");
         if(waves != null) {
-            String sourceWaves = waves.getAttribute("source", null);
-            if (sourceWaves != null) {
-                FileHandle tsx = getRelativeFileHandle(tmxFile, sourceWaves);
+            String type = waves.getAttribute("type", null);
+            String source = waves.getAttribute("source", null);
+//            System.out.println("type=" + type + " source:" + source);
+            if (source != null) {
+                FileHandle tsx = getRelativeFileHandle(tmxFile, source);
                 try {
                     Element rootwaves = xml.parse(tsx);
                     wavesParser(rootwaves);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            } else if(type != null/* && type == "empty"*/) { // LOL not WORK
+//                System.out.println("type=" + type); // Хотел сделать пустую волну, не получилася=( мб как нить сделаем.
+//                waveManager.addWave(new Wave(new GridPoint2(0, 0), new GridPoint2(0, 0), 10f));
             } else {
                 wavesParser(waves);
             }

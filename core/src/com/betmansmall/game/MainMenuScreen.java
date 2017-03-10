@@ -40,32 +40,12 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(TowerDefence towerDefence) {
         this.towerDefence = towerDefence;
-        create();
-    }
-
-    private void create() {
         textureMB1 = new Texture(Gdx.files.internal("menubutons/play.png"));
         textureMB2 = new Texture(Gdx.files.internal("menubutons/options.png"));
         textureMB3 = new Texture(Gdx.files.internal("menubutons/exit.png"));
-
-        Gdx.app.log("Tag", "Resolution: " + Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight());
-        screenXScale = (((float) Gdx.graphics.getWidth()) / 1980);
-        screenYScale = (((float) Gdx.graphics.getHeight()) / 1080);
-        Gdx.app.log("Tag", "Scales: " + screenXScale + ", " + screenYScale);
-
         welcomeScreen = new Image((new Texture(Gdx.files.internal("img/welcomescreen.png"))));
-        welcomeScreen.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        welcomeScreen.setPosition(0f, 0f);
-
-        //Creating background
         background = new Image(new Texture(Gdx.files.internal("menubutons/background1.png")));
-        background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        background.setPosition(0f, 0f);
-
-        //Menu buttons
         menuButton1 = new Image(textureMB1);
-        menuButton1.setSize(400 * screenXScale, 100 * screenYScale);
-        menuButton1.setPosition(Gdx.graphics.getWidth() - 415 * screenXScale, 370 * screenYScale);
         menuButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -73,10 +53,7 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 1);
             }
         });
-
         menuButton2 = new Image(textureMB2);
-        menuButton2.setSize(400 * screenXScale, 100 * screenYScale);
-        menuButton2.setPosition(Gdx.graphics.getWidth() - 415 * screenXScale, (370 - 158) * screenYScale);
         menuButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -84,10 +61,7 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 2);
             }
         });
-
         menuButton3 = new Image(textureMB3);
-        menuButton3.setSize(400 * screenXScale, 100 * screenYScale);
-        menuButton3.setPosition(Gdx.graphics.getWidth() - 415 * screenXScale, (370 - 316) * screenYScale);
         menuButton3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -95,11 +69,7 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 3);
             }
         });
-
-        //Adding the return button
         returnButton = new Image(new Texture(Gdx.files.internal("menubutons/backbutton.png")));
-        returnButton.setSize(266 * screenXScale, 140 * screenYScale);
-        returnButton.setPosition(0f, 0f);
         returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -113,8 +83,6 @@ public class MainMenuScreen implements Screen {
         returnButton.setVisible(false);
 
         homeButton = new Image(new Texture(Gdx.files.internal("menubutons/home.png")));
-        homeButton.setSize((382 * screenXScale) / 2, (360 * screenYScale) / 2);
-        homeButton.setPosition((266 * screenYScale) + 20 * screenYScale, 0);
         homeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -123,13 +91,9 @@ public class MainMenuScreen implements Screen {
                 switchMenuButtons();
             }
         });
-
         infoScreen = new Image(new Texture(Gdx.files.internal("menubutons/infoscreen.png")));
-        infoScreen.setSize((515 * screenXScale) * 2, (320 * screenYScale) * 2);
-        infoScreen.setPosition(0, (Gdx.graphics.getHeight() / 2) - ((320 * screenYScale) / 2));
 
         mmStage = new Stage(new ScreenViewport());
-
         mmStage.addActor(background);
         mmStage.addActor(infoScreen);
         mmStage.addActor(homeButton);
@@ -138,6 +102,22 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(menuButton3);
         mmStage.addActor(returnButton);
 //        mmStage.addActor(welcomeScreen);
+    }
+
+    private void create(int width, int height) {
+//        screenXScale = (width / 1980); // ?? 1920 ?? FULL HD ??
+//        screenYScale = (height / 1080);
+//        Gdx.app.log("Tag", "Scales: " + screenXScale + ", " + screenYScale);
+//        Gdx.app.log("Tag", "Resolution: " + width + ", " + height);
+
+        //Creating background
+        welcomeScreen.setSize(width, height);
+        welcomeScreen.setPosition(0f, 0f);
+        background.setSize(width, height);
+        background.setPosition(0f, 0f);
+
+        infoScreen.setSize(width/2, height/1.7f);
+        infoScreen.setPosition(0, height - height/1.7f);
     }
 
     private void clickAnalyzer(short buttonNumber) {
@@ -161,11 +141,11 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //Campaign menu
-                        towerDefence.gameLevelMaps.add("maps/arena0.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena4.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena3.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena2.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena0.tmx");
                         towerDefence.nextGameLevel();
                         break;
                     case 2:
@@ -174,13 +154,14 @@ public class MainMenuScreen implements Screen {
                         break;
                     case 3:
                         //Editor mode
-                        JFileChooser fileopen = new JFileChooser();
-                        fileopen.setCurrentDirectory(new File("."));
-                        int ret = fileopen.showDialog(null, "Открыть файл");
-                        if (ret == JFileChooser.APPROVE_OPTION) {
-                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
-                            towerDefence.setScreen(new MapEditorScreen(towerDefence, fileName));
-                        }
+//                        JFileChooser fileopen = new JFileChooser();
+//                        fileopen.setCurrentDirectory(new File("."));
+//                        int ret = fileopen.showDialog(null, "Открыть файл");
+//                        if (ret == JFileChooser.APPROVE_OPTION) {
+//                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
+//                            towerDefence.setScreen(new MapEditorScreen(towerDefence, fileName));
+//                        }
+                        towerDefence.addScreen(new MapEditorScreen(towerDefence, "maps/arena2.tmx"));
                         break;
                 }
                 break;
@@ -190,7 +171,7 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena666.tmx";
+                        mapName = "maps/arena3.tmx";
                         break;
                     case 2:
                         //Choose map2
@@ -214,9 +195,13 @@ public class MainMenuScreen implements Screen {
                         break;
                     case 2:
                         //start game with NORMAL
+                        mapName = "maps/arena.tmx";
+                        towerDefence.addScreen(new GameScreen(mapName));
                         break;
                     case 3:
                         //start game with HARD
+                        mapName = "maps/arena666.tmx";
+                        towerDefence.addScreen(new GameScreen(mapName));
                         break;
                 }
                 break;
@@ -232,35 +217,41 @@ public class MainMenuScreen implements Screen {
                 textureMB1 = new Texture(Gdx.files.internal("menubutons/play.png"));
                 textureMB2 = new Texture((Gdx.files.internal("menubutons/options.png")));
                 textureMB3 = new Texture((Gdx.files.internal("menubutons/exit.png")));
-                buttonsUpdate();
                 break;
             case 1:         //"Play" menu
                 textureMB1 = new Texture((Gdx.files.internal("menubutons/campaign.png")));
                 textureMB2 = new Texture((Gdx.files.internal("menubutons/single_map.png")));
                 textureMB3 = new Texture((Gdx.files.internal("menubutons/editor.png")));
-                buttonsUpdate();
                 break;
             case 2:         //"Choose map" menu
                 textureMB1 = new Texture((Gdx.files.internal("menubutons/forest_lake.png")));
                 textureMB2 = new Texture((Gdx.files.internal("menubutons/map2.png")));
                 textureMB3 = new Texture((Gdx.files.internal("menubutons/map3.png")));
-                buttonsUpdate();
                 break;
             case 3:         //"Difficulty" menu
                 textureMB1 = new Texture((Gdx.files.internal("menubutons/easy.png")));
                 textureMB2 = new Texture((Gdx.files.internal("menubutons/normal.png")));
                 textureMB3 = new Texture((Gdx.files.internal("menubutons/hard.png")));
-                buttonsUpdate();
                 break;
             default:
                 break;
         }
+        buttonsUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
-    private void buttonsUpdate() {
-        menuButton1 = new Image(textureMB1);
-        menuButton1.setSize(400 * screenXScale, 100 * screenYScale);
-        menuButton1.setPosition(Gdx.graphics.getWidth() - 415 * screenXScale, 370 * screenYScale);
+    private void buttonsUpdate(int width, int height) {
+        //Menu buttons
+        float buttonsWidth = width/5; // 9
+        float buttonsHeight = height/10; // 16
+        Image menuButton1 = new Image(textureMB1);
+        Image menuButton2 = new Image(textureMB2);
+        Image menuButton3 = new Image(textureMB3);
+        menuButton1.setSize(buttonsWidth, buttonsHeight);
+        menuButton2.setSize(buttonsWidth, buttonsHeight);
+        menuButton3.setSize(buttonsWidth, buttonsHeight);
+        menuButton1.setPosition(width - buttonsWidth, buttonsHeight * 2 + (buttonsHeight/3)*3);
+        menuButton2.setPosition(width - buttonsWidth, buttonsHeight * 1 + (buttonsHeight/3)*2);
+        menuButton3.setPosition(width - buttonsWidth, buttonsHeight * 0 + (buttonsHeight/3)*1);
         menuButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -268,10 +259,6 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 1);
             }
         });
-
-        menuButton2 = new Image(textureMB2);
-        menuButton2.setSize(400 * screenXScale, 100 * screenYScale);
-        menuButton2.setPosition(Gdx.graphics.getWidth() - 415 * screenXScale, (370 - 158) * screenYScale);
         menuButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -279,10 +266,6 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 2);
             }
         });
-
-        menuButton3 = new Image(textureMB3);
-        menuButton3.setSize(400 * screenXScale, 100 * screenYScale);
-        menuButton3.setPosition(Gdx.graphics.getWidth() - 415 * screenXScale, (370 - 316) * screenYScale);
         menuButton3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -290,14 +273,24 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 3);
             }
         });
+
+        //Adding the return button
+        returnButton.setSize(buttonsWidth, buttonsHeight);
+        returnButton.setPosition(0f, 0f);
+        homeButton.setSize(buttonsWidth, buttonsHeight*3);
+        homeButton.setPosition(buttonsWidth, 0);
+
         mmStage.addActor(menuButton1);
         mmStage.addActor(menuButton2);
         mmStage.addActor(menuButton3);
+        Gdx.app.log("MainMenuScreen::buttonsUpdate()", " -- mmStage:" + mmStage.getActors().size);
     }
 
     @Override
     public void show() {
         Gdx.app.log("MainMenuScreen::show()", " Called!");
+        create(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        buttonsUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(mmStage);
     }
 
@@ -348,7 +341,8 @@ public class MainMenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         Gdx.app.log("MainMenuScreen::resize()", "-- New width:" + width + " height:" + height);
-        buttonsUpdate();
+//        create(width, height);
+//        buttonsUpdate(width, height);
 //        mmStage.getViewport().update(width, height, true);
 //        mmStage.setViewport(mmStage.getViewport());
     }

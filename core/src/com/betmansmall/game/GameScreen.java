@@ -28,7 +28,7 @@ public class GameScreen implements Screen {
     private DeviceSettings deviceSettings = new DeviceSettings();
 
     private float currentDuration;
-    private float MAX_DURATION_FOR_DEFEAT_SCREEN = 5f;
+    private float MAX_DURATION_FOR_DEFEAT_SCREEN = 1f;
 
     private Texture defeatScreen;
 
@@ -384,6 +384,9 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().removeTopScreen();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
+            TowerDefence.getInstance().nextGameLevel();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8); -- gameField.gameSpeed:" + gameField.gameSpeed);
             gameField.gameSpeed -= 0.1f;
@@ -462,10 +465,7 @@ public class GameScreen implements Screen {
         camera.viewportHeight = height;
         camera.viewportWidth = width;
         camera.update();
-        //gameInterface.getInterfaceStage().getViewport().update(width, height);
-        //gameInterface.getInterfaceStage().getCamera().viewportHeight = height;
-        //gameInterface.getInterfaceStage().getCamera().viewportWidth = width;
-        //gameInterface.getInterfaceStage().getCamera().update();
+//        gameInterface.updateStage(); // Андрей. Твой ресайз не пашет! Если это разкомменить. То не будет работать селектор вообще. Этот инит твой будет по несколько раз вызываться. Один раз при создании и два раза во время ресайза. (эти два ресайза делаются почему то во время инициализации)
     }
 
     @Override

@@ -53,7 +53,6 @@ public class TowersRoulette extends Roulette {
 
         towerFrames = new Array<ImageButton>();
 
-
         if(currentDevice == "android") {
             Gdx.app.log("Device settings: ", "Device is android");
             circleGroup = new Group();
@@ -181,10 +180,12 @@ public class TowersRoulette extends Roulette {
     }
 
     private void chooseTowerDesktop(float x, float y) {
+        Gdx.app.log("TowersRoulette::chooseTowerDesktop(" + x + ", " + y + ");", " -- templateForTowers.size:" + templateForTowers.size);
         TemplateForTower localTemplate = templateForTowers.get(0);
         for(int towerNumber = 0; towerNumber < templateForTowers.size; towerNumber++) {
+            Gdx.app.log("TowersRoulette::chooseTowerDesktop();", " -- towerNumber:" + towerNumber);
             if (towerFrames.get(towerNumber).isPressed()) {
-                Gdx.app.log("tower", " : " + towerNumber);
+                Gdx.app.log("TowersRoulette::chooseTowerDesktop();", " -- towerNumber.isPressed()");
                 localTemplate = templateForTowers.get(towerNumber);
                 gameField.createdUnderConstruction(localTemplate);
             }
