@@ -3,7 +3,6 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,14 +10,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
-
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.GameScreenInteface.DeviceSettings;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
+import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.UnderConstruction;
 
 public class GameScreen implements Screen {
     private static final float MAX_ZOOM = 50f; //max size
@@ -26,13 +25,14 @@ public class GameScreen implements Screen {
     private float MAX_DESTINATION_X = 0f;
     private float MAX_DESTINATION_Y = 0f;
     private BitmapFont bitmapFont = new BitmapFont();
+    private DeviceSettings deviceSettings = new DeviceSettings();
 
     private float currentDuration;
-    private float MAX_DURATION_FOR_DEFEAT_SCREEN = 5f;
+    private float MAX_DURATION_FOR_DEFEAT_SCREEN = 1f;
 
     private Texture defeatScreen;
 
-    public OrthographicCamera camera;
+    public static OrthographicCamera camera;
 
     private GameInterface gameInterface;
     private GameField gameField;
@@ -64,18 +64,18 @@ public class GameScreen implements Screen {
             GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
             GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
 
-            if (cellCoordinate != null) {
+            if (cellCoordinate != null && gameField.getUnderConstruction() == null) {
                 if (button == 0) {
-                    gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
-                } else if (button == 1) {
                     gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
+                } else if (button == 1) {
+                    gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
 //                  gameField.prepareBuildTower(cellCoordinate.x, cellCoordinate.y);
 //              } else if(button == 2) {
 //                  gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
                 } else if (button == 3) {
-                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
-                } else if (button == 4) {
                     gameField.setSpawnPoint(cellCoordinate.x, cellCoordinate.y);
+                } else if (button == 4) {
+                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
                 }
             }
             return false;
@@ -90,7 +90,7 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean fling(float velocityX, float velocityY, int button) {
-            Gdx.app.log("CameraController::fling()", " -- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
+//            Gdx.app.log("CameraController::fling()", " -- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
             if (!lastCircleTouched) {
                 flinging = true;
                 velX = camera.zoom * velocityX * 0.5f;
@@ -101,24 +101,53 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean pan(float x, float y, float deltaX, float deltaY) {
-            Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY)) {
+            Vector3 touch = new Vector3(x, y, 0);
+            camera.unproject(touch);
+//            Gdx.app.log("CameraController::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+//            Gdx.app.log("CameraController::pan(1)", " -- x:" + camera.position.x + " y:" + camera.position.y);
+//            Gdx.app.log("CameraController::pan(2)", " -- x:" + touch.x + " y:" + touch.y);
+            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY) && deviceSettings.getDevice() == "android") {
                 lastCircleTouched = true;
                 return true;
             }
             lastCircleTouched = false;
-            if (gameField.getUnderConstruction() == null) {
-                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
+            if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+//                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
                     camera.position.add(-deltaX * camera.zoom, 0, 0);
-                if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
+//                if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
                     camera.position.add(0, deltaY * camera.zoom, 0);
+            } else {
+                int space = 50;
+                if(x < space) {
+                    camera.position.add(-5, 0, 0);
+                }
+                if(x > Gdx.graphics.getWidth()-space) {
+                    camera.position.add(5, 0, 0);
+                }
+                if(y < space) {
+                    camera.position.add(0, 5, 0);
+                }
+                if(y > Gdx.graphics.getHeight()-space) {
+                    camera.position.add(0, -5, 0);
+                }
+//                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
+//                    camera.position.set(touch.x, touch.y, 0);
+//                if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
+//                    camera.position.add(0, deltaY * camera.zoom, 0);
+            }
+            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
+            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
+            if (cellCoordinate != null) {
+                if (gameField.getUnderConstruction() != null) {
+                    gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
+                }
             }
             return false;
         }
 
         @Override
         public boolean panStop(float x, float y, int pointer, int button) {
-            Gdx.app.log("CameraController::panStop()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+//            Gdx.app.log("CameraController::panStop()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
             return false;
         }
 
@@ -166,19 +195,19 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean keyDown(int keycode) {
-            Gdx.app.log("MyGestureDetector::keyDown()", " -- keycode:" + keycode);
+//            Gdx.app.log("MyGestureDetector::keyDown()", " -- keycode:" + keycode);
             return false;
         }
 
         @Override
         public boolean keyUp(int keycode) {
-            Gdx.app.log("MyGestureDetector::keyUp()", " -- keycode:" + keycode);
+//            Gdx.app.log("MyGestureDetector::keyUp()", " -- keycode:" + keycode);
             return false;
         }
 
         @Override
         public boolean keyTyped(char character) {
-            Gdx.app.log("MyGestureDetector::keyTyped()", " -- character:" + character);
+//            Gdx.app.log("MyGestureDetector::keyTyped()", " -- character:" + character);
             return false;
         }
 
@@ -190,8 +219,13 @@ public class GameScreen implements Screen {
             GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
             GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
             if (cellCoordinate != null) {
-                if (gameField.getUnderConstruction() != null) {
-                    gameField.getUnderConstruction().setStartCoors(cellCoordinate.x, cellCoordinate.y);
+                UnderConstruction underConstruction = gameField.getUnderConstruction();
+                if (underConstruction != null) {
+                    if(button == 0) {
+                        underConstruction.setStartCoors(cellCoordinate.x, cellCoordinate.y);
+                    } else if(button == 1){
+                        gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
+                    }
                 }
             }
             return false;
@@ -200,28 +234,30 @@ public class GameScreen implements Screen {
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             Gdx.app.log("MyGestureDetector::touchUp()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-            Vector3 touch = new Vector3(screenX, screenY, 0);
-            camera.unproject(touch);
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-            if (cellCoordinate != null) {
-                gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
+            if(gameField != null && button == 0) {
+                Vector3 touch = new Vector3(screenX, screenY, 0);
+                camera.unproject(touch);
+                GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
+                GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
+                if (cellCoordinate != null) {
+                    gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
+                }
             }
             return false;
         }
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
-            Vector3 touch = new Vector3(screenX, screenY, 0);
-            camera.unproject(touch);
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-            if (cellCoordinate != null) {
-                if (gameField.getUnderConstruction() != null) {
-                    gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
-                }
-            }
+//            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
+//            Vector3 touch = new Vector3(screenX, screenY, 0);
+//            camera.unproject(touch);
+//            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
+//            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
+//            if (cellCoordinate != null) {
+//                if (gameField.getUnderConstruction() != null) {
+//                    gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
+//                }
+//            }
             return false;
         }
 
@@ -278,7 +314,8 @@ public class GameScreen implements Screen {
     public void show() {
         Gdx.app.log("GameScreen::show()", " Called!");
         //Start position of camera
-        camera.position.add((gameField.getSizeFieldX() * gameField.getSizeCellX()) / 2, 0, 0);
+//        camera.position.add((gameField.getSizeFieldX() * gameField.getSizeCellX()) / 2, 0, 0);
+        camera.position.set(0f, 0f, 0f);
     }
 
     private void inputHandler(float delta) {
@@ -293,30 +330,81 @@ public class GameScreen implements Screen {
             camera.update();
             Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
-//          gameField.setGamePause(!gameField.getGamePaused());
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0);");
             gameInterface.getCreepsRoulette().buttonClick();
-            Gdx.app.log("GameScreen::inputHandler()", "-- Pressed NUM_0");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            gameField.isDrawableGrid = !gameField.isDrawableGrid;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1);");
+            gameField.isDrawableGrid++;
+            if(gameField.isDrawableGrid > 5) {
+                gameField.isDrawableGrid = 0;
+            }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            gameField.isDrawableCreeps = !gameField.isDrawableCreeps;
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableCreeps:" + gameField.isDrawableCreeps);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            gameField.isDrawableTowers = !gameField.isDrawableTowers;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2);");
+            GameField.isDrawableCreeps++;
+            if(GameField.isDrawableCreeps > 5) {
+                GameField.isDrawableCreeps = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- GameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3);");
+            gameField.isDrawableTowers++;
+            if(gameField.isDrawableTowers > 5) {
+                gameField.isDrawableTowers = 0;
+            }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-            gameField.isDrawableRoutes = !gameField.isDrawableRoutes;
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableRoutes:" + gameField.isDrawableRoutes);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
-            gameField.isDrawableGridNav = !gameField.isDrawableGridNav;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_4)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_4 || Input.Keys.NUMPAD_4);");
+            gameField.isDrawableGridNav++;
+            if(gameField.isDrawableGridNav > 5) {
+                gameField.isDrawableGridNav = 0;
+            }
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
-            gameField.isDrawableTerrain = !gameField.isDrawableTerrain;
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTerrain:" + gameField.isDrawableTerrain);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.BACK) || Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_5)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5);");
+            gameField.isDrawableBackground++;
+            if(gameField.isDrawableBackground > 5) {
+                gameField.isDrawableBackground = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6);");
+            gameField.isDrawableForeground++;
+            if(gameField.isDrawableForeground > 5) {
+                gameField.isDrawableForeground = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
+            Gdx.app.log("GameScreen", "inputHandler(); -- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7);");
+            gameField.drawOrder++;
+            if(gameField.drawOrder > 8) {
+                gameField.drawOrder = 0;
+            }
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.drawOrder:" + gameField.drawOrder);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             TowerDefence.getInstance().removeTopScreen();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
+            TowerDefence.getInstance().nextGameLevel();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8); -- gameField.gameSpeed:" + gameField.gameSpeed);
+            gameField.gameSpeed -= 0.1f;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9); -- gameField.gameSpeed:" + gameField.gameSpeed);
+            gameField.gameSpeed += 0.1f;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnLeft();");
+            gameField.turnLeft();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnRight();");
+            gameField.turnRight();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipX();");
+            gameField.flipX();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipY();");
+            gameField.flipY();
         }
     }
 
@@ -337,13 +425,16 @@ public class GameScreen implements Screen {
             gameInterface.getInterfaceStage().getBatch().begin();
             bitmapFont.getData().setScale(4);
             bitmapFont.setColor(Color.YELLOW);
-            bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf("Gold amount: " + gameField.getGamerGold()), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
+            bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf("Gold amount: "
+                                + gameField.getGamerGold()),
+                                Gdx.graphics.getWidth() / 2 - 150,
+                                Gdx.graphics.getHeight() - 10);
             gameInterface.getInterfaceStage().getBatch().end();
         } else if (gameState.equals("Lose")) {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().removeTopScreen();
+                TowerDefence.getInstance().nextGameLevel();
                 return;
             }
             if (defeatScreen == null)
@@ -355,7 +446,7 @@ public class GameScreen implements Screen {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
                 //this.dispose();
-                TowerDefence.getInstance().removeTopScreen();
+                TowerDefence.getInstance().nextGameLevel();
                 return;
             }
             if (defeatScreen == null)
@@ -374,10 +465,7 @@ public class GameScreen implements Screen {
         camera.viewportHeight = height;
         camera.viewportWidth = width;
         camera.update();
-        //gameInterface.getInterfaceStage().getViewport().update(width, height);
-        //gameInterface.getInterfaceStage().getCamera().viewportHeight = height;
-        //gameInterface.getInterfaceStage().getCamera().viewportWidth = width;
-        //gameInterface.getInterfaceStage().getCamera().update();
+//        gameInterface.updateStage(); // Андрей. Твой ресайз не пашет! Если это разкомменить. То не будет работать селектор вообще. Этот инит твой будет по несколько раз вызываться. Один раз при создании и два раза во время ресайза. (эти два ресайза делаются почему то во время инициализации)
     }
 
     @Override
@@ -396,7 +484,7 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void dispose() {
+    public void dispose() { // TODO Нужно очищать всю память!
         Gdx.app.log("GameScreen::dispose()", " Called!");
         gameField = null;
         gameInterface = null;

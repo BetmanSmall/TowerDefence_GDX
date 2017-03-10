@@ -1,26 +1,47 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * Created by Андрей on 11.03.2016.
+ * Created by BetmanSmall on 11.03.2016.
  */
 public class Cell {
+    public class Tree {
+        TextureRegion textureRegion;
+        int width, height;
+        public Tree(TextureRegion textureRegion, int width, int height) {
+            this.textureRegion = textureRegion;
+            this.width = width;
+            this.height = height;
+        }
+    }
+    public Array<TiledMapTile> backgroundTiles;
+    public Array<TiledMapTile> foregroundTiles;
+    public Array<Tree> trees;
     private boolean empty;
     private boolean terrain;
     private Tower tower;
     private Array<Creep> creeps;
 
-//    private char pathFinder;
-//    private boolean spawnPoint;
-//    private boolean exitPoint;
-
-    Cell() {
+    public Cell() {
+        this.backgroundTiles = new Array<TiledMapTile>();
+        this.foregroundTiles = new Array<TiledMapTile>();
+        this.trees = new Array<Tree>();
         this.empty = true;
         this.terrain = false;
         this.tower = null;
         this.creeps = null;
     }
+
+//    public void addTiledMapTile(TiledMapTile tiledMapTile) {
+//        tiledMapTiles.add(tiledMapTile);
+//    }
+//
+//    public Array<TiledMapTile> getTiledMapTiles() {
+//        return tiledMapTiles;
+//    }
 
     public boolean isEmpty() {
         return empty;
@@ -31,7 +52,7 @@ public class Cell {
     }
 
     public boolean setTerrain() {
-        if(empty) {
+        if (empty) {
             terrain = true;
             empty = false;
             return true;
@@ -40,9 +61,16 @@ public class Cell {
     }
 
     public boolean removeTerrain() {
-        if(terrain) {
+        if (terrain) {
             terrain = false;
             empty = true;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPassable() {
+        if (empty || (!terrain && tower != null) || creeps != null) {
             return true;
         }
         return false;
@@ -53,7 +81,7 @@ public class Cell {
     }
 
     public boolean setTower(Tower tower) {
-        if(empty) {
+        if (empty) {
             this.tower = tower;
             empty = false;
             return true;
@@ -62,7 +90,7 @@ public class Cell {
     }
 
     public boolean removeTower() {
-        if(tower != null) {
+        if (tower != null) {
             tower = null;
             empty = true;
             return true;
@@ -75,21 +103,19 @@ public class Cell {
     }
 
     public Creep getCreep() {
-        if(creeps != null) {
+        if (creeps != null) {
             return creeps.first();
         }
         return null;
     }
 
-//    public int getCreep(Creep creep)
-
     public boolean setCreep(Creep creep) {
-        if(empty) {
+        if (empty) {
             creeps = new Array<Creep>();
             creeps.add(creep);
             empty = false;
             return true;
-        } else if(creeps != null) {
+        } else if (creeps != null) {
             creeps.add(creep);
             return true;
         }
@@ -97,9 +123,9 @@ public class Cell {
     }
 
     public int removeCreep(Creep creep) {
-        if(creeps != null) {
+        if (creeps != null) {
             creeps.removeValue(creep, false);
-            if(creeps.size == 0) {
+            if (creeps.size == 0) {
                 creeps = null;
                 empty = true;
                 return 0;
@@ -109,27 +135,13 @@ public class Cell {
         return -1;
     }
 
-//    public char getPathFinder() {
-//        return pathFinder;
-//    }
-//
-//    public void setPathFinder(char pathFinder) {
-//        this.pathFinder = pathFinder;
-//    }
-//
-//    public boolean isSpawnPoint() {
-//        return spawnPoint;
-//    }
-//
-//    public void setSpawnPoint(boolean spawnPoint) {
-//        this.spawnPoint = spawnPoint;
-//    }
-//
-//    public boolean isExitPoint() {
-//        return exitPoint;
-//    }
-//
-//    public void setExitPoint(boolean exitPoint) {
-//        this.exitPoint = exitPoint;
-//    }
+    public void dispose() {
+        backgroundTiles.clear();
+        foregroundTiles.clear();
+        backgroundTiles = null;
+        foregroundTiles = null;
+        tower = null;
+        creeps.clear();
+        creeps = null;
+    }
 }

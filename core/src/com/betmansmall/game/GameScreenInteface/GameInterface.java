@@ -3,6 +3,7 @@ package com.betmansmall.game.GameScreenInteface;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.betmansmall.game.gameLogic.GameField;
@@ -10,7 +11,6 @@ import com.betmansmall.game.gameLogic.GameField;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.touchable;
 
 /**
  * Created by Transet on 07.02.2016.
@@ -43,7 +43,7 @@ public class GameInterface {
     public void setCreepsRoulette(CreepsRoulette creepsRoulette) {
         this.creepsRoulette = creepsRoulette;
     }
-
+    private BitmapFont bitmapFont = new BitmapFont();
     private TowersRoulette towersRoulette;
     private CreepsRoulette creepsRoulette;
     private Stage stage;
@@ -51,10 +51,10 @@ public class GameInterface {
 
     public GameInterface(GameField gameField) {
         this.gameField = gameField;
-        init();
+        initStage();
     }
 
-    private void init() {
+    private void initStage() {
         stage = new Stage();
         towersRoulette = new TowersRoulette(gameField);
         creepsRoulette = new CreepsRoulette(gameField);
@@ -62,8 +62,12 @@ public class GameInterface {
         for(Actor actor : creepsRoulette.getGroup()) {
             stage.addActor(actor);
         }
-        for(Actor actor : towersRoulette.getGroup()) {
-            stage.addActor(actor);
+        try {
+            for (Actor actor : towersRoulette.getGroup()) {
+                stage.addActor(actor);
+            }
+        } catch(Error error) {
+            Gdx.app.log("Error:", "no circle1 group");
         }
     }
 
@@ -80,5 +84,10 @@ public class GameInterface {
 
     public void draw() {
         stage.draw();
+//        bitmapFont.setColor(Color.WHITE);
+//        bitmapFont.draw(getInterfaceStage().getBatch(),String.valueOf(" "),1,2);
+    }
+    public void updateStage() {
+        initStage();
     }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faction name="Orcs_Faction">
+	<templateForUnit source="units/unit1_grunt.tsx"/>
+	<templateForUnit source="units/unit2_troll_axethrower.tsx"/>
+	<templateForUnit source="units/unit4_catapult.tsx"/>
+	<templateForUnit source="units/unit5_daemon.tsx"/>
+	<templateForUnit source="units/unit6_death_knight.tsx"/>
+	<templateForUnit source="units/unit7_dragon.tsx"/>
+	<templateForUnit source="units/unit8_ogre.tsx"/>
+	<templateForUnit source="units/unit9_peon.tsx"/>
+	<!-- <templateForTower source="towers/tower3_cannon.tsx"/> -->
+	<!-- <templateForTower source="towers/tower4_cannon.tsx"/> -->
+	<!-- <templateForTower source="towers/tower_pit.tsx"/> -->
+</faction>
