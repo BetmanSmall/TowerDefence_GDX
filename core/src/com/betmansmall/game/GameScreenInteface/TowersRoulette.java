@@ -53,7 +53,6 @@ public class TowersRoulette extends Roulette {
 
         towerFrames = new Array<ImageButton>();
 
-
         if(currentDevice == "android") {
             Gdx.app.log("Device settings: ", "Device is android");
             circleGroup = new Group();
@@ -62,7 +61,7 @@ public class TowersRoulette extends Roulette {
             rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
             rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
-            rouletteButton.setZIndex(1);
+            //rouletteButton.setZIndex(1);
             buttonGroup.addActor(rouletteButton);
             buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
 
@@ -221,9 +220,7 @@ public class TowersRoulette extends Roulette {
                     && x <= getLocalWidth(ROULETTE_RADIUS)
                     && y <= getLocalWidth(ROULETTE_RADIUS))) {
                 isTouched = true;
-                if(isTouched) {
-                    ringClick();
-                }
+                if(isTouched) ringClick();
                 return isTouched;
             }
         }
