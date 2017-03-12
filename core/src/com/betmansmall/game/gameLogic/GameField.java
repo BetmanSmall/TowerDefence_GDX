@@ -269,8 +269,14 @@ public class GameField {
     }
 
     public void dispose() {
-//        renderer.dispose();
-//        renderer = null;
+        Gdx.app.log("GameField::dispose()", " Called!");
+        shapeRenderer.dispose();
+        spriteBatch.dispose();
+        bitmapFont.dispose();
+        map.dispose();
+        renderer.dispose();
+        greenCheckmark.dispose();
+        redCross.dispose();
     }
 
     public void render(float delta, OrthographicCamera camera) {

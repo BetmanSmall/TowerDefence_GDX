@@ -88,4 +88,10 @@ public class GameInterface {
 //        bitmapFont.setColor(Color.WHITE);
 //        bitmapFont.draw(getInterfaceStage().getBatch(),String.valueOf(" "),1,2);
     }
+
+    public void dispose() {
+        Gdx.app.log("GameInterface::dispose()", " Called!");
+        bitmapFont.dispose();
+        stage.dispose();
+    }
 }

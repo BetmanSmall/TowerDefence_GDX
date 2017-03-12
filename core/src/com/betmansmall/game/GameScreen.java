@@ -441,9 +441,11 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void dispose() { // TODO Нужно очищать всю память!
+    public void dispose() {
         Gdx.app.log("GameScreen::dispose()", " Called!");
-        gameField = null;
-        gameInterface = null;
+        gameField .dispose();
+        bitmapFont.dispose();
+        defeatScreen.dispose();
+        gameField.dispose();
     }
 }
