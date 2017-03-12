@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.betmansmall.game.GameScreenInteface.DeviceSettings;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
+import com.betmansmall.game.GameScreenInteface.Roulette;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 
@@ -39,7 +40,7 @@ public class GameScreen implements Screen {
 
     class CameraController implements GestureListener {
         float velX, velY;
-        boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
+        boolean flinging = false;
         float initialScale = 2f;
         boolean lastCircleTouched = false;
 
@@ -111,6 +112,15 @@ public class GameScreen implements Screen {
                 return true;
             }
             lastCircleTouched = false;
+
+            if(gameInterface.getTowersRoulette().getBuildMode()) {
+                if(gameInterface.getTowersRoulette().buttonPositionX() < x) {
+                    int amount = (int) (deltaY);
+                    gameInterface.getTowersRoulette().scrollTowers(amount);
+                    return true;
+                }
+            }
+
             if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
 //                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
                     camera.position.add(-deltaX * camera.zoom, 0, 0);
@@ -278,19 +288,18 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean scrolled(int amount) {
-            if (gameField.getUnderConstruction() == null) {
-                gameInterface.getTowersRoulette().scrollTowers(amount);
+//            int scrollSpeed = 9; // just a multiplier for a good scrolling
+//            if (gameInterface.getTowersRoulette().getBuildMode()) {
+//                gameInterface.getTowersRoulette().scrollTowers(amount * scrollSpeed);
+//            } else {
+            if (amount == 1) {
+                if (camera.zoom <= MAX_ZOOM)
+                    camera.zoom += 0.1f;
+            } else if (amount == -1) {
+                if (camera.zoom >= MIN_ZOOM)
+                    camera.zoom -= 0.1f;
             }
-            if (gameField.getUnderConstruction() == null) {
-                if (amount == 1) {
-                    if (camera.zoom <= MAX_ZOOM)
-                        camera.zoom += 0.1f;
-                } else if (amount == -1) {
-                    if (camera.zoom >= MIN_ZOOM)
-                        camera.zoom -= 0.1f;
-                }
-                camera.update();
-            }
+            camera.update();
             return false;
         }
     }
@@ -471,6 +480,8 @@ public class GameScreen implements Screen {
         //gameInterface.getInterfaceStage().getCamera().viewportHeight = height;
         //gameInterface.getInterfaceStage().getCamera().viewportWidth = width;
         //gameInterface.getInterfaceStage().getCamera().update();
+
+        Gdx.app.log("isBuildMode", "= "+ gameInterface.getTowersRoulette().getBuildMode());
     }
 
     @Override

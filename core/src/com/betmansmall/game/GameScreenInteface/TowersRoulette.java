@@ -34,7 +34,6 @@ public class TowersRoulette extends Roulette {
     private Array<TemplateForTower> templateForTowers;
     private DeviceSettings deviceSettings;
     private String currentDevice;
-    private int scrollSpeed = 9;
 
     public TowersRoulette(GameField gameField) {
         this.gameField = gameField;
@@ -63,6 +62,7 @@ public class TowersRoulette extends Roulette {
             rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
             rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
+            rouletteButton.setZIndex(1);
             buttonGroup.addActor(rouletteButton);
             buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
 
@@ -134,13 +134,15 @@ public class TowersRoulette extends Roulette {
     }
 
     public void scrollTowers(int amount) {
-        if(gameField.getUnderConstruction() != null) {
+        if(!IS_HIDE_TOWERS) {
             if(templateForTowers.size > 5) {
                 for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
                     towerButtonsArray.get(towersNumber).setPosition(towerButtonsArray.get(towersNumber).getX(),
-                            towerButtonsArray.get(towersNumber).getY() - amount * scrollSpeed);
+                    towerButtonsArray.get(towersNumber).getY() - amount);
+                    towerButtonsArray.get(towersNumber).setZIndex(1);
                     towerFrames.get(towersNumber).setPosition(towerFrames.get(towersNumber).getX(),
-                            towerFrames.get(towersNumber).getY() - amount * scrollSpeed);
+                    towerFrames.get(towersNumber).getY() - amount);
+                    towerFrames.get(towersNumber).setZIndex(1);
                 }
             }
         }
@@ -194,7 +196,7 @@ public class TowersRoulette extends Roulette {
     }
 
     private void chooseTowerDesktop(float x, float y) {
-        TemplateForTower localTemplate = templateForTowers.get(0);
+        TemplateForTower localTemplate;
         for(int towerNumber = 0; towerNumber < templateForTowers.size; towerNumber++) {
             if (towerFrames.get(towerNumber).isPressed()) {
                 Gdx.app.log("tower", " : " + towerNumber);
@@ -219,7 +221,9 @@ public class TowersRoulette extends Roulette {
                     && x <= getLocalWidth(ROULETTE_RADIUS)
                     && y <= getLocalWidth(ROULETTE_RADIUS))) {
                 isTouched = true;
-                if(isTouched) ringClick();
+                if(isTouched) {
+                    ringClick();
+                }
                 return isTouched;
             }
         }
@@ -261,5 +265,17 @@ public class TowersRoulette extends Roulette {
         } else {
             return Arrays.asList(buttonGroup);
         }
+    }
+
+    public boolean getBuildMode() {
+        return !IS_HIDE_TOWERS;
+    }
+
+    public float buttonPositionX() {
+        return rouletteButton.getX();
+    }
+
+    public float buttonPositionY() {
+        return rouletteButton.getY();
     }
 }
