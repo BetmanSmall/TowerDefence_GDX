@@ -72,6 +72,7 @@ public class TowerDefence extends Game {
             if (count > 0) {
                 Screen screen = screensArray.get(count - 1);
                 if (screen != null) {
+//                    screen.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
 //                    screen.hide();
                     screensArray.removeIndex(count - 1);
                     count = screensArray.size;

@@ -239,7 +239,7 @@ public class GameField {
             }
             field = newCells;
         } else {
-            Gdx.app.log("GameField::turnRight();", " -- Not work!");
+            Gdx.app.log("GameField::turnRight();", " -- Not work || Work but mb not Good!");
             int oldWidth = sizeFieldX;
             int oldHeight = sizeFieldY;
             sizeFieldX = sizeFieldY;
@@ -264,7 +264,7 @@ public class GameField {
             }
             field = newCells;
         } else {
-            Gdx.app.log("GameField::turnLeft();", " -- Not work!");
+            Gdx.app.log("GameField::turnLeft();", " -- Not work || Work but mb not Good!");
             int oldWidth = sizeFieldX;
             int oldHeight = sizeFieldY;
             sizeFieldX = sizeFieldY;
@@ -323,8 +323,14 @@ public class GameField {
     }
 
     public void dispose() {
-//        renderer.dispose();
-//        renderer = null;
+        Gdx.app.log("GameField::dispose()", " -- Called!");
+        shapeRenderer.dispose();
+        spriteBatch.dispose();
+        bitmapFont.dispose();
+        map.dispose();
+        renderer.dispose();
+        greenCheckmark.dispose();
+        redCross.dispose();
     }
 
     public void render(float delta, OrthographicCamera camera) {

@@ -480,13 +480,16 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-        Gdx.app.log("GameScreen::hide()", " Called!");
+        Gdx.app.log("GameScreen::hide()", " -- Called!");
     }
 
     @Override
-    public void dispose() { // TODO Нужно очищать всю память!
-        Gdx.app.log("GameScreen::dispose()", " Called!");
-        gameField = null;
-        gameInterface = null;
+    public void dispose() {
+        Gdx.app.log("GameScreen::dispose()", " -- Called!");
+        gameField.dispose();
+        bitmapFont.dispose();
+        if(defeatScreen != null) {
+            defeatScreen.dispose();
+        }
     }
 }

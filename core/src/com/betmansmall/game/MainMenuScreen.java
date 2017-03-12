@@ -288,7 +288,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.app.log("MainMenuScreen::show()", " Called!");
+        Gdx.app.log("MainMenuScreen::show()", " -- Called!");
         create(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         buttonsUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(mmStage);
@@ -349,24 +349,24 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void pause() {
-        Gdx.app.log("MainMenuScreen::pause()", " Called!");
+        Gdx.app.log("MainMenuScreen::pause()", " -- Called!");
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("MainMenuScreen::resume()", " Called!");
+        Gdx.app.log("MainMenuScreen::resume()", " -- Called!");
     }
 
     @Override
     public void hide() {
-        Gdx.app.log("MainMenuScreen::hide()", " Called!");
+        Gdx.app.log("MainMenuScreen::hide()", " -- Called!");
         //Should not be here!
         //dispose();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("MainMenuScreen::dispose()", " Called!");
+        Gdx.app.log("MainMenuScreen::dispose()", " -- Called!");
         textureMB1.dispose();
         textureMB2.dispose();
         textureMB3.dispose();
