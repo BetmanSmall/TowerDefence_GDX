@@ -2,6 +2,8 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,17 +11,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by betma on 09.05.2016.
  */
-public class MapEditorScreen implements Screen, GestureDetector.GestureListener {
+public class MapEditorScreen implements Screen, GestureDetector.GestureListener, InputProcessor {
     private TowerDefence towerDefence;
     private SpriteBatch spriteBatch;
 
-    private static final float MAX_ZOOM = 50f; //max size
+    private static final float MAX_ZOOM = 10f; //max size
     private static final float MIN_ZOOM = 0.2f; // 2x zoom
     private float initialScale = 2f;
 //    private float MAX_DESTINATION_X = 0f;
@@ -29,7 +32,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
     private OrthographicCamera camera;
 
     private TiledMap map;
-    private IsometricTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer renderer;
 
     public MapEditorScreen(TowerDefence towerDefence, String fileName) {
         Gdx.app.log("MapEditorScreen::MapEditorScreen();", " -- towerDefence:" + towerDefence + " fileName:" + fileName);
@@ -40,9 +43,11 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         this.map = new TmxMapLoader().load(fileName);
-        this.renderer = new IsometricTiledMapRenderer(map, spriteBatch);
+        this.renderer = new OrthogonalTiledMapRenderer(map, spriteBatch);
 
-        Gdx.input.setInputProcessor(new GestureDetector(this));
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(new GestureDetector(this));
+        inputMultiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -150,6 +155,62 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         Gdx.app.log("MapEditorScreen::pinch()", " -- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        Gdx.app.log("MapEditorScreen::keyDown()", " -- keycode:" + keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        Gdx.app.log("MapEditorScreen::keyUp()", " -- keycode:" + keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        Gdx.app.log("MapEditorScreen::keyTyped()", " -- character:" + character);
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Gdx.app.log("MapEditorScreen::touchDown()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        Gdx.app.log("MapEditorScreen::touchUp()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        Gdx.app.log("MapEditorScreen::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        Gdx.app.log("MapEditorScreen::mouseMoved()", " -- screenX:" + screenX + " screenY:" + screenY);
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        Gdx.app.log("MapEditorScreen::scrolled()", " -- amount:" + amount);
+        if (amount == 1) {
+            if (camera.zoom <= MAX_ZOOM)
+                camera.zoom += 0.1f;
+        } else if (amount == -1) {
+            if (camera.zoom >= MIN_ZOOM)
+                camera.zoom -= 0.1f;
+        }
+        camera.update();
         return false;
     }
 }

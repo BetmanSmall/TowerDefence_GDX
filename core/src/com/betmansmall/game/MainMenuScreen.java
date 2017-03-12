@@ -141,6 +141,7 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //Campaign menu
+                        towerDefence.gameLevelMaps.add("maps/arenaArctic.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena4.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena3.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena2.tmx");
@@ -161,7 +162,7 @@ public class MainMenuScreen implements Screen {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            towerDefence.setScreen(new MapEditorScreen(towerDefence, fileName));
 //                        }
-                        towerDefence.addScreen(new MapEditorScreen(towerDefence, "maps/arena2.tmx"));
+                        towerDefence.addScreen(new MapEditorScreen(towerDefence, "maps/arenaArctic.tmx"));
                         break;
                 }
                 break;
