@@ -173,6 +173,7 @@ public class GameField {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
                     field[x][y] = new Cell();
+                    field[x][y].setGraphicCoordinates(x, y, halfSizeCellX, halfSizeCellY);
                     for (MapLayer mapLayer : mapLayers) {
                         if (mapLayer instanceof TiledMapTileLayer) {
                             TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
@@ -235,6 +236,7 @@ public class GameField {
             for(int y = 0; y < sizeFieldY; y++) {
                 for(int x = 0; x < sizeFieldX; x++) {
                     newCells[sizeFieldX-y-1][x] = field[x][y];
+                    newCells[sizeFieldX-y-1][x].setGraphicCoordinates(sizeFieldX-y-1, x, halfSizeCellX, halfSizeCellY);
                 }
             }
             field = newCells;
@@ -248,6 +250,7 @@ public class GameField {
             for(int y = 0; y < oldHeight; y++) {
                 for(int x = 0; x < oldWidth; x++) {
                     newCells[sizeFieldX-y-1][x] = field[x][y];
+                    newCells[sizeFieldX-y-1][x].setGraphicCoordinates(sizeFieldX-y-1, x, halfSizeCellX, halfSizeCellY);
                 }
             }
             field = newCells;
@@ -260,6 +263,7 @@ public class GameField {
             for(int y = 0; y < sizeFieldY; y++) {
                 for(int x = 0; x < sizeFieldX; x++) {
                     newCells[y][sizeFieldY-x-1] = field[x][y];
+                    newCells[y][sizeFieldY-x-1].setGraphicCoordinates(y, sizeFieldY-x-1, halfSizeCellX, halfSizeCellY);
                 }
             }
             field = newCells;
@@ -273,6 +277,7 @@ public class GameField {
             for(int y = 0; y < oldHeight; y++) {
                 for(int x = 0; x < oldWidth; x++) {
                     newCells[y][sizeFieldY-x-1] = field[x][y];
+                    newCells[y][sizeFieldY-x-1].setGraphicCoordinates(y, sizeFieldY-x-1, halfSizeCellX, halfSizeCellY);
                 }
             }
             field = newCells;
@@ -283,7 +288,8 @@ public class GameField {
         Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
         for (int y = 0; y < sizeFieldY; y++) {
             for (int x = 0; x < sizeFieldX; x++) {
-                newCells[sizeFieldX - x - 1][y] = field[x][y];
+                newCells[sizeFieldX-x-1][y] = field[x][y];
+                newCells[sizeFieldX-x-1][y].setGraphicCoordinates(sizeFieldX-x-1, y, halfSizeCellX, halfSizeCellY);
             }
         }
         field = newCells;
@@ -294,6 +300,7 @@ public class GameField {
         for(int y = 0; y < sizeFieldY; y++) {
             for(int x = 0; x < sizeFieldX; x++) {
                 newCells[x][sizeFieldY-y-1] = field[x][y];
+                newCells[x][sizeFieldY-y-1].setGraphicCoordinates(x, sizeFieldY-y-1, halfSizeCellX, halfSizeCellY);
             }
         }
         field = newCells;
@@ -491,25 +498,21 @@ public class GameField {
     }
 
     private void drawBackGroundCell(SpriteBatch spriteBatch, int cellX, int cellY) {
-        Vector2 pos = new Vector2();
-        Array<TiledMapTile> tiledMapTiles = field[cellX][cellY].backgroundTiles;
+        Cell cell = field[cellX][cellY];
+        Array<TiledMapTile> tiledMapTiles = cell.backgroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if (isDrawableBackground == 1 || isDrawableBackground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 1)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 2 || isDrawableBackground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 2)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 3 || isDrawableBackground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 3)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 4 || isDrawableBackground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 4)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
     }
@@ -591,25 +594,21 @@ public class GameField {
     }
 
     private void drawForeGroundCellWithCreepsAndTower(SpriteBatch spriteBatch, int cellX, int cellY) {
-        Vector2 pos = new Vector2();
-        Array<TiledMapTile> tiledMapTiles = field[cellX][cellY].foregroundTiles;
+        Cell cell = field[cellX][cellY];
+        Array<TiledMapTile> tiledMapTiles = cell.foregroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if(isDrawableForeground == 1 || isDrawableForeground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 1)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableForeground == 2 || isDrawableForeground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 2)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableForeground == 3 || isDrawableForeground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 3)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableForeground == 4 || isDrawableForeground == 5) {
-                pos.set(getGraphicCoordinates(cellX, cellY, 4)).add(-halfSizeCellX, -halfSizeCellY);
-                spriteBatch.draw(textureRegion, pos.x, pos.y);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
         Array<Creep> creeps = field[cellX][cellY].getCreeps();
@@ -808,29 +807,23 @@ public class GameField {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
 
-        Vector2 pos = new Vector2();
         float gridNavRadius = sizeCellX/12f;
         for (Creep creep : creepsManager.getAllCreeps()) {
             ArrayDeque<Node> route = creep.getRoute();
             if (route != null) {
                 for (Node coor : route) {
-                    int x = coor.getX();
-                    int y = coor.getY();
+                    Cell cell = field[coor.getX()][coor.getY()];
                     if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 1));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinatesBottom.x, cell.graphicCoordinatesBottom.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 2));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinatesRight.x, cell.graphicCoordinatesRight.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 3));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinatesTop.x, cell.graphicCoordinatesTop.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 4));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinatesLeft.x, cell.graphicCoordinatesLeft.y, gridNavRadius);
                     }
                 }
             }
@@ -846,20 +839,19 @@ public class GameField {
 
     private void drawTower(Tower tower, SpriteBatch spriteBatch) {
 //        Gdx.app.log("GameField", "drawTower(" + tower + ", " + camera + ");");
-        int x = tower.getPosition().x;
-        int y = tower.getPosition().y;
-        int towerSize = tower.getTemplateForTower().size;
-        GridPoint2 mainCellCoord = tower.getPosition();
-        TextureRegion currentFrame = tower.getCurentFrame();
         Vector2 towerPos = new Vector2();
+        GridPoint2 cellPosition = tower.getPosition();
+        int towerSize = tower.getTemplateForTower().size;
+        Cell cell = field[cellPosition.x][cellPosition.y];
+        TextureRegion currentFrame = tower.getCurentFrame();
         if(isDrawableTowers == 5) {
             for(int m = 1; m < isDrawableTowers; m++) {
-                towerPos.set(getGraphicCoordinates(mainCellCoord.x, mainCellCoord.y, m));
+                towerPos.set(cell.getGraphicCoordinates(m));
                 towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, m));
                 spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
             }
         } else {
-            towerPos.set(getGraphicCoordinates(mainCellCoord.x, mainCellCoord.y, isDrawableTowers));
+            towerPos.set(cell.getGraphicCoordinates(isDrawableTowers));
             towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, isDrawableTowers));
             spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
         }
@@ -873,28 +865,29 @@ public class GameField {
         float gridNavRadius = sizeCellX/20f;
         for (int y = 0; y < sizeFieldY; y++) {
             for (int x = 0; x < sizeFieldX; x++) {
-                if (!field[x][y].isEmpty()) {
-                    if (field[x][y].isTerrain()) {
+                Cell cell = field[x][y];
+                if (cell != null && !cell.isEmpty()) {
+                    if (cell.isTerrain()) {
                         shapeRenderer.setColor(Color.RED);
-                    } else if (field[x][y].getCreep() != null) {
+                    } else if (cell.getCreep() != null) {
                         shapeRenderer.setColor(Color.GREEN);
-                    } else if (field[x][y].getTower() != null) {
+                    } else if (cell.getTower() != null) {
                         shapeRenderer.setColor(new Color(225f, 224f, 0f, 255f));
                     }
                     if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 1));
+                        pos.set(cell.getGraphicCoordinates(1));
                         shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 2));
+                        pos.set(cell.getGraphicCoordinates(2));
                         shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 3));
+                        pos.set(cell.getGraphicCoordinates(3));
                         shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                        pos.set(getGraphicCoordinates(x, y, 4));
+                        pos.set(cell.getGraphicCoordinates(4));
                         shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                 }
@@ -904,20 +897,21 @@ public class GameField {
         Array<GridPoint2> spawnPoints = waveManager.getAllSpawnPoint();
         shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
         for (GridPoint2 spawnPoint : spawnPoints) {
+            Cell cell = field[spawnPoint.x][spawnPoint.y];
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(spawnPoint.x, spawnPoint.y, 1));
+                pos.set(cell.getGraphicCoordinates(1));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(spawnPoint.x, spawnPoint.y, 2));
+                pos.set(cell.getGraphicCoordinates(2));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(spawnPoint.x, spawnPoint.y, 3));
+                pos.set(cell.getGraphicCoordinates(3));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(spawnPoint.x, spawnPoint.y, 4));
+                pos.set(cell.getGraphicCoordinates(4));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
         }
@@ -926,20 +920,21 @@ public class GameField {
         shapeRenderer.setColor(new Color(255f, 0f, 102f, 255f));
         for (GridPoint2 exitPoint : exitPoints) {
 //            Gdx.app.log("GameField::drawGridNav();", " -- exitPoint.x:" + exitPoint.x + " exitPoint.y:" + exitPoint.y + " isDrawableGridNav:" + isDrawableGridNav);
+            Cell cell = field[exitPoint.x][exitPoint.y];
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(exitPoint.x, exitPoint.y, 1));
+                pos.set(cell.getGraphicCoordinates(1));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(exitPoint.x, exitPoint.y, 2));
+                pos.set(cell.getGraphicCoordinates(2));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(exitPoint.x, exitPoint.y, 3));
+                pos.set(cell.getGraphicCoordinates(3));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                pos.set(getGraphicCoordinates(exitPoint.x, exitPoint.y, 4));
+                pos.set(cell.getGraphicCoordinates(4));
                 shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
         }
@@ -1142,13 +1137,35 @@ public class GameField {
 
             Vector2 towerPos = new Vector2();
             Vector2 markPos = new Vector2();
-            if(isDrawableTowers == 1 || isDrawableTowers == 5) {
-                towerPos.set(getGraphicCoordinates(buildX, buildY, 1));
-                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 1));
+            Cell mainCell = field[buildX][buildY];
+            if(isDrawableTowers == 5) {
+                for (int m = 1; m <= isDrawableTowers; m++) {
+                    towerPos.set(mainCell.getGraphicCoordinates(m));
+                    towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, m));
+                    spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+                    for (int x = startX; x <= finishX; x++) {
+                        for (int y = startY; y <= finishY; y++) {
+                            Cell markCell = field[buildX + x][buildY + y];
+                            markPos.set(markCell.getGraphicCoordinates(m));
+                            markPos.add(-(halfSizeCellX), -(halfSizeCellY));
+                            if (cellIsEmpty(buildX + x, buildY + y)) {
+                                if (greenCheckmark != null)
+                                    spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+                            } else {
+                                if (redCross != null)
+                                    spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+                            }
+                        }
+                    }
+                }
+            } else {
+                towerPos.set(mainCell.getGraphicCoordinates(isDrawableTowers));
+                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, isDrawableTowers));
                 spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
                 for (int x = startX; x <= finishX; x++) {
                     for (int y = startY; y <= finishY; y++) {
-                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 1));
+                        Cell markCell = field[buildX + x][buildY + y];
+                        markPos.set(markCell.getGraphicCoordinates(isDrawableTowers));
                         markPos.add(-(halfSizeCellX), -(halfSizeCellY));
                         if (cellIsEmpty(buildX + x, buildY + y)) {
                             if (greenCheckmark != null)
@@ -1160,60 +1177,78 @@ public class GameField {
                     }
                 }
             }
-            if(isDrawableTowers == 2 || isDrawableTowers == 5) {
-                towerPos.set(getGraphicCoordinates(buildX, buildY, 2));
-                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 2));
-                spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-                for (int x = startX; x <= finishX; x++) {
-                    for (int y = startY; y <= finishY; y++) {
-                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 2));
-                        markPos.add(-(halfSizeCellX), -(halfSizeCellY));
-                        if (cellIsEmpty(buildX + x, buildY + y)) {
-                            if (greenCheckmark != null)
-                                spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
-                        } else {
-                            if (redCross != null)
-                                spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
-                        }
-                    }
-                }
-            }
-            if(isDrawableTowers == 3 || isDrawableTowers == 5) {
-                towerPos.set(getGraphicCoordinates(buildX, buildY, 3));
-                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 3));
-                spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-                for (int x = startX; x <= finishX; x++) {
-                    for (int y = startY; y <= finishY; y++) {
-                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 3));
-                        markPos.add(-(halfSizeCellX), -(halfSizeCellY));
-                        if (cellIsEmpty(buildX + x, buildY + y)) {
-                            if (greenCheckmark != null)
-                                spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
-                        } else {
-                            if (redCross != null)
-                                spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
-                        }
-                    }
-                }
-            }
-            if(isDrawableTowers == 4 || isDrawableTowers == 5) {
-                towerPos.set(getGraphicCoordinates(buildX, buildY, 4));
-                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 4));
-                spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-                for (int x = startX; x <= finishX; x++) {
-                    for (int y = startY; y <= finishY; y++) {
-                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 4));
-                        markPos.add(-(halfSizeCellX), -(halfSizeCellY));
-                        if (cellIsEmpty(buildX + x, buildY + y)) {
-                            if (greenCheckmark != null)
-                                spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
-                        } else {
-                            if (redCross != null)
-                                spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
-                        }
-                    }
-                }
-            }
+//            if(isDrawableTowers == 1 || isDrawableTowers == 5) {
+//                towerPos.set(mainCell.getGraphicCoordinates(1));
+//                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 1));
+//                spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+//                for (int x = startX; x <= finishX; x++) {
+//                    for (int y = startY; y <= finishY; y++) {
+//                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 1));
+//                        markPos.add(-(halfSizeCellX), -(halfSizeCellY));
+//                        if (cellIsEmpty(buildX + x, buildY + y)) {
+//                            if (greenCheckmark != null)
+//                                spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        } else {
+//                            if (redCross != null)
+//                                spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        }
+//                    }
+//                }
+//            }
+//            if(isDrawableTowers == 2 || isDrawableTowers == 5) {
+//                towerPos.set(getGraphicCoordinates(buildX, buildY, 2));
+//                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 2));
+//                spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+//                for (int x = startX; x <= finishX; x++) {
+//                    for (int y = startY; y <= finishY; y++) {
+//                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 2));
+//                        markPos.add(-(halfSizeCellX), -(halfSizeCellY));
+//                        if (cellIsEmpty(buildX + x, buildY + y)) {
+//                            if (greenCheckmark != null)
+//                                spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        } else {
+//                            if (redCross != null)
+//                                spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        }
+//                    }
+//                }
+//            }
+//            if(isDrawableTowers == 3 || isDrawableTowers == 5) {
+//                towerPos.set(getGraphicCoordinates(buildX, buildY, 3));
+//                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 3));
+//                spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+//                for (int x = startX; x <= finishX; x++) {
+//                    for (int y = startY; y <= finishY; y++) {
+//                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 3));
+//                        markPos.add(-(halfSizeCellX), -(halfSizeCellY));
+//                        if (cellIsEmpty(buildX + x, buildY + y)) {
+//                            if (greenCheckmark != null)
+//                                spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        } else {
+//                            if (redCross != null)
+//                                spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        }
+//                    }
+//                }
+//            }
+//            if(isDrawableTowers == 4 || isDrawableTowers == 5) {
+//                towerPos.set(getGraphicCoordinates(buildX, buildY, 4));
+//                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, 4));
+//                spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+//                for (int x = startX; x <= finishX; x++) {
+//                    for (int y = startY; y <= finishY; y++) {
+//                        markPos.set(getGraphicCoordinates(buildX + x, buildY + y, 4));
+//                        markPos.add(-(halfSizeCellX), -(halfSizeCellY));
+//                        if (cellIsEmpty(buildX + x, buildY + y)) {
+//                            if (greenCheckmark != null)
+//                                spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        } else {
+//                            if (redCross != null)
+//                                spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+//                        }
+//                    }
+//                }
+//            }
             spriteBatch.setColor(oldColor);
         }
     }
@@ -1585,24 +1620,24 @@ public class GameField {
         return false;
     }
 
-    public Vector2 getGraphicCoordinates(int cellX, int cellY, int map) {
-        float pxlsX = 0f, pxlsY = 0f;
-        if(map == 1) { // Нижняя карта
-            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
-            pxlsY = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY));
-        } else if(map == 2) { // Правая карта
-            pxlsX = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX;
-            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
-        } else if(map == 3) { // Верхняя карта
-            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
-            pxlsY = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY*2;
-        } else if(map == 4) {// Левая карта
-            pxlsX = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX;
-            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
-        }
-//        Gdx.app.log("GameField::getGraphicCoordinates(" + cellX + "," + cellY + "," + map + ");", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
-        return new Vector2(pxlsX, pxlsY);
-    }
+//    public Vector2 getGraphicCoordinates(int cellX, int cellY, int map) {
+//        float pxlsX = 0f, pxlsY = 0f;
+//        if(map == 1) { // Нижняя карта
+//            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
+//            pxlsY = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY));
+//        } else if(map == 2) { // Правая карта
+//            pxlsX = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX;
+//            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
+//        } else if(map == 3) { // Верхняя карта
+//            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
+//            pxlsY = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY*2;
+//        } else if(map == 4) {// Левая карта
+//            pxlsX = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX;
+//            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
+//        }
+////        Gdx.app.log("GameField::getGraphicCoordinates(" + cellX + "," + cellY + "," + map + ");", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+//        return new Vector2(pxlsX, pxlsY);
+//    }
 
     public Vector2 getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
         if(map == 1) {

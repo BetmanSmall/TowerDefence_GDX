@@ -234,7 +234,7 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " deviceSettings.getDevice():" + deviceSettings.getDevice());
+//            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " deviceSettings.getDevice():" + deviceSettings.getDevice());
             if(gameField != null && gameField.getUnderConstruction() != null) {
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 camera.unproject(touch);
@@ -248,7 +248,7 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean mouseMoved(int screenX, int screenY) {
-            Gdx.app.log("MyGestureDetector::mouseMoved()", " -- screenX:" + screenX + " screenY:" + screenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
+//            Gdx.app.log("MyGestureDetector::mouseMoved()", " -- screenX:" + screenX + " screenY:" + screenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
             if(gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) {
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 camera.unproject(touch);
