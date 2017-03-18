@@ -180,9 +180,9 @@ public class TowersRoulette extends Roulette {
     }
 
     private void chooseTowerDesktop(float x, float y) {
-        Gdx.app.log("TowersRoulette::chooseTowerDesktop(" + x + ", " + y + ");", " -- templateForTowers.size:" + templateForTowers.size);
+        Gdx.app.log("TowersRoulette::chooseTowerDesktop(" + x + ", " + y + ");", " -- templateForTowers.size:" + templateForTowers.size + " towerFrames.size:" + towerFrames.size);
         TemplateForTower localTemplate = templateForTowers.get(0);
-        for(int towerNumber = 0; towerNumber < templateForTowers.size; towerNumber++) {
+        for(int towerNumber = 0; towerNumber < towerFrames.size; towerNumber++) {
             Gdx.app.log("TowersRoulette::chooseTowerDesktop();", " -- towerNumber:" + towerNumber);
             if (towerFrames.get(towerNumber).isPressed()) {
                 Gdx.app.log("TowersRoulette::chooseTowerDesktop();", " -- towerNumber.isPressed()");
@@ -196,7 +196,7 @@ public class TowersRoulette extends Roulette {
         boolean isTouched = false;
         x = Gdx.graphics.getWidth()  - x;
         y = Gdx.graphics.getHeight() - y;
-        Gdx.app.log("x :"+ x, " y :" + y);
+        Gdx.app.log("TowersRoulette::isButtonTouched();", " -- x:" + x + " y:" + y);
 
         //RING PRESS DETECTION
         if((x*x + y*y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))

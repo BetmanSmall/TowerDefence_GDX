@@ -1498,8 +1498,12 @@ public class GameField {
 //    }
 
     // GAME INTERFACE ZONE1
-    public GridPoint2 whichCell(GridPoint2 grafCoordinate) {
-        return whichCell.whichCell(grafCoordinate);
+//    public GridPoint2 whichCell(GridPoint2 grafCoordinate) {
+//        return whichCell.whichCell(grafCoordinate);
+//    }
+
+    public WhichCell getWhichCell() {
+        return whichCell;
     }
 
     public void setGamePause(boolean gamePaused) {

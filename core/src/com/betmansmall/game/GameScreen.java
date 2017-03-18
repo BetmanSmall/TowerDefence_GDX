@@ -22,8 +22,8 @@ import com.betmansmall.game.gameLogic.UnderConstruction;
 public class GameScreen implements Screen {
     private static final float MAX_ZOOM = 50f; //max size
     private static final float MIN_ZOOM = 0.2f; // 2x zoom
-    private float MAX_DESTINATION_X = 0f;
-    private float MAX_DESTINATION_Y = 0f;
+//    private float MAX_DESTINATION_X = 0f;
+//    private float MAX_DESTINATION_Y = 0f;
     private BitmapFont bitmapFont = new BitmapFont();
     private DeviceSettings deviceSettings = new DeviceSettings();
 
@@ -38,15 +38,15 @@ public class GameScreen implements Screen {
     private GameField gameField;
 
     class CameraController implements GestureListener {
-        float velX, velY;
-        boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
+//        float velX, velY;
+//        boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
         float initialScale = 2f;
         boolean lastCircleTouched = false;
 
         @Override
         public boolean touchDown(float x, float y, int pointer, int button) {
             Gdx.app.log("CameraController::touchDown()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-            flinging = false;
+//            flinging = false;
             initialScale = camera.zoom;
             return false;
         }
@@ -61,9 +61,7 @@ public class GameScreen implements Screen {
 
             Vector3 touch = new Vector3(x, y, 0);
             camera.unproject(touch);
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-
+            GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
             if (cellCoordinate != null && gameField.getUnderConstruction() == null) {
                 if (button == 0) {
                     gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
@@ -90,12 +88,12 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean fling(float velocityX, float velocityY, int button) {
-//            Gdx.app.log("CameraController::fling()", " -- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
-            if (!lastCircleTouched) {
-                flinging = true;
-                velX = camera.zoom * velocityX * 0.5f;
-                velY = camera.zoom * velocityY * 0.5f;
-            }
+            Gdx.app.log("CameraController::fling()", " -- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
+//            if (!lastCircleTouched) {
+//                flinging = true;
+//                velX = camera.zoom * velocityX * 0.5f;
+//                velY = camera.zoom * velocityY * 0.5f;
+//            }
             return false;
         }
 
@@ -130,30 +128,19 @@ public class GameScreen implements Screen {
                 if(y > Gdx.graphics.getHeight()-space) {
                     camera.position.add(0, -5, 0);
                 }
-//                if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
-//                    camera.position.set(touch.x, touch.y, 0);
-//                if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
-//                    camera.position.add(0, deltaY * camera.zoom, 0);
-            }
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-            if (cellCoordinate != null) {
-                if (gameField.getUnderConstruction() != null) {
-                    gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
-                }
             }
             return false;
         }
 
         @Override
         public boolean panStop(float x, float y, int pointer, int button) {
-//            Gdx.app.log("CameraController::panStop()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+            Gdx.app.log("CameraController::panStop()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
             return false;
         }
 
         @Override
         public boolean zoom(float initialDistance, float distance) {
-            Gdx.app.log("CameraController::zoom()", " -- initialDistance:" + initialDistance + " distance:" + distance);
+            Gdx.app.log("CameraController::zoom()", " -- initialDistance:" + initialDistance + " distance:" + distance + " initialScale:" + initialScale);
             float ratio = initialDistance / distance;
             float newZoom = initialScale * ratio;
             if (newZoom < MAX_ZOOM && newZoom > MIN_ZOOM) {
@@ -169,22 +156,23 @@ public class GameScreen implements Screen {
         }
 
         public void update() {
-            try {
-                if (gameField.getUnderConstruction() == null) {
-                    if (flinging) {
-                        velX *= 0.98f;
-                        velY *= 0.98f;
-                        if (camera.position.x + -velX * Gdx.graphics.getDeltaTime() > 0 && camera.position.x + -velX * Gdx.graphics.getDeltaTime() < MAX_DESTINATION_X)
-                            camera.position.add(-velX * Gdx.graphics.getDeltaTime(), 0, 0);
-                        if (Math.abs(camera.position.y + velY * Gdx.graphics.getDeltaTime()) < MAX_DESTINATION_Y)
-                            camera.position.add(0, velY * Gdx.graphics.getDeltaTime(), 0);
-                        if (Math.abs(velX) < 0.01f) velX = 0;
-                        if (Math.abs(velY) < 0.01f) velY = 0;
-                    }
-                }
-            } catch (Exception exp) {
-                int a;
-            }
+            Gdx.app.log("CameraController::update()", " -- ");
+//            try {
+//                if (gameField.getUnderConstruction() == null) {
+//                    if (flinging) {
+//                        velX *= 0.98f;
+//                        velY *= 0.98f;
+//                        if (camera.position.x + -velX * Gdx.graphics.getDeltaTime() > 0 && camera.position.x + -velX * Gdx.graphics.getDeltaTime() < MAX_DESTINATION_X)
+//                            camera.position.add(-velX * Gdx.graphics.getDeltaTime(), 0, 0);
+//                        if (Math.abs(camera.position.y + velY * Gdx.graphics.getDeltaTime()) < MAX_DESTINATION_Y)
+//                            camera.position.add(0, velY * Gdx.graphics.getDeltaTime(), 0);
+//                        if (Math.abs(velX) < 0.01f) velX = 0;
+//                        if (Math.abs(velY) < 0.01f) velY = 0;
+//                    }
+//                }
+//            } catch (Exception exp) {
+//                int a;
+//            }
         }
     }
 
@@ -195,35 +183,34 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean keyDown(int keycode) {
-//            Gdx.app.log("MyGestureDetector::keyDown()", " -- keycode:" + keycode);
+            Gdx.app.log("MyGestureDetector::keyDown()", " -- keycode:" + keycode);
             return false;
         }
 
         @Override
         public boolean keyUp(int keycode) {
-//            Gdx.app.log("MyGestureDetector::keyUp()", " -- keycode:" + keycode);
+            Gdx.app.log("MyGestureDetector::keyUp()", " -- keycode:" + keycode);
             return false;
         }
 
         @Override
         public boolean keyTyped(char character) {
-//            Gdx.app.log("MyGestureDetector::keyTyped()", " -- character:" + character);
+            Gdx.app.log("MyGestureDetector::keyTyped()", " -- character:" + character);
             return false;
         }
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
             Gdx.app.log("MyGestureDetector::touchDown()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-            Vector3 touch = new Vector3(screenX, screenY, 0);
-            camera.unproject(touch);
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-            if (cellCoordinate != null) {
-                UnderConstruction underConstruction = gameField.getUnderConstruction();
-                if (underConstruction != null) {
-                    if(button == 0) {
+            if(gameField != null && gameField.getUnderConstruction() != null) {
+                Vector3 touch = new Vector3(screenX, screenY, 0);
+                camera.unproject(touch);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+                if (cellCoordinate != null) {
+                    UnderConstruction underConstruction = gameField.getUnderConstruction();
+                    if (button == 0) {
                         underConstruction.setStartCoors(cellCoordinate.x, cellCoordinate.y);
-                    } else if(button == 1){
+                    } else if (button == 1) {
                         gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
                     }
                 }
@@ -234,11 +221,10 @@ public class GameScreen implements Screen {
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             Gdx.app.log("MyGestureDetector::touchUp()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-            if(gameField != null && button == 0) {
+            if(gameField != null && gameField.getUnderConstruction() != null && button == 0) {
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 camera.unproject(touch);
-                GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-                GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
                 if (cellCoordinate != null) {
                     gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
                 }
@@ -248,28 +234,26 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-//            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
-//            Vector3 touch = new Vector3(screenX, screenY, 0);
-//            camera.unproject(touch);
-//            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-//            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-//            if (cellCoordinate != null) {
-//                if (gameField.getUnderConstruction() != null) {
-//                    gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
-//                }
-//            }
+            Gdx.app.log("MyGestureDetector::touchDragged()", " -- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " deviceSettings.getDevice():" + deviceSettings.getDevice());
+            if(gameField != null && gameField.getUnderConstruction() != null) {
+                Vector3 touch = new Vector3(screenX, screenY, 0);
+                camera.unproject(touch);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+                if (cellCoordinate != null) {
+                    gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
+                }
+            }
             return false;
         }
 
         @Override
         public boolean mouseMoved(int screenX, int screenY) {
-//          Gdx.app.log("MyGestureDetector::mouseMoved()", " -- screenX:" + screenX + " screenY:" + screenY);
-            Vector3 touch = new Vector3(screenX, screenY, 0);
-            camera.unproject(touch);
-            GridPoint2 grafCoordinate = new GridPoint2((int) touch.x, (int) touch.y);
-            GridPoint2 cellCoordinate = gameField.whichCell(grafCoordinate);
-            if (cellCoordinate != null) {
-                if (gameField.getUnderConstruction() != null) {
+            Gdx.app.log("MyGestureDetector::mouseMoved()", " -- screenX:" + screenX + " screenY:" + screenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
+            if(gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) {
+                Vector3 touch = new Vector3(screenX, screenY, 0);
+                camera.unproject(touch);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+                if (cellCoordinate != null) {
                     gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
                 }
             }
@@ -304,10 +288,10 @@ public class GameScreen implements Screen {
         InputMultiplexer inputMultiplexer = gameInterface.setCommonInputHandler(new GestureDetector(cameraController));
         inputMultiplexer.addProcessor(myGestureDetector);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        Gdx.app.log("tag", "cel " + gameField.getSizeCellX() + " field" + gameField.getSizeFieldX());
-        Gdx.app.log("tag", "cel " + gameField.getSizeCellY() + " field" + gameField.getSizeFieldY());
-        MAX_DESTINATION_X = gameField.getSizeCellX() * gameField.getSizeFieldX();
-        MAX_DESTINATION_Y = gameField.getSizeCellY() * gameField.getSizeFieldY() / 2f;
+//        Gdx.app.log("tag", "cel " + gameField.getSizeCellX() + " field" + gameField.getSizeFieldX());
+//        Gdx.app.log("tag", "cel " + gameField.getSizeCellY() + " field" + gameField.getSizeFieldY());
+//        MAX_DESTINATION_X = gameField.getSizeCellX() * gameField.getSizeFieldX();
+//        MAX_DESTINATION_Y = gameField.getSizeCellY() * gameField.getSizeFieldY() / 2f;
     }
 
     @Override
@@ -417,7 +401,7 @@ public class GameScreen implements Screen {
         String gameState = gameField.getGameState();
         if (gameState.equals("In progress")) {
             inputHandler(delta);
-            cameraController.update();
+//            cameraController.update();
             camera.update();
             gameField.render(delta, camera);
             gameInterface.act(delta);
