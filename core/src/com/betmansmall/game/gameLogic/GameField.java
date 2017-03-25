@@ -162,7 +162,7 @@ public class GameField {
         gameSpeed = 1.0f;
         maxOfMissedCreeps = 1000;
         missedCreeps = 0;
-        gamerGold = 10000;
+        gamerGold = Integer.parseInt(map.getProperties().get("gamerGold", "300", String.class));
         // GAME INTERFACE ZONE2
     }
 

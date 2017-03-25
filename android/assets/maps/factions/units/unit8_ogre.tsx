@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit8_ogre" tilewidth="72" tileheight="72" columns="5">
  <properties>
-  <property name="bounty" value="12"/>
+  <property name="bounty" value="2"/>
   <property name="factionName" value="Orcs_Faction"/>
   <property name="healthPoints" value="350"/>
   <property name="name" value="Ogre"/>

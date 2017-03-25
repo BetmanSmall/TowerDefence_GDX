@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit3_footman" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="7"/>
+  <property name="bounty" value="1"/>
   <property name="factionName" value="Humans_Faction"/>
   <property name="healthPoints" value="380"/>
   <property name="name" value="Footman"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="5"/>
+  <property name="bounty" value="1"/>
   <property name="factionName" value="Orcs_Faction"/>
   <property name="healthPoints" value="150"/>
   <property name="name" value="Troll Axethrower"/>
