@@ -65,6 +65,7 @@ public class Cell {
         } else if(map == 4) {
             return graphicCoordinatesLeft;
         }
+        Gdx.app.log("Cell::getGraphicCoordinates(" + map + ");", " -- Bad map | return null!");
         return null;
     }
 
