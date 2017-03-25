@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
  * @author BetmanSmall
  */
 public class PathFinder {
-    private Node[][] nodeMatrix;
+    public Node[][] nodeMatrix;
     private boolean clearmap;
     private int[] start;
     private int[] goal;
@@ -129,6 +129,7 @@ public class PathFinder {
     private void clearMap(){
         for (int i = 0; i < nodeMatrix.length; i++)
             for (int j = 0; j < nodeMatrix[0].length; j++)
-                nodeMatrix[i][j]=new Node(j, i, nodeMatrix[i][j].getKey());
+//                nodeMatrix[i][j]=new Node(j, i, nodeMatrix[i][j].getKey());
+                nodeMatrix[i][j].clear();
     }
 }

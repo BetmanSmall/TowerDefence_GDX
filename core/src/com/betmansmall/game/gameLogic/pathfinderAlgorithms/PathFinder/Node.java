@@ -39,6 +39,16 @@ public class Node implements Comparable<Node>{
         else this.setWalkable(false);
     }
 
+    public void clear() {
+        this.index=-1;
+        this.Hx = -1;
+        this.Gx = -1;
+        this.onPath = false;
+        this.closed = false;
+        this.opened = false;
+        this.path=null;
+    }
+
     public boolean isOnPath() {
         return onPath;
     }

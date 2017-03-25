@@ -1292,7 +1292,7 @@ public class GameField {
             exitPoint = waveManager.lastExitPoint;
         }
         if (spawnPoint != null && exitPoint != null && pathFinder != null) {
-            pathFinder.loadCharMatrix(getCharMatrix());
+//            pathFinder.loadCharMatrix(getCharMatrix());
             ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
             if (route != null) {
                 Creep creep = creepsManager.createCreep(route, templateForUnit);
@@ -1369,9 +1369,12 @@ public class GameField {
             Tower tower = towersManager.createTower(position, templateForTower);
             Gdx.app.log("GameField", "createTower(); -- templateForTower.towerAttackType:" + templateForTower.towerAttackType);
             if (templateForTower.towerAttackType != TowerAttackType.Pit) {
-                for (int tmpX = startX; tmpX <= finishX; tmpX++)
-                    for (int tmpY = startY; tmpY <= finishY; tmpY++)
+                for (int tmpX = startX; tmpX <= finishX; tmpX++) {
+                    for (int tmpY = startY; tmpY <= finishY; tmpY++) {
                         field[buildX + tmpX][buildY + tmpY].setTower(tower);
+                        pathFinder.nodeMatrix[buildY + tmpY][buildX + tmpX].setKey('T');
+                    }
+                }
             }
             // GOVNO CODE
 
@@ -1408,6 +1411,7 @@ public class GameField {
             for (int tmpX = startX; tmpX <= finishX; tmpX++) {
                 for (int tmpY = startY; tmpY <= finishY; tmpY++) {
                     field[x + tmpX][y + tmpY].removeTower();
+                    pathFinder.getNodeMatrix()[y + tmpY][x + tmpX].setKey('.');
                 }
             }
             towersManager.removeTower(tower);
@@ -1424,7 +1428,7 @@ public class GameField {
         if (pathFinder != null) {
             long start1 = System.nanoTime();
             Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Start:" + start1);
-            pathFinder.loadCharMatrix(getCharMatrix());
+//            pathFinder.loadCharMatrix(getCharMatrix());
             for (Creep creep : creepsManager.getAllCreeps()) {
                 ArrayDeque<Node> route;
                 if (exitPoint == null) {
