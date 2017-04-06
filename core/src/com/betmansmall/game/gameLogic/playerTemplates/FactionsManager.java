@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -133,8 +134,30 @@ public class FactionsManager {
     }
 
     public void loadFactions() {
-        FileHandle factionsDir = Gdx.files.internal("maps/factions");
-        for (FileHandle factionFile : factionsDir.list()) {
+        Array<FileHandle> factions = new Array<FileHandle>();
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            Gdx.app.log("FactionsManager::loadFactions()", " -- ApplicationType.Android");
+            FileHandle factionsDir = Gdx.files.internal("maps/factions");
+            factions.addAll(factionsDir.list());
+        } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            boolean isExtAvailable = Gdx.files.isExternalStorageAvailable();
+            boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
+            String extRoot = Gdx.files.getExternalStoragePath();
+            String locRoot = Gdx.files.getLocalStoragePath();
+            Gdx.app.log("FactionsManager::loadFactions()", " -- ApplicationType.Desktop -- isExtAvailable:" + isExtAvailable + " isLocAvailable:" + isLocAvailable);
+            Gdx.app.log("FactionsManager::loadFactions()", " -- extRoot:" + extRoot + " locRoot:" + locRoot);
+            FileHandle factionsDir = Gdx.files.internal("maps/factions");
+            Gdx.app.log("FactionsManager::loadFactions()", " -- factionsDir.length:" + factionsDir.list().length);
+            if(factionsDir.list().length == 0) {
+                factions.add(Gdx.files.internal("maps/factions/humans_faction.fac"));
+                factions.add(Gdx.files.internal("maps/factions/orcs_faction.fac"));
+//                factions.add(Gdx.files.internal("!!!add new faction in the future!!!"));
+            } else {
+                factions.addAll(factionsDir.list());
+            }
+        }
+        Gdx.app.log("FactionsManager::loadFactions()", " -- factions.size:" + factions.size);
+        for (FileHandle factionFile : factions) {
             if (factionFile.extension().equals("fac")) {
                 loadFaction(factionFile);
             }
@@ -142,36 +165,41 @@ public class FactionsManager {
     }
 
     private void loadFaction(FileHandle factionFile) {
-        try {
-            XmlReader xmlReader = new XmlReader();
-            Element root = xmlReader.parse(factionFile);
-            String factionName = root.getAttribute("name", null);
-            if (factionName != null) {
-                Faction faction = new Faction(factionName);
-                Array<Element> templateForUnitElements = root.getChildrenByName("templateForUnit");
-                for (Element templateForUnitElement : templateForUnitElements) {
-                    String source = templateForUnitElement.getAttribute("source", null);
-                    if (source != null) {
-                        FileHandle templateFile = getRelativeFileHandle(factionFile, source);
-                        TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
-                        templateForUnit.setFaction(faction);
-                        faction.getTemplateForUnits().add(templateForUnit);
+        if(factionFile != null && !factionFile.isDirectory()) {
+            Gdx.app.log("FactionsManager::loadFaction(" + factionFile + ")", " -- absolutePath:" + factionFile.file().getAbsolutePath());
+            try {
+                XmlReader xmlReader = new XmlReader();
+                Element root = xmlReader.parse(factionFile);
+                String factionName = root.getAttribute("name", null);
+                if (factionName != null) {
+                    Faction faction = new Faction(factionName);
+                    Array<Element> templateForUnitElements = root.getChildrenByName("templateForUnit");
+                    for (Element templateForUnitElement : templateForUnitElements) {
+                        String source = templateForUnitElement.getAttribute("source", null);
+                        if (source != null) {
+                            FileHandle templateFile = getRelativeFileHandle(factionFile, source);
+                            TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
+                            templateForUnit.setFaction(faction);
+                            faction.getTemplateForUnits().add(templateForUnit);
+                        }
                     }
-                }
-                Array<Element> templateForTowerElements = root.getChildrenByName("templateForTower");
-                for (Element templateForTowerElement : templateForTowerElements) {
-                    String source = templateForTowerElement.getAttribute("source", null);
-                    if (source != null) {
-                        FileHandle templateFile = getRelativeFileHandle(factionFile, source);
-                        TemplateForTower templateForTower = new TemplateForTower(templateFile);
-                        templateForTower.setFaction(faction);
-                        faction.getTemplateForTowers().add(templateForTower);
+                    Array<Element> templateForTowerElements = root.getChildrenByName("templateForTower");
+                    for (Element templateForTowerElement : templateForTowerElements) {
+                        String source = templateForTowerElement.getAttribute("source", null);
+                        if (source != null) {
+                            FileHandle templateFile = getRelativeFileHandle(factionFile, source);
+                            TemplateForTower templateForTower = new TemplateForTower(templateFile);
+                            templateForTower.setFaction(faction);
+                            faction.getTemplateForTowers().add(templateForTower);
+                        }
                     }
+                    factions.add(faction);
                 }
-                factions.add(faction);
+            } catch (Exception exp) {
+                Gdx.app.error("FactionsManager::loadFaction()", " -- Could not load Faction! Exp:" + exp);
             }
-        } catch (Exception exp) {
-            Gdx.app.error("FactionsManager::loadFaction()", " -- Could not load Faction: " + factionFile.path());
+        } else {
+            Gdx.app.error("FactionsManager::loadFaction()", " -- Could not load Faction! (factionFile == null) or (factionFile.isDirectory() == true)");
         }
     }
 
