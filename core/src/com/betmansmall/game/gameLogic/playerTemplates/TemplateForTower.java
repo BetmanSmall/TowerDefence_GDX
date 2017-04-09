@@ -170,7 +170,7 @@ public class TemplateForTower {
 
             validate();
         } catch (Exception exp) {
-            Gdx.app.log("TemplateForTower::TemplateForTower()", " -- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
+            Gdx.app.log("TemplateForTower::TemplateForTower()", "-- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
             throw new Exception("TemplateForTower::TemplateForTower() -- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
         }
     }
@@ -190,7 +190,7 @@ public class TemplateForTower {
 //            this.capacity =     Integer.parseInt(tileSet.getProperties().get("capacity", String.class));
 ////            this.ammoDistance = Integer.parseInt(tileSet.getProperties().get("ammoDistance", String.class));
 //        } catch(Exception exp) {
-//            Gdx.app.error("TemplateForTower::TemplateForTower()", " -- Exp: " + exp + " Cheak the file!");
+//            Gdx.app.error("TemplateForTower::TemplateForTower()", "-- Exp: " + exp + " Cheak the file!");
 //        }
 //
 //        this.ammunitionPictures = new ObjectMap<String, TiledMapTile>();
@@ -278,22 +278,29 @@ public class TemplateForTower {
     }
 
     public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
-        sb.append("TemplateForTower[");
-        sb.append("factionName:" + factionName + ",");
-        sb.append("name:" + name + ",");
-        sb.append("radiusDetection:" + radiusDetection + ",");
-        sb.append("radiusFlyShell:" + radiusFlyShell + ",");
-        sb.append("damage:" + damage + ",");
-        sb.append("size:" + size + ",");
-        sb.append("cost:" + cost + ",");
-        sb.append("ammoSize:" + ammoSize + ",");
-        sb.append("ammoSpeed:" + ammoSpeed + ",");
-        sb.append("reloadTime:" + reloadTime + ",");
-        sb.append("towerAttackType:" + towerAttackType + ",");
-        sb.append("shellAttackType:" + shellAttackType + ",");
-        sb.append("shellEffectEnum:" + shellEffectType + ",");
-        sb.append("capacity:" + capacity + ",");
+        sb.append("TemplateForUnit[");
+        sb.append("templateName:" + templateName);
+        if(full) {
+            sb.append("," + "factionName:" + factionName);
+            sb.append("," + "name:" + name);
+            sb.append("," + "radiusDetection:" + radiusDetection);
+            sb.append("," + "radiusFlyShell:" + radiusFlyShell);
+            sb.append("," + "damage:" + damage);
+            sb.append("," + "size:" + size);
+            sb.append("," + "cost:" + cost);
+            sb.append("," + "ammoSize:" + ammoSize);
+            sb.append("," + "ammoSpeed:" + ammoSpeed);
+            sb.append("," + "reloadTime:" + reloadTime);
+            sb.append("," + "towerAttackType:" + towerAttackType);
+            sb.append("," + "shellAttackType:" + shellAttackType);
+            sb.append("," + "shellEffectEnum:" + shellEffectType);
+            sb.append("," + "capacity:" + capacity);
+        }
         sb.append("]");
         return sb.toString();
     }

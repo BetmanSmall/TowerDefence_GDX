@@ -85,15 +85,15 @@ public class WaveManager {
 
     public void validationPoints(Cell[][] field) {
         if(field != null) {
-            int sizeFieldY = field.length;
-            int sizeFieldX = field[0].length;
+            int sizeFieldX = field.length;
+            int sizeFieldY = field[0].length;
             int wavesCount = waves.size;
             for (int w = 0; w < waves.size; w++) {
-                Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ");", " -- wavesCount:(" + wavesCount + ":" + waves.size + ")");
+                Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ")", "-- wavesCount:(" + wavesCount + ":" + waves.size + ")");
                 Wave wave = waves.get(w);
                 GridPoint2 spawnPoint = wave.spawnPoint;
                 GridPoint2 exitPoint = wave.exitPoint;
-                Gdx.app.log("WaveManager::validationPoints();", " -- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
+                Gdx.app.log("WaveManager::validationPoints()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
                 if (spawnPoint == null || spawnPoint.x < 0 || spawnPoint.x >= sizeFieldX || spawnPoint.y < 0 || spawnPoint.y >= sizeFieldY || !field[spawnPoint.x][spawnPoint.y].isPassable()) {
                     Gdx.app.log("GameField", "validationPoints(); -- SpawnPoint bad:" + spawnPoint + " wave:" + wave);
                     waves.removeValue(wave, true);
@@ -104,7 +104,7 @@ public class WaveManager {
                     w--;
                 }
             }
-            Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ");", " -- wavesCount:(" + wavesCount + ":" + waves.size + ")");
+            Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ")", "-- wavesCount:(" + wavesCount + ":" + waves.size + ")");
         }
     }
 }

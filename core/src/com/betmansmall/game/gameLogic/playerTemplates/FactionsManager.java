@@ -35,7 +35,7 @@ public class FactionsManager {
     }
 
     public void addTowerToFaction(TemplateForTower tower) {
-//        Gdx.app.log("FactionsManager::addTowerToFaction()", " -- Tower name:" + tower.name);
+//        Gdx.app.log("FactionsManager::addTowerToFaction()", "-- Tower name:" + tower.name);
         String newFactionName = tower.getFactionName();
         for (Faction faction : factions) {
             if (faction.getName().equals(newFactionName)) {
@@ -136,7 +136,7 @@ public class FactionsManager {
     public void loadFactions() {
         Array<FileHandle> factions = new Array<FileHandle>();
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
-            Gdx.app.log("FactionsManager::loadFactions()", " -- ApplicationType.Android");
+            Gdx.app.log("FactionsManager::loadFactions()", "-- ApplicationType.Android");
             FileHandle factionsDir = Gdx.files.internal("maps/factions");
             factions.addAll(factionsDir.list());
         } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
@@ -144,10 +144,10 @@ public class FactionsManager {
             boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
             String extRoot = Gdx.files.getExternalStoragePath();
             String locRoot = Gdx.files.getLocalStoragePath();
-            Gdx.app.log("FactionsManager::loadFactions()", " -- ApplicationType.Desktop -- isExtAvailable:" + isExtAvailable + " isLocAvailable:" + isLocAvailable);
-            Gdx.app.log("FactionsManager::loadFactions()", " -- extRoot:" + extRoot + " locRoot:" + locRoot);
+            Gdx.app.log("FactionsManager::loadFactions()", "-- ApplicationType.Desktop -- isExtAvailable:" + isExtAvailable + " isLocAvailable:" + isLocAvailable);
+            Gdx.app.log("FactionsManager::loadFactions()", "-- extRoot:" + extRoot + " locRoot:" + locRoot);
             FileHandle factionsDir = Gdx.files.internal("maps/factions");
-            Gdx.app.log("FactionsManager::loadFactions()", " -- factionsDir.length:" + factionsDir.list().length);
+            Gdx.app.log("FactionsManager::loadFactions()", "-- factionsDir.length:" + factionsDir.list().length);
             if(factionsDir.list().length == 0) {
                 factions.add(Gdx.files.internal("maps/factions/humans_faction.fac"));
                 factions.add(Gdx.files.internal("maps/factions/orcs_faction.fac"));
@@ -156,7 +156,7 @@ public class FactionsManager {
                 factions.addAll(factionsDir.list());
             }
         }
-        Gdx.app.log("FactionsManager::loadFactions()", " -- factions.size:" + factions.size);
+        Gdx.app.log("FactionsManager::loadFactions()", "-- factions.size:" + factions.size);
         for (FileHandle factionFile : factions) {
             if (factionFile.extension().equals("fac")) {
                 loadFaction(factionFile);
@@ -166,7 +166,7 @@ public class FactionsManager {
 
     private void loadFaction(FileHandle factionFile) {
         if(factionFile != null && !factionFile.isDirectory()) {
-            Gdx.app.log("FactionsManager::loadFaction(" + factionFile + ")", " -- absolutePath:" + factionFile.file().getAbsolutePath());
+            Gdx.app.log("FactionsManager::loadFaction(" + factionFile + ")", "-- absolutePath:" + factionFile.file().getAbsolutePath());
             try {
                 XmlReader xmlReader = new XmlReader();
                 Element root = xmlReader.parse(factionFile);
@@ -196,10 +196,10 @@ public class FactionsManager {
                     factions.add(faction);
                 }
             } catch (Exception exp) {
-                Gdx.app.error("FactionsManager::loadFaction()", " -- Could not load Faction! Exp:" + exp);
+                Gdx.app.error("FactionsManager::loadFaction()", "-- Could not load Faction! Exp:" + exp);
             }
         } else {
-            Gdx.app.error("FactionsManager::loadFaction()", " -- Could not load Faction! (factionFile == null) or (factionFile.isDirectory() == true)");
+            Gdx.app.error("FactionsManager::loadFaction()", "-- Could not load Faction! (factionFile == null) or (factionFile.isDirectory() == true)");
         }
     }
 

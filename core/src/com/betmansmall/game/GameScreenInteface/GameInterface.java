@@ -50,13 +50,13 @@ public class GameInterface {
     private GameField gameField;
 
     public GameInterface(GameField gameField) {
-        Gdx.app.log("GameInterface::GameInterface(" + gameField + ")", " -- Called!");
+        Gdx.app.log("GameInterface::GameInterface(" + gameField + ")", "-- Called!");
         this.gameField = gameField;
         initStage();
     }
 
     private void initStage() {
-        Gdx.app.log("GameInterface::initStage()", " -- Called!");
+        Gdx.app.log("GameInterface::initStage()", "-- Called!");
         stage = new Stage();
         towersRoulette = new TowersRoulette(gameField);
         creepsRoulette = new CreepsRoulette(gameField);
@@ -91,12 +91,12 @@ public class GameInterface {
     }
 
     public void updateStage() {
-        Gdx.app.log("GameInterface::updateStage()", " -- Called!");
+        Gdx.app.log("GameInterface::updateStage()", "-- Called!");
         initStage();
     }
 
     public void dispose() {
-        Gdx.app.log("GameInterface::dispose()", " -- Called!");
+        Gdx.app.log("GameInterface::dispose()", "-- Called!");
         bitmapFont.dispose();
         stage.dispose();
     }

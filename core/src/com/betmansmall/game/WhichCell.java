@@ -27,13 +27,13 @@ public class WhichCell {
     }
 
     public GridPoint2 whichCell(Vector3 touch) {
-//        Gdx.app.log("WhichCell::whichCell(" + touch + ")", " -- ");
+//        Gdx.app.log("WhichCell::whichCell(" + touch + ")", "-- ");
         touch.x /= sizeCellX;
         touch.y = (touch.y - sizeCellY / 2) / sizeCellY + touch.x;
         touch.x -= touch.y - touch.x;
-//        Gdx.app.log("WhichCell::whichCell()", " -- new touch:" + touch);
+//        Gdx.app.log("WhichCell::whichCell()", "-- new touch:" + touch);
         GridPoint2 cell = new GridPoint2(Math.abs((int)touch.x), Math.abs((int)touch.y));
-//        Gdx.app.log("WhichCell::whichCell()", " -- cell:" + cell);
+//        Gdx.app.log("WhichCell::whichCell()", "-- cell:" + cell);
         if(cell.x < sizeFieldX && cell.y < sizeFieldY) {
             return cell;
         } else {
@@ -57,7 +57,7 @@ public class WhichCell {
 //                tilePoints1.add(new Vector2(posX + halfSizeCellX, posY - halfSizeCellY));
 //                if(estimation(tilePoints1, grafCoordinate)) {
 //                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
-////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":1");
+////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ")", "-- return:" + gameCoord + ":1");
 //                    return gameCoord;
 //                }
 //                posX =  (tileX*halfSizeCellX) + (tileY*halfSizeCellX);
@@ -69,7 +69,7 @@ public class WhichCell {
 //                tilePoints2.add(new Vector2(posX + halfSizeCellX, posY - halfSizeCellY));
 //                if(estimation(tilePoints2, grafCoordinate)) {
 //                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
-////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":2");
+////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ")", "-- return:" + gameCoord + ":2");
 //                    return gameCoord;
 //                }
 //                posX = (tileX*halfSizeCellX) - (tileY*halfSizeCellX) + halfSizeCellX;
@@ -81,7 +81,7 @@ public class WhichCell {
 //                tilePoints3.add(new Vector2(posX - halfSizeCellX, posY + halfSizeCellY));
 //                if(estimation(tilePoints3, grafCoordinate)) {
 //                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
-////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":3");
+////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ")", "-- return:" + gameCoord + ":3");
 //                    return gameCoord;
 //                }
 //                posX = -(tileX*halfSizeCellX) - (tileY*halfSizeCellX);
@@ -93,7 +93,7 @@ public class WhichCell {
 //                tilePoints4.add(new Vector2(posX - halfSizeCellX, posY + halfSizeCellY));
 //                if(estimation(tilePoints4, grafCoordinate)) {
 //                    GridPoint2 gameCoord = new GridPoint2(tileX, tileY);
-////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ");", " -- return:" + gameCoord + ":4");
+////                    Gdx.app.log("WhichCell::whichCell(" + grafCoordinate + ")", "-- return:" + gameCoord + ":4");
 //                    return gameCoord;
 //                }
 //            }

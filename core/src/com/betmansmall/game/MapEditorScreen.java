@@ -32,7 +32,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
     private IsometricTiledMapRenderer renderer;
 
     public MapEditorScreen(TowerDefence towerDefence, String fileName) {
-        Gdx.app.log("MapEditorScreen::MapEditorScreen();", " -- towerDefence:" + towerDefence + " fileName:" + fileName);
+        Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- towerDefence:" + towerDefence + " fileName:" + fileName);
         this.towerDefence = towerDefence;
         this.spriteBatch = new SpriteBatch();
 
@@ -47,12 +47,12 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public void show() {
-        Gdx.app.log("MapEditorScreen::show()", " -- Start!");
+        Gdx.app.log("MapEditorScreen::show()", "-- Start!");
     }
 
     @Override
     public void render(float delta) {
-//      Gdx.app.log("MapEditorScreen::render()", "-- delta:" + delta);
+//      Gdx.app.log("MapEditorScreen::render()", "-- delta:" + delta + " FPS:" + Gdx.graphics.getFramesPerSecond());
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -76,52 +76,52 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public void pause() {
-        Gdx.app.log("MapEditorScreen::pause()", " -- Start!");
+        Gdx.app.log("MapEditorScreen::pause()", "-- Start!");
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("MapEditorScreen::resume()", " -- Start!");
+        Gdx.app.log("MapEditorScreen::resume()", "-- Start!");
     }
 
     @Override
     public void hide() {
-        Gdx.app.log("MapEditorScreen::hide()", " -- Start!");
+        Gdx.app.log("MapEditorScreen::hide()", "-- Start!");
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("MapEditorScreen::dispose()", " -- Start!");
+        Gdx.app.log("MapEditorScreen::dispose()", "-- Start!");
     }
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        Gdx.app.log("MapEditorScreen::touchDown()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        Gdx.app.log("MapEditorScreen::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         initialScale = camera.zoom;
         return false;
     }
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("MapEditorScreen::tap();", " -- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+        Gdx.app.log("MapEditorScreen::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
         return false;
     }
 
     @Override
     public boolean longPress(float x, float y) {
-        Gdx.app.log("MapEditorScreen::longPress();", " -- x:" + x + " y:" + y);
+        Gdx.app.log("MapEditorScreen::longPress()", "-- x:" + x + " y:" + y);
         return false;
     }
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        Gdx.app.log("MapEditorScreen::fling();", " -- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
+        Gdx.app.log("MapEditorScreen::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
         return false;
     }
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("MapEditorScreen::pan()", " -- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+        Gdx.app.log("MapEditorScreen::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //        if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
         camera.position.add(-deltaX * camera.zoom, 0, 0);
 //        if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
@@ -132,13 +132,13 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
-        Gdx.app.log("MapEditorScreen::panStop()", " -- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        Gdx.app.log("MapEditorScreen::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         return false;
     }
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        Gdx.app.log("MapEditorScreen::zoom()", " -- initialDistance:" + initialDistance + " distance:" + distance);
+        Gdx.app.log("MapEditorScreen::zoom()", "-- initialDistance:" + initialDistance + " distance:" + distance);
         float ratio = initialDistance / distance;
         float newZoom = initialScale * ratio;
         if (newZoom < MAX_ZOOM && newZoom > MIN_ZOOM) {
@@ -149,7 +149,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        Gdx.app.log("MapEditorScreen::pinch()", " -- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
+        Gdx.app.log("MapEditorScreen::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
         return false;
     }
 }

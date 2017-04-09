@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="16" height="32" tilewidth="64" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
- <waves type="empty"/>
+ <waves>
+  <wave spawntPointX="15" spawntPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="0">
+   <unit delay="1" templateName="unit10_ballista" interval="1" amount="2"/>
+   <unit delay="2" templateName="unit2_troll_axethrower" interval="2" amount="2"/>
+   <unit delay="1" templateName="unit1_grunt" interval="3" amount="2"/>
+   <unit delay="0.8" templateName="unit2_troll_axethrower" interval="2" amount="2"/>
+   <unit delay="1" templateName="unit1_grunt" amount="1"/>
+   <unit delay="2" templateName="unit2_troll_axethrower" amount="1"/>
+   <unit delay="1" templateName="unit1_grunt" amount="2"/>
+   <unit delay="0" templateName="unit13_knight" amount="1"/>
+   <unit templateName="unit5_daemon" amount="5"/>
+   <unit templateName="unit2_troll_axethrower" amount="1"/>
+   <unit templateName="unit1_grunt" amount="2"/>
+   <unit templateName="unit12_gryphon_rider" amount="2"/>
+  </wave>
+ </waves>
  <layer name="layer0" width="16" height="32">
   <properties>
    <property name="background" value="ground"/>

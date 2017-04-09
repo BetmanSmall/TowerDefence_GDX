@@ -66,7 +66,7 @@ public class Creep {
             setAnimation("walk_");
             this.shellEffectTypes = new Array<ShellEffectType>();
         } else {
-            Gdx.app.error("Creep::Creep()", " -- route == null");
+            Gdx.app.error("Creep::Creep()", "-- route == null");
         }
     }
 
@@ -79,9 +79,9 @@ public class Creep {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
             }
             animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
-//        Gdx.app.log("Creep::setAnimation()", " -- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
+//        Gdx.app.log("Creep::setAnimation()", "-- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
         } catch (Exception exp) {
-            Gdx.app.log("Creep::setAnimation(" + action + direction + ")", " -- CreepName: " + templateForUnit.name + " Exp: " + exp);
+            Gdx.app.log("Creep::setAnimation(" + action + direction + ")", "-- CreepName: " + templateForUnit.name + " Exp: " + exp);
         }
     }
 
@@ -153,7 +153,7 @@ public class Creep {
 //                } else if (newX < oldX && newY < oldY) {
 //                } else if (newX < oldX && newY == oldY) {
 //                }
-//            Gdx.app.log("Creep::move()", " -- fVx:" + fVx + " fVy:" + fVy);
+//            Gdx.app.log("Creep::move()", "-- fVx:" + fVx + " fVy:" + fVy);
             // --- MANUAL ---
 
             int oldX = oldPosition.getX(), oldY = oldPosition.getY();
@@ -314,7 +314,7 @@ public class Creep {
                     backStepPoint.y), speed));
             displacement = new Vector2(velocity.x * delta, velocity.y * delta);
 
-//            Gdx.app.log("Creep::move()", " -- direction:" + direction + " oldDirection:" + oldDirection);
+//            Gdx.app.log("Creep::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
             if(!direction.equals(oldDirection)) {
                 setAnimation("walk_");
             }

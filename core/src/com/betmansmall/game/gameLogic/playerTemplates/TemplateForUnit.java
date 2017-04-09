@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
@@ -143,7 +144,7 @@ public class TemplateForUnit {
 
             validate();
         } catch (Exception exp) {
-            Gdx.app.log("TemplateForUnit::TemplateForUnit()", " -- Could not load TemplateForUnit from " + templateFile.path() + " Exp:" + exp);
+            Gdx.app.log("TemplateForUnit::TemplateForUnit()", "-- Could not load TemplateForUnit from " + templateFile.path() + " Exp:" + exp);
             throw new Exception("TemplateForUnit::TemplateForUnit() -- Could not load TemplateForUnit from " + templateFile.path() + " Exp:" + exp);
         }
     }
@@ -160,7 +161,7 @@ public class TemplateForUnit {
 
             this.speed = this.speed * 2;
         } catch (Exception exp) {
-            Gdx.app.error("TemplateForUnit::TemplateForUnit()", " -- Exp: " + exp + " Cheak the file!");
+            Gdx.app.error("TemplateForUnit::TemplateForUnit()", "-- Exp: " + exp + " Cheak the file!");
         }
 
         this.animations = new ObjectMap<String, AnimatedTiledMapTile>();
@@ -300,5 +301,25 @@ public class TemplateForUnit {
             }
         }
         return result;
+    }
+
+    public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TemplateForUnit[");
+        sb.append("templateName:" + templateName);
+        if(full) {
+            sb.append("," + "bounty:" + bounty);
+            sb.append("," + "factionName:" + factionName);
+            sb.append("," + "healthPoints:" + healthPoints);
+            sb.append("," + "name:" + name);
+            sb.append("," + "speed:" + speed);
+            sb.append("," + "type:" + type);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

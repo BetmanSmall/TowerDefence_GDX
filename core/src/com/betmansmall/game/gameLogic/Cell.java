@@ -31,7 +31,7 @@ public class Cell {
     public Vector2 graphicCoordinatesBottom, graphicCoordinatesRight, graphicCoordinatesTop, graphicCoordinatesLeft;
 
     public Cell() {
-//        Gdx.app.log("Cell::Cell();", " -- ");
+//        Gdx.app.log("Cell::Cell()", "-- ");
         this.backgroundTiles = new Array<TiledMapTile>();
         this.foregroundTiles = new Array<TiledMapTile>();
         this.trees = new Array<Tree>();
@@ -43,7 +43,7 @@ public class Cell {
     }
 
     public void setGraphicCoordinates(int cellX, int cellY, float halfSizeCellX, float halfSizeCellY) {
-//        Gdx.app.log("Cell::setGraphicCoordinates(" + cellX + "," + cellY + "," + halfSizeCellX + ", " + halfSizeCellY + ");", " -- ");
+//        Gdx.app.log("Cell::setGraphicCoordinates(" + cellX + "," + cellY + "," + halfSizeCellX + ", " + halfSizeCellY + ")", "-- ");
 //        if(map == 1) { // Нижняя карта
         graphicCoordinatesBottom = new Vector2((-(halfSizeCellX * cellY) + (cellX * halfSizeCellX)), (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY)));
 //        } else if(map == 2) { // Правая карта
@@ -65,7 +65,7 @@ public class Cell {
         } else if(map == 4) {
             return graphicCoordinatesLeft;
         }
-        Gdx.app.log("Cell::getGraphicCoordinates(" + map + ");", " -- Bad map | return null!");
+        Gdx.app.log("Cell::getGraphicCoordinates(" + map + ")", "-- Bad map | return null!");
         return null;
     }
 

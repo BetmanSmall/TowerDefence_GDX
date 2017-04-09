@@ -141,11 +141,11 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //Campaign menu
-                        towerDefence.gameLevelMaps.add("maps/arena4.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena3.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena2.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena0.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena3.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena4.tmx");
+//                        towerDefence.gameLevelMaps.add("maps/arena2.tmx");
                         towerDefence.nextGameLevel();
                         break;
                     case 2:
@@ -283,12 +283,12 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(menuButton1);
         mmStage.addActor(menuButton2);
         mmStage.addActor(menuButton3);
-        Gdx.app.log("MainMenuScreen::buttonsUpdate()", " -- mmStage:" + mmStage.getActors().size);
+        Gdx.app.log("MainMenuScreen::buttonsUpdate()", "-- mmStage:" + mmStage.getActors().size);
     }
 
     @Override
     public void show() {
-        Gdx.app.log("MainMenuScreen::show()", " -- Called!");
+        Gdx.app.log("MainMenuScreen::show()", "-- Called!");
         create(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         buttonsUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(mmStage);
@@ -349,24 +349,24 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void pause() {
-        Gdx.app.log("MainMenuScreen::pause()", " -- Called!");
+        Gdx.app.log("MainMenuScreen::pause()", "-- Called!");
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("MainMenuScreen::resume()", " -- Called!");
+        Gdx.app.log("MainMenuScreen::resume()", "-- Called!");
     }
 
     @Override
     public void hide() {
-        Gdx.app.log("MainMenuScreen::hide()", " -- Called!");
+        Gdx.app.log("MainMenuScreen::hide()", "-- Called!");
         //Should not be here!
         //dispose();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("MainMenuScreen::dispose()", " -- Called!");
+        Gdx.app.log("MainMenuScreen::dispose()", "-- Called!");
         textureMB1.dispose();
         textureMB2.dispose();
         textureMB3.dispose();

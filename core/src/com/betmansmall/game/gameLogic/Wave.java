@@ -34,11 +34,11 @@ public class Wave {
                 return null;
             } else if (action.contains("delay")) {
                 intervalForSpawn = Float.parseFloat(action.substring(action.indexOf("=") + 1, action.length()));
-                Gdx.app.log("WaveManager", "getNextNameTemplateForUnitForSpawnCreep(); -- Delay after wave:" + intervalForSpawn + " sec.");
+//                Gdx.app.log("Wave::getNextNameTemplateForUnitForSpawnCreep()", "-- Delay after wave:" + intervalForSpawn + " sec.");
                 return null;
             } else if (action.contains("interval")) {
                 intervalForSpawn = Float.parseFloat(action.substring(action.indexOf("=") + 1, action.length()));
-                Gdx.app.log("WaveManager", "getNextNameTemplateForUnitForSpawnCreep(); -- Next creep spawn after:" + intervalForSpawn + " sec.");
+//                Gdx.app.log("Wave::getNextNameTemplateForUnitForSpawnCreep()", "-- Next creep spawn after:" + intervalForSpawn + " sec.");
                 return null;
             } else { // string contain templateName.
                 intervalForSpawn = 0f;

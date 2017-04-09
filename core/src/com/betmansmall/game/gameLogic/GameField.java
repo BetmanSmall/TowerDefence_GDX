@@ -125,49 +125,36 @@ public class GameField {
         greenCheckmark = new Texture(Gdx.files.internal("maps/textures/green_checkmark.png"));
         redCross = new Texture(Gdx.files.internal("maps/textures/red_cross.png"));
         if (greenCheckmark == null || redCross == null) {
-            Gdx.app.error("GameField::GameField()", " -- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
+            Gdx.app.error("GameField::GameField()", "-- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
         }
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
         waveManager.validationPoints(field);
         if (waveManager.waves.size == 0) {
-            GridPoint2 spawnPoint = new GridPoint2(-1, -1);
-            for (int y = 0; y < sizeFieldY; y++) {
-                for (int x = 0; x < sizeFieldX; x++) {
-                    if (cellIsEmpty(x, y)) {
-                        spawnPoint.set(x, y);
-                    }
+            for (int w = 0; w < 10; w++) {
+                GridPoint2 spawnPoint = new GridPoint2((int)(Math.random()*sizeFieldX), (int)(Math.random()*sizeFieldY));
+                GridPoint2 exitPoint = new GridPoint2((int)(Math.random()*sizeFieldX), (int)(Math.random()*sizeFieldY));
+                Wave wave = new Wave(spawnPoint, exitPoint, 0f);
+                for (int k = 0; k < 10; k++) {
+                    wave.addAction("interval=" + 1);
+                    wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().getTemplateName());
                 }
+                waveManager.addWave(wave);
             }
-            GridPoint2 exitPoint = new GridPoint2(-1, -1);
-            for (int y = sizeFieldY - 1; y >= 0; y--) {
-                for (int x = sizeFieldX-1; x >= 0; x--) {
-                    if (cellIsEmpty(x, y)) {
-                        exitPoint.set(x, y);
-                    }
-                }
-            }
-            Wave wave = new Wave(spawnPoint, exitPoint, 0f);
-//            wave.spawnInterval = 1f;
-            for (int k = 0; k < 10; k++) {
-                wave.addAction("interval=" + 1);
-                wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().getTemplateName());
-            }
-            waveManager.addWave(wave);
         }
 
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = true;
         gameSpeed = 1.0f;
-        maxOfMissedCreeps = 1000;
+        maxOfMissedCreeps = 10;
         missedCreeps = 0;
         gamerGold = Integer.parseInt(map.getProperties().get("gamerGold", "300", String.class));
         // GAME INTERFACE ZONE2
     }
 
     private void createField(int sizeFieldX, int sizeFieldY, MapLayers mapLayers) {
-        Gdx.app.log("GameField::createField(" + sizeFieldX + "," + sizeFieldY + "," + mapLayers + ");", " -- field:" + field);
+        Gdx.app.log("GameField::createField(" + sizeFieldX + "," + sizeFieldY + "," + mapLayers + ")", "-- field:" + field);
         if (field == null) {
             field = new Cell[sizeFieldX][sizeFieldY];
             for (int y = 0; y < sizeFieldY; y++) {
@@ -203,12 +190,12 @@ public class GameField {
                                         String treeName = tiledMapTile.getProperties().get("treeName", String.class);
                                         int treeWidth = Integer.parseInt(tiledMapTile.getProperties().get("treeWidth", "1", String.class));
                                         int treeHeight = Integer.parseInt(tiledMapTile.getProperties().get("treeHeight", "1", String.class));
-                                        Gdx.app.log("GameField::createField();", " -- New Tree:" + treeName + "[" + treeWidth + "," + treeHeight + "]:{" + x + "," + y + "}");
+                                        Gdx.app.log("GameField::createField()", "-- New Tree:" + treeName + "[" + treeWidth + "," + treeHeight + "]:{" + x + "," + y + "}");
                                         float regionX = tiledMapTile.getTextureRegion().getRegionX();
                                         float regionY = tiledMapTile.getTextureRegion().getRegionY();
                                         float regionWidth = tiledMapTile.getTextureRegion().getRegionWidth();
                                         float regionHeight = tiledMapTile.getTextureRegion().getRegionWidth();
-                                        Gdx.app.log("GameField::createField();", " -- regionX:" + regionX + " regionY:" + regionY + " regionWidth:" + regionWidth + " regionHeight:" + regionHeight);
+                                        Gdx.app.log("GameField::createField()", "-- regionX:" + regionX + " regionY:" + regionY + " regionWidth:" + regionWidth + " regionHeight:" + regionHeight);
                                         TextureRegion textureRegion = new TextureRegion(tiledMapTile.getTextureRegion());
                                         textureRegion.setRegion(regionX - ((treeWidth>2) ? (treeWidth-2)*regionWidth : 0), regionY - ((treeHeight>1) ? (treeHeight-1)*regionHeight : 0), treeWidth*regionWidth, treeHeight*regionHeight);
 //                                        Cell.Tree tree = new Cell.Tree(textureRegion, treeWidth, treeHeight);
@@ -216,7 +203,7 @@ public class GameField {
                                 }
                             }
                         } else {
-                            Gdx.app.log("GameField::createField()", " -- Не смог преобразовать MapLayer в TiledMapTileLayer");
+                            Gdx.app.log("GameField::createField()", "-- Не смог преобразовать MapLayer в TiledMapTileLayer");
                         }
                     }
                 }
@@ -225,7 +212,7 @@ public class GameField {
 //        turnRight();
         flipY();
 //        turnRight();
-        Gdx.app.log("GameField::createField();", " -- pathFinder:" + pathFinder);
+        Gdx.app.log("GameField::createField()", "-- pathFinder:" + pathFinder);
         pathFinder = new PathFinder();
         pathFinder.loadCharMatrix(getCharMatrix());
     }
@@ -241,7 +228,7 @@ public class GameField {
             }
             field = newCells;
         } else {
-            Gdx.app.log("GameField::turnRight();", " -- Not work || Work but mb not Good!");
+            Gdx.app.log("GameField::turnRight()", "-- Not work || Work but mb not Good!");
             int oldWidth = sizeFieldX;
             int oldHeight = sizeFieldY;
             sizeFieldX = sizeFieldY;
@@ -268,7 +255,7 @@ public class GameField {
             }
             field = newCells;
         } else {
-            Gdx.app.log("GameField::turnLeft();", " -- Not work || Work but mb not Good!");
+            Gdx.app.log("GameField::turnLeft()", "-- Not work || Work but mb not Good!");
             int oldWidth = sizeFieldX;
             int oldHeight = sizeFieldY;
             sizeFieldX = sizeFieldY;
@@ -330,7 +317,7 @@ public class GameField {
     }
 
     public void dispose() {
-        Gdx.app.log("GameField::dispose()", " -- Called!");
+        Gdx.app.log("GameField::dispose()", "-- Called!");
         shapeRenderer.dispose();
         spriteBatch.dispose();
         bitmapFont.dispose();
@@ -367,7 +354,7 @@ public class GameField {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         if(isDrawableBackground > 0) {
-            drawBackGrounds(spriteBatch);
+            drawBackGrounds(spriteBatch, camera);
         }
         if(isDrawableForeground > 0) {
             drawForeGroundsWithCreepsAndTowers(spriteBatch);
@@ -423,7 +410,7 @@ public class GameField {
         spriteBatch.end();
     }
 
-    private void drawBackGrounds(SpriteBatch spriteBatch) {
+    private void drawBackGrounds(SpriteBatch spriteBatch, OrthographicCamera camera) {
         if(drawOrder == 0) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
@@ -473,13 +460,14 @@ public class GameField {
                 }
             }
         } else if(drawOrder == 8) {
+//            Gdx.app.log("GameField::drawBackGrounds()", "-- camera.position:" + camera.position);
             int x = 0, y = 0;
             int length = (sizeFieldX > sizeFieldY) ? sizeFieldX : sizeFieldY;
             while (x < length) {
                 if(x < sizeFieldX && y < sizeFieldY) {
                     if (x == length - 1 && y == length - 1) {
                         drawBackGroundCell(spriteBatch, x, y);
-//                        Gdx.app.log("GameField::drawBackGrounds();", " -- хуй");
+//                        Gdx.app.log("GameField::drawBackGrounds()", "-- хуй");
 //                        break;
                     } else {
                         drawBackGroundCell(spriteBatch, x, y);
@@ -575,7 +563,7 @@ public class GameField {
                 if(x < sizeFieldX && y < sizeFieldY) {
                     if (x == length - 1 && y == length - 1) {
                         drawForeGroundCellWithCreepsAndTower(spriteBatch, x, y);
-//                        Gdx.app.log("GameField::drawForeGroundsWithCreepsAndTowers();", " -- хуй");
+//                        Gdx.app.log("GameField::drawForeGroundsWithCreepsAndTowers()", "-- хуй");
 //                        break;
                     } else {
                         drawForeGroundCellWithCreepsAndTower(spriteBatch, x, y);
@@ -634,7 +622,7 @@ public class GameField {
         int heightForTop = sizeFieldY * halfSizeCellY; // B - Top
         int widthForBottom = sizeFieldX * halfSizeCellX; // A - C
         int heightForBottom = sizeFieldX * halfSizeCellY; // C - Bottom
-//        Gdx.app.log("GameField::drawGrid(camera);", " -- widthForTop:" + widthForTop + " heightForTop:" + heightForTop + " widthForBottom:" + widthForBottom + " heightForBottom:" + heightForBottom);
+//        Gdx.app.log("GameField::drawGrid(camera)", "-- widthForTop:" + widthForTop + " heightForTop:" + heightForTop + " widthForBottom:" + widthForBottom + " heightForBottom:" + heightForBottom);
 
         if(isDrawableGrid == 1 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldX; x++)
@@ -703,7 +691,7 @@ public class GameField {
 //    }
 
     private void drawCreep(Creep creep, SpriteBatch spriteBatch) { //TODO Need to refactor this
-//        Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ");", " -- Start!");
+//        Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- Start!");
         TextureRegion currentFrame;
         if (creep.isAlive()) {
             currentFrame = creep.getCurentFrame();
@@ -799,7 +787,7 @@ public class GameField {
                 float efWidth = effectBlockWidth - effectWidth * shellEffectType.elapsedTime;
                 shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
                 efX += effectBlockWidth;
-//                Gdx.app.log("GameField::drawCreep();", " -- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
+//                Gdx.app.log("GameField::drawCreep()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
             }
         }
     }
@@ -921,7 +909,7 @@ public class GameField {
         Array<GridPoint2> exitPoints = waveManager.getAllExitPoint();
         shapeRenderer.setColor(new Color(255f, 0f, 102f, 255f));
         for (GridPoint2 exitPoint : exitPoints) {
-//            Gdx.app.log("GameField::drawGridNav();", " -- exitPoint.x:" + exitPoint.x + " exitPoint.y:" + exitPoint.y + " isDrawableGridNav:" + isDrawableGridNav);
+//            Gdx.app.log("GameField::drawGridNav()", "-- exitPoint.x:" + exitPoint.x + " exitPoint.y:" + exitPoint.y + " isDrawableGridNav:" + isDrawableGridNav);
             Cell cell = field[exitPoint.x][exitPoint.y];
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(1));
@@ -1091,7 +1079,7 @@ public class GameField {
     }
 
     private void drawTowerUnderConstruction(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer, int buildX, int buildY, TemplateForTower templateForTower, boolean enoughGold) {
-//        Gdx.app.log("GameField::drawTowerUnderConstruction()", " -- buildX:" + buildX + " buildY:" + buildY /*+ " templateForTower:" + templateForTower*/ + " enoughGold:" + enoughGold);
+//        Gdx.app.log("GameField::drawTowerUnderConstruction()", "-- buildX:" + buildX + " buildY:" + buildY /*+ " templateForTower:" + templateForTower*/ + " enoughGold:" + enoughGold);
         int sizeCellX = getSizeCellX();
         int sizeCellY = getSizeCellY();
         float halfSizeCellX = sizeCellX / 2;
@@ -1150,7 +1138,9 @@ public class GameField {
             if(isDrawableTowers == 5) {
                 for (int m = 1; m < isDrawableTowers; m++) {
                     towerPos.set(mainCell.getGraphicCoordinates(m));
-                    shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection);
+                    if(templateForTower.radiusDetection != null) {
+                        shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection);
+                    }
                     towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, m));
                     spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
                     for (int x = startX; x <= finishX; x++) {
@@ -1172,7 +1162,9 @@ public class GameField {
                 }
             } else if(isDrawableTowers != 0) {
                 towerPos.set(mainCell.getGraphicCoordinates(isDrawableTowers));
-                shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection);
+                if(templateForTower.radiusDetection != null) {
+                    shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection);
+                }
                 towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, isDrawableTowers));
                 spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
                 for (int x = startX; x <= finishX; x++) {
@@ -1231,7 +1223,7 @@ public class GameField {
     }
 
     private void createCreep(GridPoint2 spawnPoint, TemplateForUnit templateForUnit, GridPoint2 exitPoint) {
-        Gdx.app.log("GameField::createCreep(" + spawnPoint + "," + templateForUnit + ", " + exitPoint + ");", " -- Start");
+        Gdx.app.log("GameField::createCreep(" + spawnPoint + ", " + templateForUnit + ", " + exitPoint + ")", "--");
         if (exitPoint == null) {
             exitPoint = waveManager.lastExitPoint;
         }
@@ -1241,13 +1233,13 @@ public class GameField {
             if (route != null) {
                 Creep creep = creepsManager.createCreep(route, templateForUnit);
                 field[spawnPoint.x][spawnPoint.y].setCreep(creep); // TODO field maybe out array
-//            Gdx.app.log("GameField::createCreep()", " -- x:" + x + " y:" + y + " eX:" + waveManager.exitPoints.first().x + " eY:" + waveManager.exitPoints.first().y);
-//            Gdx.app.log("GameField::createCreep()", " -- route:" + route);
+//            Gdx.app.log("GameField::createCreep()", "-- x:" + x + " y:" + y + " eX:" + waveManager.exitPoints.first().x + " eY:" + waveManager.exitPoints.first().y);
+//            Gdx.app.log("GameField::createCreep()", "-- route:" + route);
             } else {
 
             }
         } else {
-            Gdx.app.log("GameField::createCreep(" + spawnPoint + "," + templateForUnit + ", " + exitPoint + ");", " -- exitPoint:" + exitPoint + " pathFinder:" + pathFinder);
+            Gdx.app.log("GameField::createCreep(" + spawnPoint + "," + templateForUnit + ", " + exitPoint + ")", "-- exitPoint:" + exitPoint + " pathFinder:" + pathFinder);
         }
     }
 
@@ -1324,7 +1316,7 @@ public class GameField {
 
 //            rerouteForAllCreeps();
             gamerGold -= templateForTower.cost;
-            Gdx.app.log("GameField::createTower()", " -- GamerGold:" + gamerGold);
+            Gdx.app.log("GameField::createTower()", "-- GamerGold:" + gamerGold);
             return true;
         } else {
             return false;
@@ -1370,19 +1362,22 @@ public class GameField {
 
     private void rerouteForAllCreeps(GridPoint2 exitPoint) {
         if (pathFinder != null) {
-            long start1 = System.nanoTime();
-            Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Start:" + start1);
+            long start = System.nanoTime();
+            Gdx.app.log("GameField::rerouteForAllCreeps()", "-- Start:" + start);
 //            pathFinder.loadCharMatrix(getCharMatrix());
             for (Creep creep : creepsManager.getAllCreeps()) {
                 ArrayDeque<Node> route;
                 if (exitPoint == null) {
-                    Node node = creep.getRoute().getLast();
-                    GridPoint2 localExitPoint = new GridPoint2(node.getX(), node.getY());
-                    route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
+                    route = creep.getRoute();
+                    if(route != null && route.size() > 0) {
+                        Node node = creep.getRoute().getLast();
+                        GridPoint2 localExitPoint = new GridPoint2(node.getX(), node.getY());
+                        route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
+                    }
                 } else {
                     route = pathFinder.route(creep.getNewPosition().getX(), creep.getNewPosition().getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
                 }
-                if (route != null) {
+                if (route != null && route.size() > 0) {
                     route.removeFirst();
                     creep.setRoute(route);
                 }
@@ -1391,10 +1386,10 @@ public class GameField {
 //                }
 //            }.init(creep, outExitPoint)).start();
             }
-            long end1 = System.nanoTime();
-            Gdx.app.log("GameField", "rerouteForAllCreeps(); -- Time End:" + (end1 - start1));
+            long end = System.nanoTime();
+            Gdx.app.log("GameField::rerouteForAllCreeps()", "-- End:" + end + " Delta time:" + (end-start));
         } else {
-            Gdx.app.log("GameField::rerouteForAllCreeps(" + exitPoint + ");", " -- pathFinder:" + pathFinder);
+            Gdx.app.log("GameField::rerouteForAllCreeps(" + exitPoint + ")", "-- pathFinder:" + pathFinder);
         }
     }
 
@@ -1441,7 +1436,7 @@ public class GameField {
                         towersManager.removeTower(tower);
                     }
                 }
-//                Gdx.app.log("GameField::shotAllTowers(" + delta + ");", " -- towerAttackType.pit -- creep:" + creep);
+//                Gdx.app.log("GameField::shotAllTowers(" + delta + ")", "-- towerAttackType.pit -- creep:" + creep);
             } else if (towerAttackType == TowerAttackType.Melee) {
                 int radius = tower.getRadiusDetection();
                 for (int tmpX = -radius; tmpX <= radius; tmpX++) {
@@ -1503,15 +1498,15 @@ public class GameField {
 
     public String getGameState() {
         if (missedCreeps >= maxOfMissedCreeps) {
-//            Gdx.app.log("GameField::getGameState()", " -- LOSE!!");
+//            Gdx.app.log("GameField::getGameState()", "-- LOSE!!");
             return "Lose";
         } else {
             if (waveManager.getNumberOfCreeps() == 0 && creepsManager.amountCreeps() == 0) {
-//                Gdx.app.log("GameField::getGameState()", " -- WIN!!");
+//                Gdx.app.log("GameField::getGameState()", "-- WIN!!");
                 return "Win";
             }
         }
-//        Gdx.app.log("GameField::getGameState()", " -- IN PROGRESS!!");
+//        Gdx.app.log("GameField::getGameState()", "-- IN PROGRESS!!");
         return "In progress";
     }
 
@@ -1592,7 +1587,7 @@ public class GameField {
 //            pxlsX = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX;
 //            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
 //        }
-////        Gdx.app.log("GameField::getGraphicCoordinates(" + cellX + "," + cellY + "," + map + ");", " -- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
+////        Gdx.app.log("GameField::getGraphicCoordinates(" + cellX + "," + cellY + "," + map + ")", "-- pxlsX:" + pxlsX + " pxlsY:" + pxlsY);
 //        return new Vector2(pxlsX, pxlsY);
 //    }
 
@@ -1606,7 +1601,7 @@ public class GameField {
         } else if(map == 4) {
             towerPos.add(-(halfSizeCellX*(towerSize - ((towerSize % 2 != 0) ? 0 : 1))), -(halfSizeCellY*towerSize));
         } else {
-            Gdx.app.log("GameField::getCorrectGraphicTowerCoord(" + towerPos + ", " + towerSize + ", " + map + ");", " -- Bad map[1-4] value:" + map);
+            Gdx.app.log("GameField::getCorrectGraphicTowerCoord(" + towerPos + ", " + towerSize + ", " + map + ")", "-- Bad map[1-4] value:" + map);
         }
         return towerPos;
     }

@@ -18,7 +18,7 @@ public class UnderConstruction {
     public Array<Integer> coorsY;
 
     public UnderConstruction(TemplateForTower templateForTower) {
-        Gdx.app.log("UnderConstruction::UnderConstruction()", " -- templateForTower:" + templateForTower);
+        Gdx.app.log("UnderConstruction::UnderConstruction()", "-- templateForTower:" + templateForTower);
         this.state = -1;
         this.templateForTower = templateForTower;
         this.coorsX = new Array<Integer>();
@@ -26,7 +26,7 @@ public class UnderConstruction {
     }
 
     public UnderConstruction(int startX, int startY, TemplateForTower templateForTower) {
-        Gdx.app.log("UnderConstruction::UnderConstruction()", " -- startX:" + startX + " startY:" + startY + " templateForTower:" + templateForTower);
+        Gdx.app.log("UnderConstruction::UnderConstruction()", "-- startX:" + startX + " startY:" + startY + " templateForTower:" + templateForTower);
         this.state = 1;
         this.startX = startX;
         this.startY = startY;
@@ -36,7 +36,7 @@ public class UnderConstruction {
     }
 
     public boolean setStartCoors(int startX, int startY) {
-        Gdx.app.log("UnderConstruction::setStartCoors()", " -- startX:" + startX + " startY:" + startY);
+        Gdx.app.log("UnderConstruction::setStartCoors()", "-- startX:" + startX + " startY:" + startY);
         this.state = 1;
         this.startX = startX;
         this.startY = startY;
@@ -53,7 +53,7 @@ public class UnderConstruction {
     }
 
     public boolean setEndCoors(int endX, int endY) {
-//        Gdx.app.log("UnderConstruction::setEndCoors()", " -- endX:" + endX + " endY:" + endY);
+//        Gdx.app.log("UnderConstruction::setEndCoors()", "-- endX:" + endX + " endY:" + endY);
         this.endX = endX;
         this.endY = endY;
 
