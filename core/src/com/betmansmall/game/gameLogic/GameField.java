@@ -1189,12 +1189,6 @@ public class GameField {
         }
     }
 
-    public void setSpawnPoint(int x, int y) {
-        createCreep(new GridPoint2(x, y), factionsManager.getRandomTemplateForUnitFromFirstFaction(), null);
-//        spawnPoint = new GridPoint2(x, y);
-//        waveManager.spawnPoints.set(0, new GridPoint2(x, y));
-    }
-
     public void setExitPoint(int x, int y) {
         waveManager.setExitPoint(new GridPoint2(x, y));
         rerouteForAllCreeps(new GridPoint2(x, y));
@@ -1213,7 +1207,7 @@ public class GameField {
             if (templateForUnit != null) {
                 createCreep(templateNameAndPoints.spawnPoint, templateForUnit, templateNameAndPoints.exitPoint);
             } else {
-                Gdx.app.error("GameField", "spawnCreep(); -- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
+                Gdx.app.error("GameField::spawnCreep()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
             }
         }
     }
@@ -1232,14 +1226,13 @@ public class GameField {
             ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
             if (route != null) {
                 Creep creep = creepsManager.createCreep(route, templateForUnit);
-                field[spawnPoint.x][spawnPoint.y].setCreep(creep); // TODO field maybe out array
-//            Gdx.app.log("GameField::createCreep()", "-- x:" + x + " y:" + y + " eX:" + waveManager.exitPoints.first().x + " eY:" + waveManager.exitPoints.first().y);
-//            Gdx.app.log("GameField::createCreep()", "-- route:" + route);
+                field[spawnPoint.x][spawnPoint.y].setCreep(creep); // TODO field maybe out array | NO, we have WaveManager.validationPoints()
+//                Gdx.app.log("GameField::createCreep()", "-- route:" + route);
             } else {
-
+                Gdx.app.log("GameField::createCreep()", "-- Not found route for createCreep!");
             }
         } else {
-            Gdx.app.log("GameField::createCreep(" + spawnPoint + "," + templateForUnit + ", " + exitPoint + ")", "-- exitPoint:" + exitPoint + " pathFinder:" + pathFinder);
+            Gdx.app.log("GameField::createCreep()", "-- Bad spawnPoint:" + spawnPoint + " || exitPoint:" + exitPoint + " || pathFinder:" + pathFinder);
         }
     }
 
@@ -1303,7 +1296,7 @@ public class GameField {
             // GOVNO CODE
             GridPoint2 position = new GridPoint2(buildX, buildY);
             Tower tower = towersManager.createTower(position, templateForTower);
-            Gdx.app.log("GameField", "createTower(); -- templateForTower.towerAttackType:" + templateForTower.towerAttackType);
+            Gdx.app.log("GameField::createTower()", "-- templateForTower.towerAttackType:" + templateForTower.towerAttackType);
             if (templateForTower.towerAttackType != TowerAttackType.Pit) {
                 for (int tmpX = startX; tmpX <= finishX; tmpX++) {
                     for (int tmpY = startY; tmpY <= finishY; tmpY++) {
@@ -1316,7 +1309,7 @@ public class GameField {
 
 //            rerouteForAllCreeps();
             gamerGold -= templateForTower.cost;
-            Gdx.app.log("GameField::createTower()", "-- GamerGold:" + gamerGold);
+            Gdx.app.log("GameField::createTower()", "-- Now gamerGold:" + gamerGold);
             return true;
         } else {
             return false;

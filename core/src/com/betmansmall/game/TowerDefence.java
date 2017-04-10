@@ -117,7 +117,7 @@ public class TowerDefence extends Game {
 
     @Override
     public void dispose() {
-        Gdx.app.log("TowerDefence::dispose()", " Called!");
+        Gdx.app.log("TowerDefence::dispose()", "-- Called!");
         super.dispose();
         removeAllScreens();
         closeApplication();

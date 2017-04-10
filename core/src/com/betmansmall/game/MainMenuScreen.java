@@ -130,6 +130,7 @@ public class MainMenuScreen implements Screen {
                         break;
                     case 2:
                         //TODO: Options menu Descogle
+                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Options function not implemented");
                         break;
                     case 3:
                         //Exit button
@@ -211,7 +212,7 @@ public class MainMenuScreen implements Screen {
     }
 
     private void switchMenuButtons() {
-        Gdx.app.log("MainMenuScreen", "switchMenuButtons(); -- menuLvl:" + menuLvl);
+        Gdx.app.log("MainMenuScreen::switchMenuButtons()", "-- menuLvl:" + menuLvl);
         switch (menuLvl) {
             case 0:         //main menu
                 textureMB1 = new Texture(Gdx.files.internal("menubutons/play.png"));
@@ -255,21 +256,21 @@ public class MainMenuScreen implements Screen {
         menuButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::Button1", "Clicked!");
+                Gdx.app.log("MainMenuScreen::ClickListener::clicked(" + event + "," + x + "," + y + ")", " -- menuButton1 pressed");
                 clickAnalyzer((short) 1);
             }
         });
         menuButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::Button2", "Clicked!");
+                Gdx.app.log("MainMenuScreen::ClickListener::clicked(" + event + "," + x + "," + y + ")", " -- menuButton2 pressed");
                 clickAnalyzer((short) 2);
             }
         });
         menuButton3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::Button3", "Clicked!");
+                Gdx.app.log("MainMenuScreen::ClickListener::clicked(" + event + "," + x + "," + y + ")", " -- menuButton3 pressed");
                 clickAnalyzer((short) 3);
             }
         });
@@ -295,22 +296,22 @@ public class MainMenuScreen implements Screen {
     }
 
     private void inputHandler(float delta) {
-//        Gdx.app.log("MainMenuScreen", "inputHandler(" + delta + ");");
+//        Gdx.app.log("MainMenuScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             menuLvl--;
             if(menuLvl == -1) {
                 towerDefence.dispose();
             }
             switchMenuButtons();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
-            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.NUMPAD_1);");
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUMPAD_1);");
             clickAnalyzer((short)1);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
-            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.NUMPAD_2);");
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUMPAD_2);");
             clickAnalyzer((short)2);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
-            Gdx.app.log("MainMenuScreen", "inputHandler(); -- isKeyPressed(Input.Keys.NUMPAD_3);");
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUMPAD_3);");
             clickAnalyzer((short)3);
         }
     }

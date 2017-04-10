@@ -25,7 +25,7 @@ public class Tower {
     public Circle radiusFlyShellСircle;
 
     public Tower(GridPoint2 position, TemplateForTower templateForTower){
-        Gdx.app.log("Tower", "Tower(" + position + ", " + templateForTower.toString() + ");");
+        Gdx.app.log("Tower::Tower(" + position + ", " + templateForTower + ")", "--");
         this.position = position;
         this.elapsedReloadTime = 0;
         this.templateForTower = templateForTower;

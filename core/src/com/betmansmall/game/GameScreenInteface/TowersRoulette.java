@@ -1,23 +1,16 @@
 package com.betmansmall.game.GameScreenInteface;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
-import com.betmansmall.game.gameLogic.playerTemplates.Faction;
-import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -32,8 +25,6 @@ public class TowersRoulette extends Roulette {
     private static volatile Boolean IS_HIDE_TOWERS = true;
     private GameField gameField;
     private Array<TemplateForTower> templateForTowers;
-    private DeviceSettings deviceSettings;
-    private String currentDevice;
 
     public TowersRoulette(GameField gameField) {
         this.gameField = gameField;
@@ -41,10 +32,6 @@ public class TowersRoulette extends Roulette {
     }
 
     private void init() {
-        //Finding out the device which runs our program
-        deviceSettings = new DeviceSettings();
-        currentDevice = deviceSettings.getDevice();
-
         //TEMPORARY VARIANT OF TAKING TOWERS
         templateForTowers = gameField.getAllTowers();
 
@@ -53,8 +40,8 @@ public class TowersRoulette extends Roulette {
 
         towerFrames = new Array<ImageButton>();
 
-        if(currentDevice == "android") {
-            Gdx.app.log("Device settings: ", "Device is android");
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            Gdx.app.log("TowersRoulette::init()", "-- ApplicationType.Android");
             circleGroup = new Group();
             rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_roulette_main.png"))).getDrawable());
             rouletteButton.setName("rouletteButton");
@@ -70,8 +57,8 @@ public class TowersRoulette extends Roulette {
             rouletteCircle.setVisible(false);
             circleGroup.addActor(rouletteCircle);
             circleGroup.setOrigin(Gdx.graphics.getWidth(), 0);
-        } else if(currentDevice == "desktop") {
-            Gdx.app.log("Device settings: ", "Device is desktop");
+        } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            Gdx.app.log("TowersRoulette::init()", "-- ApplicationType.Desktop");
             rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_button.png"))).getDrawable());
             rouletteButton.setName("rouletteButton");
             rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
@@ -103,36 +90,38 @@ public class TowersRoulette extends Roulette {
                         rouletteButton.getX(),
                         rouletteButton.getY()
                                 + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f));
-//                Gdx.app.log("Button position is :", "X = " + templateButton.getX() + " Y = " + templateButton.getX());
+                Gdx.app.log("TowersRoulette::init()", "-- button position(" + templateButton.getX() + "," + templateButton.getY() + ")");
                 towerButtonsArray.get(towersNumber).setVisible(false);
                 towerFrames.get(towersNumber).setVisible(false);
                 buttonGroup.addActor(towerButtonsArray.get(towersNumber));
                 buttonGroup.addActor(towerFrames.get(towersNumber));
             }
-            Gdx.app.log("Number of towers", ":" + towersNumber);
-//            Gdx.app.log("Number of frames", ":" + towerFrames.size);
+            Gdx.app.log("TowersRoulette::init()", "-- towersNumber:" + towersNumber);
         } else {
-            Gdx.app.log("Device settings: ", "Device is not recognized");
+            Gdx.app.log("TowersRoulette::init()", "-- Device is not recognized");
         }
     }
 
     private void buttonClick() {
         IS_HIDE_TOWERS = !IS_HIDE_TOWERS;
-        if(currentDevice == "android") {
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            Gdx.app.log("TowersRoulette::buttonClick()", "-- ApplicationType.Android");
             rouletteCircle.setVisible(!IS_HIDE_TOWERS);
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
-        } else { //IF DESKTOP
+        } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            Gdx.app.log("TowersRoulette::buttonClick()", "-- ApplicationType.Desktop");
             for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
                 towerButtonsArray.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
                 towerFrames.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
             }
         }
-        if(IS_HIDE_TOWERS)
+        if(IS_HIDE_TOWERS) {
             gameField.cancelUnderConstruction();
+        }
     }
 
     private void ringClick(){
-//        Gdx.app.log("TAG", "Tower is selected");
+//        Gdx.app.log("TowersRoulette::ringClick()", "-- Tower is selected");
         rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
         rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
         float trash = circleGroup.getRotation() % 90; //TODO rename trash variable
@@ -146,7 +135,8 @@ public class TowersRoulette extends Roulette {
     }
 
     public boolean makeRotation(float x, float y, float deltaX, float deltaY) {
-        if(currentDevice == "android") {
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            Gdx.app.log("TowersRoulette::makeRotation()", "-- ApplicationType.Android");
             x = Gdx.graphics.getWidth() - x;
             y = Gdx.graphics.getHeight() - y;
             if ((x * x + y * y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))
@@ -175,19 +165,20 @@ public class TowersRoulette extends Roulette {
         if(towerId < templateForTowers.size) {
             localTemplate = templateForTowers.get(Math.abs(towerId));
         }
-        Gdx.app.log("TowersRoulette::chooseTower()", "User choose tower:" + localTemplate.name);
+        Gdx.app.log("TowersRoulette::chooseTowerAndroid(" + isGreatedRound + ")", "User choose tower:" + localTemplate.name);
         gameField.createdUnderConstruction(localTemplate);
     }
 
     private void chooseTowerDesktop(float x, float y) {
         Gdx.app.log("TowersRoulette::chooseTowerDesktop(" + x + ", " + y + ")", "-- templateForTowers.size:" + templateForTowers.size + " towerFrames.size:" + towerFrames.size);
-        TemplateForTower localTemplate = templateForTowers.get(0);
+        TemplateForTower localTemplate;
         for(int towerNumber = 0; towerNumber < towerFrames.size; towerNumber++) {
             Gdx.app.log("TowersRoulette::chooseTowerDesktop()", "-- towerNumber:" + towerNumber);
             if (towerFrames.get(towerNumber).isPressed()) {
                 Gdx.app.log("TowersRoulette::chooseTowerDesktop()", "-- towerNumber.isPressed()");
                 localTemplate = templateForTowers.get(towerNumber);
                 gameField.createdUnderConstruction(localTemplate);
+                break;
             }
         }
     }
@@ -202,10 +193,11 @@ public class TowersRoulette extends Roulette {
         if((x*x + y*y) <= (getLocalWidth(RING_RADIUS) * getLocalWidth(RING_RADIUS))
                 && x <= getLocalWidth(RING_RADIUS)
                 && y <= getLocalWidth(RING_RADIUS) && !IS_HIDE_TOWERS
-                && currentDevice == "android") {
+                && Gdx.app.getType() == Application.ApplicationType.Android) {
             if (!((x*x + y*y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
                     && x <= getLocalWidth(ROULETTE_RADIUS)
                     && y <= getLocalWidth(ROULETTE_RADIUS))) {
+                Gdx.app.log("TowersRoulette::isButtonTouched()", "-- RING PRESS DETECTION");
                 isTouched = true;
                 if(isTouched) ringClick();
                 return isTouched;
@@ -216,7 +208,8 @@ public class TowersRoulette extends Roulette {
         if ((x * x + y * y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
                 && x <= getLocalWidth(ROULETTE_RADIUS)
                 && y <= getLocalWidth(ROULETTE_RADIUS)
-                && currentDevice == "android") {
+                && Gdx.app.getType() == Application.ApplicationType.Android) {
+            Gdx.app.log("TowersRoulette::isButtonTouched()", "-- BUTTON PRESS DETECTION ANDROID");
             isTouched = true;
             if (isTouched) buttonClick();
             return isTouched;
@@ -225,6 +218,7 @@ public class TowersRoulette extends Roulette {
         if ((x * y) <= getLocalWidth(ROULETTE_RADIUS) * getLocalWidth(ROULETTE_RADIUS)
                 && x <= getLocalWidth(ROULETTE_RADIUS)
                 && y <= getLocalWidth(ROULETTE_RADIUS)) {
+            Gdx.app.log("TowersRoulette::isButtonTouched()", "-- BUTTON PRESS DETECTION DESKTOP");
             isTouched = true;
             if (isTouched) buttonClick();
             return isTouched;
@@ -233,7 +227,7 @@ public class TowersRoulette extends Roulette {
         if(        x <= getLocalWidth(ROULETTE_RADIUS)
                 && y <= (templateForTowers.size) * getLocalWidth(ROULETTE_RADIUS)/1.5f + getLocalWidth(ROULETTE_RADIUS)
                 && y >= getLocalHeight(ROULETTE_RADIUS)/1.5f){
-            Gdx.app.log("TOWER BUTTON","");
+            Gdx.app.log("TowersRoulette::isButtonTouched()", "-- TOWER_BUTTON PRESS DETECTION");
             chooseTowerDesktop(x, y);
             isTouched = true;
             return isTouched;
@@ -241,10 +235,9 @@ public class TowersRoulette extends Roulette {
         return isTouched;
     }
 
-
     @Override
     public List<Group> getGroup() {
-        if (currentDevice == "android"){
+        if (Gdx.app.getType() == Application.ApplicationType.Android){
             return Arrays.asList(buttonGroup, circleGroup);
         } else {
             return Arrays.asList(buttonGroup);

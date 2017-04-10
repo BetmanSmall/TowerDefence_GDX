@@ -8,10 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.betmansmall.game.gameLogic.GameField;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
-
 /**
  * Created by Transet on 07.02.2016.
  * This class provides elements which placed on game screen.

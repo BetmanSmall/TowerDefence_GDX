@@ -283,7 +283,7 @@ public class TemplateForTower {
 
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
-        sb.append("TemplateForUnit[");
+        sb.append("TemplateForTower[");
         sb.append("templateName:" + templateName);
         if(full) {
             sb.append("," + "factionName:" + factionName);

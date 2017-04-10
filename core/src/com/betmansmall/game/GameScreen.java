@@ -1,5 +1,6 @@
 package com.betmansmall.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -14,14 +15,12 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.betmansmall.game.GameScreenInteface.DeviceSettings;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 
 public class GameScreen implements Screen {
     private BitmapFont bitmapFont = new BitmapFont();
-    private DeviceSettings deviceSettings = new DeviceSettings();
 
     private float currentDuration; // LOL GOVNE code
     private float MAX_DURATION_FOR_DEFEAT_SCREEN = 1f;
@@ -84,7 +83,7 @@ public class GameScreen implements Screen {
 //              } else if(button == 2) {
 //                  gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
                 } else if (button == 3) {
-                    gameField.setSpawnPoint(cellCoordinate.x, cellCoordinate.y);
+                    gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
                 } else if (button == 4) {
                     gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
                 }
@@ -95,7 +94,6 @@ public class GameScreen implements Screen {
         @Override
         public boolean longPress(float x, float y) {
             Gdx.app.log("CameraController::longPress()", "-- x:" + x + " y:" + y);
-//          gameField.createSpawnTimerForCreeps();
             return false;
         }
 
@@ -117,7 +115,7 @@ public class GameScreen implements Screen {
 //            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
 //            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
-            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY) && deviceSettings.getDevice() == "android") {
+            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
                 lastCircleTouched = true;
                 return true;
             }
@@ -420,6 +418,7 @@ public class GameScreen implements Screen {
             gameInterface.act(delta);
             gameInterface.draw();
             gameInterface.getInterfaceStage().getBatch().begin();
+            bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf(Gdx.graphics.getFramesPerSecond()), 0, Gdx.graphics.getHeight());
             bitmapFont.getData().setScale(4);
             bitmapFont.setColor(Color.YELLOW);
             bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf("Gold amount: "
@@ -452,7 +451,7 @@ public class GameScreen implements Screen {
             gameInterface.getInterfaceStage().getBatch().draw(defeatScreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             gameInterface.getInterfaceStage().getBatch().end();
         } else {
-            Gdx.app.log("Something goes wrong", "123");
+            Gdx.app.log("GameScreen::render()", "-- Not get normal gameState!");
         }
     }
 
@@ -467,12 +466,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-        Gdx.app.log("GameScreen::pause()", " Called!");
+        Gdx.app.log("GameScreen::pause()", "-- Called!");
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("GameScreen::resume()", " Called!");
+        Gdx.app.log("GameScreen::resume()", "-- Called!");
     }
 
     @Override
