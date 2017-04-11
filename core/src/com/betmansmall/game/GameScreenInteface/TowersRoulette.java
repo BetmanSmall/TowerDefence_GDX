@@ -2,10 +2,15 @@ package com.betmansmall.game.GameScreenInteface;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -24,10 +29,12 @@ public class TowersRoulette extends Roulette {
     private Array<ImageButton> towerFrames;
     private static volatile Boolean IS_HIDE_TOWERS = true;
     private GameField gameField;
+    private BitmapFont bitmapFont;
     private Array<TemplateForTower> templateForTowers;
 
-    public TowersRoulette(GameField gameField) {
+    public TowersRoulette(GameField gameField, BitmapFont bitmapFont) {
         this.gameField = gameField;
+        this.bitmapFont = bitmapFont;
         init();
     }
 
@@ -36,8 +43,8 @@ public class TowersRoulette extends Roulette {
         templateForTowers = gameField.getAllTowers();
 
         buttonGroup = new Group();
-        towerButtonsArray = new Array<ImageButton>();
 
+        towerButtonsArray = new Array<ImageButton>();
         towerFrames = new Array<ImageButton>();
 
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -66,39 +73,55 @@ public class TowersRoulette extends Roulette {
             rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
             buttonGroup.addActor(rouletteButton);
             buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
-            int towersNumber;
-            for(towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++) {
+            for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++) {
                 TemplateForTower templateForTower = templateForTowers.get(towersNumber);
+
                 ImageButton templateButton = new ImageButton(new Image(templateForTower.idleTile.getTextureRegion()).getDrawable());
                 ImageButton templateFrame = new ImageButton(new Image(new Texture(Gdx.files.internal("img/build_frame.png"))).getDrawable());
+                templateButton.setSize(getLocalWidth(ROULETTE_RADIUS)/1.5f, getLocalHeight(ROULETTE_RADIUS)/1.5f);
+                templateButton.setPosition(rouletteButton.getX(), rouletteButton.getY()
+                        + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f));
+                templateFrame.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f);
+                templateFrame.setPosition(rouletteButton.getX(), rouletteButton.getY()
+                        + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f));
+                templateButton.setVisible(false);
+                templateFrame.setVisible(false);
 
-//                String attackTower = templateForTower.damage.toString();
-//                String radiusTower = templateForTower.radius.toString();
-//                String costTower = templateForTower.cost.toString();
-//                String nameTower = templateForTower.name;
-
+                buttonGroup.addActor(templateButton);
+                buttonGroup.addActor(templateFrame);
                 towerButtonsArray.add(templateButton);
                 towerFrames.add(templateFrame);
 
-                towerButtonsArray.get(towersNumber).setSize(getLocalWidth(ROULETTE_RADIUS)/1.5f, getLocalHeight(ROULETTE_RADIUS)/1.5f);
-                towerButtonsArray.get(towersNumber).setPosition(
-                        rouletteButton.getX(),
-                        rouletteButton.getY()
-                                + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f));
-                towerFrames.get(towersNumber).setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f);
-                towerFrames.get(towersNumber).setPosition(
-                        rouletteButton.getX(),
-                        rouletteButton.getY()
-                                + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f));
-                Gdx.app.log("TowersRoulette::init()", "-- button position(" + templateButton.getX() + "," + templateButton.getY() + ")");
-                towerButtonsArray.get(towersNumber).setVisible(false);
-                towerFrames.get(towersNumber).setVisible(false);
-                buttonGroup.addActor(towerButtonsArray.get(towersNumber));
-                buttonGroup.addActor(towerFrames.get(towersNumber));
+                String nameTower = templateForTower.name;
+                String attackTower = templateForTower.damage.toString();
+                String radiusDetectionTower = templateForTower.radiusDetection.toString();
+                String costTower = templateForTower.cost.toString();
+
+                Label nameLabel = new Label(nameTower, new Label.LabelStyle(bitmapFont, Color.WHITE));
+                Label attackLabel = new Label(attackTower, new Label.LabelStyle(bitmapFont, Color.RED));
+                Label radiusDetectionLabel = new Label(radiusDetectionTower, new Label.LabelStyle(bitmapFont, Color.GREEN));
+                Label costLabel = new Label(costTower, new Label.LabelStyle(bitmapFont, Color.YELLOW));
+                float textX = Gdx.graphics.getWidth()-30f;
+                float textY = rouletteButton.getY() + (getLocalWidth(ROULETTE_RADIUS) + towersNumber * getLocalWidth(ROULETTE_RADIUS)/1.5f); // 4to za pizdec? AndreY??? NAXUI
+                nameLabel.setPosition(textX-160, textY+30); // Magic number
+                attackLabel.setPosition(textX, textY+60); // tyt tak zavedino
+                radiusDetectionLabel.setPosition(textX, textY+30);
+                costLabel.setPosition(textX, textY+10);
+                nameLabel.setVisible(false);
+                attackLabel.setVisible(false);
+                radiusDetectionLabel.setVisible(false);
+                costLabel.setVisible(false);
+
+                buttonGroup.addActor(nameLabel);
+                buttonGroup.addActor(attackLabel);
+                buttonGroup.addActor(radiusDetectionLabel);
+                buttonGroup.addActor(costLabel);
+
+                Gdx.app.log("TowersRoulette::init()", "-- button pos:(" + templateButton.getX() + "," + templateButton.getY() + "):" + nameTower);
             }
-            Gdx.app.log("TowersRoulette::init()", "-- towersNumber:" + towersNumber);
+            Gdx.app.log("TowersRoulette::init()", "-- templateForTowers.size:" + templateForTowers.size);
         } else {
-            Gdx.app.log("TowersRoulette::init()", "-- Device is not recognized");
+            Gdx.app.log("TowersRoulette::init()", "-- Device is not supported");
         }
     }
 
@@ -110,9 +133,12 @@ public class TowersRoulette extends Roulette {
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
         } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
             Gdx.app.log("TowersRoulette::buttonClick()", "-- ApplicationType.Desktop");
-            for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
-                towerButtonsArray.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
-                towerFrames.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
+//            for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
+//                towerButtonsArray.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
+//                towerFrames.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
+//            }
+            for (Actor actor : buttonGroup.getChildren()) {
+                actor.setVisible(!IS_HIDE_TOWERS);
             }
         }
         if(IS_HIDE_TOWERS) {

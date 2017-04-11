@@ -1,62 +1,44 @@
 package com.betmansmall.game.GameScreenInteface;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.betmansmall.game.gameLogic.GameField;
 
 /**
- * Created by Transet on 07.02.2016.
+ * Created by Transet/AndeyA on 07.02.2016. (GovnoDoderbI)
  * This class provides elements which placed on game screen.
  * TODO implement more interface options
  */
 public class GameInterface {
+    public BitmapFont bitmapFont;
+    public Stage stage;
+    public Label gamerGoldLabel, missedAndLimit, fpsLabel;
 
-    public enum GameInterfaceElements {
-        TOWERS_ROULETTE,
-        CREEPS_ROULETTE
-    }
-
-    public TowersRoulette getTowersRoulette() {
-        return towersRoulette;
-    }
-
-    public void setTowersRoulette(TowersRoulette towersRoulette) {
-        this.towersRoulette = towersRoulette;
-    }
-
-    public CreepsRoulette getCreepsRoulette() {
-        return creepsRoulette;
-    }
-
-    public Stage getInterfaceStage(){
-        return stage;
-    }
-
-    public void setCreepsRoulette(CreepsRoulette creepsRoulette) {
-        this.creepsRoulette = creepsRoulette;
-    }
-    private BitmapFont bitmapFont = new BitmapFont();
-    private TowersRoulette towersRoulette;
-    private CreepsRoulette creepsRoulette;
-    private Stage stage;
-    private GameField gameField;
+    public TowersRoulette towersRoulette;
+    public CreepsRoulette creepsRoulette;
 
     public GameInterface(GameField gameField) {
         Gdx.app.log("GameInterface::GameInterface(" + gameField + ")", "-- Called!");
-        this.gameField = gameField;
-        initStage();
-    }
-
-    private void initStage() {
-        Gdx.app.log("GameInterface::initStage()", "-- Called!");
+        bitmapFont = new BitmapFont();
         stage = new Stage();
-        towersRoulette = new TowersRoulette(gameField);
-        creepsRoulette = new CreepsRoulette(gameField);
+        gamerGoldLabel = new Label("gamerGold:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        gamerGoldLabel.setPosition(Gdx.graphics.getWidth()*0.60f, 15.0f);
+        gamerGoldLabel.setFontScale(2f);
+        missedAndLimit = new Label("10/100", new Label.LabelStyle(bitmapFont, Color.PINK));
+        missedAndLimit.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-20f);
+        missedAndLimit.setFontScale(2f);
+        fpsLabel = new Label("000", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        fpsLabel.setPosition(0.0f, Gdx.graphics.getHeight() - 18.0f);
+        stage.addActor(gamerGoldLabel);
+        stage.addActor(missedAndLimit);
+        stage.addActor(fpsLabel);
 
+        towersRoulette = new TowersRoulette(gameField, bitmapFont);
+        creepsRoulette = new CreepsRoulette(gameField);
         for(Actor actor : creepsRoulette.getGroup()) {
             stage.addActor(actor);
         }
@@ -65,35 +47,15 @@ public class GameInterface {
                 stage.addActor(actor);
             }
         } catch(Error error) {
-            Gdx.app.log("Error:", "no circle1 group");
+            Gdx.app.log("GameInterface::GameInterface()", "-- no circle(???) group");
         }
-    }
-
-    public InputMultiplexer setCommonInputHandler(InputProcessor inputProcessor) {
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(inputProcessor);
-        inputMultiplexer.addProcessor(stage);
-        return inputMultiplexer;
-    }
-
-    public void act(float delta) {
-        stage.act(delta);
-    }
-
-    public void draw() {
-        stage.draw();
-//        bitmapFont.setColor(Color.WHITE);
-//        bitmapFont.draw(getInterfaceStage().getBatch(),String.valueOf(" "),1,2);
-    }
-
-    public void updateStage() {
-        Gdx.app.log("GameInterface::updateStage()", "-- Called!");
-        initStage();
     }
 
     public void dispose() {
         Gdx.app.log("GameInterface::dispose()", "-- Called!");
-        bitmapFont.dispose();
         stage.dispose();
+//        towersRoulette.dispose();
+//        creepsRoulette.dispose();
+        bitmapFont.dispose();
     }
 }

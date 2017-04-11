@@ -93,8 +93,8 @@ public class GameField {
     private WhichCell whichCell;
     private boolean gamePaused;
     public float gameSpeed;
-    private int maxOfMissedCreeps;
-    private int missedCreeps;
+    public int maxOfMissedCreeps;
+    public int missedCreeps;
     public static int gamerGold;
     // GAME INTERFACE ZONE2
 

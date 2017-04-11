@@ -5,11 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
@@ -20,35 +18,25 @@ import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 
 public class GameScreen implements Screen {
-    private BitmapFont bitmapFont = new BitmapFont();
-
-    private float currentDuration; // LOL GOVNE code
-    private float MAX_DURATION_FOR_DEFEAT_SCREEN = 1f;
-
-    private Texture defeatScreen;
-
-    private GameInterface gameInterface;
-    private GameField gameField;
-
-    private CameraController cameraController;
-
     class CameraController implements GestureListener {
-        public OrthographicCamera camera;
+        // Need all fix this!!! PIZDEC?1??
         private float zoomMax = 50f; //max size
         private float zoomMin = 0.2f; // 2x zoom
         public float borderLeftX, borderRightX;
         public float borderUpY, borderDownY;
-
+        public OrthographicCamera camera;
+        // Need all fix this!!! PIZDEC??2?
         float velX, velY;
         boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
         float initialScale = 2f;
         boolean lastCircleTouched = false;
+        // Need all fix this!!! PIZDEC???3
 
-        public CameraController(OrthographicCamera camera, float maxZoom, float minZoom) {//, float borderLeftX, float borderRightX, float borderUpY, float borderDownY) {
-            Gdx.app.log("CameraController::CameraController()", "-- camera:" + camera + " maxZoom:" + maxZoom + " minZoom:" + minZoom);
-            this.camera = camera;
+        public CameraController(float maxZoom, float minZoom, OrthographicCamera camera) {//, float borderLeftX, float borderRightX, float borderUpY, float borderDownY) {
+            Gdx.app.log("CameraController::CameraController()", "-- maxZoom:" + maxZoom + " minZoom:" + minZoom + " camera:" + camera);
             this.zoomMax = maxZoom;
             this.zoomMin = minZoom;
+            this.camera = camera;
 //            this.borderLeftX = borderLeftX;
 //            this.borderRightX = borderRightX;
 //            this.borderUpY = borderUpY;
@@ -67,7 +55,7 @@ public class GameScreen implements Screen {
         public boolean tap(float x, float y, int count, int button) {
             Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 //          CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
-            if (gameInterface.getCreepsRoulette().isButtonTouched(x, y) || gameInterface.getTowersRoulette().isButtonTouched(x, y)) {
+            if (gameInterface.creepsRoulette.isButtonTouched(x, y) || gameInterface.towersRoulette.isButtonTouched(x, y)) {
                 return false;
             }
 
@@ -115,7 +103,7 @@ public class GameScreen implements Screen {
 //            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
 //            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
-            if (gameInterface.getTowersRoulette().makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (gameInterface.towersRoulette.makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
                 lastCircleTouched = true;
                 return true;
             }
@@ -290,20 +278,28 @@ public class GameScreen implements Screen {
         }
     }
 
+    // andey || LOL GOVNE code
+    private float currentDuration;
+    private float MAX_DURATION_FOR_DEFEAT_SCREEN = 1f;
+    private Texture loseOrWinTexture;
+    // andey || LOL GOVNE code
+
+    private GameField gameField;
+    private GameInterface gameInterface;
+    private CameraController cameraController;
 
     public GameScreen(String mapName) {
         gameField = new GameField(mapName);
         gameInterface = new GameInterface(gameField);
-
-        cameraController = new CameraController(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), 50.0f, 0.2f);
+        cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         cameraController.borderLeftX  = 0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY());
         cameraController.borderRightX = 0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX());
         cameraController.borderUpY    = 0;
         cameraController.borderDownY  = 0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY()));
-        MyGestureDetector myGestureDetector = new MyGestureDetector(cameraController);
 
-        InputMultiplexer inputMultiplexer = gameInterface.setCommonInputHandler(new GestureDetector(cameraController));
-        inputMultiplexer.addProcessor(myGestureDetector);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(new GestureDetector(cameraController));// я хз че делать=(
+        inputMultiplexer.addProcessor(new MyGestureDetector(cameraController)); // Бля тут бага тоже есть
+        inputMultiplexer.addProcessor(gameInterface.stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
@@ -326,7 +322,7 @@ public class GameScreen implements Screen {
             Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0);");
-            gameInterface.getCreepsRoulette().buttonClick();
+            gameInterface.creepsRoulette.buttonClick();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1);");
             gameField.isDrawableGrid++;
@@ -415,17 +411,11 @@ public class GameScreen implements Screen {
             cameraController.update();
             cameraController.camera.update();
             gameField.render(delta, cameraController.camera);
-            gameInterface.act(delta);
-            gameInterface.draw();
-            gameInterface.getInterfaceStage().getBatch().begin();
-            bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf(Gdx.graphics.getFramesPerSecond()), 0, Gdx.graphics.getHeight());
-            bitmapFont.getData().setScale(4);
-            bitmapFont.setColor(Color.YELLOW);
-            bitmapFont.draw(gameInterface.getInterfaceStage().getBatch(), String.valueOf("Gold amount: "
-                                + gameField.getGamerGold()),
-                                Gdx.graphics.getWidth() / 2 - 150,
-                                Gdx.graphics.getHeight() - 10);
-            gameInterface.getInterfaceStage().getBatch().end();
+            gameInterface.gamerGoldLabel.setText("gamerGold:" + gameField.getGamerGold());
+            gameInterface.fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
+            gameInterface.missedAndLimit.setText(gameField.missedCreeps + "/" + gameField.maxOfMissedCreeps);
+            gameInterface.stage.act(delta);
+            gameInterface.stage.draw();
         } else if (gameState.equals("Lose")) {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
@@ -433,11 +423,11 @@ public class GameScreen implements Screen {
                 TowerDefence.getInstance().nextGameLevel();
                 return;
             }
-            if (defeatScreen == null)
-                defeatScreen = new Texture(Gdx.files.internal("img/defeat.jpg"));
-            gameInterface.getInterfaceStage().getBatch().begin();
-            gameInterface.getInterfaceStage().getBatch().draw(defeatScreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            gameInterface.getInterfaceStage().getBatch().end();
+            if (loseOrWinTexture == null)
+                loseOrWinTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
+//            gameInterface.getInterfaceStage().getBatch().begin();
+//            gameInterface.getInterfaceStage().getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//            gameInterface.getInterfaceStage().getBatch().end();
         } else if (gameState.equals("Win")) {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
@@ -445,11 +435,11 @@ public class GameScreen implements Screen {
                 TowerDefence.getInstance().nextGameLevel();
                 return;
             }
-            if (defeatScreen == null)
-                defeatScreen = new Texture(Gdx.files.internal("img/victory.jpg"));
-            gameInterface.getInterfaceStage().getBatch().begin();
-            gameInterface.getInterfaceStage().getBatch().draw(defeatScreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            gameInterface.getInterfaceStage().getBatch().end();
+            if (loseOrWinTexture == null)
+                loseOrWinTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
+//            gameInterface.getInterfaceStage().getBatch().begin();
+//            gameInterface.getInterfaceStage().getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//            gameInterface.getInterfaceStage().getBatch().end();
         } else {
             Gdx.app.log("GameScreen::render()", "-- Not get normal gameState!");
         }
@@ -483,9 +473,8 @@ public class GameScreen implements Screen {
     public void dispose() {
         Gdx.app.log("GameScreen::dispose()", "-- Called!");
         gameField.dispose();
-        bitmapFont.dispose();
-        if(defeatScreen != null) {
-            defeatScreen.dispose();
+        if(loseOrWinTexture != null) {
+            loseOrWinTexture.dispose();
         }
     }
 }
