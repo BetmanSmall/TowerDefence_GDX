@@ -37,7 +37,7 @@ public class GameInterface {
         stage.addActor(missedAndLimit);
         stage.addActor(fpsLabel);
 
-        towersRoulette = new TowersRoulette(gameField, bitmapFont);
+        towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
         creepsRoulette = new CreepsRoulette(gameField);
         for(Actor actor : creepsRoulette.getGroup()) {
             stage.addActor(actor);

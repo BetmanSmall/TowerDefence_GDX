@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -21,6 +22,10 @@ import java.util.List;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class TowersRoulette extends Roulette {
+    public GameField gameField;
+    public BitmapFont bitmapFont;
+    public Stage stage;
+
     private Group circleGroup;
     private Group buttonGroup;
     private ImageButton rouletteButton;
@@ -28,13 +33,12 @@ public class TowersRoulette extends Roulette {
     private Array<ImageButton> towerButtonsArray;
     private Array<ImageButton> towerFrames;
     private static volatile Boolean IS_HIDE_TOWERS = true;
-    private GameField gameField;
-    private BitmapFont bitmapFont;
     private Array<TemplateForTower> templateForTowers;
 
-    public TowersRoulette(GameField gameField, BitmapFont bitmapFont) {
+    public TowersRoulette(GameField gameField, BitmapFont bitmapFont, Stage stage) {
         this.gameField = gameField;
         this.bitmapFont = bitmapFont;
+        this.stage = stage;
         init();
     }
 
@@ -71,8 +75,9 @@ public class TowersRoulette extends Roulette {
             rouletteButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS));
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
             rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
-            buttonGroup.addActor(rouletteButton);
-            buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
+            stage.addActor(rouletteButton);
+//            buttonGroup.addActor(rouletteButton);
+//            buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
             for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++) {
                 TemplateForTower templateForTower = templateForTowers.get(towersNumber);
 

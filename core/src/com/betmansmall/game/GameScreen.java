@@ -289,6 +289,7 @@ public class GameScreen implements Screen {
     private CameraController cameraController;
 
     public GameScreen(String mapName) {
+        Gdx.app.log("GameScreen::GameScreen(" + mapName + ")", "--");
         gameField = new GameField(mapName);
         gameInterface = new GameInterface(gameField);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -297,8 +298,8 @@ public class GameScreen implements Screen {
         cameraController.borderUpY    = 0;
         cameraController.borderDownY  = 0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY()));
 
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(new GestureDetector(cameraController));// я хз че делать=(
-        inputMultiplexer.addProcessor(new MyGestureDetector(cameraController)); // Бля тут бага тоже есть
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(new MyGestureDetector(cameraController));// я хз че делать=(
+        inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
         inputMultiplexer.addProcessor(gameInterface.stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -425,9 +426,9 @@ public class GameScreen implements Screen {
             }
             if (loseOrWinTexture == null)
                 loseOrWinTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
-//            gameInterface.getInterfaceStage().getBatch().begin();
-//            gameInterface.getInterfaceStage().getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//            gameInterface.getInterfaceStage().getBatch().end();
+            gameInterface.stage.getBatch().begin();
+            gameInterface.stage.getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            gameInterface.stage.getBatch().end();
         } else if (gameState.equals("Win")) {
             currentDuration += delta;
             if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
@@ -437,9 +438,9 @@ public class GameScreen implements Screen {
             }
             if (loseOrWinTexture == null)
                 loseOrWinTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
-//            gameInterface.getInterfaceStage().getBatch().begin();
-//            gameInterface.getInterfaceStage().getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//            gameInterface.getInterfaceStage().getBatch().end();
+            gameInterface.stage.getBatch().begin();
+            gameInterface.stage.getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            gameInterface.stage.getBatch().end();
         } else {
             Gdx.app.log("GameScreen::render()", "-- Not get normal gameState!");
         }

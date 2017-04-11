@@ -19,6 +19,7 @@ public class TowerDefence extends Game {
     public Array<String> gameLevelMaps = new Array<String>();
 
     public void nextGameLevel() {
+        Gdx.app.log("TowerDefence::nextGameLevel()", "--");
         if(gameLevelMaps.size > 0) {
 //            removeTopScreen();
             addScreen(new GameScreen(gameLevelMaps.first()));
@@ -33,6 +34,7 @@ public class TowerDefence extends Game {
     }
 
     public static TowerDefence getInstance() {
+        Gdx.app.log("TowerDefence::getInstance()", "--");
         TowerDefence localInstance = instance;
         if (localInstance == null) {
             synchronized (TowerDefence.class) {
@@ -47,6 +49,7 @@ public class TowerDefence extends Game {
 
     @Override
     public void create() {
+        Gdx.app.log("TowerDefence::create()", "--");
         instance = this;
         Screen mainMenuScreen = new MainMenuScreen(this);
         addScreen(mainMenuScreen);
@@ -57,6 +60,7 @@ public class TowerDefence extends Game {
      * @brief Add screen
      */
     public void addScreen(Screen screen) {
+        Gdx.app.log("TowerDefence::addScreen(" + screen + ")", "--");
         if (screen != null) {
             screensArray.add(screen);
             this.setScreen(screen);
@@ -67,6 +71,7 @@ public class TowerDefence extends Game {
      * @brief Remove screen from the top of the stack
      */
     public void removeTopScreen() {
+        Gdx.app.log("TowerDefence::removeTopScreen()", "--");
         if (screensArray != null) {
             int count = screensArray.size;
             if (count > 0) {
@@ -91,6 +96,7 @@ public class TowerDefence extends Game {
      * Remove all screens from the stack
      */
     public void removeAllScreens() {
+        Gdx.app.log("TowerDefence::removeAllScreens()", "--");
         if (screensArray != null) {
             int size = screensArray.size;
             if (size > 0) {
@@ -112,6 +118,7 @@ public class TowerDefence extends Game {
 
     @Override
     public void resize(int width, int height) {
+        Gdx.app.log("TowerDefence::resize(" + width + "," + height + ")", "--");
         super.resize(width, height);
     }
 
@@ -124,6 +131,7 @@ public class TowerDefence extends Game {
     }
 
     public void closeApplication() {
+        Gdx.app.log("TowerDefence::closeApplication()", "--");
         Gdx.app.exit();
     }
 }

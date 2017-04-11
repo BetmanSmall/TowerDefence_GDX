@@ -33,6 +33,7 @@ public class WhichCell {
         touch.x -= touch.y - touch.x;
 //        Gdx.app.log("WhichCell::whichCell()", "-- new touch:" + touch);
         GridPoint2 cell = new GridPoint2(Math.abs((int)touch.x), Math.abs((int)touch.y));
+//        GridPoint2 cell = new GridPoint2((int)touch.x, (int)touch.y);
 //        Gdx.app.log("WhichCell::whichCell()", "-- cell:" + cell);
         if(cell.x < sizeFieldX && cell.y < sizeFieldY) {
             return cell;

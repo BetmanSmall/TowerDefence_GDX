@@ -31,7 +31,11 @@ public class TowersManager {
     }
 
     public Tower getTower(int id) {
-        return towers.get(id);
+        if(id < towers.size) {
+            return towers.get(id);
+        } else {
+            return null;
+        }
     }
 
     public Tower getTower(GridPoint2 position) {

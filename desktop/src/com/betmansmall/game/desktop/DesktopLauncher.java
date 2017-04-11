@@ -10,7 +10,7 @@ public class DesktopLauncher {
         config.title = "Tower Defence";
         config.width = 1280;
         config.height = 720;
-        config.useGL30 = true;
+//        config.useGL30 = true;
 //        config.fullscreen = true;
 //        config.vSyncEnabled = true;
         new LwjglApplication(new TowerDefence(), config);
