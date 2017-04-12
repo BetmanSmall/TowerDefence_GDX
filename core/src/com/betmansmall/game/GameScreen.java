@@ -173,6 +173,7 @@ public class GameScreen implements Screen {
                         if (Math.abs(velY) < 0.01f) velY = 0;
                     }
                 }
+                camera.update();
             } catch (Exception exp) {
                 Gdx.app.error("GameScreen::CameraController::update()", "-- Exception:" + exp);
             }
@@ -278,12 +279,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    // andey || LOL GOVNE code
-    private float currentDuration;
-    private float MAX_DURATION_FOR_DEFEAT_SCREEN = 1f;
-    private Texture loseOrWinTexture;
-    // andey || LOL GOVNE code
-
     private GameField gameField;
     private GameInterface gameInterface;
     private CameraController cameraController;
@@ -312,91 +307,119 @@ public class GameScreen implements Screen {
 
     private void inputHandler(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
-            if (cameraController.camera.zoom <= cameraController.zoomMax)
+            Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.MINUS)");
+            if (cameraController.camera.zoom <= cameraController.zoomMax) {
                 cameraController.camera.zoom += 0.1f;
+            }
             cameraController.camera.update();
-            Gdx.app.log("GameScreen::inputHandler()", "-- Pressed MINUS");
+            gameInterface.addActionToHistory("-- cameraController.camera.zoom:" + cameraController.camera.zoom);
+            Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.zoom:" + cameraController.camera.zoom);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
-            if (cameraController.camera.zoom >= cameraController.zoomMin)
+            Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.PLUS)");
+            if (cameraController.camera.zoom >= cameraController.zoomMin) {
                 cameraController.camera.zoom -= 0.1f;
+            }
             cameraController.camera.update();
-            Gdx.app.log("GameScreen::inputHandler()", "-- Pressed PLUS");
+            gameInterface.addActionToHistory("-- cameraController.camera.zoom:" + cameraController.camera.zoom);
+            Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.zoom:" + cameraController.camera.zoom);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
             gameInterface.creepsRoulette.buttonClick();
+            gameInterface.addActionToHistory("-- gameField.getGamePaused():" + gameField.getGamePaused());
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
             gameField.isDrawableGrid++;
             if(gameField.isDrawableGrid > 5) {
                 gameField.isDrawableGrid = 0;
             }
+            gameInterface.addActionToHistory("-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2);");
-            GameField.isDrawableCreeps++;
-            if(GameField.isDrawableCreeps > 5) {
-                GameField.isDrawableCreeps = 0;
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2)");
+            gameField.isDrawableCreeps++;
+            if(gameField.isDrawableCreeps > 5) {
+                gameField.isDrawableCreeps = 0;
             }
-            Gdx.app.log("GameScreen::inputHandler()", "-- GameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
+            gameInterface.addActionToHistory("-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3)");
             gameField.isDrawableTowers++;
             if(gameField.isDrawableTowers > 5) {
                 gameField.isDrawableTowers = 0;
             }
+            gameInterface.addActionToHistory("-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_4)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_4 || Input.Keys.NUMPAD_4);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_4 || Input.Keys.NUMPAD_4)");
             gameField.isDrawableGridNav++;
             if(gameField.isDrawableGridNav > 5) {
                 gameField.isDrawableGridNav = 0;
             }
+            gameInterface.addActionToHistory("-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_5)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5)");
             gameField.isDrawableBackground++;
             if(gameField.isDrawableBackground > 5) {
                 gameField.isDrawableBackground = 0;
             }
+            gameInterface.addActionToHistory("-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6)");
             gameField.isDrawableForeground++;
             if(gameField.isDrawableForeground > 5) {
                 gameField.isDrawableForeground = 0;
             }
+            gameInterface.addActionToHistory("-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7)");
             gameField.drawOrder++;
             if(gameField.drawOrder > 8) {
                 gameField.drawOrder = 0;
             }
+            gameInterface.addActionToHistory("-- gameField.drawOrder:" + gameField.drawOrder);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.drawOrder:" + gameField.drawOrder);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE)");
             TowerDefence.getInstance().removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER)");
             TowerDefence.getInstance().nextGameLevel();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8); -- gameField.gameSpeed:" + gameField.gameSpeed);
-            gameField.gameSpeed -= 0.1f;
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8)");
+            if(gameField.gameSpeed > 0.1f) {
+                gameField.gameSpeed -= 0.1f;
+            }
+            gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.gameSpeed:" + gameField.gameSpeed);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9); -- gameField.gameSpeed:" + gameField.gameSpeed);
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9)");
             gameField.gameSpeed += 0.1f;
+            gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.gameSpeed:" + gameField.gameSpeed);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnLeft()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.A)");
             gameField.turnLeft();
+            gameInterface.addActionToHistory("-- gameField.turnLeft()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnLeft()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnRight()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.S)");
             gameField.turnRight();
+            gameInterface.addActionToHistory("-- gameField.turnRight()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.turnRight()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipX()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.Q)");
             gameField.flipX();
+            gameInterface.addActionToHistory("-- gameField.flipX()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipX()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipY()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.W)");
             gameField.flipY();
+            gameInterface.addActionToHistory("-- gameField.flipY()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipY()");
         }
     }
 
@@ -406,41 +429,18 @@ public class GameScreen implements Screen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        String gameState = gameField.getGameState();
+        String gameState = gameField.getGameState(); // Need change to enum GameState
         if (gameState.equals("In progress")) {
             inputHandler(delta);
             cameraController.update();
-            cameraController.camera.update();
             gameField.render(delta, cameraController.camera);
+
             gameInterface.gamerGoldLabel.setText("gamerGold:" + gameField.getGamerGold());
             gameInterface.fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
             gameInterface.missedAndLimit.setText(gameField.missedCreeps + "/" + gameField.maxOfMissedCreeps);
-            gameInterface.stage.act(delta);
-            gameInterface.stage.draw();
-        } else if (gameState.equals("Lose")) {
-            currentDuration += delta;
-            if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
-                //this.dispose();
-                TowerDefence.getInstance().nextGameLevel();
-                return;
-            }
-            if (loseOrWinTexture == null)
-                loseOrWinTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
-            gameInterface.stage.getBatch().begin();
-            gameInterface.stage.getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            gameInterface.stage.getBatch().end();
-        } else if (gameState.equals("Win")) {
-            currentDuration += delta;
-            if (currentDuration > MAX_DURATION_FOR_DEFEAT_SCREEN) {
-                //this.dispose();
-                TowerDefence.getInstance().nextGameLevel();
-                return;
-            }
-            if (loseOrWinTexture == null)
-                loseOrWinTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
-            gameInterface.stage.getBatch().begin();
-            gameInterface.stage.getBatch().draw(loseOrWinTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            gameInterface.stage.getBatch().end();
+            gameInterface.render(delta);
+        } else if (gameState.equals("Lose") || gameState.equals("Win")) {
+            gameInterface.renderEndGame(delta, gameState);
         } else {
             Gdx.app.log("GameScreen::render()", "-- Not get normal gameState!");
         }
@@ -474,8 +474,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         Gdx.app.log("GameScreen::dispose()", "-- Called!");
         gameField.dispose();
-        if(loseOrWinTexture != null) {
-            loseOrWinTexture.dispose();
-        }
+        gameInterface.dispose();
+//        cameraController.dispose();
     }
 }

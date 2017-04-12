@@ -68,8 +68,8 @@ public class GameField {
     public int isDrawableBackground = 1;
     public int isDrawableForeground = 1;
     public int isDrawableGrid = 1;
-    public static int isDrawableCreeps = 1;
-    public static int isDrawableTowers = 1;
+    public static int isDrawableCreeps = 1; // Bad! need make not static!
+    public static int isDrawableTowers = 1; // Bad! need make not static!
 //    public boolean isDrawableRoutes = true;3
     public int isDrawableGridNav = 1;
     public int drawOrder = 8;
@@ -229,7 +229,7 @@ public class GameField {
             }
             field = newCells;
         } else {
-            Gdx.app.log("GameField::turnRight()", "-- Not work || Work but mb not Good!");
+            Gdx.app.log("GameField::turnRight()", "-- Not work || Work, but mb not Good!");
             int oldWidth = sizeFieldX;
             int oldHeight = sizeFieldY;
             sizeFieldX = sizeFieldY;
@@ -256,7 +256,7 @@ public class GameField {
             }
             field = newCells;
         } else {
-            Gdx.app.log("GameField::turnLeft()", "-- Not work || Work but mb not Good!");
+            Gdx.app.log("GameField::turnLeft()", "-- Not work || Work, but mb not Good!");
             int oldWidth = sizeFieldX;
             int oldHeight = sizeFieldY;
             sizeFieldX = sizeFieldY;
