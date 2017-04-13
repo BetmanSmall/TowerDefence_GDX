@@ -143,6 +143,7 @@ public class GameField {
                 waveManager.addWave(wave);
             }
         }
+        waveManager.checkRoutes(pathFinder);
 
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
@@ -379,7 +380,8 @@ public class GameField {
 //                drawCreeps(camera);
 //        }
         if (isDrawableGridNav > 0) {
-            drawRoutes(camera);
+//            drawRoutes(camera);
+            drawWavesRoutes(camera);
             drawGridNav(camera);
         }
 //        spriteBatch.setProjectionMatrix(camera.combined);
@@ -804,6 +806,35 @@ public class GameField {
             if (route != null) {
                 for (Node coor : route) {
                     Cell cell = field[coor.getX()][coor.getY()];
+                    if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
+                        shapeRenderer.circle(cell.graphicCoordinatesBottom.x, cell.graphicCoordinatesBottom.y, gridNavRadius);
+                    }
+                    if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
+                        shapeRenderer.circle(cell.graphicCoordinatesRight.x, cell.graphicCoordinatesRight.y, gridNavRadius);
+                    }
+                    if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
+                        shapeRenderer.circle(cell.graphicCoordinatesTop.x, cell.graphicCoordinatesTop.y, gridNavRadius);
+                    }
+                    if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
+                        shapeRenderer.circle(cell.graphicCoordinatesLeft.x, cell.graphicCoordinatesLeft.y, gridNavRadius);
+                    }
+                }
+            }
+        }
+        shapeRenderer.end();
+    }
+
+    private void drawWavesRoutes(OrthographicCamera camera) {
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.TEAL);
+
+        float gridNavRadius = sizeCellX/12f;
+        for (Wave wave : waveManager.waves) {
+            ArrayDeque<Node> route = wave.route;
+            if (route != null) {
+                for (Node coord : route) {
+                    Cell cell = field[coord.getX()][coord.getY()];
                     if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
                         shapeRenderer.circle(cell.graphicCoordinatesBottom.x, cell.graphicCoordinatesBottom.y, gridNavRadius);
                     }

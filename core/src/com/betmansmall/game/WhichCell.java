@@ -27,19 +27,28 @@ public class WhichCell {
     }
 
     public GridPoint2 whichCell(Vector3 touch) {
-//        Gdx.app.log("WhichCell::whichCell(" + touch + ")", "-- ");
+        Gdx.app.log("WhichCell::whichCell(" + touch + ")", "--");
+        return whichCell(touch, 5);
+    }
+
+    public GridPoint2 whichCell(Vector3 touch, int map) {
+        Gdx.app.log("WhichCell::whichCell(" + touch + "," + map + ")", "--");
         touch.x /= sizeCellX;
         touch.y = (touch.y - sizeCellY / 2) / sizeCellY + touch.x;
         touch.x -= touch.y - touch.x;
-//        Gdx.app.log("WhichCell::whichCell()", "-- new touch:" + touch);
-        GridPoint2 cell = new GridPoint2(Math.abs((int)touch.x), Math.abs((int)touch.y));
-//        GridPoint2 cell = new GridPoint2((int)touch.x, (int)touch.y);
-//        Gdx.app.log("WhichCell::whichCell()", "-- cell:" + cell);
-        if(cell.x < sizeFieldX && cell.y < sizeFieldY) {
-            return cell;
-        } else {
-            return null;
+        Gdx.app.log("WhichCell::whichCell()", "-- new touch:" + touch);
+        GridPoint2 cell = new GridPoint2(Math.abs((int) touch.x), Math.abs((int) touch.y));
+        Gdx.app.log("WhichCell::whichCell()", "-- cell:" + cell);
+        if (cell.x < sizeFieldX && cell.y < sizeFieldY) {
+            if ( (map == 5) ||
+                    (map == 1 && touch.x > 0 && touch.y < 0) ||
+                    (map == 2 && touch.x > 0 && touch.y > 0) ||
+                    (map == 3 && touch.x < 0 && touch.y > 0) ||
+                    (map == 4 && touch.x < 0 && touch.y < 0) ) {
+                return cell;
+            }
         }
+        return null;
     }
 
     // GOVNO CODE | Delete this piece of shit | Goodbye Andrey code! | СУКА НАХУЙ ПИЗДЕЦ БЛЯТЬ!!!!! бомбит очко

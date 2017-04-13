@@ -79,18 +79,17 @@ public class GameInterface {
     }
 
     public void render(float delta) {
-        deleteActionThrough += delta;
         if(arrayActionsHistory.size > 0) {
+            deleteActionThrough += delta;
             if (deleteActionThrough > actionInHistoryTime) {
                 arrayActionsHistory.removeIndex(0);
                 deleteActionThrough = 0f;
-            } else {
-                StringBuilder sb = new StringBuilder();
-                for(String str : arrayActionsHistory) {
-                    sb.append("\n" + str);
-                }
-                actionsHistoryLabel.setText(sb.toString());
             }
+            StringBuilder sb = new StringBuilder();
+            for(String str : arrayActionsHistory) {
+                sb.append("\n" + str);
+            }
+            actionsHistoryLabel.setText(sb.toString());
         }
         stage.act(delta);
         stage.draw();

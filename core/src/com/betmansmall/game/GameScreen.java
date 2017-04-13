@@ -61,7 +61,7 @@ public class GameScreen implements Screen {
 
             Vector3 touch = new Vector3(x, y, 0);
             camera.unproject(touch);
-            GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+            GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to creeps too!
             if (cellCoordinate != null && gameField.getUnderConstruction() == null) {
                 if (button == 0) {
                     gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
@@ -209,7 +209,7 @@ public class GameScreen implements Screen {
             if(gameField != null && gameField.getUnderConstruction() != null) {
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 cameraController.camera.unproject(touch);
-                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
                     UnderConstruction underConstruction = gameField.getUnderConstruction();
                     if (button == 0) {
@@ -228,7 +228,7 @@ public class GameScreen implements Screen {
             if(gameField != null && gameField.getUnderConstruction() != null && button == 0) {
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 cameraController.camera.unproject(touch);
-                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
                     gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
                 }
@@ -242,7 +242,7 @@ public class GameScreen implements Screen {
             if(gameField != null && gameField.getUnderConstruction() != null) {
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 cameraController.camera.unproject(touch);
-                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
                     gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
                 }
@@ -256,7 +256,7 @@ public class GameScreen implements Screen {
             if(gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) {
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 cameraController.camera.unproject(touch);
-                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch);
+                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
                     gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
                 }
@@ -303,6 +303,7 @@ public class GameScreen implements Screen {
     public void show() {
         Gdx.app.log("GameScreen::show()", "-- Start!");
         cameraController.camera.position.set(0f, 0f, 0f);
+
     }
 
     private void inputHandler(float delta) {

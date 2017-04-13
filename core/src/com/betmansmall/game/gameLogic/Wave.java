@@ -2,8 +2,7 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.utils.Array;
-import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
+import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 
 import java.util.ArrayDeque;
 
@@ -14,6 +13,7 @@ public class Wave {
     public ArrayDeque<String> actions;
     public GridPoint2 spawnPoint;
     public GridPoint2 exitPoint;
+    public ArrayDeque<Node> route;
     private float intervalForSpawn;
     private float elapsedTime;
 
