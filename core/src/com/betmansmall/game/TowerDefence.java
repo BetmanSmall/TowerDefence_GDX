@@ -22,7 +22,7 @@ public class TowerDefence extends Game {
         Gdx.app.log("TowerDefence::nextGameLevel()", "--");
         if(gameLevelMaps.size > 0) {
 //            removeTopScreen();
-            addScreen(new GameScreen(gameLevelMaps.first()));
+            addScreen(new GameScreen(gameLevelMaps.first(), 1f)); // default level of Difficulty for Campaign
             gameLevelMaps.removeIndex(0);
         } else {
             if(screensArray.size > 1) {

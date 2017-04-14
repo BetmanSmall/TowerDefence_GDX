@@ -283,9 +283,9 @@ public class GameScreen implements Screen {
     private GameInterface gameInterface;
     private CameraController cameraController;
 
-    public GameScreen(String mapName) {
+    public GameScreen(String mapName, float levelOfDifficulty) {
         Gdx.app.log("GameScreen::GameScreen(" + mapName + ")", "--");
-        gameField = new GameField(mapName);
+        gameField = new GameField(mapName, levelOfDifficulty);
         gameInterface = new GameInterface(gameField);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         cameraController.borderLeftX  = 0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY());

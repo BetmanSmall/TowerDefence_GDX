@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,9 +29,6 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
 
 import java.util.ArrayDeque;
-import java.util.Map;
-import java.util.TreeMap;
-import java.lang.Object;
 
 //import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
@@ -98,18 +94,12 @@ public class GameField {
     public static int gamerGold; // For Shell
     // GAME INTERFACE ZONE2
 
-    //TEST ZONE1
-    private Map<Integer, Object> priorityMap = new TreeMap<Integer, Object>();
-    private Animation animation;
-    private float stateTime;
-    //TEST ZONE2
-
-    public GameField(String mapName) {
+    public GameField(String mapName, float levelOfDifficulty) {
         Gdx.app.log("GameField::GameField(" + mapName + ")", "--");
         waveManager = new WaveManager();
         creepsManager = new CreepsManager();
         towersManager = new TowersManager();
-        factionsManager = new FactionsManager();
+        factionsManager = new FactionsManager(levelOfDifficulty);
         factionsManager.loadFactions();
 
         map = new MapLoader(waveManager).load(mapName);
@@ -396,15 +386,7 @@ public class GameField {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.circle(0f, 0f, 1.5f);
         shapeRenderer.end();
-        if (animation != null) {
-            stateTime += delta;
-            TextureRegion currentFrame = animation.getKeyFrame(stateTime, true); // #16
-            spriteBatch.begin();
-            spriteBatch.draw(currentFrame, 0, 700, 700, 700); // #17
-//            bitmapFont.draw(spriteBatch, getGamerGold(), Gdx.graphics.getWidth()/2-10, Gdx.graphics.getHeight())
-//            bitmapFont.draw(spriteBatch, String.valueOf(getGamerGold()), Gdx.graphics.getWidth()/2-10, Gdx.graphics.getHeight()-10);
-            spriteBatch.end();
-        }
+
         spriteBatch.begin();
         bitmapFont.setColor(Color.YELLOW);
         bitmapFont.draw(spriteBatch, String.valueOf("0, 0"), 0, 0);
@@ -1250,7 +1232,7 @@ public class GameField {
     }
 
     private void createCreep(GridPoint2 spawnPoint, TemplateForUnit templateForUnit, GridPoint2 exitPoint) {
-        Gdx.app.log("GameField::createCreep(" + spawnPoint + ", " + templateForUnit + ", " + exitPoint + ")", "--");
+        Gdx.app.log("GameField::createCreep(" + spawnPoint + ", " + templateForUnit.toString(true) + ", " + exitPoint + ")", "--");
         if (exitPoint == null) {
             exitPoint = waveManager.lastExitPoint;
         }

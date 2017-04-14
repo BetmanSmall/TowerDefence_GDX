@@ -192,17 +192,15 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        towerDefence.addScreen(new GameScreen(mapName));
+                        towerDefence.addScreen(new GameScreen(mapName, 0.5f));
                         break;
                     case 2:
                         //start game with NORMAL
-                        mapName = "maps/arena.tmx";
-                        towerDefence.addScreen(new GameScreen(mapName));
+                        towerDefence.addScreen(new GameScreen(mapName, 1f));
                         break;
                     case 3:
                         //start game with HARD
-                        mapName = "maps/arena666.tmx";
-                        towerDefence.addScreen(new GameScreen(mapName));
+                        towerDefence.addScreen(new GameScreen(mapName, 2f));
                         break;
                 }
                 break;

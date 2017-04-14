@@ -14,9 +14,11 @@ import java.util.StringTokenizer;
  */
 public class FactionsManager {
     private Array<Faction> factions;
+    private float levelOfDifficulty;
 
-    public FactionsManager() {
-        factions = new Array<Faction>();
+    public FactionsManager(float levelOfDifficulty) {
+        this.factions = new Array<Faction>();
+        this.levelOfDifficulty = levelOfDifficulty;
     }
 
     public void addUnitToFaction(TemplateForUnit unit) {
@@ -180,6 +182,7 @@ public class FactionsManager {
                             FileHandle templateFile = getRelativeFileHandle(factionFile, source);
                             TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
                             templateForUnit.setFaction(faction);
+                            templateForUnit.healthPoints = (int)(templateForUnit.healthPoints*levelOfDifficulty); // simple level of difficulty
                             faction.getTemplateForUnits().add(templateForUnit);
                         }
                     }
