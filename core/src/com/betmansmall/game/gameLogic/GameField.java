@@ -29,6 +29,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
 
 import java.util.ArrayDeque;
+import java.util.Iterator;
 
 //import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
@@ -809,26 +810,32 @@ public class GameField {
     private void drawWavesRoutes(OrthographicCamera camera) {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.TEAL);
+        shapeRenderer.setColor(Color.BROWN);
 
-        float gridNavRadius = sizeCellX/12f;
+        float linesWidth = sizeCellX/15f;
         for (Wave wave : waveManager.waves) {
             ArrayDeque<Node> route = wave.route;
-            if (route != null) {
-                for (Node coord : route) {
-                    Cell cell = field[coord.getX()][coord.getY()];
+            if (route != null && !route.isEmpty()) {
+                Iterator<Node> nodeIterator = route.iterator();
+                Node startNode = nodeIterator.next();
+                Node endNode = null;
+                while (nodeIterator.hasNext()) {
+                    endNode = nodeIterator.next();
+                    Cell startCell = field[startNode.getX()][startNode.getY()];
+                    Cell endCell = field[endNode.getX()][endNode.getY()];
                     if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesBottom.x, cell.graphicCoordinatesBottom.y, gridNavRadius);
+                        shapeRenderer.rectLine(startCell.graphicCoordinatesBottom, endCell.graphicCoordinatesBottom, linesWidth);
                     }
                     if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesRight.x, cell.graphicCoordinatesRight.y, gridNavRadius);
+                        shapeRenderer.rectLine(startCell.graphicCoordinatesRight, endCell.graphicCoordinatesRight, linesWidth);
                     }
                     if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesTop.x, cell.graphicCoordinatesTop.y, gridNavRadius);
+                        shapeRenderer.rectLine(startCell.graphicCoordinatesTop, endCell.graphicCoordinatesTop, linesWidth);
                     }
                     if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesLeft.x, cell.graphicCoordinatesLeft.y, gridNavRadius);
+                        shapeRenderer.rectLine(startCell.graphicCoordinatesLeft, endCell.graphicCoordinatesLeft, linesWidth);
                     }
+                    startNode = endNode;
                 }
             }
         }
@@ -977,8 +984,8 @@ public class GameField {
                 }
             }
         }
-
         shapeRenderer.end();
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
         for (Creep creep : creepsManager.getAllCreeps()) {
