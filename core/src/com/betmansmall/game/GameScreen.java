@@ -8,6 +8,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
@@ -279,14 +282,22 @@ public class GameScreen implements Screen {
         }
     }
 
+    private ShapeRenderer shapeRenderer;
+    private SpriteBatch spriteBatch;
+    private BitmapFont bitmapFont;
+
     private GameField gameField;
     private GameInterface gameInterface;
     private CameraController cameraController;
 
     public GameScreen(String mapName) {
         Gdx.app.log("GameScreen::GameScreen(" + mapName + ")", "--");
+        shapeRenderer = new ShapeRenderer();
+        spriteBatch = new SpriteBatch();
+        bitmapFont = new BitmapFont();
+
         gameField = new GameField(mapName);
-        gameInterface = new GameInterface(gameField);
+        gameInterface = new GameInterface(gameField, bitmapFont);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         cameraController.borderLeftX  = 0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY());
         cameraController.borderRightX = 0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX());

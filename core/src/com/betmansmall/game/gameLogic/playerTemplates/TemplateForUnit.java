@@ -25,6 +25,7 @@ public class TemplateForUnit {
     private String templateName;
 
     public Integer bounty;
+    public Integer cost;
     public String factionName;
     public Integer healthPoints;
     public String name;
@@ -32,6 +33,7 @@ public class TemplateForUnit {
     public String type;
 
     public ObjectMap<String, AnimatedTiledMapTile> animations;
+    public AnimatedTiledMapTile idleTile;
 
     public TemplateForUnit(FileHandle templateFile) throws Exception {
         try {
@@ -52,6 +54,7 @@ public class TemplateForUnit {
                     String value = property.getAttribute("value");
                     if (key.equals("bounty")) {
                         this.bounty = Integer.parseInt(value);
+                        this.cost = bounty; // TODO fix
                     } else if (key.equals("factionName")) {
                         this.factionName = value;
                     } else if (key.equals("healthPoints")) {
@@ -153,6 +156,7 @@ public class TemplateForUnit {
         try {
             this.templateName = tileSet.getName();
             this.bounty = Integer.parseInt(tileSet.getProperties().get("bounty", String.class));
+            this.cost = bounty; // TODO fix
             this.factionName = tileSet.getProperties().get("factionName", String.class);
             this.healthPoints = Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
             this.name = tileSet.getProperties().get("name", String.class);

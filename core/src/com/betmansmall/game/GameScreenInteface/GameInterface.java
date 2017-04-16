@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,7 +21,10 @@ import com.betmansmall.game.gameLogic.GameField;
  * TODO implement more interface options
  */
 public class GameInterface {
-    public BitmapFont bitmapFont;
+//    private ShapeRenderer shapeRenderer;
+//    private SpriteBatch spriteBatch;
+    private BitmapFont bitmapFont;
+
     public Stage stage;
     public Label gamerGoldLabel, missedAndLimit, fpsLabel;
 
@@ -33,10 +38,11 @@ public class GameInterface {
     private Texture winTexture, loseTexture;
     private float currentTextureTime, maxTextureTime;
 
-    public GameInterface(GameField gameField) {
+    public GameInterface(GameField gameField, BitmapFont bitmapFont) {
         Gdx.app.log("GameInterface::GameInterface(" + gameField + ")", "-- Called!");
-        bitmapFont = new BitmapFont();
-        stage = new Stage();
+        this.bitmapFont = bitmapFont;
+
+        this.stage = new Stage();
         gamerGoldLabel = new Label("gamerGold:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         gamerGoldLabel.setPosition(Gdx.graphics.getWidth()*0.60f, 15.0f);
         gamerGoldLabel.setFontScale(2f);
@@ -56,7 +62,7 @@ public class GameInterface {
         actionInHistoryTime = 1f;
 
         towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
-        creepsRoulette = new CreepsRoulette(gameField);
+        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
         for(Actor actor : creepsRoulette.getGroup()) {
             stage.addActor(actor);
         }
