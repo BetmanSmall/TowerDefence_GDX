@@ -19,7 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Intersector; // AlexGor
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
-import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
+import com.betmansmall.game.gameLogic.MapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
@@ -140,7 +140,7 @@ public class GameField {
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = true;
         gameSpeed = 1.0f;
-        maxOfMissedCreeps = 10;
+        maxOfMissedCreeps = waveManager.getNumberOfCreeps()/2;
         missedCreeps = 0;
         gamerGold = Integer.parseInt(map.getProperties().get("gamerGold", "100", String.class));
         // GAME INTERFACE ZONE2
@@ -344,6 +344,7 @@ public class GameField {
 //            }
 //            renderer.getBatch().end();
 //        }
+
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         if(isDrawableBackground > 0) {
@@ -376,6 +377,7 @@ public class GameField {
             drawGridNav(camera);
         }
 //        spriteBatch.setProjectionMatrix(camera.combined);
+
         spriteBatch.begin();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         drawShells(spriteBatch);
@@ -652,7 +654,7 @@ public class GameField {
 //
 //    private void getPriorityMap() {
 //        priorityMap.clear();
-//        for (Tower tower : towersManager.getAllTowers()) {
+//        for (Tower tower : towersManager.getAllTemplateForTowers()) {
 //            priorityMap.put(tower.getPosition().x * 1000 - tower.getPosition().y, tower);
 //        }
 //        for (Creep creep : creepsManager.getAllCreeps()) {
@@ -843,7 +845,7 @@ public class GameField {
     }
 
 //    private void drawTowers(SpriteBatch spriteBatch) {
-//        for (Tower tower : towersManager.getAllTowers()) {
+//        for (Tower tower : towersManager.getAllTemplateForTowers()) {
 //            drawTower(tower, spriteBatch);
 //        }
 //    }
@@ -966,7 +968,7 @@ public class GameField {
 //            shapeRenderer.circle(creep.circle4.x, creep.circle4.y, 2f);
 //        }
 //        shapeRenderer.setColor(Color.PINK);
-//        for (Tower tower : towersManager.getAllTowers()) {
+//        for (Tower tower : towersManager.getAllTemplateForTowers()) {
 //            for (Shell shell : tower.shells) {
 //                if (null != shell.endPoint) {
 //                    shapeRenderer.circle(shell.endPoint.x, shell.endPoint.y, shell.endPoint.radius);
@@ -1546,8 +1548,12 @@ public class GameField {
         return factionsManager.getAllFirstTowersFromFirstFaction();
     }
 
-    public Array<TemplateForTower> getAllTowers() {
-        return factionsManager.getAllTowers();
+    public Array<TemplateForTower> getAllTemplateForTowers() {
+        return factionsManager.getAllTemplateForTowers();
+    }
+
+    public Array<TemplateForUnit> getAllTemplateForUnits() {
+        return factionsManager.getAllTemplateForUnits();
     }
 
     public boolean createdUnderConstruction(TemplateForTower templateForTower) {

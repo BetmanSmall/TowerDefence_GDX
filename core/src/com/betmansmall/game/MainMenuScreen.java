@@ -143,9 +143,10 @@ public class MainMenuScreen implements Screen {
                     case 1:
                         //Campaign menu
                         towerDefence.gameLevelMaps.add("maps/arena0.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena5.tmx");
+                        towerDefence.gameLevelMaps.add("maps/arena4.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena3.tmx");
                         towerDefence.gameLevelMaps.add("maps/arena.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena4.tmx");
 //                        towerDefence.gameLevelMaps.add("maps/arena2.tmx");
                         towerDefence.nextGameLevel();
                         break;

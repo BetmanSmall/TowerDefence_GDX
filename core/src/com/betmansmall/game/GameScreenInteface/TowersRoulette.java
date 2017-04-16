@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -30,7 +29,7 @@ public class TowersRoulette extends Roulette {
     private Group buttonGroup;
     private ImageButton rouletteButton;
     private ImageButton rouletteCircle;
-    private Array<ImageButton> towerButtonsArray;
+//    private Array<ImageButton> towerButtonsArray;
     private Array<ImageButton> towerFrames;
     private static volatile Boolean IS_HIDE_TOWERS = true;
     private Array<TemplateForTower> templateForTowers;
@@ -44,11 +43,11 @@ public class TowersRoulette extends Roulette {
 
     private void init() {
         //TEMPORARY VARIANT OF TAKING TOWERS
-        templateForTowers = gameField.getAllTowers();
+        templateForTowers = gameField.getAllTemplateForTowers();
 
         buttonGroup = new Group();
 
-        towerButtonsArray = new Array<ImageButton>();
+//        towerButtonsArray = new Array<ImageButton>();
         towerFrames = new Array<ImageButton>();
 
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -94,7 +93,7 @@ public class TowersRoulette extends Roulette {
 
                 buttonGroup.addActor(templateButton);
                 buttonGroup.addActor(templateFrame);
-                towerButtonsArray.add(templateButton);
+//                towerButtonsArray.add(templateButton);
                 towerFrames.add(templateFrame);
 
                 String nameTower = templateForTower.name;

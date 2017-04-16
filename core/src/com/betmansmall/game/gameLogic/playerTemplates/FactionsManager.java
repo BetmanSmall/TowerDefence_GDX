@@ -75,7 +75,7 @@ public class FactionsManager {
     }
 
     public TemplateForTower getRandomTemplateForTowerFromAllFaction() {
-        Array<TemplateForTower> allTowers = getAllTowers();
+        Array<TemplateForTower> allTowers = getAllTemplateForTowers();
 //        int r = 0 + (int) (Math.random() * allTowers.size);
 //        Gdx.app.log("TemplateForTower", "getRandomTemplateForTowerFromAllFaction(); -- r:" + r);
 //        return allTowers.get(r);
@@ -125,10 +125,20 @@ public class FactionsManager {
         return factions.first().getTemplateForTowers();
     }
 
-    public Array<TemplateForTower> getAllTowers() {
+    public Array<TemplateForTower> getAllTemplateForTowers() {
         Array<TemplateForTower> allTowers = new Array<TemplateForTower>();
         for (Faction faction : factions) {
             for (TemplateForTower template : faction.getTemplateForTowers()) {
+                allTowers.add(template);
+            }
+        }
+        return allTowers;
+    }
+
+    public Array<TemplateForUnit> getAllTemplateForUnits() {
+        Array<TemplateForUnit> allTowers = new Array<TemplateForUnit>();
+        for (Faction faction : factions) {
+            for (TemplateForUnit template : faction.getTemplateForUnits()) {
                 allTowers.add(template);
             }
         }
