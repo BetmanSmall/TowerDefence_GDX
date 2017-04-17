@@ -25,11 +25,11 @@ public abstract class Roulette {
     /* ring size */
     protected static final int RING_RADIUS = y;
 
-    protected int getLocalWidth(int width) {
+    protected float getLocalWidth(float width) {
         return MODEL_WIDTH / Gdx.graphics.getWidth() * width;
     }
 
-    protected int getLocalHeight(int height) {
+    protected float getLocalHeight(float height) {
         return MODEL_HEIGHT / Gdx.graphics.getHeight() * height;
     }
 

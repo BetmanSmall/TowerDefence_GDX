@@ -390,12 +390,12 @@ public class GameField {
         shapeRenderer.circle(0f, 0f, 1.5f);
         shapeRenderer.end();
 
-        spriteBatch.begin();
-        bitmapFont.setColor(Color.YELLOW);
-        bitmapFont.draw(spriteBatch, String.valueOf("0, 0"), 0, 0);
-        bitmapFont.getData().setScale(4);
-        bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
-        spriteBatch.end();
+//        spriteBatch.begin();
+//        bitmapFont.setColor(Color.YELLOW);
+//        bitmapFont.draw(spriteBatch, String.valueOf("0, 0"), 0, 0);
+//        bitmapFont.getData().setScale(4);
+//        bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
+//        spriteBatch.end();
     }
 
     private void drawBackGrounds(SpriteBatch spriteBatch, OrthographicCamera camera) {

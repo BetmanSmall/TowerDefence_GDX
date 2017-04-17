@@ -195,7 +195,7 @@ public class TowersRoulette extends Roulette {
         if(towerId < templateForTowers.size) {
             localTemplate = templateForTowers.get(Math.abs(towerId));
         }
-        Gdx.app.log("TowersRoulette::chooseTowerAndroid(" + isGreatedRound + ")", "User choose tower:" + localTemplate.name);
+        Gdx.app.log("TowersRoulette::chooseTowerAndroid(" + isGreatedRound + ")", "-- User choose tower:" + localTemplate.name);
         gameField.createdUnderConstruction(localTemplate);
     }
 
