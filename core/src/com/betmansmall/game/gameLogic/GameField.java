@@ -140,7 +140,7 @@ public class GameField {
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = true;
         gameSpeed = 1.0f;
-        maxOfMissedCreeps = waveManager.getNumberOfCreeps()/2;
+        maxOfMissedCreeps = waveManager.getNumberOfActions()/4;
         missedCreeps = 0;
         gamerGold = Integer.parseInt(map.getProperties().get("gamerGold", "100", String.class));
         // GAME INTERFACE ZONE2
@@ -1523,7 +1523,7 @@ public class GameField {
     }
 
     public int getNumberOfCreeps() {
-        return waveManager.getNumberOfCreeps() + creepsManager.amountCreeps();
+        return waveManager.getNumberOfActions() + creepsManager.amountCreeps();
     }
 
     public String getGameState() {
@@ -1531,7 +1531,7 @@ public class GameField {
 //            Gdx.app.log("GameField::getGameState()", "-- LOSE!!");
             return "Lose";
         } else {
-            if (waveManager.getNumberOfCreeps() == 0 && creepsManager.amountCreeps() == 0) {
+            if (waveManager.getNumberOfActions() == 0 && creepsManager.amountCreeps() == 0) {
 //                Gdx.app.log("GameField::getGameState()", "-- WIN!!");
                 return "Win";
             }

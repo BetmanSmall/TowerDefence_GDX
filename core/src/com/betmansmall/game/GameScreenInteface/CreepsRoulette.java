@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -83,19 +84,23 @@ public class CreepsRoulette extends Roulette {
         });
         stage.addActor(pauseButton);
 
+        TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));
+        textureRegionFrame.flip(true, false);
+        Image imageFrame = new Image(textureRegionFrame);
         for(int unitIndex = 0; unitIndex < templateForUnits.size; unitIndex++) {
             TemplateForUnit templateForUnit = templateForUnits.get(unitIndex);
 
-            ImageButton templateButton = new ImageButton(new Image(templateForUnit.animations.values().next().getTextureRegion()).getDrawable());
-            ImageButton templateFrame = new ImageButton(new Image(new Texture(Gdx.files.internal("img/build_frame.png"))).getDrawable());
-            templateButton.setSize(getLocalWidth(ROULETTE_RADIUS)/1.5f, getLocalHeight(ROULETTE_RADIUS)/1.5f);
-            templateButton.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
-                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f));
+            ImageButton templateFrame = new ImageButton(imageFrame.getDrawable());
             templateFrame.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f);
             templateFrame.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
                     + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f));
-            templateButton.setVisible(false);
             templateFrame.setVisible(false);
+
+            ImageButton templateButton = new ImageButton(new Image(templateForUnit.animations.values().toArray().get(6).getTextureRegion()).getDrawable());
+            templateButton.setSize(getLocalWidth(ROULETTE_RADIUS)/1.5f, getLocalHeight(ROULETTE_RADIUS)/1.5f);
+            templateButton.setPosition(creepsSelectorButton.getX() + 40f, creepsSelectorButton.getY()
+                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f));
+            templateButton.setVisible(false);
 
             buttonGroup.addActor(templateButton);
             buttonGroup.addActor(templateFrame);
@@ -111,7 +116,7 @@ public class CreepsRoulette extends Roulette {
             Label attackLabel = new Label(attackTower, new Label.LabelStyle(bitmapFont, Color.RED));
             Label radiusDetectionLabel = new Label(radiusDetectionTower, new Label.LabelStyle(bitmapFont, Color.GREEN));
             Label costLabel = new Label(costTower, new Label.LabelStyle(bitmapFont, Color.YELLOW));
-            float textX = 0.0f;
+            float textX = 1.0f;
             float textY = creepsSelectorButton.getY() + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f); // 4to za pizdec? AndreY??? NAXUI
             nameLabel.setPosition(textX+160, textY+30); // Magic number
             attackLabel.setPosition(textX, textY+60); // tyt tak zavedino

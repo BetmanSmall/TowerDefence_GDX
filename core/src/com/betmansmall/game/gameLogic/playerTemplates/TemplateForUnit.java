@@ -317,6 +317,7 @@ public class TemplateForUnit {
         sb.append("templateName:" + templateName);
         if(full) {
             sb.append("," + "bounty:" + bounty);
+            sb.append("," + "cost:" + cost);
             sb.append("," + "factionName:" + factionName);
             sb.append("," + "healthPoints:" + healthPoints);
             sb.append("," + "name:" + name);

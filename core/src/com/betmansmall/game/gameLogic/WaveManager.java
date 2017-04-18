@@ -79,13 +79,15 @@ public class WaveManager {
         return false;
     }
 
-    public int getNumberOfCreeps() { // not creeps | actions
-        int creeps = 0;
+    public int getNumberOfActions() {
+        int actions = 0;
         for (Wave wave : waves) {
-            creeps += wave.actions.size();
+            actions += wave.actions.size();
         }
-        return creeps;
+        return actions;
     }
+
+//    public int getNumberOfCreeps() // need implement
 
     public void validationPoints(Cell[][] field) {
         if(field != null) {
