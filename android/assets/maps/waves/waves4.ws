@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <waves>
-    <wave spawntPointX="4" spawntPointY="5" exitPointX="123" exitPointY="124" spawnInterval="0.5" startToMove="0">
+    <!-- delay - время между последним крипом из предыдущей пачки крипов и нашима первым + spawnInterval + interval -->
+    <!-- а интервал - время между крипами одного типа + spawnInterval -->
+    <!-- а spawnInterval - дополнительное или же одно единственное время между всеми крипами в этой волне. -->
+    <!-- startToMove - ну тут все понятно. столько пройдет времени после нажатия пользователем кнопки пуска крипов -->
+    <wave spawnPointX="4" spawnPointY="5" exitPointX="123" exitPointY="124" spawnInterval="0.5" startToMove="0">
         <unit delay="1" templateName="unit10_ballista" interval="1" amount="2"/>
         <unit delay="2" templateName="unit2_troll_axethrower" interval="2" amount="2"/>
         <unit delay="1" templateName="unit1_grunt" interval="3" amount="2"/>
         <unit delay="0.8" templateName="unit2_troll_axethrower" interval="2" amount="2"/>
     </wave>
-    <wave spawntPointX="123" spawntPointY="124" exitPointX="4" exitPointY="5" spawnInterval="1.5" startToMove="0">
+    <wave spawnPointX="123" spawnPointY="124" exitPointX="4" exitPointY="5" spawnInterval="1.5" startToMove="0">
         <unit delay="1" templateName="unit1_grunt" amount="1"/>
         <unit delay="2" templateName="unit2_troll_axethrower" amount="1"/>
         <unit delay="1" templateName="unit1_grunt" amount="2"/>
@@ -14,13 +18,13 @@
         <unit delay="1" templateName="unit13_knight" amount="1"/>
         <unit delay="2" templateName="unit13_knight" amount="1"/>
     </wave>
-    <wave spawntPointX="122" spawntPointY="5" exitPointX="3" exitPointY="124" spawnInterval="0" startToMove="0">
+    <wave spawnPointX="122" spawnPointY="5" exitPointX="3" exitPointY="124" spawnInterval="0" startToMove="0">
         <unit templateName="unit5_daemon" amount="5"/>
         <unit templateName="unit2_troll_axethrower" amount="1"/>
         <unit templateName="unit1_grunt" amount="2"/>
         <unit templateName="unit12_gryphon_rider" amount="2"/>
     </wave>
-    <wave spawntPointX="3" spawntPointY="124" exitPointX="120" exitPointY="6" spawnInterval="5" startToMove="0">
+    <wave spawnPointX="3" spawnPointY="124" exitPointX="120" exitPointY="6" spawnInterval="5" startToMove="0">
         <unit templateName="unit1_grunt" interval="0" amount="3"/>
         <unit delay="0" templateName="unit2_troll_axethrower" interval="0" amount="2"/>
         <unit delay="0" templateName="unit4_catapult" interval="0" amount="1"/>
@@ -39,7 +43,7 @@
         <unit delay="1" interval="0" templateName="unit15_peasant" amount="2"/>
         <unit delay="5" interval="5" templateName="unit4_catapult" amount="2"/>
     </wave>
-    <wave spawntPointX="3" spawntPointY="124" exitPointX="123" exitPointY="124" spawnInterval="0.5" startToMove="0">
+    <wave spawnPointX="3" spawnPointY="124" exitPointX="123" exitPointY="124" spawnInterval="0.5" startToMove="0">
         <unit delay="1" templateName="unit1_grunt" interval="0.1" amount="3"/>
         <unit delay="2" templateName="unit2_troll_axethrower" interval="0.2" amount="2"/>
         <unit delay="3" templateName="unit4_catapult" interval="0.3" amount="1"/>

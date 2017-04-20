@@ -30,58 +30,56 @@ public class CreepsRoulette extends Roulette {
 
     private Array<TemplateForUnit> templateForUnits;
     private Group buttonGroup;
-    private Array<ImageButton> imageButtons;
     private ImageButton creepsSelectorButton;
     private ImageButton playButton;
     private ImageButton pauseButton;
-    private static volatile Boolean IS_PAUSE = true;
+    private static volatile Boolean IS_PAUSE = true; // Prosto pizdec ANDREY!!!!!!!!!
     private boolean showCreepsSelector;
 
-    public CreepsRoulette(GameField gameField, BitmapFont bitmapFont, Stage stage) {
+    public CreepsRoulette(final GameField gameField, BitmapFont bitmapFont, Stage stage) {
         this.gameField = gameField;
         this.bitmapFont = bitmapFont;
         this.stage = stage;
 
-        templateForUnits = gameField.getAllTemplateForUnits();
-        buttonGroup = new Group();
-        imageButtons = new Array<ImageButton>();
+        this.templateForUnits = gameField.getAllTemplateForUnits();
+        this.buttonGroup = new Group();
 
         showCreepsSelector = false;
         creepsSelectorButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/creep_roulette_main.png"))).getDrawable());
         creepsSelectorButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
         creepsSelectorButton.setPosition(0, 0);
-        creepsSelectorButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- creepsSelectorButton");
-                showCreepsSelector = !showCreepsSelector;
-                for (Actor actor : buttonGroup.getChildren()) {
-                    actor.setVisible(showCreepsSelector);
-                }
-            }
-        });
+//        creepsSelectorButton.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- creepsSelectorButton");
+//                showCreepsSelector = !showCreepsSelector;
+//                for (Actor actor : buttonGroup.getChildren()) {
+//                    actor.setVisible(showCreepsSelector);
+//                }
+//            }
+//        });
         stage.addActor(creepsSelectorButton);
 
         playButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/playbutton.png"))).getDrawable());
         playButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
         playButton.setPosition(getLocalWidth(ROULETTE_RADIUS), 0);
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- playButton");
-            }
-        });
+//        playButton.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- playButton");
+//            }
+//        });
         stage.addActor(playButton);
 
         pauseButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/pausebutton.png"))).getDrawable());
         pauseButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
         pauseButton.setPosition(getLocalWidth(ROULETTE_RADIUS), 0);
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- playButton");
-            }
-        });
+//        pauseButton.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- pauseButton");
+//            }
+//        });
         stage.addActor(pauseButton);
 
         TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));
@@ -89,23 +87,6 @@ public class CreepsRoulette extends Roulette {
         Image imageFrame = new Image(textureRegionFrame);
         for(int unitIndex = 0; unitIndex < templateForUnits.size; unitIndex++) {
             TemplateForUnit templateForUnit = templateForUnits.get(unitIndex);
-
-            ImageButton templateFrame = new ImageButton(imageFrame.getDrawable());
-            templateFrame.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f);
-            templateFrame.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
-                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f));
-            templateFrame.setVisible(false);
-
-            ImageButton templateButton = new ImageButton(new Image(templateForUnit.animations.values().toArray().get(6).getTextureRegion()).getDrawable());
-            templateButton.setSize(getLocalWidth(ROULETTE_RADIUS)/1.5f, getLocalHeight(ROULETTE_RADIUS)/1.5f);
-            templateButton.setPosition(creepsSelectorButton.getX() + 40f, creepsSelectorButton.getY()
-                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f));
-            templateButton.setVisible(false);
-
-            buttonGroup.addActor(templateButton);
-            buttonGroup.addActor(templateFrame);
-            imageButtons.add(templateButton);
-            imageButtons.add(templateFrame);
 
             String nameTower = templateForUnit.name;
             String attackTower = templateForUnit.healthPoints.toString();
@@ -119,13 +100,34 @@ public class CreepsRoulette extends Roulette {
             float textX = 1.0f;
             float textY = creepsSelectorButton.getY() + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f); // 4to za pizdec? AndreY??? NAXUI
             nameLabel.setPosition(textX+160, textY+30); // Magic number
-            attackLabel.setPosition(textX, textY+60); // tyt tak zavedino
+            attackLabel.setPosition(textX, textY+60); // tyt tak zavedeno
             radiusDetectionLabel.setPosition(textX, textY+30);
             costLabel.setPosition(textX, textY+10);
             nameLabel.setVisible(false);
             attackLabel.setVisible(false);
             radiusDetectionLabel.setVisible(false);
             costLabel.setVisible(false);
+
+            ImageButton templateFrame = new ImageButton(imageFrame.getDrawable());
+            templateFrame.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f);
+            templateFrame.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
+                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f));
+            templateFrame.setVisible(false);
+            templateFrame.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- templateFrame");
+                }
+            });
+
+            ImageButton templateButton = new ImageButton(new Image(templateForUnit.animations.values().toArray().get(6).getTextureRegion()).getDrawable());
+            templateButton.setSize(getLocalWidth(ROULETTE_RADIUS)/1.5f, getLocalHeight(ROULETTE_RADIUS)/1.5f);
+            templateButton.setPosition(creepsSelectorButton.getX() + 40f, creepsSelectorButton.getY()
+                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f));
+            templateButton.setVisible(false);
+
+            buttonGroup.addActor(templateButton);
+            buttonGroup.addActor(templateFrame);
 
             buttonGroup.addActor(nameLabel);
             buttonGroup.addActor(attackLabel);
@@ -137,7 +139,8 @@ public class CreepsRoulette extends Roulette {
         Gdx.app.log("CreepsRoulette::init()", "-- templateForUnits.size:" + templateForUnits.size);
     }
 
-    public void buttonClick() {
+    public void changeGameState() {
+        Gdx.app.log("CreepsRoulette::changeGameState()", "--");
         if(IS_PAUSE) {
             IS_PAUSE = !IS_PAUSE;
             pauseButton.setZIndex(1);
@@ -151,18 +154,34 @@ public class CreepsRoulette extends Roulette {
     }
 
     public boolean isButtonTouched(float x, float y) {
-        Gdx.app.log("CreepsRoulette::isButtonTouched(" + x + "," + y + ")", "-- playButton.getX():" + playButton.getX() + " playButton.getWidth():" + playButton.getWidth());
-        Gdx.app.log("CreepsRoulette::isButtonTouched(" + x + "," + y + ")", "-- playButton.getY():" + playButton.getY() + " playButton.getHeight():" + playButton.getHeight());
-        boolean isTouched = false;
+        Gdx.app.log("CreepsRoulette::isButtonTouched(" + x + "," + y + ")", "--");
+        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isTransform()" + creepsSelectorButton.isTransform());
+        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isTouchable()" + creepsSelectorButton.isTouchable());
+        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isDisabled()" + creepsSelectorButton.isDisabled());
+        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isVisible()" + creepsSelectorButton.isVisible());
+        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isChecked()" + creepsSelectorButton.isChecked());
+        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isPressed()" + creepsSelectorButton.isPressed());
+        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isOver()" + creepsSelectorButton.isOver());
+        if(creepsSelectorButton.isPressed()) {
+            Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isPressed()");
+            showCreepsSelector = !showCreepsSelector;
+            for (Actor actor1 : buttonGroup.getChildren()) {
+                actor1.setVisible(showCreepsSelector);
+            }
+            return true;
+        }
+        Actor actor = buttonGroup.hit(x, y, true);
+        if(actor != null) {
+            Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- actor:" + actor.toString());
+            return true;
+        }
         y = Gdx.graphics.getHeight() - y;
-//        if(x <= getLocalWidth(ROULETTE_RADIUS)&& y > Gdx.graphics.getHeight() - getLocalHeight(ROULETTE_RADIUS)){
         if(playButton.getX() <= x && x <= playButton.getX()+playButton.getWidth() &&
                 playButton.getY() <= y && y <= playButton.getY()+playButton.getHeight()) {
-            isTouched = true;
-            Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- isTouched = true;");
+            changeGameState();
+            return true;
         }
-        if(isTouched) buttonClick();
-        return isTouched;
+        return false;
     }
 
     @Override

@@ -25,11 +25,12 @@ public class WaveManager {
     }
 
     public Array<Wave> waves;
-
     public GridPoint2 lastExitPoint;
+    public Array<Wave> wavesForUser;
 
     WaveManager() {
         this.waves = new Array<Wave>();
+        this.wavesForUser = new Array<Wave>();
     }
 
     public void addWave(Wave wave) {

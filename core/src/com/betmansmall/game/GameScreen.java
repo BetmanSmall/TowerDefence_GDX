@@ -7,10 +7,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
@@ -256,7 +253,7 @@ public class GameScreen implements Screen {
         @Override
         public boolean mouseMoved(int screenX, int screenY) {
 //            Gdx.app.log("MyGestureDetector::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
-            if(gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) {
+            if(gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) { // !LOL! deviceSettings is SHIT
                 Vector3 touch = new Vector3(screenX, screenY, 0);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
@@ -282,8 +279,8 @@ public class GameScreen implements Screen {
         }
     }
 
-    private ShapeRenderer shapeRenderer;
-    private SpriteBatch spriteBatch;
+//    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса и геймФиелда, сюда на уровень геймСкрина.
+//    private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
 
     private GameField gameField;
@@ -291,9 +288,9 @@ public class GameScreen implements Screen {
     private CameraController cameraController;
 
     public GameScreen(String mapName, float levelOfDifficulty) {
-        Gdx.app.log("GameScreen::GameScreen(" + mapName + ")", "--");
-        shapeRenderer = new ShapeRenderer();
-        spriteBatch = new SpriteBatch();
+        Gdx.app.log("GameScreen::GameScreen(" + mapName + "," + levelOfDifficulty + ")", "--");
+//        shapeRenderer = new ShapeRenderer();
+//        spriteBatch = new SpriteBatch();
         bitmapFont = new BitmapFont();
 
         gameField = new GameField(mapName, levelOfDifficulty);
@@ -314,7 +311,6 @@ public class GameScreen implements Screen {
     public void show() {
         Gdx.app.log("GameScreen::show()", "-- Start!");
         cameraController.camera.position.set(0f, 0f, 0f);
-
     }
 
     private void inputHandler(float delta) {
@@ -336,7 +332,7 @@ public class GameScreen implements Screen {
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.zoom:" + cameraController.camera.zoom);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
-            gameInterface.creepsRoulette.buttonClick();
+            gameInterface.creepsRoulette.changeGameState();
             gameInterface.addActionToHistory("-- gameField.getGamePaused():" + gameField.getGamePaused());
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");

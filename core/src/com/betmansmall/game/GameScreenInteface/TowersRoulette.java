@@ -132,11 +132,11 @@ public class TowersRoulette extends Roulette {
     private void buttonClick() {
         IS_HIDE_TOWERS = !IS_HIDE_TOWERS;
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
-            Gdx.app.log("TowersRoulette::buttonClick()", "-- ApplicationType.Android");
+            Gdx.app.log("TowersRoulette::changeGameState()", "-- ApplicationType.Android");
             rouletteCircle.setVisible(!IS_HIDE_TOWERS);
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
         } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
-            Gdx.app.log("TowersRoulette::buttonClick()", "-- ApplicationType.Desktop");
+            Gdx.app.log("TowersRoulette::changeGameState()", "-- ApplicationType.Desktop");
 //            for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++ ) {
 //                towerButtonsArray.get(towersNumber).setVisible(!IS_HIDE_TOWERS);
 //                towerFrames.get(towersNumber).setVisible(!IS_HIDE_TOWERS);

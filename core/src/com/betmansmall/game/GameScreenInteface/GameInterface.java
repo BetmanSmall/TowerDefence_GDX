@@ -40,6 +40,8 @@ public class GameInterface {
 
     public GameInterface(GameField gameField, BitmapFont bitmapFont) {
         Gdx.app.log("GameInterface::GameInterface(" + gameField + ")", "-- Called!");
+//        this.shapeRenderer = shapeRenderer;
+//        this.spriteBatch = spriteBatch;
         this.bitmapFont = bitmapFont;
 
         this.stage = new Stage();
@@ -54,6 +56,7 @@ public class GameInterface {
         fpsLabel = new Label("000", new Label.LabelStyle(bitmapFont, Color.WHITE));
         fpsLabel.setPosition(0.0f, Gdx.graphics.getHeight() - 18.0f);
         stage.addActor(fpsLabel);
+
         actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
         actionsHistoryLabel.setPosition(0.0f, Gdx.graphics.getHeight()/2);
         stage.addActor(actionsHistoryLabel);

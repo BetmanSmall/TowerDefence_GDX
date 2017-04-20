@@ -1,6 +1,5 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 

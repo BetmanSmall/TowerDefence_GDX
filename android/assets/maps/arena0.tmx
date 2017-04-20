@@ -5,7 +5,7 @@
     <property name="gamerGold" value="200"/>
  </properties>
  <waves>
-  <wave spawntPointX="15" spawntPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="0">
+  <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="0">
    <unit templateName="unit1_grunt" amount="2" delay="1" interval="1"/>
    <unit templateName="unit2_troll_axethrower" amount="3"/>
    <unit templateName="unit3_footman" amount="2"/>

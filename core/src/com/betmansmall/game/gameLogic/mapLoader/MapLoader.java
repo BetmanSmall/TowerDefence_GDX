@@ -8,7 +8,6 @@ import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
@@ -487,8 +486,8 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
     public void wavesParser(Element waves) {
         Array<Element> waveElements = waves.getChildrenByName("wave");
         for (Element waveElement : waveElements) {
-            int spawnPointX = waveElement.getIntAttribute("spawntPointX");
-            int spawnPointY = waveElement.getIntAttribute("spawntPointY");
+            int spawnPointX = waveElement.getIntAttribute("spawnPointX");
+            int spawnPointY = waveElement.getIntAttribute("spawnPointY");
             int exitPointX = waveElement.getIntAttribute("exitPointX");
             int exitPointY = waveElement.getIntAttribute("exitPointY");
             float spawnInterval = waveElement.getFloat("spawnInterval", 0.0f);
@@ -526,6 +525,15 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
 //                }
 //            }
             waveManager.addWave(wave);
+        }
+        Array<Element> waveForUserElements = waves.getChildrenByName("waveForUser");
+        for (Element waveElement : waveForUserElements) {
+            int spawnPointX = waveElement.getIntAttribute("spawnPointX");
+            int spawnPointY = waveElement.getIntAttribute("spawnPointY");
+            int exitPointX = waveElement.getIntAttribute("exitPointX");
+            int exitPointY = waveElement.getIntAttribute("exitPointY");
+            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), 0f);
+            waveManager.wavesForUser.add(wave);
         }
     }
 }

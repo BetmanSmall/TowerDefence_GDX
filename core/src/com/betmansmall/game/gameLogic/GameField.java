@@ -1218,6 +1218,12 @@ public class GameField {
         rerouteForAllCreeps(new GridPoint2(x, y));
     }
 
+    public void spawnCreepFromUser(TemplateForUnit templateForUnit) {
+        for (Wave wave : waveManager.wavesForUser) {
+            createCreep(wave.spawnPoint, templateForUnit, wave.exitPoint);
+        }
+    }
+
     private void spawnCreeps(float delta) {
         Array<WaveManager.TemplateNameAndPoints> allCreepsForSpawn = waveManager.getAllCreepsForSpawn(delta);
         for (WaveManager.TemplateNameAndPoints templateNameAndPoints : allCreepsForSpawn) {
