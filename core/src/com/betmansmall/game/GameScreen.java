@@ -477,6 +477,7 @@ public class GameScreen implements Screen {
         cameraController.camera.viewportHeight = height;
         cameraController.camera.viewportWidth = width;
         cameraController.camera.update();
+        gameInterface.stage.getViewport().update(width, height, true);
 //        gameInterface.updateStage(); // Андрей. Твой ресайз не пашет! Если это разкомменить. То не будет работать селектор вообще. Этот инит твой будет по несколько раз вызываться. Один раз при создании и два раза во время ресайза. (эти два ресайза делаются почему то во время инициализации)
     }
 

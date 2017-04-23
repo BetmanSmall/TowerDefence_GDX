@@ -8,10 +8,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.game.TowerDefence;
 import com.betmansmall.game.gameLogic.GameField;
 
@@ -25,9 +30,12 @@ public class GameInterface {
 //    private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
 
+//    private Skin skin;
     public Stage stage;
+    public Table table;
     public Label gamerGoldLabel, missedAndLimit, fpsLabel;
 
+    // Console need
     private Label actionsHistoryLabel;
     public Array<String> arrayActionsHistory;
     private float deleteActionThrough, actionInHistoryTime;
@@ -44,18 +52,29 @@ public class GameInterface {
 //        this.spriteBatch = spriteBatch;
         this.bitmapFont = bitmapFont;
 
+//        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         this.stage = new Stage();
+        this.table = new Table();
+//        table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        table.setFillParent(true);
+
+        Table infoTable = new Table().bottom();
         gamerGoldLabel = new Label("gamerGold:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-        gamerGoldLabel.setPosition(Gdx.graphics.getWidth()*0.60f, 15.0f);
-        gamerGoldLabel.setFontScale(2f);
-        stage.addActor(gamerGoldLabel);
+////        gamerGoldLabel.setPosition(Gdx.graphics.getWidth()*0.60f, 15.0f);
+////        gamerGoldLabel.setFontScale(2f);
+        infoTable.add(gamerGoldLabel).fillX().padTop(10f);
+        infoTable.row();
         missedAndLimit = new Label("10/100", new Label.LabelStyle(bitmapFont, Color.PINK));
-        missedAndLimit.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-20f);
-        missedAndLimit.setFontScale(2f);
-        stage.addActor(missedAndLimit);
+////        missedAndLimit.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-20f);
+////        missedAndLimit.setFontScale(2f);
+        infoTable.add(missedAndLimit).fillX();
+        infoTable.row();
         fpsLabel = new Label("000", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        fpsLabel.setPosition(0.0f, Gdx.graphics.getHeight() - 18.0f);
-        stage.addActor(fpsLabel);
+////        fpsLabel.setPosition(0.0f, Gdx.graphics.getHeight() - 18.0f);
+        infoTable.add(fpsLabel).fillX().padBottom(10f).padLeft(10f);
+////        infoTable.align(Align.center);
+////        infoTable.center();
+        table.add(infoTable).right();
 
         actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
         actionsHistoryLabel.setPosition(0.0f, Gdx.graphics.getHeight()/2);
@@ -76,6 +95,8 @@ public class GameInterface {
 //        } catch(Error error) {
 //            Gdx.app.log("GameInterface::GameInterface()", "-- no circle(???) group");
 //        }
+        stage.addActor(table);
+        stage.setDebugAll(true);
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
