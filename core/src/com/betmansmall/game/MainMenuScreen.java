@@ -297,20 +297,20 @@ public class MainMenuScreen implements Screen {
     private void inputHandler(float delta) {
 //        Gdx.app.log("MainMenuScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             menuLvl--;
             if(menuLvl == -1) {
                 towerDefence.dispose();
             }
             switchMenuButtons();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUMPAD_1);");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
             clickAnalyzer((short)1);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUMPAD_2);");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_2 || Input.Keys.NUM_2);");
             clickAnalyzer((short)2);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyPressed(Input.Keys.NUMPAD_3);");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_3 || Input.Keys.NUM_3);");
             clickAnalyzer((short)3);
         }
     }

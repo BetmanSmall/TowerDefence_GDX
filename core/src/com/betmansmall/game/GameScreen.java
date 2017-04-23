@@ -22,8 +22,8 @@ public class GameScreen implements Screen {
         // Need all fix this!!! PIZDEC?1??
         private float zoomMax = 50f; //max size
         private float zoomMin = 0.2f; // 2x zoom
-        public float borderLeftX, borderRightX;
-        public float borderUpY, borderDownY;
+        public Float borderLeftX, borderRightX;
+        public Float borderUpY, borderDownY;
         public OrthographicCamera camera;
         // Need all fix this!!! PIZDEC??2?
         float velX, velY;
@@ -103,16 +103,24 @@ public class GameScreen implements Screen {
 //            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
 //            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
+            if (gameInterface.creepsRoulette.pan(x, y, deltaX, deltaY)) {
+                lastCircleTouched = true;
+                return true;
+            }
             if (gameInterface.towersRoulette.makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
                 lastCircleTouched = true;
                 return true;
             }
             lastCircleTouched = false;
             if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-                float newCameraX = camera.position.x + (-deltaX*camera.zoom);
-                float newCameraY = camera.position.y + ( deltaY*camera.zoom);
-                if (cameraController.borderLeftX < newCameraX && newCameraX < cameraController.borderRightX &&
-                        cameraController.borderUpY > newCameraY && newCameraY > cameraController.borderDownY) {
+                float newCameraX = camera.position.x + (-deltaX * camera.zoom);
+                float newCameraY = camera.position.y + (deltaY * camera.zoom);
+                if(cameraController.borderLeftX != null && cameraController.borderRightX != null && cameraController.borderUpY != null && cameraController.borderDownY != null) {
+                    if (cameraController.borderLeftX < newCameraX && newCameraX < cameraController.borderRightX &&
+                            cameraController.borderUpY > newCameraY && newCameraY > cameraController.borderDownY) {
+                        camera.position.set(newCameraX, newCameraY, 0.0f);
+                    }
+                } else {
                     camera.position.set(newCameraX, newCameraY, 0.0f);
                 }
             } else {
@@ -163,10 +171,14 @@ public class GameScreen implements Screen {
                     if (flinging) {
                         velX *= 0.98f;
                         velY *= 0.98f;
-                        float newCameraX = camera.position.x + (-velX*Gdx.graphics.getDeltaTime());
-                        float newCameraY = camera.position.y + ( velY*Gdx.graphics.getDeltaTime());
-                        if (cameraController.borderLeftX < newCameraX && newCameraX < cameraController.borderRightX &&
-                                cameraController.borderUpY > newCameraY && newCameraY > cameraController.borderDownY) {
+                        float newCameraX = camera.position.x + (-velX * Gdx.graphics.getDeltaTime());
+                        float newCameraY = camera.position.y + (velY * Gdx.graphics.getDeltaTime());
+                        if(cameraController.borderLeftX != null && cameraController.borderRightX != null && cameraController.borderUpY != null && cameraController.borderDownY != null) {
+                            if (cameraController.borderLeftX < newCameraX && newCameraX < cameraController.borderRightX &&
+                                    cameraController.borderUpY > newCameraY && newCameraY > cameraController.borderDownY) {
+                                camera.position.set(newCameraX, newCameraY, 0.0f);
+                            }
+                        } else {
                             camera.position.set(newCameraX, newCameraY, 0.0f);
                         }
                         if (Math.abs(velX) < 0.01f) velX = 0;
@@ -187,7 +199,7 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean keyDown(int keycode) {
-//            Gdx.app.log("MyGestureDetector::keyDown()", "-- keycode:" + keycode);
+            Gdx.app.log("MyGestureDetector::keyDown()", "-- keycode:" + keycode);
             return false;
         }
 
@@ -296,10 +308,10 @@ public class GameScreen implements Screen {
         gameField = new GameField(mapName, levelOfDifficulty);
         gameInterface = new GameInterface(gameField, bitmapFont);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        cameraController.borderLeftX  = 0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY());
-        cameraController.borderRightX = 0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX());
-        cameraController.borderUpY    = 0;
-        cameraController.borderDownY  = 0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY()));
+        cameraController.borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
+        cameraController.borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
+        cameraController.borderUpY    = new Float(0);
+        cameraController.borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MyGestureDetector(cameraController));// я хз че делать=(
         inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
@@ -428,6 +440,11 @@ public class GameScreen implements Screen {
             gameField.flipY();
             gameInterface.addActionToHistory("-- gameField.flipY()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.flipY()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.PERIOD)");
+            gameInterface.arrayActionsHistory.clear();
+            gameInterface.addActionToHistory("-- gameInterface.arrayActionsHistory.clear()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameInterface.arrayActionsHistory.clear()");
         }
     }
 

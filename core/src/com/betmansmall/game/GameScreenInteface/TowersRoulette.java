@@ -29,7 +29,6 @@ public class TowersRoulette extends Roulette {
     private Group buttonGroup;
     private ImageButton rouletteButton;
     private ImageButton rouletteCircle;
-//    private Array<ImageButton> towerButtonsArray;
     private Array<ImageButton> towerFrames;
     private static volatile Boolean IS_HIDE_TOWERS = true;
     private Array<TemplateForTower> templateForTowers;
@@ -41,13 +40,10 @@ public class TowersRoulette extends Roulette {
         init();
     }
 
-    private void init() {
+    private void init() { // Нужно тут все naxui переделать. Либо как в CreepsRoulette, либо вообще все по нормальному с Layouts || но пока да -- так=(
         //TEMPORARY VARIANT OF TAKING TOWERS
         templateForTowers = gameField.getAllTemplateForTowers();
-
         buttonGroup = new Group();
-
-//        towerButtonsArray = new Array<ImageButton>();
         towerFrames = new Array<ImageButton>();
 
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -67,6 +63,8 @@ public class TowersRoulette extends Roulette {
             rouletteCircle.setVisible(false);
             circleGroup.addActor(rouletteCircle);
             circleGroup.setOrigin(Gdx.graphics.getWidth(), 0);
+            stage.addActor(buttonGroup); // Naxer eto gavno!
+            stage.addActor(circleGroup); // Naxer eto gavno!
         } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
             Gdx.app.log("TowersRoulette::init()", "-- ApplicationType.Desktop");
             rouletteButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/tower_button.png"))).getDrawable());
@@ -75,8 +73,6 @@ public class TowersRoulette extends Roulette {
             rouletteButton.setPosition(Gdx.graphics.getWidth() - rouletteButton.getWidth(), 0);
             rouletteButton.setOrigin(Gdx.graphics.getWidth(), 0);
             stage.addActor(rouletteButton);
-//            buttonGroup.addActor(rouletteButton);
-//            buttonGroup.setOrigin(Gdx.graphics.getWidth(), 0);
             for(int towersNumber = 0; towersNumber < templateForTowers.size; towersNumber++) {
                 TemplateForTower templateForTower = templateForTowers.get(towersNumber);
 
@@ -93,7 +89,6 @@ public class TowersRoulette extends Roulette {
 
                 buttonGroup.addActor(templateButton);
                 buttonGroup.addActor(templateFrame);
-//                towerButtonsArray.add(templateButton);
                 towerFrames.add(templateFrame);
 
                 String nameTower = templateForTower.name;
@@ -123,6 +118,7 @@ public class TowersRoulette extends Roulette {
 
                 Gdx.app.log("TowersRoulette::init()", "-- button pos:(" + templateButton.getX() + "," + templateButton.getY() + "):" + nameTower);
             }
+            stage.addActor(buttonGroup);
             Gdx.app.log("TowersRoulette::init()", "-- templateForTowers.size:" + templateForTowers.size);
         } else {
             Gdx.app.log("TowersRoulette::init()", "-- Device is not supported");

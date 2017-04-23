@@ -29,7 +29,7 @@ public class GameInterface {
     public Label gamerGoldLabel, missedAndLimit, fpsLabel;
 
     private Label actionsHistoryLabel;
-    private Array<String> arrayActionsHistory;
+    public Array<String> arrayActionsHistory;
     private float deleteActionThrough, actionInHistoryTime;
 
     public TowersRoulette towersRoulette;
@@ -66,16 +66,16 @@ public class GameInterface {
 
         towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
         creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
-        for(Actor actor : creepsRoulette.getGroup()) {
-            stage.addActor(actor);
-        }
-        try {
-            for (Actor actor : towersRoulette.getGroup()) {
-                stage.addActor(actor);
-            }
-        } catch(Error error) {
-            Gdx.app.log("GameInterface::GameInterface()", "-- no circle(???) group");
-        }
+//        for(Actor actor : creepsRoulette.getGroup()) {
+//            stage.addActor(actor);
+//        }
+//        try {
+//            for (Actor actor : towersRoulette.getGroup()) {
+//                stage.addActor(actor);
+//            }
+//        } catch(Error error) {
+//            Gdx.app.log("GameInterface::GameInterface()", "-- no circle(???) group");
+//        }
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));

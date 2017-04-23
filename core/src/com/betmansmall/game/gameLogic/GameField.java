@@ -19,7 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Intersector; // AlexGor
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
-import com.betmansmall.game.gameLogic.MapLoader.MapLoader;
+import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
@@ -1219,8 +1219,12 @@ public class GameField {
     }
 
     public void spawnCreepFromUser(TemplateForUnit templateForUnit) {
-        for (Wave wave : waveManager.wavesForUser) {
-            createCreep(wave.spawnPoint, templateForUnit, wave.exitPoint);
+        Gdx.app.log("GameField::spawnCreepFromUser()", "-- templateForUnit:" + templateForUnit);
+        if(gamerGold >= templateForUnit.cost) {
+            gamerGold -= templateForUnit.cost;
+            for (Wave wave : waveManager.wavesForUser) {
+                createCreep(wave.spawnPoint, templateForUnit, wave.exitPoint);
+            }
         }
     }
 
@@ -1247,7 +1251,7 @@ public class GameField {
     }
 
     private void createCreep(GridPoint2 spawnPoint, TemplateForUnit templateForUnit, GridPoint2 exitPoint) {
-        Gdx.app.log("GameField::createCreep(" + spawnPoint + ", " + templateForUnit.toString(true) + ", " + exitPoint + ")", "--");
+//        Gdx.app.log("GameField::createCreep(" + spawnPoint + ", " + templateForUnit.toString(true) + ", " + exitPoint + ")", "--");
         if (exitPoint == null) {
             exitPoint = waveManager.lastExitPoint;
         }

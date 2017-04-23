@@ -1,4 +1,4 @@
-package com.betmansmall.game.gameLogic.MapLoader;
+package com.betmansmall.game.gameLogic.mapLoader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
