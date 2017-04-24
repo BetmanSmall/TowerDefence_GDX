@@ -3,6 +3,7 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -102,6 +103,24 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(menuButton3);
         mmStage.addActor(returnButton);
 //        mmStage.addActor(welcomeScreen);
+
+        // Campaign levels
+        FileHandle mapsDir = Gdx.files.internal("maps");
+        if(mapsDir.list().length == 0) {
+            towerDefence.gameLevelMaps.add("maps/arena0.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena5.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena4.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena3.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena.tmx");
+//            towerDefence.gameLevelMaps.add("maps/arena2.tmx");
+        } else {
+            for(FileHandle fileHandle : mapsDir.list()) {
+                Gdx.app.log("MainMenuScreen::MainMenuScreen()", " -- fileHandle.path():" + fileHandle.path());
+                if(fileHandle.extension().equals("tmx")) {
+                    towerDefence.gameLevelMaps.add(fileHandle.path());
+                }
+            }
+        }
     }
 
     private void create(int width, int height) {
@@ -141,13 +160,7 @@ public class MainMenuScreen implements Screen {
             case 1:                                             //Play menu
                 switch (buttonNumber) {
                     case 1:
-                        //Campaign menu
-                        towerDefence.gameLevelMaps.add("maps/arena0.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena5.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena4.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena3.tmx");
-                        towerDefence.gameLevelMaps.add("maps/arena.tmx");
-//                        towerDefence.gameLevelMaps.add("maps/arena2.tmx");
+                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
                         towerDefence.nextGameLevel();
                         break;
                     case 2:
@@ -215,23 +228,23 @@ public class MainMenuScreen implements Screen {
         switch (menuLvl) {
             case 0:         //main menu
                 textureMB1 = new Texture(Gdx.files.internal("menubutons/play.png"));
-                textureMB2 = new Texture((Gdx.files.internal("menubutons/options.png")));
-                textureMB3 = new Texture((Gdx.files.internal("menubutons/exit.png")));
+                textureMB2 = new Texture(Gdx.files.internal("menubutons/options.png"));
+                textureMB3 = new Texture(Gdx.files.internal("menubutons/exit.png"));
                 break;
             case 1:         //"Play" menu
-                textureMB1 = new Texture((Gdx.files.internal("menubutons/campaign.png")));
-                textureMB2 = new Texture((Gdx.files.internal("menubutons/single_map.png")));
-                textureMB3 = new Texture((Gdx.files.internal("menubutons/editor.png")));
+                textureMB1 = new Texture(Gdx.files.internal("menubutons/campaign.png"));
+                textureMB2 = new Texture(Gdx.files.internal("menubutons/single_map.png"));
+                textureMB3 = new Texture(Gdx.files.internal("menubutons/editor.png"));
                 break;
             case 2:         //"Choose map" menu
-                textureMB1 = new Texture((Gdx.files.internal("menubutons/forest_lake.png")));
-                textureMB2 = new Texture((Gdx.files.internal("menubutons/map2.png")));
-                textureMB3 = new Texture((Gdx.files.internal("menubutons/map3.png")));
+                textureMB1 = new Texture(Gdx.files.internal("menubutons/forest_lake.png"));
+                textureMB2 = new Texture(Gdx.files.internal("menubutons/map2.png"));
+                textureMB3 = new Texture(Gdx.files.internal("menubutons/map3.png"));
                 break;
             case 3:         //"Difficulty" menu
-                textureMB1 = new Texture((Gdx.files.internal("menubutons/easy.png")));
-                textureMB2 = new Texture((Gdx.files.internal("menubutons/normal.png")));
-                textureMB3 = new Texture((Gdx.files.internal("menubutons/hard.png")));
+                textureMB1 = new Texture(Gdx.files.internal("menubutons/easy.png"));
+                textureMB2 = new Texture(Gdx.files.internal("menubutons/normal.png"));
+                textureMB3 = new Texture(Gdx.files.internal("menubutons/hard.png"));
                 break;
             default:
                 break;

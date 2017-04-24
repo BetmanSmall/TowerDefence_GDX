@@ -11,9 +11,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -38,9 +40,9 @@ public class GameInterface {
     public Label gamerGoldLabel, missedAndLimit, fpsLabel;
 
     // Console need
-    private Label actionsHistoryLabel;
     public Array<String> arrayActionsHistory;
     private float deleteActionThrough, actionInHistoryTime;
+    private Label actionsHistoryLabel;
 
     public TowersRoulette towersRoulette;
     public CreepsRoulette creepsRoulette;
@@ -58,52 +60,42 @@ public class GameInterface {
 //        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         this.stage = new Stage(/*new ScreenViewport()*/);
         stage.setDebugAll(true);
-        Gdx.app.log("GameInterface::GameInterface()", "-- stage.getWidth():" + stage.getWidth() + " stage.getHeight():" + stage.getHeight());
+
         this.table = new Table();
         stage.addActor(table);
-        Gdx.app.log("GameInterface::GameInterface()", "-- table:" + table);
-        Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
         table.setFillParent(true);
-        Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
-        table.setBounds(1, 0, table.getWidth()-2, table.getHeight()-2);
+//        table.setBounds(1, 0, stage.getWidth()-1, stage.getHeight()-1);
         Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
 
-        Table infoTable = new Table();
+        arrayActionsHistory = new Array<String>();
+        deleteActionThrough = 0f;
+        actionInHistoryTime = 1f;
+        actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        table.add(actionsHistoryLabel).expand().left();
+
+//        Table infoTable = new Table();
+//        infoTable.setSize(100f, 50f);
+//        infoTable.align(Align.top);
+//        table.addActor(infoTable);
 //        infoTable.setPosition(50f, 50f);
 //        infoTable.setBounds(10, 10, 100, 50);
-        infoTable.setFillParent(true);
+//        infoTable.setFillParent(true);
 
 //        Table table1 = new Table();
 //        table1.setFillParent(true);
 //        infoTable.add(table1);
+        VerticalGroup infoGroup = new VerticalGroup();
+        table.add(infoGroup).expand().top().right();
 
-//        gamerGoldLabel = new Label("gamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-////        gamerGoldLabel.setPosition(Gdx.graphics.getWidth()*0.60f, 15.0f);
-////        gamerGoldLabel.setFontScale(2f);
-//        infoTable.add(gamerGoldLabel).row();
-//        infoTable.row();
-//        missedAndLimit = new Label("10/100", new Label.LabelStyle(bitmapFont, Color.PINK));
-////        missedAndLimit.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-20f);
-////        missedAndLimit.setFontScale(2f);
-//        infoTable.add(missedAndLimit).row();
-//        infoTable.row();
-//        fpsLabel = new Label("000", new Label.LabelStyle(bitmapFont, Color.WHITE));
-////        fpsLabel.setPosition(0.0f, Gdx.graphics.getHeight() - 18.0f);
-//        infoTable.add(fpsLabel);
-////        infoTable.align(Align.center);
-////        infoTable.center();
-        table.add(infoTable);
+        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        missedAndLimit = new Label("CreepsLimit:10/100", new Label.LabelStyle(bitmapFont, Color.PINK));
+        fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        infoGroup.addActor(gamerGoldLabel);
+        infoGroup.addActor(missedAndLimit);
+        infoGroup.addActor(fpsLabel);
 
-//        actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
-//        actionsHistoryLabel.setPosition(0.0f, Gdx.graphics.getHeight()/2);
-//        stage.addActor(actionsHistoryLabel);
-//        arrayActionsHistory = new Array<String>();
-//        deleteActionThrough = 0f;
-//        actionInHistoryTime = 1f;
-
-//        towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
-//        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
-
+        towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
+        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
@@ -112,25 +104,27 @@ public class GameInterface {
     }
 
     public void addActionToHistory(String action) {
-        arrayActionsHistory.add(action);
+        if(arrayActionsHistory != null) {
+            arrayActionsHistory.add(action);
+        }
     }
 
     public void render(float delta) {
-//        if(arrayActionsHistory.size > 0) {
-//            deleteActionThrough += delta;
-//            if (deleteActionThrough > actionInHistoryTime) {
-//                arrayActionsHistory.removeIndex(0);
-//                deleteActionThrough = 0f;
-//            }
-//            StringBuilder sb = new StringBuilder();
-//            for(String str : arrayActionsHistory) {
-//                sb.append("\n" + str);
-//            }
-//            actionsHistoryLabel.setText(sb.toString());
-//        }
-//        gamerGoldLabel.setText("gamerGold:" + gameField.getGamerGold());
-//        missedAndLimit.setText(gameField.missedCreeps + "/" + gameField.maxOfMissedCreeps);
-//        fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        if(arrayActionsHistory.size > 0) {
+            deleteActionThrough += delta;
+            if (deleteActionThrough > actionInHistoryTime) {
+                arrayActionsHistory.removeIndex(0);
+                deleteActionThrough = 0f;
+            }
+            StringBuilder sb = new StringBuilder();
+            for(String str : arrayActionsHistory) {
+                sb.append("\n" + str);
+            }
+            actionsHistoryLabel.setText(sb.toString());
+        }
+        gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
+        missedAndLimit.setText("CreepsLimit:" + gameField.missedCreeps + "/" + gameField.maxOfMissedCreeps);
+        fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
         stage.act(delta);
         stage.draw();
     }

@@ -23,6 +23,7 @@ import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.game.gameLogic.playerTemplates.ShellAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
@@ -1478,18 +1479,7 @@ public class GameField {
                 }
 //                Gdx.app.log("GameField::shotAllTowers(" + delta + ")", "-- towerAttackType.pit -- creep:" + creep);
             } else if (towerAttackType == TowerAttackType.Melee) {
-                int radius = tower.getRadiusDetection();
-                for (int tmpX = -radius; tmpX <= radius; tmpX++) {
-                    for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                        GridPoint2 position = tower.getPosition();
-                        if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
-                            Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
-//                            tower.shoot(creep);
-                            creep.die(tower.getDamage(), tower.getTemplateForTower().shellEffectType);
-                            return;
-                        }
-                    }
-                }
+                shotMeleeTower(tower);
             } else if (towerAttackType == TowerAttackType.Range) {
                 if (tower.recharge(delta)) {
                     for (Creep creep : creepsManager.getAllCreeps()) {
@@ -1503,6 +1493,27 @@ public class GameField {
                 }
             }
         }
+    }
+
+    private boolean shotMeleeTower(Tower tower) {
+        boolean attack = false;
+        int radius = tower.getRadiusDetection();
+        for (int tmpX = -radius; tmpX <= radius; tmpX++) {
+            for (int tmpY = -radius; tmpY <= radius; tmpY++) {
+                GridPoint2 position = tower.getPosition();
+                if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
+                    attack = true;
+                    Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
+                    if(creep.die(tower.getDamage(), tower.getTemplateForTower().shellEffectType)) {
+                        gamerGold += creep.getTemplateForUnit().bounty;
+                    }
+                    if(tower.getTemplateForTower().shellAttackType == ShellAttackType.SingleTarget) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return attack;
     }
 
     private void moveAllShells(float delta) {

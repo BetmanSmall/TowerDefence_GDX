@@ -25,11 +25,12 @@ public class TowerDefence extends Game {
             addScreen(new GameScreen(gameLevelMaps.first(), 1f)); // default level of Difficulty for Campaign
             gameLevelMaps.removeIndex(0);
         } else {
-            if(screensArray.size > 1) {
-                removeTopScreen();
-            } else {
+            removeAllScreens();
+//            if(screensArray.size > 1) {
+//                removeTopScreen();
+//            } else {
                 addScreen(new MainMenuScreen(instance));
-            }
+//            }
         }
     }
 
@@ -60,7 +61,7 @@ public class TowerDefence extends Game {
      * @brief Add screen
      */
     public void addScreen(Screen screen) {
-        Gdx.app.log("TowerDefence::addScreen(" + screen + ")", "--");
+        Gdx.app.log("TowerDefence::addScreen(" + screen + ")", "-- screensArray:" + screensArray);
         if (screen != null) {
             screensArray.add(screen);
             this.setScreen(screen);
@@ -98,16 +99,20 @@ public class TowerDefence extends Game {
     public void removeAllScreens() {
         Gdx.app.log("TowerDefence::removeAllScreens()", "--");
         if (screensArray != null) {
-            int size = screensArray.size;
-            if (size > 0) {
-                for (int i = size - 1; i >= 0; i--) {
-                    Screen screen = screensArray.get(i);
-                    if (screen != null) {
-//                        screen.hide();
-                        screensArray.removeIndex(size - 1);
-                    }
-                }
-            }
+//            for(Screen screen : screensArray) {
+//                screen.dispose(); // Дич ебаная. с этими скринами у нас точно какие то проблемы...
+//            }
+            screensArray.clear();
+//            int size = screensArray.size;
+//            if (size > 0) {
+//                for (int i = size - 1; i >= 0; i--) {
+//                    Screen screen = screensArray.get(i);
+//                    if (screen != null) {
+////                        screen.hide();
+//                        screensArray.removeIndex(size - 1);
+//                    }
+//                }
+//            }
         }
     }
 
