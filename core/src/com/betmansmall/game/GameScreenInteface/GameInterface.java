@@ -1,5 +1,6 @@
 package com.betmansmall.game.GameScreenInteface;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,6 +27,7 @@ import com.betmansmall.game.gameLogic.GameField;
  * TODO implement more interface options
  */
 public class GameInterface {
+    private GameField gameField;
 //    private ShapeRenderer shapeRenderer;
 //    private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
@@ -47,56 +49,61 @@ public class GameInterface {
     private float currentTextureTime, maxTextureTime;
 
     public GameInterface(GameField gameField, BitmapFont bitmapFont) {
-        Gdx.app.log("GameInterface::GameInterface(" + gameField + ")", "-- Called!");
+        Gdx.app.log("GameInterface::GameInterface(" + gameField + "," + bitmapFont + ")", "-- Called!");
+        this.gameField = gameField;
 //        this.shapeRenderer = shapeRenderer;
 //        this.spriteBatch = spriteBatch;
         this.bitmapFont = bitmapFont;
 
 //        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        this.stage = new Stage();
+        this.stage = new Stage(/*new ScreenViewport()*/);
+        stage.setDebugAll(true);
+        Gdx.app.log("GameInterface::GameInterface()", "-- stage.getWidth():" + stage.getWidth() + " stage.getHeight():" + stage.getHeight());
         this.table = new Table();
-//        table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        stage.addActor(table);
+        Gdx.app.log("GameInterface::GameInterface()", "-- table:" + table);
+        Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
         table.setFillParent(true);
+        Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+        table.setBounds(1, 0, table.getWidth()-2, table.getHeight()-2);
+        Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
 
-        Table infoTable = new Table().bottom();
-        gamerGoldLabel = new Label("gamerGold:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        Table infoTable = new Table();
+//        infoTable.setPosition(50f, 50f);
+//        infoTable.setBounds(10, 10, 100, 50);
+        infoTable.setFillParent(true);
+
+//        Table table1 = new Table();
+//        table1.setFillParent(true);
+//        infoTable.add(table1);
+
+//        gamerGoldLabel = new Label("gamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
 ////        gamerGoldLabel.setPosition(Gdx.graphics.getWidth()*0.60f, 15.0f);
 ////        gamerGoldLabel.setFontScale(2f);
-        infoTable.add(gamerGoldLabel).fillX().padTop(10f);
-        infoTable.row();
-        missedAndLimit = new Label("10/100", new Label.LabelStyle(bitmapFont, Color.PINK));
+//        infoTable.add(gamerGoldLabel).row();
+//        infoTable.row();
+//        missedAndLimit = new Label("10/100", new Label.LabelStyle(bitmapFont, Color.PINK));
 ////        missedAndLimit.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-20f);
 ////        missedAndLimit.setFontScale(2f);
-        infoTable.add(missedAndLimit).fillX();
-        infoTable.row();
-        fpsLabel = new Label("000", new Label.LabelStyle(bitmapFont, Color.WHITE));
+//        infoTable.add(missedAndLimit).row();
+//        infoTable.row();
+//        fpsLabel = new Label("000", new Label.LabelStyle(bitmapFont, Color.WHITE));
 ////        fpsLabel.setPosition(0.0f, Gdx.graphics.getHeight() - 18.0f);
-        infoTable.add(fpsLabel).fillX().padBottom(10f).padLeft(10f);
+//        infoTable.add(fpsLabel);
 ////        infoTable.align(Align.center);
 ////        infoTable.center();
-        table.add(infoTable).right();
+        table.add(infoTable);
 
-        actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        actionsHistoryLabel.setPosition(0.0f, Gdx.graphics.getHeight()/2);
-        stage.addActor(actionsHistoryLabel);
-        arrayActionsHistory = new Array<String>();
-        deleteActionThrough = 0f;
-        actionInHistoryTime = 1f;
+//        actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
+//        actionsHistoryLabel.setPosition(0.0f, Gdx.graphics.getHeight()/2);
+//        stage.addActor(actionsHistoryLabel);
+//        arrayActionsHistory = new Array<String>();
+//        deleteActionThrough = 0f;
+//        actionInHistoryTime = 1f;
 
-        towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
-        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
-//        for(Actor actor : creepsRoulette.getGroup()) {
-//            stage.addActor(actor);
-//        }
-//        try {
-//            for (Actor actor : towersRoulette.getGroup()) {
-//                stage.addActor(actor);
-//            }
-//        } catch(Error error) {
-//            Gdx.app.log("GameInterface::GameInterface()", "-- no circle(???) group");
-//        }
-        stage.addActor(table);
-        stage.setDebugAll(true);
+//        towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
+//        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
+
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
@@ -109,18 +116,21 @@ public class GameInterface {
     }
 
     public void render(float delta) {
-        if(arrayActionsHistory.size > 0) {
-            deleteActionThrough += delta;
-            if (deleteActionThrough > actionInHistoryTime) {
-                arrayActionsHistory.removeIndex(0);
-                deleteActionThrough = 0f;
-            }
-            StringBuilder sb = new StringBuilder();
-            for(String str : arrayActionsHistory) {
-                sb.append("\n" + str);
-            }
-            actionsHistoryLabel.setText(sb.toString());
-        }
+//        if(arrayActionsHistory.size > 0) {
+//            deleteActionThrough += delta;
+//            if (deleteActionThrough > actionInHistoryTime) {
+//                arrayActionsHistory.removeIndex(0);
+//                deleteActionThrough = 0f;
+//            }
+//            StringBuilder sb = new StringBuilder();
+//            for(String str : arrayActionsHistory) {
+//                sb.append("\n" + str);
+//            }
+//            actionsHistoryLabel.setText(sb.toString());
+//        }
+//        gamerGoldLabel.setText("gamerGold:" + gameField.getGamerGold());
+//        missedAndLimit.setText(gameField.missedCreeps + "/" + gameField.maxOfMissedCreeps);
+//        fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
         stage.act(delta);
         stage.draw();
     }
@@ -150,5 +160,19 @@ public class GameInterface {
 //        creepsRoulette.dispose();
         winTexture.dispose();
         loseTexture.dispose();
+    }
+
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        if(creepsRoulette != null) {
+            if(creepsRoulette.pan(x, y, deltaX, deltaY)) {
+                return true;
+            }
+        }
+        if(towersRoulette != null) {
+            if (towersRoulette.makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
+                return true;
+            }
+        }
+        return false;
     }
 }

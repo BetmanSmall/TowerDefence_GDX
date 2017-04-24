@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
                 return false;
             }
 
-            Vector3 touch = new Vector3(x, y, 0);
+            Vector3 touch = new Vector3(x, y, 0.0f);
             camera.unproject(touch);
             GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to creeps too!
             if (cellCoordinate != null && gameField.getUnderConstruction() == null) {
@@ -98,16 +98,12 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean pan(float x, float y, float deltaX, float deltaY) {
-            Vector3 touch = new Vector3(x, y, 0);
+            Vector3 touch = new Vector3(x, y, 0.0f);
             camera.unproject(touch);
 //            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
 //            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
-            if (gameInterface.creepsRoulette.pan(x, y, deltaX, deltaY)) {
-                lastCircleTouched = true;
-                return true;
-            }
-            if (gameInterface.towersRoulette.makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (gameInterface.pan(x, y, deltaX, deltaY)) {
                 lastCircleTouched = true;
                 return true;
             }
@@ -124,18 +120,19 @@ public class GameScreen implements Screen {
                     camera.position.set(newCameraX, newCameraY, 0.0f);
                 }
             } else {
-                int space = 50;
+                float space = 50f;
+                float shiftCamera = 5f;
                 if(x < space) {
-                    camera.position.add(-5, 0, 0);
+                    camera.position.add(-shiftCamera, 0.0f, 0.0f);
                 }
                 if(x > Gdx.graphics.getWidth()-space) {
-                    camera.position.add(5, 0, 0);
+                    camera.position.add(shiftCamera, 0.0f, 0.0f);
                 }
                 if(y < space) {
-                    camera.position.add(0, 5, 0);
+                    camera.position.add(0.0f, shiftCamera, 0.0f);
                 }
                 if(y > Gdx.graphics.getHeight()-space) {
-                    camera.position.add(0, -5, 0);
+                    camera.position.add(0.0f, -shiftCamera, 0.0f);
                 }
             }
             return false;
@@ -181,8 +178,8 @@ public class GameScreen implements Screen {
                         } else {
                             camera.position.set(newCameraX, newCameraY, 0.0f);
                         }
-                        if (Math.abs(velX) < 0.01f) velX = 0;
-                        if (Math.abs(velY) < 0.01f) velY = 0;
+                        if (Math.abs(velX) < 0.01f) velX = 0.0f;
+                        if (Math.abs(velY) < 0.01f) velY = 0.0f;
                     }
                 }
                 camera.update();
@@ -219,7 +216,7 @@ public class GameScreen implements Screen {
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
             Gdx.app.log("MyGestureDetector::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
             if(gameField != null && gameField.getUnderConstruction() != null) {
-                Vector3 touch = new Vector3(screenX, screenY, 0);
+                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
@@ -238,7 +235,7 @@ public class GameScreen implements Screen {
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             Gdx.app.log("MyGestureDetector::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
             if(gameField != null && gameField.getUnderConstruction() != null && button == 0) {
-                Vector3 touch = new Vector3(screenX, screenY, 0);
+                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
@@ -252,7 +249,7 @@ public class GameScreen implements Screen {
         public boolean touchDragged(int screenX, int screenY, int pointer) {
 //            Gdx.app.log("MyGestureDetector::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " deviceSettings.getDevice():" + deviceSettings.getDevice());
             if(gameField != null && gameField.getUnderConstruction() != null) {
-                Vector3 touch = new Vector3(screenX, screenY, 0);
+                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
@@ -266,7 +263,7 @@ public class GameScreen implements Screen {
         public boolean mouseMoved(int screenX, int screenY) {
 //            Gdx.app.log("MyGestureDetector::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
             if(gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) { // !LOL! deviceSettings is SHIT
-                Vector3 touch = new Vector3(screenX, screenY, 0);
+                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
@@ -308,10 +305,10 @@ public class GameScreen implements Screen {
         gameField = new GameField(mapName, levelOfDifficulty);
         gameInterface = new GameInterface(gameField, bitmapFont);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        cameraController.borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
-        cameraController.borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
-        cameraController.borderUpY    = new Float(0);
-        cameraController.borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
+//        cameraController.borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
+//        cameraController.borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
+//        cameraController.borderUpY    = new Float(0);
+//        cameraController.borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MyGestureDetector(cameraController));// я хз че делать=(
         inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
@@ -322,7 +319,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log("GameScreen::show()", "-- Start!");
-        cameraController.camera.position.set(0f, 0f, 0f);
+        cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
     }
 
     private void inputHandler(float delta) {
@@ -459,10 +456,6 @@ public class GameScreen implements Screen {
             inputHandler(delta);
             cameraController.update();
             gameField.render(delta, cameraController.camera);
-
-            gameInterface.gamerGoldLabel.setText("gamerGold:" + gameField.getGamerGold());
-            gameInterface.fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
-            gameInterface.missedAndLimit.setText(gameField.missedCreeps + "/" + gameField.maxOfMissedCreeps);
             gameInterface.render(delta);
         } else if (gameState.equals("Lose") || gameState.equals("Win")) {
             gameInterface.renderEndGame(delta, gameState);
