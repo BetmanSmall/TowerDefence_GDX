@@ -57,6 +57,9 @@ public class WaveManager {
         for (Wave wave : waves) {
             points.add(wave.spawnPoint);
         }
+        for (Wave wave : wavesForUser) {
+            points.add(wave.spawnPoint);
+        }
         return points;
     }
 
@@ -64,6 +67,9 @@ public class WaveManager {
         Array<GridPoint2> points = new Array<GridPoint2>();
         for (Wave wave : waves) {
             points.add(wave.exitPoint);
+        }
+        for (Wave wave : wavesForUser) {
+            points.add(wave.spawnPoint);
         }
         if (lastExitPoint != null) {
             points.add(lastExitPoint);
@@ -91,16 +97,17 @@ public class WaveManager {
 //    public int getNumberOfCreeps() // need implement
 
     public void validationPoints(Cell[][] field) {
+        Gdx.app.log("WaveManager::validationPoints(" + field + ")", "--");
         if(field != null) {
             int sizeFieldX = field.length;
             int sizeFieldY = field[0].length;
             int wavesCount = waves.size;
+            Gdx.app.log("WaveManager::validationPoints()", "-- sizeField:(" + sizeFieldX + ", " + sizeFieldY + ") wavesCount:(" + wavesCount + ":" + waves.size + ")");
             for (int w = 0; w < waves.size; w++) {
-                Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ")", "-- wavesCount:(" + wavesCount + ":" + waves.size + ")");
                 Wave wave = waves.get(w);
                 GridPoint2 spawnPoint = wave.spawnPoint;
                 GridPoint2 exitPoint = wave.exitPoint;
-                Gdx.app.log("WaveManager::validationPoints()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
+                Gdx.app.log("WaveManager::validationPoints()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint + " wave:" + wave);
                 if (spawnPoint == null || spawnPoint.x < 0 || spawnPoint.x >= sizeFieldX || spawnPoint.y < 0 || spawnPoint.y >= sizeFieldY || !field[spawnPoint.x][spawnPoint.y].isPassable()) {
                     Gdx.app.log("WaveManager::validationPoints()", "-- SpawnPoint bad:" + spawnPoint + " wave:" + wave);
                     waves.removeValue(wave, true);
@@ -111,7 +118,7 @@ public class WaveManager {
                     w--;
                 }
             }
-            Gdx.app.log("WaveManager::validationPoints(" + sizeFieldX + "," + sizeFieldY + ")", "-- wavesCount:(" + wavesCount + ":" + waves.size + ")");
+            Gdx.app.log("WaveManager::validationPoints()", "-- sizeField:(" + sizeFieldX + ", " + sizeFieldY + ") wavesCount:(" + wavesCount + ":" + waves.size + ")");
         }
     }
 
@@ -119,8 +126,8 @@ public class WaveManager {
         Gdx.app.log("WaveManager::checkRoutes(" + pathFinder + ")", "--");
         if(pathFinder != null) {
             int wavesCount = waves.size;
+            Gdx.app.log("WaveManager::checkRoutes()", "-- wavesCount:(" + wavesCount + ":" + waves.size + ")");
             for (int w = 0; w < waves.size; w++) {
-                Gdx.app.log("WaveManager::checkRoutes()", "-- wavesCount:(" + wavesCount + ":" + waves.size + ")");
                 Wave wave = waves.get(w);
                 GridPoint2 spawnPoint = wave.spawnPoint;
                 GridPoint2 exitPoint = wave.exitPoint;

@@ -353,7 +353,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("MainMenuScreen::resize()", "-- New width:" + width + " height:" + height);
+        Gdx.app.log("MainMenuScreen::resize(" + width + ", " + height + ")", "--");
 //        create(width, height);
 //        buttonsUpdate(width, height);
 //        mmStage.getViewport().update(width, height, true);
@@ -362,24 +362,24 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void pause() {
-        Gdx.app.log("MainMenuScreen::pause()", "-- Called!");
+        Gdx.app.log("MainMenuScreen::pause()", "--");
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("MainMenuScreen::resume()", "-- Called!");
+        Gdx.app.log("MainMenuScreen::resume()", "--");
     }
 
     @Override
     public void hide() {
-        Gdx.app.log("MainMenuScreen::hide()", "-- Called!");
+        Gdx.app.log("MainMenuScreen::hide()", "--");
         //Should not be here!
         //dispose();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("MainMenuScreen::dispose()", "-- Called!");
+        Gdx.app.log("MainMenuScreen::dispose()", "--");
         textureMB1.dispose();
         textureMB2.dispose();
         textureMB3.dispose();

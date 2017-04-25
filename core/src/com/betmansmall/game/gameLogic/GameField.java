@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -91,13 +92,15 @@ public class GameField {
     private WhichCell whichCell;
     private boolean gamePaused;
     public float gameSpeed;
-    public int maxOfMissedCreeps;
-    public int missedCreeps;
     public static int gamerGold; // For Shell
+    public int maxOfMissedCreepsForComputer0;
+    public int missedCreepsForComputer0;
+    public int maxOfMissedCreepsForPlayer1;
+    public int missedCreepsForPlayer1;
     // GAME INTERFACE ZONE2
 
     public GameField(String mapName, float levelOfDifficulty) {
-        Gdx.app.log("GameField::GameField(" + mapName + ")", "--");
+        Gdx.app.log("GameField::GameField(" + mapName + ", " + levelOfDifficulty + ")", "--");
         waveManager = new WaveManager();
         creepsManager = new CreepsManager();
         towersManager = new TowersManager();
@@ -137,14 +140,21 @@ public class GameField {
         }
         waveManager.checkRoutes(pathFinder);
 
+        MapProperties mapProperties = map.getProperties();
+        Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = true;
         gameSpeed = 1.0f;
-        maxOfMissedCreeps = waveManager.getNumberOfActions()/4;
-        missedCreeps = 0;
-        gamerGold = Integer.parseInt(map.getProperties().get("gamerGold", "100", String.class));
+        gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "100", String.class)); // HARD GAME | one gold = one creep for computer!!!
+        maxOfMissedCreepsForComputer0 = mapProperties.get("maxOfMissedCreepsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
+//        maxOfMissedCreepsForComputer0 = Integer.valueOf(mapProperties.get("maxOfMissedCreepsForComputer0", String.valueOf(gamerGold), String.class));
+        missedCreepsForComputer0 = 0;
+        maxOfMissedCreepsForPlayer1 = mapProperties.get("maxOfMissedCreepsForPlayer1", waveManager.getNumberOfActions()/4, Integer.class); // it is not true | need implement getNumberOfCreeps()
+//        maxOfMissedCreepsForPlayer1 = Integer.valueOf(mapProperties.get("maxOfMissedCreepsForPlayer1", String.valueOf(waveManager.getNumberOfActions()/4), String.class)); // it is not true | need implement getNumberOfCreeps()
+        missedCreepsForPlayer1 = 0;
         // GAME INTERFACE ZONE2
+        Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gamerGold + " maxOfMissedCreepsForComputer0:" + maxOfMissedCreepsForComputer0 + " maxOfMissedCreepsForPlayer1:" + maxOfMissedCreepsForPlayer1);
     }
 
     private void createField(int sizeFieldX, int sizeFieldY, MapLayers mapLayers) {
@@ -1224,7 +1234,7 @@ public class GameField {
         if(gamerGold >= templateForUnit.cost) {
             gamerGold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
-                createCreep(wave.spawnPoint, templateForUnit, wave.exitPoint);
+                createCreep(wave.spawnPoint, templateForUnit, wave.exitPoint, 1); // create Player1 Creep
             }
         }
     }
@@ -1240,7 +1250,7 @@ public class GameField {
         if (templateNameAndPoints != null) {
             TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateNameAndPoints.templateName);
             if (templateForUnit != null) {
-                createCreep(templateNameAndPoints.spawnPoint, templateForUnit, templateNameAndPoints.exitPoint);
+                createCreep(templateNameAndPoints.spawnPoint, templateForUnit, templateNameAndPoints.exitPoint, 0); // create Computer0 Creep
             } else {
                 Gdx.app.error("GameField::spawnCreep()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
             }
@@ -1248,11 +1258,11 @@ public class GameField {
     }
 
     public void createCreep(int x, int y) {
-        createCreep(new GridPoint2(x, y), factionsManager.getRandomTemplateForUnitFromFirstFaction(), null);
+        createCreep(new GridPoint2(x, y), factionsManager.getRandomTemplateForUnitFromFirstFaction(), null, 0); // create computer0 Creep
     }
 
-    private void createCreep(GridPoint2 spawnPoint, TemplateForUnit templateForUnit, GridPoint2 exitPoint) {
-//        Gdx.app.log("GameField::createCreep(" + spawnPoint + ", " + templateForUnit.toString(true) + ", " + exitPoint + ")", "--");
+    private void createCreep(GridPoint2 spawnPoint, TemplateForUnit templateForUnit, GridPoint2 exitPoint, int player) {
+//        Gdx.app.log("GameField::createCreep(" + spawnPoint + ", " + templateForUnit.toString(true) + ", " + exitPoint + ", " + player + ")", "--");
         if (exitPoint == null) {
             exitPoint = waveManager.lastExitPoint;
         }
@@ -1260,7 +1270,7 @@ public class GameField {
 //            pathFinder.loadCharMatrix(getCharMatrix());
             ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
             if (route != null) {
-                Creep creep = creepsManager.createCreep(route, templateForUnit);
+                Creep creep = creepsManager.createCreep(route, templateForUnit, player);
                 field[spawnPoint.x][spawnPoint.y].setCreep(creep); // TODO field maybe out array | NO, we have WaveManager.validationPoints()
 //                Gdx.app.log("GameField::createCreep()", "-- route:" + route);
             } else {
@@ -1268,7 +1278,7 @@ public class GameField {
                 if(towersManager.amountTowers() > 0) {
                     Gdx.app.log("GameField::createCreep()", "-- Remove one last tower! And retry call createCreep()");
                     removeLastTower();
-                    createCreep(spawnPoint, templateForUnit, exitPoint);
+                    createCreep(spawnPoint, templateForUnit, exitPoint, player);
                 }
             }
         } else {
@@ -1448,8 +1458,12 @@ public class GameField {
                     }
                 } else {
                     field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+                    if(creep.player == 0) {
+                        missedCreepsForPlayer1++;
+                    } else if(creep.player == 1) {
+                        missedCreepsForComputer0++;
+                    } // WTF??? realy?
                     creepsManager.removeCreep(creep);
-                    missedCreeps++;
 //                Gdx.app.log("GameField::stepAllCreep()", "-- Creep finished!");
                 }
             } else {
@@ -1548,10 +1562,14 @@ public class GameField {
     }
 
     public String getGameState() {
-        if (missedCreeps >= maxOfMissedCreeps) {
+        if (missedCreepsForPlayer1 >= maxOfMissedCreepsForPlayer1) {
 //            Gdx.app.log("GameField::getGameState()", "-- LOSE!!");
             return "Lose";
         } else {
+            if(missedCreepsForComputer0 >= maxOfMissedCreepsForComputer0) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
+//                Gdx.app.log("GameField::getGameState()", "-- WIN!!");
+                return "Win";
+            }
             if (waveManager.getNumberOfActions() == 0 && creepsManager.amountCreeps() == 0) {
 //                Gdx.app.log("GameField::getGameState()", "-- WIN!!");
                 return "Win";

@@ -242,39 +242,39 @@ public class TemplateForTower {
         if(this.templateName != null)
             Gdx.app.log("TemplateForTower::validate()", "-- Load TemplateForTower: " + this.templateName);
         if(this.factionName == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'factionName'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'factionName'! Check the file");
         else if(this.name == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'name'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'name'! Check the file");
         else if(this.radiusDetection == null && this.towerAttackType != TowerAttackType.Pit)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'radiusDetection'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'radiusDetection'! Check the file");
         else if(this.radiusFlyShell == null && this.shellAttackType != ShellAttackType.FirstTarget)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'radiusFlyShell'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'radiusFlyShell'! Check the file");
 //            this.radiusFlyShell = 0f;
         else if(this.damage == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'damage'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'damage'! Check the file");
         else if(this.size == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'size'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'size'! Check the file");
         else if(this.cost == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'cost'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'cost'! Check the file");
         else if(this.ammoSize == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammoSize'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'ammoSize'! Check the file");
         else if(this.ammoSpeed == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammoSpeed'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'ammoSpeed'! Check the file");
         else if(this.reloadTime == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'reloadTime'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'reloadTime'! Check the file");
         else if(this.towerAttackType == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'towerAttackType'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'towerAttackType'! Check the file");
         else if(this.shellAttackType == null && this.towerAttackType != TowerAttackType.Pit)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'shellAttackType'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'shellAttackType'! Check the file");
 //        else if(this.shellEffectType == null)
-//            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'shellEffectEnum'! Check the file");
+//            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'shellEffectEnum'! Check the file");
         else if(this.towerAttackType == TowerAttackType.Pit && this.capacity == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'capacity'! When towerAttackType==Pit");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'capacity'! When towerAttackType==Pit");
 
         if(idleTile == null)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'idleTile'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'idleTile'! Check the file");
         else if(ammunitionPictures.size == 0)
-            Gdx.app.error("TemplateForTower::validate()", "-- Can't get 'ammo'! Check the file");
+            Gdx.app.log("TemplateForTower::validate()", "-- Can't get 'ammo'! Check the file");
     }
 
     public String toString() {

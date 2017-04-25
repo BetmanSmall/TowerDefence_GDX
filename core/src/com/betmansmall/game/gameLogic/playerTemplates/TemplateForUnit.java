@@ -262,17 +262,17 @@ public class TemplateForUnit {
             Gdx.app.log("TemplateForUnit::validate()", "-- Load TemplateForUnit: " + this.templateName);
         }
         if (this.bounty == null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'bounty'! Check the file");
+            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'bounty'! Check the file");
         } else if (this.factionName == null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
+            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
         } else if (this.healthPoints == null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'healthPoints'! Check the file");
+            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'healthPoints'! Check the file");
         } else if (this.name == null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'name'! Check the file");
+            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'name'! Check the file");
         } else if (this.speed == null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'speed'! Check the file");
+            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'speed'! Check the file");
         } else if (this.type == null) {
-            Gdx.app.error("TemplateForUnit::validate()", "-- Can't get 'type'! Check the file");
+            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'type'! Check the file");
         }
 
 //        speed = 0.1f;

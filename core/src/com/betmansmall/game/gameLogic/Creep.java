@@ -28,6 +28,7 @@ public class Creep {
     private float stepsInTime;
     private float deathElapsedTime;
 
+    public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
     public Vector2 currentPoint;
     public Vector2 backStepPoint;// AlexGor
     public Circle circle1;
@@ -43,7 +44,7 @@ public class Creep {
     private Animation animation;
     public Array<ShellEffectType> shellEffectTypes;
 
-    public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
+    public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player) {
         if(route != null) {
             this.route = route;
             this.oldPosition = route.peekFirst();
@@ -53,6 +54,7 @@ public class Creep {
             this.stepsInTime = 0;//templateForUnit.speed; // need respawn animation
             this.deathElapsedTime = 0;
 
+            this.player = player;
             this.currentPoint = new Vector2(newPosition.getX(), newPosition.getY());
             this.backStepPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
             this.circle1 = new Circle();

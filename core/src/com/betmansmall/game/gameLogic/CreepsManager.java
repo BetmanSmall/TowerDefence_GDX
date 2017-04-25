@@ -19,8 +19,8 @@ public class CreepsManager {
         creeps = new Array<Creep>();
     }
 
-    public Creep createCreep(ArrayDeque<Node> route, TemplateForUnit templateForUnit) {
-        Creep newCreep = new Creep(route, templateForUnit);
+    public Creep createCreep(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player) {
+        Creep newCreep = new Creep(route, templateForUnit, player);
         creeps.add(newCreep);
         return newCreep;
     }

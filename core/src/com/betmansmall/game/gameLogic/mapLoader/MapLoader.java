@@ -225,7 +225,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                 wavesParser(waves);
             }
         } else {
-            Gdx.app.error("MapLoader", "loadTilemap(); -- not found waves block in map:" + tmxFile);
+            Gdx.app.log("MapLoader::loadTilemap()", "-- Not found waves block in map:" + tmxFile);
         }
         return map;
     }

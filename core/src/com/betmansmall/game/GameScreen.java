@@ -297,7 +297,7 @@ public class GameScreen implements Screen {
     private CameraController cameraController;
 
     public GameScreen(String mapName, float levelOfDifficulty) {
-        Gdx.app.log("GameScreen::GameScreen(" + mapName + "," + levelOfDifficulty + ")", "--");
+        Gdx.app.log("GameScreen::GameScreen(" + mapName + ", " + levelOfDifficulty + ")", "--");
 //        shapeRenderer = new ShapeRenderer();
 //        spriteBatch = new SpriteBatch();
         bitmapFont = new BitmapFont();
@@ -318,7 +318,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.app.log("GameScreen::show()", "-- Start!");
+        Gdx.app.log("GameScreen::show()", "--");
         cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
     }
 
@@ -466,7 +466,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("GameScreen::resize()", "-- New width:" + width + " height:" + height);
+        Gdx.app.log("GameScreen::resize(" + width + ", " + height + ")", "--");
         cameraController.camera.viewportHeight = height;
         cameraController.camera.viewportWidth = width;
         cameraController.camera.update();
@@ -476,22 +476,22 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-        Gdx.app.log("GameScreen::pause()", "-- Called!");
+        Gdx.app.log("GameScreen::pause()", "--");
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("GameScreen::resume()", "-- Called!");
+        Gdx.app.log("GameScreen::resume()", "--");
     }
 
     @Override
     public void hide() {
-        Gdx.app.log("GameScreen::hide()", "-- Called!");
+        Gdx.app.log("GameScreen::hide()", "--");
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("GameScreen::dispose()", "-- Called!");
+        Gdx.app.log("GameScreen::dispose()", "--");
         gameField.dispose();
         gameInterface.dispose();
 //        cameraController.dispose();

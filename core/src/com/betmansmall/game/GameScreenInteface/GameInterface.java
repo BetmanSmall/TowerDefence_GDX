@@ -6,20 +6,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.game.TowerDefence;
 import com.betmansmall.game.gameLogic.GameField;
 
@@ -37,7 +29,7 @@ public class GameInterface {
 //    private Skin skin;
     public Stage stage;
     public Table table;
-    public Label gamerGoldLabel, missedAndLimit, fpsLabel;
+    public Label fpsLabel, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -84,15 +76,18 @@ public class GameInterface {
 //        Table table1 = new Table();
 //        table1.setFillParent(true);
 //        infoTable.add(table1);
+
         VerticalGroup infoGroup = new VerticalGroup();
         table.add(infoGroup).expand().top().right();
 
-        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-        missedAndLimit = new Label("CreepsLimit:10/100", new Label.LabelStyle(bitmapFont, Color.PINK));
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoGroup.addActor(gamerGoldLabel);
-        infoGroup.addActor(missedAndLimit);
+        missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
         infoGroup.addActor(fpsLabel);
+        infoGroup.addActor(missedAndMaxForPlayer1);
+        infoGroup.addActor(gamerGoldLabel);
+        infoGroup.addActor(missedAndMaxForComputer0);
 
         towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
         creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
@@ -122,9 +117,10 @@ public class GameInterface {
             }
             actionsHistoryLabel.setText(sb.toString());
         }
-        gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
-        missedAndLimit.setText("CreepsLimit:" + gameField.missedCreeps + "/" + gameField.maxOfMissedCreeps);
         fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        missedAndMaxForPlayer1.setText("CreepsLimitPL1:" + gameField.missedCreepsForPlayer1 + "/" + gameField.maxOfMissedCreepsForPlayer1);
+        gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
+        missedAndMaxForComputer0.setText("CreepsLimitComp0:" + gameField.missedCreepsForComputer0 + "/" + gameField.maxOfMissedCreepsForComputer0);
         stage.act(delta);
         stage.draw();
     }

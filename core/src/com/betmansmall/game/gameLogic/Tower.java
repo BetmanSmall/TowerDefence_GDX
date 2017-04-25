@@ -106,7 +106,7 @@ public class Tower {
         } else if(map == 2) {
             pxlsX = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX;
             pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
-        } if(map == 3) {
+        } else if(map == 3) {
             pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
             pxlsY = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY*2;
         } else if(map == 4) {
