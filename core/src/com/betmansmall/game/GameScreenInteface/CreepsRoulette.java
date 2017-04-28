@@ -147,9 +147,9 @@ public class CreepsRoulette extends Roulette {
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Gdx.app.log("CreepsRoulette::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
         if (showCreepsSelector && 0 < x && x < creepsSelectorButton.getX()+creepsSelectorButton.getWidth()) {
-            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getY():" + creepsButtonGroup.getY() + " creepsButtonGroup.getOriginY():" + creepsButtonGroup.getOriginY());
-            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getHeight()():" + creepsButtonGroup.getHeight());
-            Gdx.app.log("CreepsRoulette::pan()", "-- creepsSelectorButton.getHeight():" + creepsSelectorButton.getHeight());
+//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getY():" + creepsButtonGroup.getY() + " creepsButtonGroup.getOriginY():" + creepsButtonGroup.getOriginY());
+//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getHeight()():" + creepsButtonGroup.getHeight());
+//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsSelectorButton.getHeight():" + creepsSelectorButton.getHeight());
             if(deltaY < 0f && creepsButtonGroup.getY() <= 0) {
                 creepsButtonGroup.moveBy(0, +Math.abs(deltaY));
             } else if(deltaY > 0f && creepsButtonGroup.getY()+creepsButtonGroup.getHeight() >= creepsButtonGroup.getOriginY()+creepsSelectorButton.getHeight()*4) { // Magic number!!
@@ -167,13 +167,13 @@ public class CreepsRoulette extends Roulette {
             changeGameState();
             return true;
         }
-        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isTransform()" + creepsSelectorButton.isTransform());
-        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isTouchable()" + creepsSelectorButton.isTouchable());
-        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isDisabled()" + creepsSelectorButton.isDisabled());
-        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isVisible()" + creepsSelectorButton.isVisible());
-        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isChecked()" + creepsSelectorButton.isChecked());
-        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isPressed()" + creepsSelectorButton.isPressed());
-        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isOver()" + creepsSelectorButton.isOver());
+//        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isTransform()" + creepsSelectorButton.isTransform());
+//        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isTouchable()" + creepsSelectorButton.isTouchable());
+//        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isDisabled()" + creepsSelectorButton.isDisabled());
+//        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isVisible()" + creepsSelectorButton.isVisible());
+//        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isChecked()" + creepsSelectorButton.isChecked());
+//        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isPressed()" + creepsSelectorButton.isPressed());
+//        Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isOver()" + creepsSelectorButton.isOver());
         if(creepsSelectorButton.isPressed() || (Gdx.app.getType() == Application.ApplicationType.Android && creepsSelectorButton.isChecked())) {
             Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- creepsSelectorButton.isPressed()");
             showCreepsSelector = !showCreepsSelector;
@@ -183,10 +183,10 @@ public class CreepsRoulette extends Roulette {
             return true;
         }
         for (Actor actor : creepsButtonGroup.getChildren()) {
-            Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- actor:" + actor);
+//            Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- actor:" + actor);
             if (actor instanceof ImageButton) {
                 ImageButton imageButton = (ImageButton)actor;
-                Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- imageButton.isPressed():" + imageButton.isPressed());
+//                Gdx.app.log("CreepsRoulette::isButtonTouched()", "-- imageButton.isPressed():" + imageButton.isPressed());
                 if(imageButton.isPressed()) {
                     Integer unitIndex = (Integer) imageButton.getUserObject();
                     if (unitIndex != null) {

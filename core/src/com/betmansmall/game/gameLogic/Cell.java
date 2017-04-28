@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /**
  * Created by BetmanSmall on 11.03.2016.
@@ -28,6 +29,7 @@ public class Cell {
     private boolean terrain;
     private Tower tower;
     private Array<Creep> creeps;
+    public int cellX, cellY;
     public Vector2 graphicCoordinatesBottom, graphicCoordinatesRight, graphicCoordinatesTop, graphicCoordinatesLeft;
 
     public Cell() {
@@ -44,6 +46,8 @@ public class Cell {
 
     public void setGraphicCoordinates(int cellX, int cellY, float halfSizeCellX, float halfSizeCellY) {
 //        Gdx.app.log("Cell::setGraphicCoordinates(" + cellX + "," + cellY + "," + halfSizeCellX + ", " + halfSizeCellY + ")", "-- ");
+        this.cellX = cellX;
+        this.cellY = cellY;
 //        if(map == 1) { // Нижняя карта
         graphicCoordinatesBottom = new Vector2((-(halfSizeCellX * cellY) + (cellX * halfSizeCellX)), (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY)));
 //        } else if(map == 2) { // Правая карта
@@ -177,5 +181,18 @@ public class Cell {
         tower = null;
         creeps.clear();
         creeps = null;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Cell[");
+        sb.append("cellX:" + cellX);
+        sb.append("," + "cellY:" + cellY);
+        sb.append("," + "empty:" + empty);
+        sb.append("," + "terrain:" + terrain);
+        sb.append("," + "tower:" + tower);
+        sb.append("," + "creeps:" + creeps);
+        sb.append("]");
+        return sb.toString();
     }
 }

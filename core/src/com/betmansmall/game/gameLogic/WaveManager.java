@@ -146,4 +146,81 @@ public class WaveManager {
             Gdx.app.log("WaveManager::checkRoutes()", "-- pathFinder == null");
         }
     }
+
+    // Need fix bag with this
+//    public void turnRight() {
+//        if(sizeFieldX == sizeFieldY) {
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < sizeFieldY; y++) {
+//                for(int x = 0; x < sizeFieldX; x++) {
+//                    newCells[sizeFieldX-y-1][x] = field[x][y];
+//                    newCells[sizeFieldX-y-1][x].setGraphicCoordinates(sizeFieldX-y-1, x, halfSizeCellX, halfSizeCellY);
+//                }
+//            }
+//            field = newCells;
+//        } else {
+//            Gdx.app.log("GameField::turnRight()", "-- Not work || Work, but mb not Good!");
+//            int oldWidth = sizeFieldX;
+//            int oldHeight = sizeFieldY;
+//            sizeFieldX = sizeFieldY;
+//            sizeFieldY = oldWidth;
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < oldHeight; y++) {
+//                for(int x = 0; x < oldWidth; x++) {
+//                    newCells[sizeFieldX-y-1][x] = field[x][y];
+//                    newCells[sizeFieldX-y-1][x].setGraphicCoordinates(sizeFieldX-y-1, x, halfSizeCellX, halfSizeCellY);
+//                }
+//            }
+//            field = newCells;
+//        }
+//    }
+//
+//    public void turnLeft() {
+//        if(sizeFieldX == sizeFieldY) {
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < sizeFieldY; y++) {
+//                for(int x = 0; x < sizeFieldX; x++) {
+//                    newCells[y][sizeFieldY-x-1] = field[x][y];
+//                    newCells[y][sizeFieldY-x-1].setGraphicCoordinates(y, sizeFieldY-x-1, halfSizeCellX, halfSizeCellY);
+//                }
+//            }
+//            field = newCells;
+//        } else {
+//            Gdx.app.log("GameField::turnLeft()", "-- Not work || Work, but mb not Good!");
+//            int oldWidth = sizeFieldX;
+//            int oldHeight = sizeFieldY;
+//            sizeFieldX = sizeFieldY;
+//            sizeFieldY = oldWidth;
+//            Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//            for(int y = 0; y < oldHeight; y++) {
+//                for(int x = 0; x < oldWidth; x++) {
+//                    newCells[y][sizeFieldY-x-1] = field[x][y];
+//                    newCells[y][sizeFieldY-x-1].setGraphicCoordinates(y, sizeFieldY-x-1, halfSizeCellX, halfSizeCellY);
+//                }
+//            }
+//            field = newCells;
+//        }
+//    }
+//
+//    public void flipX() {
+//        Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//        for (int y = 0; y < sizeFieldY; y++) {
+//            for (int x = 0; x < sizeFieldX; x++) {
+//                newCells[sizeFieldX-x-1][y] = field[x][y];
+//                newCells[sizeFieldX-x-1][y].setGraphicCoordinates(sizeFieldX-x-1, y, halfSizeCellX, halfSizeCellY);
+//            }
+//        }
+//        field = newCells;
+//    }
+//
+//    public void flipY() {
+//        Cell[][] newCells = new Cell[sizeFieldX][sizeFieldY];
+//        for(int y = 0; y < sizeFieldY; y++) {
+//            for(int x = 0; x < sizeFieldX; x++) {
+//                newCells[x][sizeFieldY-y-1] = field[x][y];
+//                newCells[x][sizeFieldY-y-1].setGraphicCoordinates(x, sizeFieldY-y-1, halfSizeCellX, halfSizeCellY);
+//            }
+//        }
+//        field = newCells;
+//    }
 }

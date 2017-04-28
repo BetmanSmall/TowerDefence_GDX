@@ -111,16 +111,17 @@ public class MainMenuScreen implements Screen {
             towerDefence.gameLevelMaps.add("maps/arena5.tmx");
             towerDefence.gameLevelMaps.add("maps/arena4.tmx");
             towerDefence.gameLevelMaps.add("maps/arena3.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena.tmx");
+            towerDefence.gameLevelMaps.add("maps/govnoAndreyMapa.tmx");
 //            towerDefence.gameLevelMaps.add("maps/arena2.tmx");
         } else {
             for(FileHandle fileHandle : mapsDir.list()) {
-                Gdx.app.log("MainMenuScreen::MainMenuScreen()", " -- fileHandle.path():" + fileHandle.path());
                 if(fileHandle.extension().equals("tmx")) {
+                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", " -- towerDefence.gameLevelMaps.add():" + fileHandle.path());
                     towerDefence.gameLevelMaps.add(fileHandle.path());
                 }
             }
         }
+        Gdx.app.log("MainMenuScreen::MainMenuScreen()", " -- towerDefence.gameLevelMaps.size:" + towerDefence.gameLevelMaps.size);
     }
 
     private void create(int width, int height) {

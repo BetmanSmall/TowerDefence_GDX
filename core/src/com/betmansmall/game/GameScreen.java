@@ -111,7 +111,7 @@ public class GameScreen implements Screen {
             if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
                 float newCameraX = camera.position.x + (-deltaX * camera.zoom);
                 float newCameraY = camera.position.y + (deltaY * camera.zoom);
-                if(cameraController.borderLeftX != null && cameraController.borderRightX != null && cameraController.borderUpY != null && cameraController.borderDownY != null) {
+                if (cameraController.borderLeftX != null && cameraController.borderRightX != null && cameraController.borderUpY != null && cameraController.borderDownY != null) {
                     if (cameraController.borderLeftX < newCameraX && newCameraX < cameraController.borderRightX &&
                             cameraController.borderUpY > newCameraY && newCameraY > cameraController.borderDownY) {
                         camera.position.set(newCameraX, newCameraY, 0.0f);
@@ -122,16 +122,16 @@ public class GameScreen implements Screen {
             } else {
                 float space = 50f;
                 float shiftCamera = 5f;
-                if(x < space) {
+                if (x < space) {
                     camera.position.add(-shiftCamera, 0.0f, 0.0f);
                 }
-                if(x > Gdx.graphics.getWidth()-space) {
+                if (x > Gdx.graphics.getWidth() - space) {
                     camera.position.add(shiftCamera, 0.0f, 0.0f);
                 }
-                if(y < space) {
+                if (y < space) {
                     camera.position.add(0.0f, shiftCamera, 0.0f);
                 }
-                if(y > Gdx.graphics.getHeight()-space) {
+                if (y > Gdx.graphics.getHeight() - space) {
                     camera.position.add(0.0f, -shiftCamera, 0.0f);
                 }
             }
@@ -170,7 +170,7 @@ public class GameScreen implements Screen {
                         velY *= 0.98f;
                         float newCameraX = camera.position.x + (-velX * Gdx.graphics.getDeltaTime());
                         float newCameraY = camera.position.y + (velY * Gdx.graphics.getDeltaTime());
-                        if(cameraController.borderLeftX != null && cameraController.borderRightX != null && cameraController.borderUpY != null && cameraController.borderDownY != null) {
+                        if (cameraController.borderLeftX != null && cameraController.borderRightX != null && cameraController.borderUpY != null && cameraController.borderDownY != null) {
                             if (cameraController.borderLeftX < newCameraX && newCameraX < cameraController.borderRightX &&
                                     cameraController.borderUpY > newCameraY && newCameraY > cameraController.borderDownY) {
                                 camera.position.set(newCameraX, newCameraY, 0.0f);
@@ -215,7 +215,7 @@ public class GameScreen implements Screen {
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
             Gdx.app.log("MyGestureDetector::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-            if(gameField != null && gameField.getUnderConstruction() != null) {
+            if (gameField != null && gameField.getUnderConstruction() != null) {
                 Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
@@ -234,7 +234,7 @@ public class GameScreen implements Screen {
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             Gdx.app.log("MyGestureDetector::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-            if(gameField != null && gameField.getUnderConstruction() != null && button == 0) {
+            if (gameField != null && gameField.getUnderConstruction() != null && button == 0) {
                 Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
@@ -248,7 +248,7 @@ public class GameScreen implements Screen {
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
 //            Gdx.app.log("MyGestureDetector::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " deviceSettings.getDevice():" + deviceSettings.getDevice());
-            if(gameField != null && gameField.getUnderConstruction() != null) {
+            if (gameField != null && gameField.getUnderConstruction() != null) {
                 Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
@@ -262,7 +262,7 @@ public class GameScreen implements Screen {
         @Override
         public boolean mouseMoved(int screenX, int screenY) {
 //            Gdx.app.log("MyGestureDetector::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
-            if(gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) { // !LOL! deviceSettings is SHIT
+            if (gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) { // !LOL! deviceSettings is SHIT
                 Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 cameraController.camera.unproject(touch);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
@@ -346,7 +346,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
             gameField.isDrawableGrid++;
-            if(gameField.isDrawableGrid > 5) {
+            if (gameField.isDrawableGrid > 5) {
                 gameField.isDrawableGrid = 0;
             }
             gameInterface.addActionToHistory("-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
@@ -354,7 +354,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2)");
             gameField.isDrawableCreeps++;
-            if(gameField.isDrawableCreeps > 5) {
+            if (gameField.isDrawableCreeps > 5) {
                 gameField.isDrawableCreeps = 0;
             }
             gameInterface.addActionToHistory("-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
@@ -362,7 +362,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3)");
             gameField.isDrawableTowers++;
-            if(gameField.isDrawableTowers > 5) {
+            if (gameField.isDrawableTowers > 5) {
                 gameField.isDrawableTowers = 0;
             }
             gameInterface.addActionToHistory("-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
@@ -370,7 +370,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_4)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_4 || Input.Keys.NUMPAD_4)");
             gameField.isDrawableGridNav++;
-            if(gameField.isDrawableGridNav > 5) {
+            if (gameField.isDrawableGridNav > 5) {
                 gameField.isDrawableGridNav = 0;
             }
             gameInterface.addActionToHistory("-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
@@ -378,7 +378,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_5)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5)");
             gameField.isDrawableBackground++;
-            if(gameField.isDrawableBackground > 5) {
+            if (gameField.isDrawableBackground > 5) {
                 gameField.isDrawableBackground = 0;
             }
             gameInterface.addActionToHistory("-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
@@ -386,7 +386,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6)");
             gameField.isDrawableForeground++;
-            if(gameField.isDrawableForeground > 5) {
+            if (gameField.isDrawableForeground > 5) {
                 gameField.isDrawableForeground = 0;
             }
             gameInterface.addActionToHistory("-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
@@ -394,7 +394,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7)");
             gameField.drawOrder++;
-            if(gameField.drawOrder > 8) {
+            if (gameField.drawOrder > 8) {
                 gameField.drawOrder = 0;
             }
             gameInterface.addActionToHistory("-- gameField.drawOrder:" + gameField.drawOrder);
@@ -407,7 +407,7 @@ public class GameScreen implements Screen {
             TowerDefence.getInstance().nextGameLevel();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8)");
-            if(gameField.gameSpeed > 0.1f) {
+            if (gameField.gameSpeed > 0.1f) {
                 gameField.gameSpeed -= 0.1f;
             }
             gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);

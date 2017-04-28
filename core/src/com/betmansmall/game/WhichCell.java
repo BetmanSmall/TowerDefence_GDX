@@ -32,20 +32,28 @@ public class WhichCell {
     }
 
     public GridPoint2 whichCell(Vector3 touch, int map) {
-        Gdx.app.log("WhichCell::whichCell(" + touch + "," + map + ")", "--");
+//        Gdx.app.log("WhichCell::whichCell(" + touch + ", " + map + ")", "--");
         touch.x /= sizeCellX;
         touch.y = (touch.y - sizeCellY / 2) / sizeCellY + touch.x;
         touch.x -= touch.y - touch.x;
-        Gdx.app.log("WhichCell::whichCell()", "-- new touch:" + touch);
+//        touch.y /= sizeCellY;
+//        touch.x = (touch.x - sizeCellX / 2) / sizeCellX + touch.y;
+//        touch.y -= touch.x - touch.y;
+//        Gdx.app.log("WhichCell::whichCell()", "-- new touch:" + touch);
         GridPoint2 cell = new GridPoint2(Math.abs((int) touch.x), Math.abs((int) touch.y));
-        Gdx.app.log("WhichCell::whichCell()", "-- cell:" + cell);
+        if(touch.x < 0) {
+            cell.set(cell.y, cell.x);
+        } // Где то я накосячил. мб сделать подругому. если это уберать то нужно будет править Cell::setGraphicCoordinates() для 3 и 4 карты
+//        Gdx.app.log("WhichCell::whichCell()", "-- cell:" + cell);
         if (cell.x < sizeFieldX && cell.y < sizeFieldY) {
-            if ( (map == 5) ||
-                    (map == 1 && touch.x > 0 && touch.y < 0) ||
-                    (map == 2 && touch.x > 0 && touch.y > 0) ||
-                    (map == 3 && touch.x < 0 && touch.y > 0) ||
-                    (map == 4 && touch.x < 0 && touch.y < 0) ) {
+            if (map == 5) {
                 return cell;
+            } else {
+                if ( (map == 1 && touch.x > 0 && touch.y < 0) || (map == 2 && touch.x > 0 && touch.y > 0) ) {
+                    return cell;
+                } else if ( (map == 3 && touch.x < 0 && touch.y > 0) || (map == 4 && touch.x < 0 && touch.y < 0) ) {
+                    return cell;
+                }
             }
         }
         return null;
