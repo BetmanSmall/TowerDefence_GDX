@@ -602,9 +602,11 @@ public class GameField {
         }
         Array<Creep> creeps = field[cellX][cellY].getCreeps();
         if(creeps != null) {
+            Color oldColorSB = spriteBatch.getColor();
             for (Creep creep : creeps) {
                 drawCreep(creep, spriteBatch);
             }
+            spriteBatch.setColor(oldColorSB);
         }
         Tower tower = field[cellX][cellY].getTower();
         if(tower != null) {
@@ -691,6 +693,16 @@ public class GameField {
 
     private void drawCreep(Creep creep, SpriteBatch spriteBatch) { //TODO Need to refactor this
 //        Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- Start!");
+        for (ShellEffectType shellAttackType : creep.shellEffectTypes) {
+            if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
+                spriteBatch.setColor(0.0f, 0.0f, 1.0f, 0.9f);
+                Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FreezeEffect!");
+            }
+            if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
+                spriteBatch.setColor(1.0f, 0.0f, 0.0f, 0.9f);
+                Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FireEffect!");
+            }
+        }
         TextureRegion currentFrame;
         if (creep.isAlive()) {
             currentFrame = creep.getCurentFrame();
@@ -1494,7 +1506,7 @@ public class GameField {
             } else if (towerAttackType == TowerAttackType.Range || towerAttackType == TowerAttackType.RangeFly) {
                 if (tower.recharge(delta)) {
                     for (Creep creep : creepsManager.getAllCreeps()) {
-                        if (creep != null) {
+                        if (creep != null && creep.isAlive()) {
 //                            if(towerAttackType == TowerAttackType.Range || (towerAttackType == TowerAttackType.RangeFly && creep.templateForUnit.type.equals("fly"))) {
                             if ( (creep.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
                                     (!creep.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) { // Тупо но работает, потом переделать need =)

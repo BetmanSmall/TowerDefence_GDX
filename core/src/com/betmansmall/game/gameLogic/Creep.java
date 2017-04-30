@@ -123,7 +123,7 @@ public class Creep {
                     if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
                         float smallSpeed = speed/100f;
                         float percentSteps = stepsInTime/smallSpeed;
-                        speed = templateForUnit.speed;
+                        speed = speed-shellEffectType.speed;
                         smallSpeed = speed/100f;
                         stepsInTime = smallSpeed*percentSteps;
                     }
