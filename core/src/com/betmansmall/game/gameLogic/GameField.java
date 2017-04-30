@@ -79,7 +79,7 @@ public class GameField {
     private Cell[][] field;
     private PathFinder pathFinder;
 
-    private WaveManager waveManager;
+    public WaveManager waveManager; // ALL public for all || we are friendly :)
     public static CreepsManager creepsManager; // For Shell
     private TowersManager towersManager;
     private FactionsManager factionsManager;
@@ -763,7 +763,7 @@ public class GameField {
             shapeRenderer.setColor(Color.BLACK);
             shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
             shapeRenderer.setColor(Color.GREEN);
-            int maxHP = creep.getTemplateForUnit().healthPoints;
+            int maxHP = creep.templateForUnit.healthPoints;
             int hp = creep.getHp();
             hpBarHPWidth = hpBarHPWidth / maxHP * hp;
             shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
@@ -1478,7 +1478,7 @@ public class GameField {
             TowerAttackType towerAttackType = tower.getTemplateForTower().towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
                 Creep creep = field[tower.getPosition().x][tower.getPosition().y].getCreep();
-                if (creep != null) {
+                if (creep != null && !creep.templateForUnit.type.equals("fly")) {
                     Gdx.app.log("GameField", "shotAllTowers(); -- tower.capacity:" + tower.capacity + " creep.getHp:" + creep.getHp());
 //                    creep.die(creep.getHp());
                     creepsManager.removeCreep(creep);
@@ -1491,13 +1491,19 @@ public class GameField {
 //                Gdx.app.log("GameField::shotAllTowers(" + delta + ")", "-- towerAttackType.pit -- creep:" + creep);
             } else if (towerAttackType == TowerAttackType.Melee) {
                 shotMeleeTower(tower);
-            } else if (towerAttackType == TowerAttackType.Range) {
+            } else if (towerAttackType == TowerAttackType.Range || towerAttackType == TowerAttackType.RangeFly) {
                 if (tower.recharge(delta)) {
                     for (Creep creep : creepsManager.getAllCreeps()) {
-                        if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.circle1)) {
+                        if (creep != null) {
+//                            if(towerAttackType == TowerAttackType.Range || (towerAttackType == TowerAttackType.RangeFly && creep.templateForUnit.type.equals("fly"))) {
+                            if ( (creep.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
+                                    (!creep.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) { // Тупо но работает, потом переделать need =)
+                                if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.circle1)) {
 //                            Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
-                            if (tower.shoot(creep)) {
-                                break;
+                                    if (tower.shoot(creep)) {
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -1515,11 +1521,13 @@ public class GameField {
                 if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
                     attack = true;
                     Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
-                    if(creep.die(tower.getDamage(), tower.getTemplateForTower().shellEffectType)) {
-                        gamerGold += creep.getTemplateForUnit().bounty;
-                    }
-                    if(tower.getTemplateForTower().shellAttackType == ShellAttackType.SingleTarget) {
-                        return true;
+                    if (creep != null && !creep.templateForUnit.type.equals("fly")) {
+                        if (creep.die(tower.getDamage(), tower.getTemplateForTower().shellEffectType)) {
+                            gamerGold += creep.templateForUnit.bounty;
+                        }
+                        if (tower.getTemplateForTower().shellAttackType == ShellAttackType.SingleTarget) {
+                            return true;
+                        }
                     }
                 }
             }

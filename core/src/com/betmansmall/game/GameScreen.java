@@ -442,6 +442,11 @@ public class GameScreen implements Screen {
             gameInterface.arrayActionsHistory.clear();
             gameInterface.addActionToHistory("-- gameInterface.arrayActionsHistory.clear()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameInterface.arrayActionsHistory.clear()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ESCAPE)");
+            gameField.cancelUnderConstruction();
+            gameInterface.addActionToHistory("-- gameField.cancelUnderConstruction()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.cancelUnderConstruction()");
         }
     }
 

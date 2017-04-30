@@ -5,7 +5,7 @@
   <property name="factionName" value="Orcs_Faction"/>
   <property name="healthPoints" value="200"/>
   <property name="name" value="Grunt"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.7"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/grunt.png" trans="ff00ff" width="360" height="1368"/>

@@ -3,9 +3,9 @@
  <properties>
   <property name="bounty" value="2"/>
   <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="350"/>
+  <property name="healthPoints" value="500"/>
   <property name="name" value="Ogre"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.8"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/ogre.png" trans="ff00ff" width="360" height="1008"/>

@@ -3,7 +3,7 @@
  <properties>
   <property name="bounty" value="1"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="150"/>
+  <property name="healthPoints" value="100"/>
   <property name="name" value="Elven Archer"/>
   <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>

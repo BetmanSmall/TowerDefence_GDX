@@ -5,8 +5,8 @@
   <property name="factionName" value="Humans_Faction"/>
   <property name="healthPoints" value="250"/>
   <property name="name" value="Gryphon Rider"/>
-  <property name="speed" value="0.5"/>
-  <property name="type" value="unit"/>
+  <property name="speed" value="0.3"/>
+  <property name="type" value="fly"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/gryphon_rider.png" trans="ff00ff" width="400" height="1040"/>
  <tile id="0">

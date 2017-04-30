@@ -9,7 +9,8 @@ import com.badlogic.gdx.Gdx;
 public enum TowerAttackType {
     Pit("Pit"),
     Melee("Melee"),
-    Range("Range");
+    Range("Range"),
+    RangeFly("RangeFly");
 
     private final String text;
 

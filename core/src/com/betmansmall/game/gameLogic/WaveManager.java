@@ -27,10 +27,12 @@ public class WaveManager {
     public Array<Wave> waves;
     public GridPoint2 lastExitPoint;
     public Array<Wave> wavesForUser;
+    public float waitForNextSpawnCreep;
 
     WaveManager() {
         this.waves = new Array<Wave>();
         this.wavesForUser = new Array<Wave>();
+//        this.waitForNextSpawnCreep =
     }
 
     public void addWave(Wave wave) {
@@ -38,12 +40,18 @@ public class WaveManager {
     }
 
     public Array<TemplateNameAndPoints> getAllCreepsForSpawn(float delta) {
+        waitForNextSpawnCreep -= delta;
         Array<TemplateNameAndPoints> allCreepsForSpawn = new Array<TemplateNameAndPoints>();
         for (Wave wave : waves) {
             if(!wave.actions.isEmpty()) {
                 String templateName = wave.getTemplateNameForSpawn(delta);
                 if (templateName != null) {
-                    allCreepsForSpawn.add(new TemplateNameAndPoints(templateName, wave.spawnPoint, wave.exitPoint));
+                    if (templateName.contains("wait")) {
+                        waitForNextSpawnCreep = Float.parseFloat(templateName.substring(templateName.indexOf("=") + 1, templateName.length()));// GOVNE GODE parseFloat3
+                        // bitch naxyui =( || but work mb =)
+                    } else {
+                        allCreepsForSpawn.add(new TemplateNameAndPoints(templateName, wave.spawnPoint, wave.exitPoint));
+                    }
                 }
             } else {
                 waves.removeValue(wave, true);

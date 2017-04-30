@@ -5,7 +5,7 @@
   <property name="factionName" value="Humans_Faction"/>
   <property name="healthPoints" value="150"/>
   <property name="name" value="Knight"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.4"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/knight.png" trans="ff00ff" width="360" height="1008"/>

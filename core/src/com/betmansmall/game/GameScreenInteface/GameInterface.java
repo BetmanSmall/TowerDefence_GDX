@@ -29,7 +29,7 @@ public class GameInterface {
 //    private Skin skin;
     public Stage stage;
     public Table table;
-    public Label fpsLabel, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0;
+    public Label fpsLabel, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -84,10 +84,12 @@ public class GameInterface {
         missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
+        nextCreepSpawnLabel = new Label("NextCreepSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
         infoGroup.addActor(fpsLabel);
         infoGroup.addActor(missedAndMaxForPlayer1);
         infoGroup.addActor(gamerGoldLabel);
         infoGroup.addActor(missedAndMaxForComputer0);
+        infoGroup.addActor(nextCreepSpawnLabel);
 
         towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
         creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
@@ -121,6 +123,7 @@ public class GameInterface {
         missedAndMaxForPlayer1.setText("CreepsLimitPL1:" + gameField.missedCreepsForPlayer1 + "/" + gameField.maxOfMissedCreepsForPlayer1);
         gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
         missedAndMaxForComputer0.setText("CreepsLimitComp0:" + gameField.missedCreepsForComputer0 + "/" + gameField.maxOfMissedCreepsForComputer0);
+        nextCreepSpawnLabel.setText("NextCreepSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnCreep > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnCreep) + "sec" : "PRESS_PLAY_BUTTON"));
         stage.act(delta);
         stage.draw();
     }

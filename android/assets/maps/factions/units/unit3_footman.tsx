@@ -3,9 +3,9 @@
  <properties>
   <property name="bounty" value="1"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="380"/>
+  <property name="healthPoints" value="200"/>
   <property name="name" value="Footman"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.7"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/footman.png" trans="ff00ff" width="360" height="1368"/>

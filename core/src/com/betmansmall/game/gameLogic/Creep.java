@@ -38,7 +38,7 @@ public class Creep {
     public Vector2 velocity;
     public Vector2 displacement;
 
-    private TemplateForUnit templateForUnit;
+    public TemplateForUnit templateForUnit;
 
     public Direction direction;
     private Animation animation;
@@ -402,10 +402,6 @@ public class Creep {
     }
     public ArrayDeque<Node> getRoute() {
         return route;
-    }
-
-    public TemplateForUnit getTemplateForUnit() {
-        return templateForUnit;
     }
 
     public TextureRegion getCurentFrame() {

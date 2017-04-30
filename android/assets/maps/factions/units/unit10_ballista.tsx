@@ -3,9 +3,9 @@
  <properties>
   <property name="bounty" value="7"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="100"/>
+  <property name="healthPoints" value="300"/>
   <property name="name" value="Ballista"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.9"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/ballista.png" width="320" height="640"/>

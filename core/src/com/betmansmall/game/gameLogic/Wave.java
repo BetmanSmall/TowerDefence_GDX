@@ -32,13 +32,13 @@ public class Wave {
             if (action == null) {
                 return null;
             } else if (action.contains("delay")) {
-                intervalForSpawn = Float.parseFloat(action.substring(action.indexOf("=") + 1, action.length()));
+                intervalForSpawn = Float.parseFloat(action.substring(action.indexOf("=") + 1, action.length())); // GOVNE GODE parseFloat1
 //                Gdx.app.log("Wave::getNextNameTemplateForUnitForSpawnCreep()", "-- Delay after wave:" + intervalForSpawn + " sec.");
-                return null;
+                return "wait=" + intervalForSpawn;
             } else if (action.contains("interval")) {
-                intervalForSpawn = Float.parseFloat(action.substring(action.indexOf("=") + 1, action.length()));
+                intervalForSpawn = Float.parseFloat(action.substring(action.indexOf("=") + 1, action.length())); // GOVNE GODE parseFloat2
 //                Gdx.app.log("Wave::getNextNameTemplateForUnitForSpawnCreep()", "-- Next creep spawn after:" + intervalForSpawn + " sec.");
-                return null;
+                return "wait=" + intervalForSpawn;
             } else { // string contain templateName.
                 intervalForSpawn = 0f;
                 return action;

@@ -121,7 +121,7 @@ public class Shell {
                 // endPoint2 == endPoint == creep.currentPoint ~= creep.circle1
                 if (Intersector.overlaps(circle, creep.circle1)) {
                     if (creep.die(templateForTower.damage, templateForTower.shellEffectType)) {
-                        GameField.gamerGold += creep.getTemplateForUnit().bounty;
+                        GameField.gamerGold += creep.templateForUnit.bounty;
                     }
                     return 0;
                 }
@@ -137,7 +137,7 @@ public class Shell {
             if (Intersector.overlaps(circle, creep.circle1)) {
                 hit = true;
                 if (creep.die(templateForTower.damage, templateForTower.shellEffectType)) {
-                    GameField.gamerGold += creep.getTemplateForUnit().bounty;
+                    GameField.gamerGold += creep.templateForUnit.bounty;
                 }
             }
         }

@@ -5,8 +5,8 @@
   <property name="factionName" value="Orcs_Faction"/>
   <property name="healthPoints" value="450"/>
   <property name="name" value="Dragon"/>
-  <property name="speed" value="0.5"/>
-  <property name="type" value="unit"/>
+  <property name="speed" value="0.6"/>
+  <property name="type" value="fly"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/dragon.png" trans="ff00ff" width="440" height="800"/>
  <tile id="0">

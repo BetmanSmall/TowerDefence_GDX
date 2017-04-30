@@ -5,7 +5,7 @@
   <property name="factionName" value="Orcs_Faction"/>
   <property name="healthPoints" value="300"/>
   <property name="name" value="Catapult"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.9"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/catapult.png" width="320" height="640"/>
