@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit10_ballista" tilewidth="64" tileheight="64" tilecount="50" columns="5">
  <properties>
-  <property name="bounty" value="7"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="300"/>
   <property name="name" value="Ballista"/>
-  <property name="speed" value="0.9"/>
+  <property name="healthPoints" value="370"/>
+  <property name="bounty" value="8"/>
+  <property name="cost" value="16"/>
+  <property name="speed" value="0.7"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/ballista.png" width="320" height="640"/>

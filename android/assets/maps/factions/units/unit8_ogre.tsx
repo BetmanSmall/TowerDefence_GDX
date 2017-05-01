@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit8_ogre" tilewidth="72" tileheight="72" columns="5">
  <properties>
-  <property name="bounty" value="2"/>
   <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="500"/>
   <property name="name" value="Ogre"/>
-  <property name="speed" value="0.8"/>
+  <property name="healthPoints" value="3000"/>
+  <property name="bounty" value="30"/>
+  <property name="cost" value="65"/>
+  <property name="speed" value="1.5"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/ogre.png" trans="ff00ff" width="360" height="1008"/>

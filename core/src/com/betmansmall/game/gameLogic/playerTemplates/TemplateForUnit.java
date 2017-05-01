@@ -54,7 +54,8 @@ public class TemplateForUnit {
                     String value = property.getAttribute("value");
                     if (key.equals("bounty")) {
                         this.bounty = Integer.parseInt(value);
-                        this.cost = bounty; // TODO fix
+                    } else if (key.equals("cost")) {
+                        this.cost = Integer.parseInt(value);
                     } else if (key.equals("factionName")) {
                         this.factionName = value;
                     } else if (key.equals("healthPoints")) {

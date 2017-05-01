@@ -5,9 +5,9 @@
   <property name="name" value="Freeze Tower 1"/>
   <property name="radiusDetection" value="150"/>
   <property name="radiusFlyShell" value="150"/>
-  <property name="damage" value="10"/>
+  <property name="damage" value="12"/>
   <property name="size" value="1"/>
-  <property name="cost" value="10"/>
+  <property name="cost" value="22"/>
   <property name="ammoSize" value="10"/>
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="1"/>
@@ -16,7 +16,7 @@
   <property name="shellEffectType" value="FreezeEffect"/>
   <property name="shellEffectType_time" value="3"/>
   <!-- <property name="shellEffectType_damage" value="5"/> -->
-  <property name="shellEffectType_speed" value="0.3"/>
+  <property name="shellEffectType_speed" value="0.4"/>
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower_freeze.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

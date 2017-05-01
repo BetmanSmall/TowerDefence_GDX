@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit11_elven_archer" tilewidth="72" tileheight="72" tilecount="85" columns="5">
  <properties>
-  <property name="bounty" value="1"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="100"/>
   <property name="name" value="Elven Archer"/>
-  <property name="speed" value="0.5"/>
+  <property name="healthPoints" value="170"/>
+  <property name="bounty" value="3"/>
+  <property name="cost" value="10"/>
+  <property name="speed" value="0.3"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/elven_archer.png" trans="ff00ff" width="360" height="1224"/>

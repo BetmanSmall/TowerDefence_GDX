@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit3_footman" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="1"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="200"/>
   <property name="name" value="Footman"/>
-  <property name="speed" value="0.7"/>
+  <property name="healthPoints" value="165"/>
+  <property name="bounty" value="6"/>
+  <property name="cost" value="12"/>
+  <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/footman.png" trans="ff00ff" width="360" height="1368"/>

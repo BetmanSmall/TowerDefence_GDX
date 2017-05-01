@@ -145,7 +145,7 @@ public class CreepsRoulette extends Roulette {
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("CreepsRoulette::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+//        Gdx.app.log("CreepsRoulette::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
         if (showCreepsSelector && 0 < x && x < creepsSelectorButton.getX()+creepsSelectorButton.getWidth()) {
 //            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getY():" + creepsButtonGroup.getY() + " creepsButtonGroup.getOriginY():" + creepsButtonGroup.getOriginY());
 //            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getHeight()():" + creepsButtonGroup.getHeight());

@@ -2,7 +2,7 @@
 <map version="1.0" orientation="isometric" renderorder="right-down" width="16" height="32" tilewidth="64" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
  <properties>
-    <property name="gamerGold" type="int" value="200"/>
+    <property name="gamerGold" type="int" value="500"/>
  </properties>
  <waves>
   <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="2" startToMove="0">

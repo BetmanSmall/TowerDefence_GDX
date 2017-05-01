@@ -5,9 +5,9 @@
   <property name="name" value="towerBomb"/>
   <property name="radiusDetection" value="150"/>
   <!-- <property name="radiusFlyShell" value="150"/> -->
-  <property name="damage" value="100"/>
-  <property name="size" value="2"/>
-  <property name="cost" value="10"/>
+  <property name="damage" value="5"/>
+  <property name="size" value="1"/>
+  <property name="cost" value="20"/>
   <property name="ammoSize" value="20"/>
   <property name="ammoSpeed" value="10"/>
   <property name="reloadTime" value="1"/>

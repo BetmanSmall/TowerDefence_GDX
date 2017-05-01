@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit7_dragon" tilewidth="88" tileheight="80" tilecount="50" columns="5">
  <properties>
-  <property name="bounty" value="35"/>
   <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="450"/>
   <property name="name" value="Dragon"/>
-  <property name="speed" value="0.6"/>
+  <property name="healthPoints" value="900"/>
+  <property name="bounty" value="10"/>
+  <property name="cost" value="22"/>
+  <property name="speed" value="0.8"/>
   <property name="type" value="fly"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/dragon.png" trans="ff00ff" width="440" height="800"/>

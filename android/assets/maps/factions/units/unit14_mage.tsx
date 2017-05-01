@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit14_mage" tilewidth="72" tileheight="72" tilecount="85" columns="5">
  <properties>
-  <property name="bounty" value="10"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="100"/>
   <property name="name" value="Mage"/>
+  <property name="healthPoints" value="600"/>
+  <property name="bounty" value="18"/>
+  <property name="cost" value="32"/>
   <property name="speed" value="0.5"/>
-  <property name="type" value="unit"/>
+  <property name="type" value="healer"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/mage.png" trans="ff00ff" width="360" height="1152"/>
  <tile id="0">

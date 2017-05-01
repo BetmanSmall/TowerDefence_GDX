@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit12_gryphon_rider" tilewidth="80" tileheight="80" tilecount="65" columns="5">
  <properties>
-  <property name="bounty" value="25"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="250"/>
   <property name="name" value="Gryphon Rider"/>
+  <property name="healthPoints" value="326"/>
+  <property name="bounty" value="10"/>
+  <property name="cost" value="28"/>
   <property name="speed" value="0.3"/>
   <property name="type" value="fly"/>
  </properties>

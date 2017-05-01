@@ -3,10 +3,10 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Pit1"/>
-  <!-- <property name="radiusDetection" value="0"/> -->
-  <property name="damage" value="10000"/>
+  <property name="radiusDetection" value="0"/>
+  <property name="damage" value="1000000"/>
   <property name="size" value="1"/>
-  <property name="cost" value="10"/>
+  <property name="cost" value="100"/>
   <property name="ammoSize" value="20"/>
   <property name="ammoSpeed" value="1000"/>
   <property name="reloadTime" value="0"/>

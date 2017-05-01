@@ -1412,7 +1412,7 @@ public class GameField {
             }
             towersManager.removeTower(tower);
             rerouteForAllCreeps();
-            gamerGold += (int) tower.getTemplateForTower().cost*0.5;
+            gamerGold += (int) tower.getTemplateForTower().cost;//*0.5;
         }
     }
 

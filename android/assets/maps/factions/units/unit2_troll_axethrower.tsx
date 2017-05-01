@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit2_troll_axethrower" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="1"/>
   <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="100"/>
   <property name="name" value="Troll Axethrower"/>
-  <property name="speed" value="0.5"/>
+  <property name="healthPoints" value="100"/>
+  <property name="bounty" value="2"/>
+  <property name="cost" value="8"/>
+  <property name="speed" value="0.2"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>

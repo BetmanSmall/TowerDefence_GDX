@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit13_knight" tilewidth="72" tileheight="72" tilecount="70" columns="5">
  <properties>
-  <property name="bounty" value="2"/>
   <property name="factionName" value="Humans_Faction"/>
-  <property name="healthPoints" value="150"/>
   <property name="name" value="Knight"/>
+  <property name="healthPoints" value="350"/>
+  <property name="bounty" value="5"/>
+  <property name="cost" value="12"/>
   <property name="speed" value="0.4"/>
   <property name="type" value="unit"/>
  </properties>

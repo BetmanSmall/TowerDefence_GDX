@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="unit5_daemon" tilewidth="72" tileheight="72" tilecount="95" columns="5">
  <properties>
-  <property name="bounty" value="2"/>
   <property name="factionName" value="Orcs_Faction"/>
-  <property name="healthPoints" value="400"/>
   <property name="name" value="Daemon"/>
+  <property name="healthPoints" value="400"/>
+  <property name="bounty" value="12"/>
+  <property name="cost" value="19"/>
   <property name="speed" value="0.5"/>
   <property name="type" value="fly"/>
  </properties>
