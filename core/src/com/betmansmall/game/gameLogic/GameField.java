@@ -835,36 +835,45 @@ public class GameField {
     private void drawWavesRoutes(OrthographicCamera camera) {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.BROWN);
 
-        float linesWidth = sizeCellX/15f;
+        shapeRenderer.setColor(Color.BROWN);
         for (Wave wave : waveManager.waves) {
-            ArrayDeque<Node> route = wave.route;
-            if (route != null && !route.isEmpty()) {
-                Iterator<Node> nodeIterator = route.iterator();
-                Node startNode = nodeIterator.next();
-                Node endNode = null;
-                while (nodeIterator.hasNext()) {
-                    endNode = nodeIterator.next();
-                    Cell startCell = field[startNode.getX()][startNode.getY()];
-                    Cell endCell = field[endNode.getX()][endNode.getY()];
-                    if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                        shapeRenderer.rectLine(startCell.graphicCoordinatesBottom, endCell.graphicCoordinatesBottom, linesWidth);
-                    }
-                    if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                        shapeRenderer.rectLine(startCell.graphicCoordinatesRight, endCell.graphicCoordinatesRight, linesWidth);
-                    }
-                    if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                        shapeRenderer.rectLine(startCell.graphicCoordinatesTop, endCell.graphicCoordinatesTop, linesWidth);
-                    }
-                    if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                        shapeRenderer.rectLine(startCell.graphicCoordinatesLeft, endCell.graphicCoordinatesLeft, linesWidth);
-                    }
-                    startNode = endNode;
-                }
-            }
+            drawWave(wave);
+        }
+        shapeRenderer.setColor(Color.BLUE);
+        for (Wave wave : waveManager.wavesForUser) {
+            drawWave(wave);
         }
         shapeRenderer.end();
+    }
+
+    public void drawWave(Wave wave) {
+//        Gdx.app.log("GameField::drawWave(" + wave + ")", "--");
+        float linesWidth = sizeCellX/15f;
+        ArrayDeque<Node> route = wave.route;
+        if (route != null && !route.isEmpty()) {
+            Iterator<Node> nodeIterator = route.iterator();
+            Node startNode = nodeIterator.next();
+            Node endNode = null;
+            while (nodeIterator.hasNext()) {
+                endNode = nodeIterator.next();
+                Cell startCell = field[startNode.getX()][startNode.getY()];
+                Cell endCell = field[endNode.getX()][endNode.getY()];
+                if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
+                    shapeRenderer.rectLine(startCell.graphicCoordinatesBottom, endCell.graphicCoordinatesBottom, linesWidth);
+                }
+                if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
+                    shapeRenderer.rectLine(startCell.graphicCoordinatesRight, endCell.graphicCoordinatesRight, linesWidth);
+                }
+                if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
+                    shapeRenderer.rectLine(startCell.graphicCoordinatesTop, endCell.graphicCoordinatesTop, linesWidth);
+                }
+                if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
+                    shapeRenderer.rectLine(startCell.graphicCoordinatesLeft, endCell.graphicCoordinatesLeft, linesWidth);
+                }
+                startNode = endNode;
+            }
+        }
     }
 
 //    private void drawTowers(SpriteBatch spriteBatch) {

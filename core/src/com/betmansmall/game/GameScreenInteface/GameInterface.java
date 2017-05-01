@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.TowerDefence;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.UnderConstruction;
 
 /**
  * Created by Transet/AndeyA on 07.02.2016. (GovnoDoderbI)
@@ -29,7 +30,7 @@ public class GameInterface {
 //    private Skin skin;
     public Stage stage;
     public Table table;
-    public Label fpsLabel, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
+    public Label fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -78,14 +79,17 @@ public class GameInterface {
 //        infoTable.add(table1);
 
         VerticalGroup infoGroup = new VerticalGroup();
+        infoGroup.left();
         table.add(infoGroup).expand().top().right();
 
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
         missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
         nextCreepSpawnLabel = new Label("NextCreepSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
         infoGroup.addActor(fpsLabel);
+        infoGroup.addActor(gamerCursorCoordCell);
         infoGroup.addActor(missedAndMaxForPlayer1);
         infoGroup.addActor(gamerGoldLabel);
         infoGroup.addActor(missedAndMaxForComputer0);
@@ -120,6 +124,12 @@ public class GameInterface {
             actionsHistoryLabel.setText(sb.toString());
         }
         fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        UnderConstruction underConstruction = gameField.getUnderConstruction();
+        if(underConstruction != null) {
+            gamerCursorCoordCell.setText("CoordCell:(" + underConstruction.endX + "," + underConstruction.endY + ")");
+        } else {
+            gamerCursorCoordCell.setText("CoordCell:(WTF,WTF)");
+        }
         missedAndMaxForPlayer1.setText("CreepsLimitPL1:" + gameField.missedCreepsForPlayer1 + "/" + gameField.maxOfMissedCreepsForPlayer1);
         gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
         missedAndMaxForComputer0.setText("CreepsLimitComp0:" + gameField.missedCreepsForComputer0 + "/" + gameField.maxOfMissedCreepsForComputer0);

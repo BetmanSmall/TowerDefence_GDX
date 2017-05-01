@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 
 import java.util.ArrayDeque;
@@ -49,5 +50,18 @@ public class Wave {
 
     public void addAction(String action) {
         this.actions.add(action);
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Wave[");
+        sb.append("spawnPoint:" + spawnPoint);
+        sb.append("," + "exitPoint:" + exitPoint);
+        sb.append("," + "elapsedTime:" + elapsedTime);
+        sb.append("," + "intervalForSpawn:" + intervalForSpawn);
+        sb.append("," + "actions:" + actions);
+        sb.append("," + "route:" + route);
+        sb.append("]");
+        return sb.toString();
     }
 }
