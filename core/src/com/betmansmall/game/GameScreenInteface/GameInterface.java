@@ -1,6 +1,5 @@
 package com.betmansmall.game.GameScreenInteface;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,7 +29,7 @@ public class GameInterface {
 //    private Skin skin;
     public Stage stage;
     public Table table;
-    public Label fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
+    public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -82,12 +81,14 @@ public class GameInterface {
         infoGroup.left();
         table.add(infoGroup).expand().top().right();
 
+        mapNameLabel = new Label("MapName:arena0", new Label.LabelStyle(bitmapFont, Color.WHITE));
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
         gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
         missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
         nextCreepSpawnLabel = new Label("NextCreepSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
+        infoGroup.addActor(mapNameLabel);
         infoGroup.addActor(fpsLabel);
         infoGroup.addActor(gamerCursorCoordCell);
         infoGroup.addActor(missedAndMaxForPlayer1);
@@ -95,7 +96,7 @@ public class GameInterface {
         infoGroup.addActor(missedAndMaxForComputer0);
         infoGroup.addActor(nextCreepSpawnLabel);
 
-        towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
+        towersRoulette = new TowersRoulette(gameField, bitmapFont, table);
         creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
@@ -167,12 +168,12 @@ public class GameInterface {
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         if(creepsRoulette != null) {
-            if(creepsRoulette.pan(x, y, deltaX, deltaY)) {
+            if(creepsRoulette.tap(x, y, deltaX, deltaY)) {
                 return true;
             }
         }
         if(towersRoulette != null) {
-            if (towersRoulette.makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (towersRoulette.tap(x, y, deltaX, deltaY)) {
                 return true;
             }
         }

@@ -1,6 +1,5 @@
 package com.betmansmall.game;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -55,7 +54,7 @@ public class GameScreen implements Screen {
         public boolean tap(float x, float y, int count, int button) {
             Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 //          CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
-            if (gameInterface.creepsRoulette.isButtonTouched(x, y) || gameInterface.towersRoulette.isButtonTouched(x, y)) {
+            if (gameInterface.creepsRoulette.tap(x, y, count, button) || gameInterface.towersRoulette.tap(x, y, count, button)) {
                 return false;
             }
 
@@ -100,9 +99,9 @@ public class GameScreen implements Screen {
         public boolean pan(float x, float y, float deltaX, float deltaY) {
             Vector3 touch = new Vector3(x, y, 0.0f);
             camera.unproject(touch);
-//            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-//            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
-//            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
+//            Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+//            Gdx.app.log("CameraController::tap(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
+//            Gdx.app.log("CameraController::tap(2)", "-- x:" + touch.x + " y:" + touch.y);
             if (gameInterface.pan(x, y, deltaX, deltaY)) {
                 lastCircleTouched = true;
                 return true;
@@ -304,6 +303,7 @@ public class GameScreen implements Screen {
 
         gameField = new GameField(mapName, levelOfDifficulty);
         gameInterface = new GameInterface(gameField, bitmapFont);
+        gameInterface.mapNameLabel.setText("MapName:" + mapName);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 //        cameraController.borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
 //        cameraController.borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
