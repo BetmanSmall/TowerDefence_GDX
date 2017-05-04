@@ -144,12 +144,12 @@ public class CreepsRoulette {
         gameField.setGamePause(IS_PAUSE);
     }
 
-    public boolean tap(float x, float y, float deltaX, float deltaY) {
-//        Gdx.app.log("CreepsRoulette::tap(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+//        Gdx.app.log("CreepsRoulette::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
         if (showCreepsSelector && 0 < x && x < creepsSelectorButton.getX()+creepsSelectorButton.getWidth()) {
-//            Gdx.app.log("CreepsRoulette::tap()", "-- creepsButtonGroup.getY():" + creepsButtonGroup.getY() + " creepsButtonGroup.getOriginY():" + creepsButtonGroup.getOriginY());
-//            Gdx.app.log("CreepsRoulette::tap()", "-- creepsButtonGroup.getHeight()():" + creepsButtonGroup.getHeight());
-//            Gdx.app.log("CreepsRoulette::tap()", "-- creepsSelectorButton.getHeight():" + creepsSelectorButton.getHeight());
+//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getY():" + creepsButtonGroup.getY() + " creepsButtonGroup.getOriginY():" + creepsButtonGroup.getOriginY());
+//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getHeight()():" + creepsButtonGroup.getHeight());
+//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsSelectorButton.getHeight():" + creepsSelectorButton.getHeight());
             if(deltaY < 0f && creepsButtonGroup.getY() <= 0) {
                 creepsButtonGroup.moveBy(0, +Math.abs(deltaY));
             } else if(deltaY > 0f && creepsButtonGroup.getY()+creepsButtonGroup.getHeight() >= creepsButtonGroup.getOriginY()+creepsSelectorButton.getHeight()*4) { // Magic number!!

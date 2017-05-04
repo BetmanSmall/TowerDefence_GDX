@@ -168,12 +168,12 @@ public class GameInterface {
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         if(creepsRoulette != null) {
-            if(creepsRoulette.tap(x, y, deltaX, deltaY)) {
+            if(creepsRoulette.pan(x, y, deltaX, deltaY)) {
                 return true;
             }
         }
         if(towersRoulette != null) {
-            if (towersRoulette.tap(x, y, deltaX, deltaY)) {
+            if (towersRoulette.pan(x, y, deltaX, deltaY)) {
                 return true;
             }
         }

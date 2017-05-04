@@ -115,8 +115,8 @@ public class TowersRoulette {
 //        }
 //    }
 
-    public boolean tap(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("TowersRoulette::tap(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Gdx.app.log("TowersRoulette::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
 //        if(Gdx.app.getType() == Application.ApplicationType.Android) {
 //            Gdx.app.log("TowersRoulette::tap()", "-- ApplicationType.Android");
 //            x = Gdx.graphics.getWidth() - x;
