@@ -5,10 +5,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.TowerDefence;
@@ -26,15 +30,17 @@ public class GameInterface {
 //    private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
 
-//    private Skin skin;
+    private Skin skin;
     public Stage stage;
     public Table table;
-    public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
 
     // Console need
     public Array<String> arrayActionsHistory;
     private float deleteActionThrough, actionInHistoryTime;
     private Label actionsHistoryLabel;
+
+    public TextButton startAndPauseButton;
+    public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
 
     public TowersRoulette towersRoulette;
     public CreepsRoulette creepsRoulette;
@@ -49,7 +55,7 @@ public class GameInterface {
 //        this.spriteBatch = spriteBatch;
         this.bitmapFont = bitmapFont;
 
-//        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         this.stage = new Stage(/*new ScreenViewport()*/);
         stage.setDebugAll(true);
 
@@ -65,17 +71,8 @@ public class GameInterface {
         actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
         table.add(actionsHistoryLabel).expand().left();
 
-//        Table infoTable = new Table();
-//        infoTable.setSize(100f, 50f);
-//        infoTable.align(Align.top);
-//        table.addActor(infoTable);
-//        infoTable.setPosition(50f, 50f);
-//        infoTable.setBounds(10, 10, 100, 50);
-//        infoTable.setFillParent(true);
-
-//        Table table1 = new Table();
-//        table1.setFillParent(true);
-//        infoTable.add(table1);
+        startAndPauseButton = new TextButton("START", skin, "default");
+        table.add(startAndPauseButton).bottom();
 
         VerticalGroup infoGroup = new VerticalGroup();
         infoGroup.left();
