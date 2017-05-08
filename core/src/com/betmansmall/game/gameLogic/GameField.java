@@ -696,11 +696,11 @@ public class GameField {
         for (ShellEffectType shellAttackType : creep.shellEffectTypes) {
             if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
                 spriteBatch.setColor(0.0f, 0.0f, 1.0f, 0.9f);
-                Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FreezeEffect!");
+                // Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FreezeEffect!");
             }
             if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
                 spriteBatch.setColor(1.0f, 0.0f, 0.0f, 0.9f);
-                Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FireEffect!");
+                // Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FireEffect!");
             }
         }
         TextureRegion currentFrame;
