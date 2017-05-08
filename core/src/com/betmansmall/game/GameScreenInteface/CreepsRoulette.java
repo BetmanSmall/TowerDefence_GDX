@@ -49,7 +49,7 @@ public class CreepsRoulette {
 
         showCreepsSelector = false;
         creepsSelectorButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/creep_roulette_main.png"))).getDrawable());
-//        creepsSelectorButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
+       creepsSelectorButton.setSize(128f, 128f);
         creepsSelectorButton.setPosition(0, 0);
         creepsSelectorButton.setZIndex(5); // и это тоже!=(
         stage.addActor(creepsSelectorButton);
@@ -71,15 +71,15 @@ public class CreepsRoulette {
         Image imageFrame = new Image(textureRegionFrame);
         for(int unitIndex = 0; unitIndex < templateForUnits.size; unitIndex++) {
             ImageButton creepFrameButton = new ImageButton(imageFrame.getDrawable());
-//            creepFrameButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f); // 4to za pizdec? AndreY??? NAXUI
-//            creepFrameButton.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
-//                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f)); // 4to za pizdec? AndreY??? NAXUI
-//            creepFrameButton.addListener(new ClickListener() {
-//                @Override
-//                public void clicked(InputEvent event, float x, float y) {
-//                    Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- creepFrameButton");
-//                }
-//            });
+           creepFrameButton.setSize(128f, 128f/1.5f); // 4to za pizdec? AndreY??? NAXUI
+           creepFrameButton.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
+                   + (128f + unitIndex * 128f/1.5f)); // 4to za pizdec? AndreY??? NAXUI
+           // creepFrameButton.addListener(new ClickListener() {
+               // @Override
+               // public void clicked(InputEvent event, float x, float y) {
+                   // Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- creepFrameButton");
+               // }
+           // });
             TemplateForUnit templateForUnit = templateForUnits.get(unitIndex);
 
             String nameUnit = templateForUnit.name;

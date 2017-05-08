@@ -342,6 +342,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
 //            gameInterface.creepsRoulette.changeGameState();
+			gameField.gamePaused = !gameField.gamePaused;
             gameInterface.addActionToHistory("-- gameField.getGamePaused():" + gameField.getGamePaused());
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
@@ -447,6 +448,11 @@ public class GameScreen implements Screen {
             gameField.cancelUnderConstruction();
             gameInterface.addActionToHistory("-- gameField.cancelUnderConstruction()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.cancelUnderConstruction()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.B)");
+            gameField.createdRandomUnderConstruction();
+            gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- factionsManager.createdRandomUnderConstruction()");
         }
     }
 
