@@ -7,10 +7,10 @@
   <!-- <property name="radiusFlyShell" value="220"/> -->
   <property name="damage" value="20"/>
   <property name="size" value="1"/>
-  <property name="cost" value="10"/>
+  <property name="cost" value="120"/>
   <property name="ammoSize" value="5"/>
   <property name="ammoSpeed" value="15"/>
-  <property name="reloadTime" value="0.3"/>
+  <property name="reloadTime" value="0.7"/>
   <property name="towerAttackType" value="Range"/>
   <property name="shellAttackType" value="AutoTarget"/>
   <!-- <property name="shellEffectType" value="None"/> -->
