@@ -32,7 +32,7 @@ public class GameInterface {
 
     private Skin skin;
     public Stage stage;
-    public Table table;
+    public Table tableBack, tableFront;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -48,7 +48,7 @@ public class GameInterface {
     private Texture winTexture, loseTexture;
     private float currentTextureTime, maxTextureTime;
 
-    public GameInterface(GameField gameField, BitmapFont bitmapFont) {
+    public GameInterface(final GameField gameField, BitmapFont bitmapFont) {
         Gdx.app.log("GameInterface::GameInterface(" + gameField + "," + bitmapFont + ")", "-- Called!");
         this.gameField = gameField;
 //        this.shapeRenderer = shapeRenderer;
@@ -59,24 +59,30 @@ public class GameInterface {
         this.stage = new Stage(/*new ScreenViewport()*/);
         stage.setDebugAll(true);
 
-        this.table = new Table();
-        stage.addActor(table);
-        table.setFillParent(true);
-//        table.setBounds(1, 0, stage.getWidth()-1, stage.getHeight()-1);
-        Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+        this.tableBack = new Table(skin);
+//        tableBack.setDebug(true);
+        stage.addActor(tableBack);
+        tableBack.setFillParent(true);
 
         arrayActionsHistory = new Array<String>();
         deleteActionThrough = 0f;
         actionInHistoryTime = 1f;
         actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        table.add(actionsHistoryLabel).expand().left();
+        tableBack.add(actionsHistoryLabel).expand().left();
 
         startAndPauseButton = new TextButton("START", skin, "default");
-        table.add(startAndPauseButton).bottom();
+        startAndPauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("GameInterface::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- startAndPauseButton");
+                gameField.gamePaused = !gameField.gamePaused;
+            }
+        });
+        tableBack.add(startAndPauseButton).bottom();
 
         VerticalGroup infoGroup = new VerticalGroup();
         infoGroup.left();
-        table.add(infoGroup).expand().top().right();
+        tableBack.add(infoGroup).top().right();
 
         mapNameLabel = new Label("MapName:arena0", new Label.LabelStyle(bitmapFont, Color.WHITE));
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
@@ -93,8 +99,12 @@ public class GameInterface {
         infoGroup.addActor(missedAndMaxForComputer0);
         infoGroup.addActor(nextCreepSpawnLabel);
 
-        towersRoulette = new TowersRoulette(gameField, bitmapFont, table);
-        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
+        this.tableFront = new Table(skin);
+//        tableFront.setDebug(true);
+        stage.addActor(tableFront);
+        tableFront.setFillParent(true);
+        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, tableFront);
+//        towersRoulette = new TowersRoulette(gameField, bitmapFont, tableBack);
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
@@ -163,7 +173,23 @@ public class GameInterface {
         loseTexture.dispose();
     }
 
+    public boolean tap(float x, float y, int count, int button) {
+        Gdx.app.log("GameInterface::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+        if(creepsRoulette != null) {
+            if(creepsRoulette.tap(x, y, count, button)) {
+                return true;
+            }
+        }
+        if(towersRoulette != null) {
+            if (towersRoulette.tap(x, y, count, button)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Gdx.app.log("GameInterface::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
         if(creepsRoulette != null) {
             if(creepsRoulette.pan(x, y, deltaX, deltaY)) {
                 return true;

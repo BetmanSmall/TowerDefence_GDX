@@ -1,25 +1,20 @@
 package com.betmansmall.game.GameScreenInteface;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Дима Цыкунов on 20.02.2016.
@@ -27,32 +22,33 @@ import java.util.List;
 public class CreepsRoulette {
     public GameField gameField;
     public BitmapFont bitmapFont;
-    public Stage stage;
+    public Table tableFront;
 
-    private Array<TemplateForUnit> templateForUnits;
-    private Group creepsButtonGroup;
-    private boolean showCreepsSelector;
-    private ImageButton creepsSelectorButton;
+    public Array<TemplateForUnit> templateForUnits;
+    private VerticalGroup verticalGroupWithCreeps;
+//    private boolean showCreepsSelector;
+//    private ImageButton creepsSelectorButton;
 //    private ImageButton playButton;
 //    private ImageButton pauseButton;
-    private static volatile Boolean IS_PAUSE = true; // Prosto pizdec ANDREY!!!1!!!!!!
+//    private static volatile Boolean IS_PAUSE = true; // Prosto pizdec ANDREY!!!1!!!!!!
 
-    public CreepsRoulette(final GameField gameField, BitmapFont bitmapFont, Stage stage) {
+    public CreepsRoulette(GameField gameField, BitmapFont bitmapFont, Table tableFront) {
         this.gameField = gameField;
         this.bitmapFont = bitmapFont;
-        this.stage = stage;
+        this.tableFront = tableFront;
 
         this.templateForUnits = gameField.getAllTemplateForUnits();
-        this.creepsButtonGroup = new Group();
-        creepsButtonGroup.setZIndex(1); // блять это гавно не пашет
-        creepsButtonGroup.setDebug(true, true);
+        Gdx.app.log("CreepsRoulette::CreepsRoulette()", "-- templateForUnits:" + templateForUnits);
+        this.verticalGroupWithCreeps = new VerticalGroup();
+        tableFront.add(verticalGroupWithCreeps).left().bottom().expand();
+//        verticalGroupWithCreeps.addListener(new Pan)
 
-        showCreepsSelector = false;
-        creepsSelectorButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/creep_roulette_main.png"))).getDrawable());
-//        creepsSelectorButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
-        creepsSelectorButton.setPosition(0, 0);
-        creepsSelectorButton.setZIndex(5); // и это тоже!=(
-        stage.addActor(creepsSelectorButton);
+//        showCreepsSelector = false;
+//        creepsSelectorButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/creep_roulette_main.png"))).getDrawable());
+////        creepsSelectorButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
+//        creepsSelectorButton.setPosition(0, 0);
+//        creepsSelectorButton.setZIndex(5); // и это тоже!=(
+//        stage.addActor(creepsSelectorButton);
 
 //        playButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/playbutton.png"))).getDrawable());
 ////        playButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
@@ -66,11 +62,11 @@ public class CreepsRoulette {
 //        playButton.setZIndex(0);
 //        stage.addActor(pauseButton);
 
-        TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));
-        textureRegionFrame.flip(true, false);
-        Image imageFrame = new Image(textureRegionFrame);
-        for(int unitIndex = 0; unitIndex < templateForUnits.size; unitIndex++) {
-            ImageButton creepFrameButton = new ImageButton(imageFrame.getDrawable());
+//        TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));
+//        textureRegionFrame.flip(true, false);
+//        Image imageFrame = new Image(textureRegionFrame);
+        for (int unitIndex = 0; unitIndex < templateForUnits.size; unitIndex++) {
+//            ImageButton creepFrameButton = new ImageButton(imageFrame.getDrawable());
 //            creepFrameButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f); // 4to za pizdec? AndreY??? NAXUI
 //            creepFrameButton.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
 //                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f)); // 4to za pizdec? AndreY??? NAXUI
@@ -81,54 +77,54 @@ public class CreepsRoulette {
 //                }
 //            });
             TemplateForUnit templateForUnit = templateForUnits.get(unitIndex);
-
             String nameUnit = templateForUnit.name;
             String hpUnit = templateForUnit.healthPoints.toString();
             String speedUnit = templateForUnit.speed.toString();
             String costUnit = templateForUnit.cost.toString();
-
             Label nameUnitLabel = new Label(nameUnit, new Label.LabelStyle(bitmapFont, Color.WHITE));
             Label hpUnitLabel = new Label(hpUnit, new Label.LabelStyle(bitmapFont, Color.RED));
             Label speedUnitLabel = new Label(speedUnit, new Label.LabelStyle(bitmapFont, Color.GREEN));
             Label costUnitLabel = new Label(costUnit, new Label.LabelStyle(bitmapFont, Color.YELLOW));
-            float textX = 1.0f;
-            float textY = 0;
-            nameUnitLabel.setPosition(textX+45, textY); // Magic number
-            hpUnitLabel.setPosition(textX, textY + 65); // tyt tak zavedeno
-            speedUnitLabel.setPosition(textX, textY + 33); // need make layouts
-            costUnitLabel.setPosition(textX, textY + 7);
-
             nameUnitLabel.setName("nameUnitLabel");
             hpUnitLabel.setName("hpUnitLabel");
             speedUnitLabel.setName("speedUnitLabel");
             costUnitLabel.setName("costUnitLabel");
-            creepFrameButton.addActor(nameUnitLabel);
-            creepFrameButton.addActor(hpUnitLabel);
-            creepFrameButton.addActor(speedUnitLabel);
-            creepFrameButton.addActor(costUnitLabel);
 
-            ImageButton templateButton = new ImageButton(new Image(templateForUnit.animations.values().toArray().get(6).getTextureRegion()).getDrawable());
-            templateButton.setSize(creepFrameButton.getWidth()/1.6f, creepFrameButton.getHeight());
-            templateButton.setPosition(45f, 0f);
+            Table table = new Table();
+//            table.setDebug(true);
 
-            templateButton.setName("templateButton");
-            creepFrameButton.setName("creepFrameButton");
-            creepFrameButton.addActor(templateButton);
-            creepFrameButton.setVisible(false);
-            creepFrameButton.setUserObject(unitIndex);
-//            creepFrameButton.setZIndex(1); // да ну впзду
-            creepsButtonGroup.addActor(creepFrameButton);
-            creepsButtonGroup.setHeight(creepsButtonGroup.getHeight()+creepFrameButton.getHeight());
+            table.add(nameUnitLabel).colspan(2).row();
+            VerticalGroup verticalGroupHar = new VerticalGroup();
+//            verticalGroupHar.left();
+            verticalGroupHar.addActor(hpUnitLabel);
+            verticalGroupHar.addActor(speedUnitLabel);
+            verticalGroupHar.addActor(costUnitLabel);
+            table.add(verticalGroupHar).expandY().left();
 
-            Gdx.app.log("CreepsRoulette::init()", "-- button pos:(" + creepFrameButton.getX() + "," + creepFrameButton.getY() + "):" + nameUnit);
+            Image templateButton = new Image(templateForUnit.animations.values().toArray().get(6).getTextureRegion());
+            table.add(templateButton).expand();
+
+            Button button = new Button(table, tableFront.getSkin());
+//            button.addActor(table);
+            button.setUserObject(unitIndex);
+            verticalGroupWithCreeps.addActor(button);
+//
+//            templateButton.setName("templateButton");
+//            creepFrameButton.setName("creepFrameButton");
+//            creepFrameButton.addActor(templateButton);
+////            creepFrameButton.setVisible(false);
+////            creepFrameButton.setZIndex(1); // да ну впзду
+//            verticalGroupWithCreeps.addActor(creepFrameButton);
+////            verticalGroupWithCreeps.setHeight(verticalGroupWithCreeps.getHeight()+creepFrameButton.getHeight());
+//
+//            Gdx.app.log("CreepsRoulette::init()", "-- button pos:(" + creepFrameButton.getX() + "," + creepFrameButton.getY() + "):" + nameUnit);
         }
-        int buttonsSize = creepsButtonGroup.getChildren().size;
-        for(Actor actor : creepsButtonGroup.getChildren()) {
-            Gdx.app.log("CreepsRoulette::init()", "-- actor:" + actor/* + " actor.getName():" + actor.getName() + " actor.getUserObject():" + actor.getUserObject()*/);
-        }
-        stage.addActor(creepsButtonGroup);
-        Gdx.app.log("CreepsRoulette::init()", "-- buttonsSize:" + buttonsSize);
-        Gdx.app.log("CreepsRoulette::init()", "-- templateForUnits.size:" + templateForUnits.size);
+//        int buttonsSize = verticalGroupWithCreeps.getChildren().size;
+//        for(Actor actor : verticalGroupWithCreeps.getChildren()) {
+//            Gdx.app.log("CreepsRoulette::init()", "-- actor:" + actor/* + " actor.getName():" + actor.getName() + " actor.getUserObject():" + actor.getUserObject()*/);
+//        }
+//        Gdx.app.log("CreepsRoulette::init()", "-- buttonsSize:" + buttonsSize);
+//        Gdx.app.log("CreepsRoulette::init()", "-- templateForUnits.size:" + templateForUnits.size);
     }
 
 //    public void changeGameState() {
@@ -145,15 +141,12 @@ public class CreepsRoulette {
 //    }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-//        Gdx.app.log("CreepsRoulette::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
-        if (showCreepsSelector && 0 < x && x < creepsSelectorButton.getX()+creepsSelectorButton.getWidth()) {
-//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getY():" + creepsButtonGroup.getY() + " creepsButtonGroup.getOriginY():" + creepsButtonGroup.getOriginY());
-//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsButtonGroup.getHeight()():" + creepsButtonGroup.getHeight());
-//            Gdx.app.log("CreepsRoulette::pan()", "-- creepsSelectorButton.getHeight():" + creepsSelectorButton.getHeight());
-            if(deltaY < 0f && creepsButtonGroup.getY() <= 0) {
-                creepsButtonGroup.moveBy(0, +Math.abs(deltaY));
-            } else if(deltaY > 0f && creepsButtonGroup.getY()+creepsButtonGroup.getHeight() >= creepsButtonGroup.getOriginY()+creepsSelectorButton.getHeight()*4) { // Magic number!!
-                creepsButtonGroup.moveBy(0, -Math.abs(deltaY));
+        Gdx.app.log("CreepsRoulette::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+        if(x >= 0 && x <= verticalGroupWithCreeps.getWidth()) {
+            if(deltaY < 0f && verticalGroupWithCreeps.getY() < 0) {
+                verticalGroupWithCreeps.moveBy(0, +Math.abs(deltaY));
+            } else if(deltaY > 0f && verticalGroupWithCreeps.getY() + verticalGroupWithCreeps.getHeight() > Gdx.graphics.getHeight()) {
+                verticalGroupWithCreeps.moveBy(0, -Math.abs(deltaY));
             }
             return true;
         }
@@ -174,21 +167,21 @@ public class CreepsRoulette {
 //        Gdx.app.log("CreepsRoulette::tap()", "-- creepsSelectorButton.isChecked()" + creepsSelectorButton.isChecked());
 //        Gdx.app.log("CreepsRoulette::tap()", "-- creepsSelectorButton.isPressed()" + creepsSelectorButton.isPressed());
 //        Gdx.app.log("CreepsRoulette::tap()", "-- creepsSelectorButton.isOver()" + creepsSelectorButton.isOver());
-        if(creepsSelectorButton.isPressed() || (Gdx.app.getType() == Application.ApplicationType.Android && creepsSelectorButton.isChecked())) {
-            Gdx.app.log("CreepsRoulette::tap()", "-- creepsSelectorButton.isPressed()");
-            showCreepsSelector = !showCreepsSelector;
-            for (Actor actor : creepsButtonGroup.getChildren()) {
-                actor.setVisible(showCreepsSelector);
-            }
-            return true;
-        }
-        for (Actor actor : creepsButtonGroup.getChildren()) {
-//            Gdx.app.log("CreepsRoulette::tap()", "-- actor:" + actor);
-            if (actor instanceof ImageButton) {
-                ImageButton imageButton = (ImageButton)actor;
-//                Gdx.app.log("CreepsRoulette::tap()", "-- imageButton.isPressed():" + imageButton.isPressed());
-                if(imageButton.isPressed()) {
-                    Integer unitIndex = (Integer) imageButton.getUserObject();
+//        if(creepsSelectorButton.isPressed() || (Gdx.app.getType() == Application.ApplicationType.Android && creepsSelectorButton.isChecked())) {
+//            Gdx.app.log("CreepsRoulette::tap()", "-- creepsSelectorButton.isPressed()");
+//            showCreepsSelector = !showCreepsSelector;
+//            for (Actor actor : verticalGroupWithCreeps.getChildren()) {
+//                actor.setVisible(showCreepsSelector);
+//            }
+//            return true;
+//        }
+        for (Actor actor : verticalGroupWithCreeps.getChildren()) {
+            Gdx.app.log("CreepsRoulette::tap()", "-- actor:" + actor);
+            if (actor instanceof Button) {
+                Button buttonActor = (Button)actor;
+                Gdx.app.log("CreepsRoulette::tap()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
+                if(buttonActor.isPressed()) {
+                    Integer unitIndex = (Integer) buttonActor.getUserObject();
                     if (unitIndex != null) {
                         Gdx.app.log("CreepsRoulette::tap()", "-- unitIndex:" + unitIndex);
                         gameField.spawnCreepFromUser(templateForUnits.get(unitIndex));
@@ -197,7 +190,7 @@ public class CreepsRoulette {
                 }
             }
         }
-//        Actor actor = creepsButtonGroup.hit(x, y, true);
+//        Actor actor = verticalGroupWithCreeps.hit(x, y, true);
 //        if(actor != null) {
 //            Gdx.app.log("CreepsRoulette::tap()", "-- actor:" + actor);
 //            Actor parentActor = actor.getParent();
@@ -213,9 +206,4 @@ public class CreepsRoulette {
 //        }
         return false;
     }
-
-//    @Override
-//    public List<Group> getGroup() {
-//        return Arrays.asList(creepsButtonGroup);
-//    }
 }

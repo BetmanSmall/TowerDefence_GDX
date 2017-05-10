@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
         public boolean tap(float x, float y, int count, int button) {
             Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 //          CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
-            if (gameInterface.creepsRoulette.tap(x, y, count, button) || gameInterface.towersRoulette.tap(x, y, count, button)) {
+            if (gameInterface.tap(x, y, count, button)) {
                 return false;
             }
 
@@ -99,9 +99,9 @@ public class GameScreen implements Screen {
         public boolean pan(float x, float y, float deltaX, float deltaY) {
             Vector3 touch = new Vector3(x, y, 0.0f);
             camera.unproject(touch);
-//            Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-//            Gdx.app.log("CameraController::tap(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
-//            Gdx.app.log("CameraController::tap(2)", "-- x:" + touch.x + " y:" + touch.y);
+//            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+//            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
+//            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
             if (gameInterface.pan(x, y, deltaX, deltaY)) {
                 lastCircleTouched = true;
                 return true;
@@ -342,6 +342,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
 //            gameInterface.creepsRoulette.changeGameState();
+            gameField.gamePaused = !gameField.gamePaused;
             gameInterface.addActionToHistory("-- gameField.getGamePaused():" + gameField.getGamePaused());
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
