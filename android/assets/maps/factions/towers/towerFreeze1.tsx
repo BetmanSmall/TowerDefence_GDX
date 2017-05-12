@@ -7,7 +7,7 @@
   <property name="radiusFlyShell" value="150"/>
   <property name="damage" value="30"/>
   <property name="size" value="1"/>
-  <property name="cost" value="250"/>
+  <property name="cost" value="450"/>
   <property name="ammoSize" value="200"/>
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="7"/>
