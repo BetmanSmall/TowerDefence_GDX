@@ -90,7 +90,7 @@ public class GameField {
 
     // GAME INTERFACE ZONE1
     private WhichCell whichCell;
-    private boolean gamePaused;
+    public boolean gamePaused;
     public float gameSpeed;
     public static int gamerGold; // For Shell
     public int maxOfMissedCreepsForComputer0;
@@ -1619,6 +1619,9 @@ public class GameField {
 
     public Array<TemplateForUnit> getAllTemplateForUnits() {
         return factionsManager.getAllTemplateForUnits();
+    }
+    public boolean createdRandomUnderConstruction() {
+        return createdUnderConstruction(factionsManager.getRandomTemplateForTowerFromAllFaction());
     }
 
     public boolean createdUnderConstruction(TemplateForTower templateForTower) {

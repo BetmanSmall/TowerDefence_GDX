@@ -6,10 +6,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.TowerDefence;
@@ -27,10 +31,11 @@ public class GameInterface {
 //    private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
 
-//    private Skin skin;
+    private Skin skin;
     public Stage stage;
     public Table table;
     public Label fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
+    public Table tableBack, tableFront;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -43,44 +48,41 @@ public class GameInterface {
     private Texture winTexture, loseTexture;
     private float currentTextureTime, maxTextureTime;
 
-    public GameInterface(GameField gameField, BitmapFont bitmapFont) {
+    public GameInterface(final GameField gameField, BitmapFont bitmapFont) {
         Gdx.app.log("GameInterface::GameInterface(" + gameField + "," + bitmapFont + ")", "-- Called!");
         this.gameField = gameField;
 //        this.shapeRenderer = shapeRenderer;
 //        this.spriteBatch = spriteBatch;
         this.bitmapFont = bitmapFont;
 
-//        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         this.stage = new Stage(/*new ScreenViewport()*/);
         stage.setDebugAll(true);
 
-        this.table = new Table();
-        stage.addActor(table);
-        table.setFillParent(true);
-//        table.setBounds(1, 0, stage.getWidth()-1, stage.getHeight()-1);
-        Gdx.app.log("GameInterface::GameInterface()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+        this.tableBack = new Table(skin);
+//        tableBack.setDebug(true);
+        stage.addActor(tableBack);
+        tableBack.setFillParent(true);
 
         arrayActionsHistory = new Array<String>();
         deleteActionThrough = 0f;
         actionInHistoryTime = 1f;
         actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        table.add(actionsHistoryLabel).expand().left();
+        tableBack.add(actionsHistoryLabel).expand().left();
 
-//        Table infoTable = new Table();
-//        infoTable.setSize(100f, 50f);
-//        infoTable.align(Align.top);
-//        table.addActor(infoTable);
-//        infoTable.setPosition(50f, 50f);
-//        infoTable.setBounds(10, 10, 100, 50);
-//        infoTable.setFillParent(true);
-
-//        Table table1 = new Table();
-//        table1.setFillParent(true);
-//        infoTable.add(table1);
+        TextButton startAndPauseButton = new TextButton("START", skin, "default");
+        startAndPauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("GameInterface::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- startAndPauseButton");
+                gameField.gamePaused = !gameField.gamePaused;
+            }
+        });
+        tableBack.add(startAndPauseButton).bottom();
 
         VerticalGroup infoGroup = new VerticalGroup();
         infoGroup.left();
-        table.add(infoGroup).expand().top().right();
+        tableBack.add(infoGroup).top().right();
 
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
         gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
@@ -95,8 +97,12 @@ public class GameInterface {
         infoGroup.addActor(missedAndMaxForComputer0);
         infoGroup.addActor(nextCreepSpawnLabel);
 
-        towersRoulette = new TowersRoulette(gameField, bitmapFont, stage);
-        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
+        this.tableFront = new Table(skin);
+//        tableFront.setDebug(true);
+        stage.addActor(tableFront);
+        tableFront.setFillParent(true);
+        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, tableFront);
+//        towersRoulette = new TowersRoulette(gameField, bitmapFont, tableBack);
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
@@ -165,7 +171,23 @@ public class GameInterface {
         loseTexture.dispose();
     }
 
+    public boolean tap(float x, float y, int count, int button) {
+        Gdx.app.log("GameInterface::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+        if(creepsRoulette != null) {
+            if(creepsRoulette.tap(x, y, count, button)) {
+                return true;
+            }
+        }
+//        if(towersRoulette != null) {
+//            if (towersRoulette.tap(x, y, count, button)) {
+//                return true;
+//            }
+//        }
+        return false;
+    }
+
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Gdx.app.log("GameInterface::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
         if(creepsRoulette != null) {
             if(creepsRoulette.pan(x, y, deltaX, deltaY)) {
                 return true;
