@@ -4,8 +4,8 @@
   <property name="factionName" value="Humans_Faction"/>
   <property name="name" value="Footman"/>
   <property name="healthPoints" value="165"/>
-  <property name="bounty" value="6"/>
-  <property name="cost" value="12"/>
+  <property name="bounty" value="30"/>
+  <property name="cost" value="30"/>
   <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
  </properties>

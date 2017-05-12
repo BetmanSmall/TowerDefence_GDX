@@ -1,5 +1,6 @@
 package com.betmansmall.game.GameScreenInteface;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -185,11 +186,11 @@ public class GameInterface {
                 return true;
             }
         }
-        if(towersRoulette != null) {
-            if (towersRoulette.tap(x, y, count, button)) {
-                return true;
-            }
-        }
+//        if(towersRoulette != null) {
+//            if (towersRoulette.tap(x, y, count, button)) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
@@ -201,7 +202,7 @@ public class GameInterface {
             }
         }
         if(towersRoulette != null) {
-            if (towersRoulette.pan(x, y, deltaX, deltaY)) {
+            if (towersRoulette.makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
                 return true;
             }
         }

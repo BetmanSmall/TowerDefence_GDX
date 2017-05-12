@@ -27,7 +27,7 @@ public class Tower {
     public Tower(GridPoint2 position, TemplateForTower templateForTower){
         Gdx.app.log("Tower::Tower(" + position + ", " + templateForTower + ")", "--");
         this.position = position;
-        this.elapsedReloadTime = 0;
+        this.elapsedReloadTime = templateForTower.reloadTime;
         this.templateForTower = templateForTower;
 
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;

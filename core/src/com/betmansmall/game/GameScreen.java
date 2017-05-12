@@ -1,5 +1,6 @@
 package com.betmansmall.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -54,6 +55,7 @@ public class GameScreen implements Screen {
         public boolean tap(float x, float y, int count, int button) {
             Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 //          CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
+
             if (gameInterface.tap(x, y, count, button)) {
                 return false;
             }
@@ -341,9 +343,9 @@ public class GameScreen implements Screen {
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.zoom:" + cameraController.camera.zoom);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
-//            gameInterface.creepsRoulette.changeGameState();
+//            gameInterface.creepsRoulette.changeGameState(); need func() here
             gameField.gamePaused = !gameField.gamePaused;
-            gameInterface.addActionToHistory("-- gameField.getGamePaused():" + gameField.getGamePaused());
+            gameInterface.addActionToHistory("-- gameField.gamePaused:" + gameField.gamePaused);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
             gameField.isDrawableGrid++;
