@@ -108,9 +108,12 @@ public class MainMenuScreen implements Screen {
         FileHandle mapsDir = Gdx.files.internal("maps");
         if(mapsDir.list().length == 0) {
             towerDefence.gameLevelMaps.add("maps/arena0.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena5.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena4.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena1.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena2.tmx");
             towerDefence.gameLevelMaps.add("maps/arena3.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena4.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena4_1.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena666.tmx");
             towerDefence.gameLevelMaps.add("maps/govnoAndreyMapa.tmx");
 //            towerDefence.gameLevelMaps.add("maps/arena2.tmx");
         } else {

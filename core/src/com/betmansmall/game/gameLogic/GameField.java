@@ -144,9 +144,9 @@ public class GameField {
         Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
-        gamePaused = true;
+        gamePaused = false;
         gameSpeed = 1.0f;
-        gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "100", String.class)); // HARD GAME | one gold = one creep for computer!!!
+        gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one creep for computer!!!
         maxOfMissedCreepsForComputer0 = mapProperties.get("maxOfMissedCreepsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
 //        maxOfMissedCreepsForComputer0 = Integer.valueOf(mapProperties.get("maxOfMissedCreepsForComputer0", String.valueOf(gamerGold), String.class));
         missedCreepsForComputer0 = 0;
@@ -696,11 +696,11 @@ public class GameField {
         for (ShellEffectType shellAttackType : creep.shellEffectTypes) {
             if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
                 spriteBatch.setColor(0.0f, 0.0f, 1.0f, 0.9f);
-                Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FreezeEffect!");
+                // Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FreezeEffect!");
             }
             if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
                 spriteBatch.setColor(1.0f, 0.0f, 0.0f, 0.9f);
-                Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FireEffect!");
+                // Gdx.app.log("GameField::drawCreep(" + creep + "," + spriteBatch + ")", "-- FireEffect!");
             }
         }
         TextureRegion currentFrame;
@@ -1619,6 +1619,10 @@ public class GameField {
 
     public Array<TemplateForUnit> getAllTemplateForUnits() {
         return factionsManager.getAllTemplateForUnits();
+    }
+
+    public boolean createdRandomUnderConstruction() {
+        return createdUnderConstruction(factionsManager.getRandomTemplateForTowerFromAllFaction());
     }
 
     public boolean createdUnderConstruction(TemplateForTower templateForTower) {

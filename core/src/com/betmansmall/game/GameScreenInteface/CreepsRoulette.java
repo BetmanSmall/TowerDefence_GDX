@@ -38,6 +38,7 @@ public class CreepsRoulette {
         this.tableFront = tableFront;
 
         this.templateForUnits = gameField.getAllTemplateForUnits();
+//<<<<<<< HEAD
         Gdx.app.log("CreepsRoulette::CreepsRoulette()", "-- templateForUnits:" + templateForUnits);
         this.verticalGroupWithCreeps = new VerticalGroup();
         tableFront.add(verticalGroupWithCreeps).left().bottom().expand();
@@ -49,6 +50,18 @@ public class CreepsRoulette {
 //        creepsSelectorButton.setPosition(0, 0);
 //        creepsSelectorButton.setZIndex(5); // и это тоже!=(
 //        stage.addActor(creepsSelectorButton);
+//=======
+//        this.creepsButtonGroup = new Group();
+//        creepsButtonGroup.setZIndex(1); // блять это гавно не пашет
+//        creepsButtonGroup.setDebug(true, true);
+//
+//        showCreepsSelector = false;
+//        creepsSelectorButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/creep_roulette_main.png"))).getDrawable());
+//       creepsSelectorButton.setSize(128f, 128f);
+//        creepsSelectorButton.setPosition(0, 0);
+//        creepsSelectorButton.setZIndex(5); // и это тоже!=(
+//        stage.addActor(creepsSelectorButton);
+//>>>>>>> origin/master
 
 //        playButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/playbutton.png"))).getDrawable());
 ////        playButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
@@ -62,6 +75,7 @@ public class CreepsRoulette {
 //        playButton.setZIndex(0);
 //        stage.addActor(pauseButton);
 
+//<<<<<<< HEAD
 //        TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));
 //        textureRegionFrame.flip(true, false);
 //        Image imageFrame = new Image(textureRegionFrame);
@@ -76,6 +90,22 @@ public class CreepsRoulette {
 //                    Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- creepFrameButton");
 //                }
 //            });
+//=======
+//        TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));
+//        textureRegionFrame.flip(true, false);
+//        Image imageFrame = new Image(textureRegionFrame);
+//        for(int unitIndex = 0; unitIndex < templateForUnits.size; unitIndex++) {
+//            ImageButton creepFrameButton = new ImageButton(imageFrame.getDrawable());
+//           creepFrameButton.setSize(128f, 128f/1.5f); // 4to za pizdec? AndreY??? NAXUI
+//           creepFrameButton.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
+//                   + (128f + unitIndex * 128f/1.5f)); // 4to za pizdec? AndreY??? NAXUI
+//           // creepFrameButton.addListener(new ClickListener() {
+//               // @Override
+//               // public void clicked(InputEvent event, float x, float y) {
+//                   // Gdx.app.log("CreepsRoulette::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- creepFrameButton");
+//               // }
+//           // });
+//>>>>>>> origin/master
             TemplateForUnit templateForUnit = templateForUnits.get(unitIndex);
             String nameUnit = templateForUnit.name;
             String hpUnit = templateForUnit.healthPoints.toString();

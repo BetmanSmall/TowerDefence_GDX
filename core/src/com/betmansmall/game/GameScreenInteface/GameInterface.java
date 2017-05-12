@@ -57,7 +57,7 @@ public class GameInterface {
 
         this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         this.stage = new Stage(/*new ScreenViewport()*/);
-        stage.setDebugAll(true);
+        // stage.setDebugAll(true);
 
         this.tableBack = new Table(skin);
 //        tableBack.setDebug(true);
@@ -99,12 +99,17 @@ public class GameInterface {
         infoGroup.addActor(missedAndMaxForComputer0);
         infoGroup.addActor(nextCreepSpawnLabel);
 
+//<<<<<<< HEAD
         this.tableFront = new Table(skin);
 //        tableFront.setDebug(true);
         stage.addActor(tableFront);
         tableFront.setFillParent(true);
         creepsRoulette = new CreepsRoulette(gameField, bitmapFont, tableFront);
 //        towersRoulette = new TowersRoulette(gameField, bitmapFont, tableBack);
+//=======
+//        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
+//        towersRoulette = new TowersRoulette(gameField, bitmapFont, table, stage);
+//>>>>>>> origin/master
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));

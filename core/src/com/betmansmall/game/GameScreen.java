@@ -448,6 +448,11 @@ public class GameScreen implements Screen {
             gameField.cancelUnderConstruction();
             gameInterface.addActionToHistory("-- gameField.cancelUnderConstruction()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.cancelUnderConstruction()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.B)");
+            gameField.createdRandomUnderConstruction();
+            gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- factionsManager.createdRandomUnderConstruction()");
         }
     }
 
