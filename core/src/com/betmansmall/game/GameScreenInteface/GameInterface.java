@@ -8,14 +8,17 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.betmansmall.game.TowerDefence;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
@@ -33,8 +36,6 @@ public class GameInterface {
 
     private Skin skin;
     public Stage stage;
-    public Table table;
-    public Label fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
     public Table tableBack, tableFront;
 
     // Console need
@@ -42,8 +43,11 @@ public class GameInterface {
     private float deleteActionThrough, actionInHistoryTime;
     private Label actionsHistoryLabel;
 
-    public TowersRoulette towersRoulette;
-    public CreepsRoulette creepsRoulette;
+    public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, underConstructionLabel,
+            missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
+
+    public TowersSelector towersSelector;
+    public UnitsSelector unitsSelector;
 
     private Texture winTexture, loseTexture;
     private float currentTextureTime, maxTextureTime;
@@ -56,8 +60,13 @@ public class GameInterface {
         this.bitmapFont = bitmapFont;
 
         this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        this.stage = new Stage(/*new ScreenViewport()*/);
-        // stage.setDebugAll(true);
+//        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+////            this.stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())); // странный костыль, у меня на телефоне было все мелко. теперь нет
+//            this.stage = new Stage(new FitViewport(1280, 720)); // REsize nePashet HZ po4emy
+//        } else {
+            this.stage = new Stage(/*new FitViewport(1280, 720)*/); // a на декстопе норм
+//        }
+         stage.setDebugAll(true);
 
         this.tableBack = new Table(skin);
 //        tableBack.setDebug(true);
@@ -71,6 +80,8 @@ public class GameInterface {
         tableBack.add(actionsHistoryLabel).expand().left();
 
         TextButton startAndPauseButton = new TextButton("START", skin, "default");
+        startAndPauseButton.setSize(startAndPauseButton.getWidth()*2f, startAndPauseButton.getHeight());
+        startAndPauseButton.setScale(2f);
         startAndPauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -78,36 +89,39 @@ public class GameInterface {
                 gameField.gamePaused = !gameField.gamePaused;
             }
         });
-        tableBack.add(startAndPauseButton).bottom();
+        tableBack.add(startAndPauseButton).bottom().expand();
 
         VerticalGroup infoGroup = new VerticalGroup();
-        infoGroup.left();
-        tableBack.add(infoGroup).top().right();
+//        infoGroup.space(1f);
+        infoGroup.align(Align.left);
+        tableBack.add(infoGroup).top().expand();
 
+        mapNameLabel = new Label("MapName:arena0tmx", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        infoGroup.addActor(mapNameLabel);
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
-        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-        missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
-        nextCreepSpawnLabel = new Label("NextCreepSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
         infoGroup.addActor(fpsLabel);
+        gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
         infoGroup.addActor(gamerCursorCoordCell);
+        underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.SKY));
+        infoGroup.addActor(underConstructionLabel);
+        missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoGroup.addActor(missedAndMaxForPlayer1);
+        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         infoGroup.addActor(gamerGoldLabel);
+        missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
         infoGroup.addActor(missedAndMaxForComputer0);
+        nextCreepSpawnLabel = new Label("NextCreepSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
         infoGroup.addActor(nextCreepSpawnLabel);
 
-//<<<<<<< HEAD
-        this.tableFront = new Table(skin);
-//        tableFront.setDebug(true);
+        this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
+////        table.setDebug(true);
         stage.addActor(tableFront);
         tableFront.setFillParent(true);
-        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, tableFront);
-//        towersRoulette = new TowersRoulette(gameField, bitmapFont, tableBack);
-//=======
-//        creepsRoulette = new CreepsRoulette(gameField, bitmapFont, stage);
-//        towersRoulette = new TowersRoulette(gameField, bitmapFont, table, stage);
-//>>>>>>> origin/master
+        if (gameField.waveManager.wavesForUser.size > 0) {
+            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableFront);
+        }
+
+        towersSelector = new TowersSelector(gameField, bitmapFont, tableFront);
 
         winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
         loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
@@ -138,8 +152,10 @@ public class GameInterface {
         UnderConstruction underConstruction = gameField.getUnderConstruction();
         if(underConstruction != null) {
             gamerCursorCoordCell.setText("CoordCell:(" + underConstruction.endX + "," + underConstruction.endY + ")");
+            underConstructionLabel.setText("UnderConstrTemplateName:" + underConstruction.templateForTower.name);
         } else {
             gamerCursorCoordCell.setText("CoordCell:(WTF,WTF)");
+            underConstructionLabel.setText("UnderConstrTemplateName:NULL");
         }
         missedAndMaxForPlayer1.setText("CreepsLimitPL1:" + gameField.missedCreepsForPlayer1 + "/" + gameField.maxOfMissedCreepsForPlayer1);
         gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
@@ -159,9 +175,9 @@ public class GameInterface {
         Batch batch = stage.getBatch(); // Need have own batch. mb get from GameScreen
         batch.begin();
         if(gameState.equals("Win")) {
-            batch.draw(winTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            batch.draw(winTexture, 0, 0, stage.getWidth(), stage.getHeight());
         } else if(gameState.equals("Lose")) {
-            batch.draw(loseTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            batch.draw(loseTexture, 0, 0, stage.getWidth(), stage.getHeight());
         }
         batch.end();
     }
@@ -170,37 +186,54 @@ public class GameInterface {
         Gdx.app.log("GameInterface::dispose()", "-- Called!");
         bitmapFont.dispose();
         stage.dispose();
-//        towersRoulette.dispose();
-//        creepsRoulette.dispose();
+//        towersSelector.dispose();
+//        unitsSelector.dispose();
         winTexture.dispose();
         loseTexture.dispose();
     }
 
     public boolean tap(float x, float y, int count, int button) {
         Gdx.app.log("GameInterface::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
-        if(creepsRoulette != null) {
-            if(creepsRoulette.tap(x, y, count, button)) {
+        if(unitsSelector != null) {
+            if(unitsSelector.tap(x, y, count, button)) {
+                Gdx.app.log("GameInterface::tap()", "-- return true");
                 return true;
             }
         }
-//        if(towersRoulette != null) {
-//            if (towersRoulette.tap(x, y, count, button)) {
-//                return true;
-//            }
-//        }
+        if(towersSelector != null) {
+            if (towersSelector.tap(x, y, count, button)) {
+                return true;
+            }
+        }
+        Gdx.app.log("GameInterface::tap()", "-- return false");
         return false;
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Gdx.app.log("GameInterface::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-        if(creepsRoulette != null) {
-            if(creepsRoulette.pan(x, y, deltaX, deltaY)) {
+        if(unitsSelector != null) {
+            if(unitsSelector.pan(x, y, deltaX, deltaY)) {
                 return true;
             }
         }
-        if(towersRoulette != null) {
-            if (towersRoulette.makeRotation(x, y, deltaX, deltaY) && Gdx.app.getType() == Application.ApplicationType.Android) {
+        if(towersSelector != null) {
+            if (towersSelector.pan(x, y, deltaX, deltaY)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean panStop(float x, float y, int pointer, int button) {
+        Gdx.app.log("GameInterface::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        if(unitsSelector != null) {
+            if (unitsSelector.panStop(x, y, pointer, button)) {
+//                return true;
+            }
+        }
+        if(towersSelector != null) {
+            if(towersSelector.panStop(x, y, pointer, button)) {
+//                return true;
             }
         }
         return false;

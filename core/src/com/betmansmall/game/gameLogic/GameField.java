@@ -1621,16 +1621,15 @@ public class GameField {
         return factionsManager.getAllTemplateForUnits();
     }
 
-    public boolean createdRandomUnderConstruction() {
+    public UnderConstruction createdRandomUnderConstruction() {
         return createdUnderConstruction(factionsManager.getRandomTemplateForTowerFromAllFaction());
     }
 
-    public boolean createdUnderConstruction(TemplateForTower templateForTower) {
+    public UnderConstruction createdUnderConstruction(TemplateForTower templateForTower) {
         if (underConstruction != null) {
             underConstruction.dispose();
         }
-        underConstruction = new UnderConstruction(templateForTower);
-        return true;
+        return underConstruction = new UnderConstruction(templateForTower);
     }
 
     public boolean cancelUnderConstruction() {

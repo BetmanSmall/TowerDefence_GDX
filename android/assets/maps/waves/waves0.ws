@@ -21,5 +21,5 @@
         <!-- <unit templateName="unit14_mage" amount="1"/> -->
         <!-- <unit templateName="unit15_peasant" amount="1"/> -->
     </wave>
-    <waveForUser spawnPointX="0" spawnPointY="31" exitPointX="15" exitPointY="0"/>
+    <!-- <waveForUser spawnPointX="0" spawnPointY="31" exitPointX="15" exitPointY="0"/> -->
 </waves>

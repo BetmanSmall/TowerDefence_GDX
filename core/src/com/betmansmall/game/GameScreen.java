@@ -13,6 +13,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
@@ -142,6 +143,9 @@ public class GameScreen implements Screen {
         @Override
         public boolean panStop(float x, float y, int pointer, int button) {
             Gdx.app.log("CameraController::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+            if(gameInterface.panStop(x, y, pointer, button)) {
+//                return true;
+            }
             return false;
         }
 
@@ -305,7 +309,7 @@ public class GameScreen implements Screen {
 
         gameField = new GameField(mapName, levelOfDifficulty);
         gameInterface = new GameInterface(gameField, bitmapFont);
-//        gameInterface.mapNameLabel.setText("MapName:" + mapName);
+        gameInterface.mapNameLabel.setText("MapName:" + mapName);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 //        cameraController.borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
 //        cameraController.borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
@@ -343,7 +347,7 @@ public class GameScreen implements Screen {
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.zoom:" + cameraController.camera.zoom);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
-//            gameInterface.creepsRoulette.changeGameState(); need func() here
+//            gameInterface.unitsSelector.changeGameState(); need func() here
             gameField.gamePaused = !gameField.gamePaused;
             gameInterface.addActionToHistory("-- gameField.gamePaused:" + gameField.gamePaused);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
@@ -445,16 +449,16 @@ public class GameScreen implements Screen {
             gameInterface.arrayActionsHistory.clear();
             gameInterface.addActionToHistory("-- gameInterface.arrayActionsHistory.clear()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameInterface.arrayActionsHistory.clear()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ESCAPE)");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ESCAPE || Input.Keys.N)");
             gameField.cancelUnderConstruction();
             gameInterface.addActionToHistory("-- gameField.cancelUnderConstruction()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.cancelUnderConstruction()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.B)");
-            gameField.createdRandomUnderConstruction();
-            gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction()");
-            Gdx.app.log("GameScreen::inputHandler()", "-- factionsManager.createdRandomUnderConstruction()");
+            UnderConstruction underConstruction = gameField.createdRandomUnderConstruction();
+            gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
+            Gdx.app.log("GameScreen::inputHandler()", "-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
         }
     }
 
@@ -480,10 +484,20 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         Gdx.app.log("GameScreen::resize(" + width + ", " + height + ")", "--");
+        gameInterface.stage.getViewport().update(width, height, true); // REsize nePashet HZ po4emy
+//        gameInterface.tableBack.setScale(gameInterface.tableBack.getWidth()/width, gameInterface.tableBack.getHeight()/height);
+//        gameInterface.table.setScale(gameInterface.table.getWidth()/width, gameInterface.table.getHeight()/height);
+//        gameInterface.stage.getViewport().apply();
+//        gameInterface.tableBack.setBounds(0f, 0f, width, height);
+//        gameInterface.table.setBounds(0f, 0f, width, height);
+//        gameInterface.table.setSize(width, height);
+//        gameInterface.tableBack.setSize(width, height);
+//        gameInterface.stage.act();
+//        gameInterface.stage.setViewport(new FitViewport(width, height, cameraController.camera));
+//        gameInterface.stage.act();
         cameraController.camera.viewportHeight = height;
         cameraController.camera.viewportWidth = width;
         cameraController.camera.update();
-        gameInterface.stage.getViewport().update(width, height, true);
 //        gameInterface.updateStage(); // Андрей. Твой ресайз не пашет! Если это разкомменить. То не будет работать селектор вообще. Этот инит твой будет по несколько раз вызываться. Один раз при создании и два раза во время ресайза. (эти два ресайза делаются почему то во время инициализации)
     }
 

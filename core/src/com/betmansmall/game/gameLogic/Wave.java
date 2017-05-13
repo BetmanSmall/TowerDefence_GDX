@@ -45,7 +45,7 @@ public class Wave {
                 return action;
             }
         }
-        return null;
+        return "wait=" + (intervalForSpawn-elapsedTime);
     }
 
     public void addAction(String action) {
