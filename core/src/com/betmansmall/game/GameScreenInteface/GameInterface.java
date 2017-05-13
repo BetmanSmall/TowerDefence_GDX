@@ -33,15 +33,14 @@ public class GameInterface {
 
     private Skin skin;
     public Stage stage;
+    public Table table;
+    public Label fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
     public Table tableBack, tableFront;
 
     // Console need
     public Array<String> arrayActionsHistory;
     private float deleteActionThrough, actionInHistoryTime;
     private Label actionsHistoryLabel;
-
-    public TextButton startAndPauseButton;
-    public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
 
     public TowersRoulette towersRoulette;
     public CreepsRoulette creepsRoulette;
@@ -71,7 +70,7 @@ public class GameInterface {
         actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tableBack.add(actionsHistoryLabel).expand().left();
 
-        startAndPauseButton = new TextButton("START", skin, "default");
+        TextButton startAndPauseButton = new TextButton("START", skin, "default");
         startAndPauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -85,14 +84,12 @@ public class GameInterface {
         infoGroup.left();
         tableBack.add(infoGroup).top().right();
 
-        mapNameLabel = new Label("MapName:arena0", new Label.LabelStyle(bitmapFont, Color.WHITE));
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
         gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
         missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
         nextCreepSpawnLabel = new Label("NextCreepSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
-        infoGroup.addActor(mapNameLabel);
         infoGroup.addActor(fpsLabel);
         infoGroup.addActor(gamerCursorCoordCell);
         infoGroup.addActor(missedAndMaxForPlayer1);

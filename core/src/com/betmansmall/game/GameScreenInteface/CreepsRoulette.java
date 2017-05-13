@@ -55,7 +55,10 @@ public class CreepsRoulette {
         this.templateForUnits = gameField.getAllTemplateForUnits();
 //<<<<<<< HEAD
 //<<<<<<< HEAD
+//<<<<<<< HEAD
 //=======
+//=======
+//>>>>>>> master2
 ////<<<<<<< HEAD
 //        this.creepsButtonGroup = new Group();
 //        creepsButtonGroup.setZIndex(1); // блять это гавно не пашет
@@ -68,6 +71,9 @@ public class CreepsRoulette {
 //        creepsSelectorButton.setZIndex(5); // и это тоже!=(
 //        tableFront.addActor(creepsSelectorButton);
 ////=======
+//<<<<<<< HEAD
+////>>>>>>> master2
+//=======
 //>>>>>>> master2
         Gdx.app.log("CreepsRoulette::CreepsRoulette()", "-- templateForUnits:" + templateForUnits);
         this.verticalGroupWithCreeps = new VerticalGroup();
@@ -80,6 +86,7 @@ public class CreepsRoulette {
 //        creepsSelectorButton.setPosition(0, 0);
 //        creepsSelectorButton.setZIndex(5); // и это тоже!=(
 //        stage.addActor(creepsSelectorButton);
+//<<<<<<< HEAD
 //<<<<<<< HEAD
 //=======
 //        this.creepsButtonGroup = new Group();
@@ -96,6 +103,9 @@ public class CreepsRoulette {
 //=======
 //>>>>>>> master
 //>>>>>>> master2
+//=======
+////>>>>>>> master
+//>>>>>>> master2
 
 //        playButton = new ImageButton(new Image(new Texture(Gdx.files.internal("img/playbutton.png"))).getDrawable());
 //        playButton.setSize(getLocalWidth(ROULETTE_RADIUS),getLocalHeight(ROULETTE_RADIUS));
@@ -109,9 +119,12 @@ public class CreepsRoulette {
 //        playButton.setZIndex(0);
 //        tableFront.addActor(pauseButton);
 
+////<<<<<<< HEAD
 //<<<<<<< HEAD
-//<<<<<<< HEAD
+////<<<<<<< HEAD
+////=======
 //=======
+//>>>>>>> master2
 //        TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));
 //        textureRegionFrame.flip(true, false);
 //        Image imageFrame = new Image(textureRegionFrame);
@@ -120,6 +133,9 @@ public class CreepsRoulette {
 //            creepFrameButton.setSize(getLocalWidth(ROULETTE_RADIUS), getLocalHeight(ROULETTE_RADIUS)/1.5f); // 4to za pizdec? AndreY??? NAXUI
 //            creepFrameButton.setPosition(creepsSelectorButton.getX(), creepsSelectorButton.getY()
 //                    + (getLocalWidth(ROULETTE_RADIUS) + unitIndex * getLocalWidth(ROULETTE_RADIUS)/1.5f)); // 4to za pizdec? AndreY??? NAXUI
+//=======
+//<<<<<<< HEAD
+////>>>>>>> master2
 //=======
 //>>>>>>> master2
 //        TextureRegion textureRegionFrame = new TextureRegion(new Texture(Gdx.files.internal("img/build_frame.png")));

@@ -305,7 +305,7 @@ public class GameScreen implements Screen {
 
         gameField = new GameField(mapName, levelOfDifficulty);
         gameInterface = new GameInterface(gameField, bitmapFont);
-        gameInterface.mapNameLabel.setText("MapName:" + mapName);
+//        gameInterface.mapNameLabel.setText("MapName:" + mapName);
         cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 //        cameraController.borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
 //        cameraController.borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));

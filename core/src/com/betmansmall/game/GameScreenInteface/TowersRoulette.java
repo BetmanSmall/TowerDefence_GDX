@@ -24,6 +24,7 @@ public class TowersRoulette extends Roulette {
     public GameField gameField;
     public BitmapFont bitmapFont;
 //<<<<<<< HEAD
+//<<<<<<< HEAD
 //    public Table table;
 //	public Stage stage;
 //	float sizeButton = 128f;
@@ -40,6 +41,8 @@ public class TowersRoulette extends Roulette {
 //        this.table = table;
 //        this.stage = stage;
 ////=======
+//=======
+//>>>>>>> master2
     public Stage stage;
 
     private Group circleGroup;
@@ -56,11 +59,15 @@ public class TowersRoulette extends Roulette {
         this.stage = stage;
         init();
     }
+//<<<<<<< HEAD
+////>>>>>>> master2
+//=======
 //>>>>>>> master2
 
     private void init() { // Нужно тут все naxui переделать. Либо как в CreepsRoulette, либо вообще все по нормальному с Layouts || но пока да -- так=(
         //TEMPORARY VARIANT OF TAKING TOWERS
         templateForTowers = gameField.getAllTemplateForTowers();
+//<<<<<<< HEAD
 //<<<<<<< HEAD
 //        horizontalGroup = new HorizontalGroup();
 //        table.add(horizontalGroup).right();
@@ -148,6 +155,8 @@ public class TowersRoulette extends Roulette {
 ////            }
 ////        }
 //=======
+//=======
+//>>>>>>> master2
         buttonGroup = new Group();
         towerFrames = new Array<ImageButton>();
 
@@ -280,6 +289,9 @@ public class TowersRoulette extends Roulette {
                 }
             }
         }
+//<<<<<<< HEAD
+////>>>>>>> master2
+//=======
 //>>>>>>> master2
         return false;
     }
@@ -315,6 +327,7 @@ public class TowersRoulette extends Roulette {
         }
     }
 
+//<<<<<<< HEAD
 //<<<<<<< HEAD
 //    public boolean tap(float x, float y, int count, int button) {
 //        Gdx.app.log("TowersRoulette::tap(" + x + "," + y + "," + count + "," + button + ")", "--");
@@ -366,6 +379,8 @@ public class TowersRoulette extends Roulette {
 //       }
 //       return false;
 //=======
+//=======
+//>>>>>>> master2
     public boolean isButtonTouched(float x, float y) {
         boolean isTouched = false;
         x = Gdx.graphics.getWidth()  - x;
@@ -416,6 +431,9 @@ public class TowersRoulette extends Roulette {
             return isTouched;
         }
         return isTouched;
+//<<<<<<< HEAD
+////>>>>>>> master2
+//=======
 //>>>>>>> master2
     }
 
