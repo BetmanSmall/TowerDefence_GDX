@@ -18,7 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.game.TowerDefence;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
@@ -60,13 +62,13 @@ public class GameInterface {
         this.bitmapFont = bitmapFont;
 
         this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-//        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+        if (Gdx.app.getType() == Application.ApplicationType.Android) { // Короче тут какая то жопа. нужно будет разобраться в будущем
 ////            this.stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())); // странный костыль, у меня на телефоне было все мелко. теперь нет
-//            this.stage = new Stage(new FitViewport(1280, 720)); // REsize nePashet HZ po4emy
-//        } else {
+            this.stage = new Stage(new FitViewport(1280, 720)); // REsize nePashet HZ po4emy
+        } else {
             this.stage = new Stage(/*new FitViewport(1280, 720)*/); // a на декстопе норм
-//        }
-         stage.setDebugAll(true);
+            stage.setDebugAll(true);
+        }
 
         this.tableBack = new Table(skin);
 //        tableBack.setDebug(true);
@@ -102,7 +104,7 @@ public class GameInterface {
         infoGroup.addActor(fpsLabel);
         gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
         infoGroup.addActor(gamerCursorCoordCell);
-        underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.SKY));
+        underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.WHITE));
         infoGroup.addActor(underConstructionLabel);
         missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoGroup.addActor(missedAndMaxForPlayer1);
@@ -153,9 +155,11 @@ public class GameInterface {
         if(underConstruction != null) {
             gamerCursorCoordCell.setText("CoordCell:(" + underConstruction.endX + "," + underConstruction.endY + ")");
             underConstructionLabel.setText("UnderConstrTemplateName:" + underConstruction.templateForTower.name);
+            underConstructionLabel.setColor(Color.GREEN);
         } else {
             gamerCursorCoordCell.setText("CoordCell:(WTF,WTF)");
             underConstructionLabel.setText("UnderConstrTemplateName:NULL");
+            underConstructionLabel.setColor(Color.RED);
         }
         missedAndMaxForPlayer1.setText("CreepsLimitPL1:" + gameField.missedCreepsForPlayer1 + "/" + gameField.maxOfMissedCreepsForPlayer1);
         gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());

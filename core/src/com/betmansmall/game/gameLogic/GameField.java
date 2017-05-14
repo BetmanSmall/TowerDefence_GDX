@@ -1307,10 +1307,10 @@ public class GameField {
     public void buildTowersWithUnderConstruction(int x, int y) {
         if (underConstruction != null) {
             underConstruction.setEndCoors(x, y);
-            createTower(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower);
+            createTower(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower, 1);
             for (int k = 0; k < underConstruction.coorsX.size; k++) {
 //            for(int k = underConstruction.coorsX.size-1; k >= 0; k--) {
-                createTower(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower);
+                createTower(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, 1);
             }
             underConstruction.clearStartCoors();
             rerouteForAllCreeps();
@@ -1319,14 +1319,14 @@ public class GameField {
 
     public void towerActions(int x, int y) {
         if (field[x][y].isEmpty()) {
-            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction());
+            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
             rerouteForAllCreeps();
         } else if (field[x][y].getTower() != null) {
             removeTower(x, y);
         }
     }
 
-    public boolean createTower(int buildX, int buildY, TemplateForTower templateForTower) {
+    public boolean createTower(int buildX, int buildY, TemplateForTower templateForTower, int player) {
         if (gamerGold >= templateForTower.cost) {
             int towerSize = templateForTower.size;
             int startX = 0, startY = 0, finishX = 0, finishY = 0;
@@ -1363,7 +1363,7 @@ public class GameField {
 
             // GOVNO CODE
             GridPoint2 position = new GridPoint2(buildX, buildY);
-            Tower tower = towersManager.createTower(position, templateForTower);
+            Tower tower = towersManager.createTower(position, templateForTower, player);
             Gdx.app.log("GameField::createTower()", "-- templateForTower.towerAttackType:" + templateForTower.towerAttackType);
             if (templateForTower.towerAttackType != TowerAttackType.Pit) {
                 for (int tmpX = startX; tmpX <= finishX; tmpX++) {
@@ -1499,7 +1499,7 @@ public class GameField {
             TowerAttackType towerAttackType = tower.getTemplateForTower().towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
                 Creep creep = field[tower.getPosition().x][tower.getPosition().y].getCreep();
-                if (creep != null && !creep.templateForUnit.type.equals("fly")) {
+                if (creep != null && !creep.templateForUnit.type.equals("fly") && creep.player != tower.player) {
                     Gdx.app.log("GameField", "shotAllTowers(); -- tower.capacity:" + tower.capacity + " creep.getHp:" + creep.getHp());
 //                    creep.die(creep.getHp());
                     creepsManager.removeCreep(creep);
@@ -1515,12 +1515,11 @@ public class GameField {
             } else if (towerAttackType == TowerAttackType.Range || towerAttackType == TowerAttackType.RangeFly) {
                 if (tower.recharge(delta)) {
                     for (Creep creep : creepsManager.getAllCreeps()) {
-                        if (creep != null && creep.isAlive()) {
-//                            if(towerAttackType == TowerAttackType.Range || (towerAttackType == TowerAttackType.RangeFly && creep.templateForUnit.type.equals("fly"))) {
+                        if (creep != null && creep.isAlive() && creep.player != tower.player) {
                             if ( (creep.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
                                     (!creep.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) { // Тупо но работает, потом переделать need =)
                                 if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.circle1)) {
-//                            Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
+//                                    Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
                                     if (tower.shoot(creep)) {
                                         break;
                                     }
@@ -1542,7 +1541,7 @@ public class GameField {
                 if (cellHasCreep(tmpX + position.x, tmpY + position.y)) {
                     attack = true;
                     Creep creep = field[tmpX + position.x][tmpY + position.y].getCreep();
-                    if (creep != null && !creep.templateForUnit.type.equals("fly")) {
+                    if (creep != null && !creep.templateForUnit.type.equals("fly") && creep.player != tower.player) {
                         if (creep.die(tower.getDamage(), tower.getTemplateForTower().shellEffectType)) {
                             gamerGold += creep.templateForUnit.bounty;
                         }

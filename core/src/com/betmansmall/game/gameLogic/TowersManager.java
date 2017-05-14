@@ -16,8 +16,8 @@ public class TowersManager {
         towers = new Array<Tower>();
     }
 
-    public Tower createTower(GridPoint2 position, TemplateForTower templateForTower) {
-        Tower tower = new Tower(position, templateForTower);
+    public Tower createTower(GridPoint2 position, TemplateForTower templateForTower, int player) {
+        Tower tower = new Tower(position, templateForTower, player);
         towers.add(tower);
         return tower;
     }

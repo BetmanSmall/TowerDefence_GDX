@@ -77,6 +77,8 @@ public class GameScreen implements Screen {
                 } else if (button == 4) {
                     gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
                 }
+            } else if(gameField.getUnderConstruction() != null && button == 1) {
+                gameField.cancelUnderConstruction();
             }
             return false;
         }
