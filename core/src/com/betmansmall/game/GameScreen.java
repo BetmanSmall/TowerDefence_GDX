@@ -283,6 +283,9 @@ public class GameScreen implements Screen {
         @Override
         public boolean scrolled(int amount) {
             Gdx.app.log("MyGestureDetector::scrolled()", "-- amount:" + amount);
+            if (gameInterface.scrolled(amount)) {
+                return false;
+            }
             if (amount == 1) {
                 if (cameraController.camera.zoom <= cameraController.zoomMax)
                     cameraController.camera.zoom += 0.1f;
@@ -486,17 +489,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         Gdx.app.log("GameScreen::resize(" + width + ", " + height + ")", "--");
-        gameInterface.stage.getViewport().update(width, height, true); // REsize nePashet HZ po4emy
-//        gameInterface.tableBack.setScale(gameInterface.tableBack.getWidth()/width, gameInterface.tableBack.getHeight()/height);
-//        gameInterface.table.setScale(gameInterface.table.getWidth()/width, gameInterface.table.getHeight()/height);
-//        gameInterface.stage.getViewport().apply();
-//        gameInterface.tableBack.setBounds(0f, 0f, width, height);
-//        gameInterface.table.setBounds(0f, 0f, width, height);
-//        gameInterface.table.setSize(width, height);
-//        gameInterface.tableBack.setSize(width, height);
-//        gameInterface.stage.act();
-//        gameInterface.stage.setViewport(new FitViewport(width, height, cameraController.camera));
-//        gameInterface.stage.act();
+        gameInterface.stage.getViewport().update(width, height, true);
         cameraController.camera.viewportHeight = height;
         cameraController.camera.viewportWidth = width;
         cameraController.camera.update();

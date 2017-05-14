@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="tower2_melee" tilewidth="128" tileheight="128" tilecount="6" columns="2">
+<tileset name="tower2_melee" tilewidth="64" tileheight="64" tilecount="1" columns="1">
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Melee1"/>
   <property name="radiusDetection" value="1"/>
   <property name="damage" value="1"/>
   <property name="size" value="1"/>
-  <property name="cost" value="2"/>
-  <property name="ammoSize" value="20"/>
-  <property name="ammoSpeed" value="10"/>
-  <property name="reloadTime" value="0.8"/>
+  <property name="cost" value="60"/>
+  <property name="ammoSize" value="1"/>
+  <property name="ammoSpeed" value="1"/>
+  <property name="reloadTime" value="1.5"/>
   <property name="towerAttackType" value="Melee"/>
   <property name="shellAttackType" value="SingleTarget"/>
   <!-- <property name="shellAttackType" value="MultipleTarget"/> -->
   <!-- <property name="shellEffectType" value="None"/> -->
  </properties>
- <image source="../../textures/tower_melee.png" trans="ff00ff" width="128" height="128"/>
+ <image source="../../textures/tower_melee.png" trans="ff00ff" width="64" height="64"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

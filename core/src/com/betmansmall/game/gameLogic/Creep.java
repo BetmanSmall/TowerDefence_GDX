@@ -23,7 +23,7 @@ public class Creep {
     private ArrayDeque<Node> route;
     private Node oldPosition;
     private Node newPosition;
-    private int hp;
+    private float hp;
     private float speed;
     private float stepsInTime;
     private float deathElapsedTime;
@@ -96,6 +96,7 @@ public class Creep {
         animation = null;
     }
 
+    // что бы ефекты не стакались на крипах
     public Node move(float delta) {
 //        Gdx.app.log("Creep", "move(); -- Creep status:" + this.toString());
         if(route != null && !route.isEmpty()) {
@@ -111,10 +112,16 @@ public class Creep {
                         stepsInTime = smallSpeed*percentSteps;
                     } else if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
                         hp -= shellEffectType.damage;
+//                        if(die(shellEffectType.damage, null)) {
+//                            GameField.gamerGold += templateForUnit.bounty;
+//                        }
                     }
                 } else {
                     if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
                         hp -= shellEffectType.damage;
+//                        if(die(shellEffectType.damage, null)) {
+//                            GameField.gamerGold += templateForUnit.bounty;
+//                        }
                     }
                 }
                 shellEffectType.elapsedTime += delta;
@@ -327,7 +334,7 @@ public class Creep {
         }
     }
 
-    public boolean die(int damage, ShellEffectType shellEffectType) {
+    public boolean die(float damage, ShellEffectType shellEffectType) {
         if(hp > 0) {
             hp -= damage;
             addEffect(shellEffectType);
@@ -353,7 +360,7 @@ public class Creep {
     public boolean changeDeathFrame(float delta) {
         if(hp <= 0) {
             if(deathElapsedTime >= speed) {
-                dispose();
+//                dispose();
                 return false;
             } else {
                 deathElapsedTime += delta;
@@ -374,7 +381,7 @@ public class Creep {
         this.hp = hp;
     }
     public int getHp() {
-        return hp;
+        return (int)hp;
     }
     public boolean isAlive() {
         if(animation == null) { // TODO Не верно, нужно исправить.

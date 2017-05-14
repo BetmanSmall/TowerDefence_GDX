@@ -153,4 +153,14 @@ public class UnitsSelector {
         pan = false;
         return true;
     }
+
+    public boolean scrolled(int amount) {
+        Gdx.app.log("TowersSelector::scrolled()", "-- amount:" + amount);
+        float groupWidth = verticalGroupWithUnits.getWidth();
+        if (Gdx.input.getX() <= groupWidth) {
+            verticalGroupWithUnits.moveBy(0, amount*10f);
+            return true;
+        }
+        return false;
+    }
 }

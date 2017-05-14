@@ -1,6 +1,5 @@
 package com.betmansmall.game.GameScreenInteface;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,8 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.game.TowerDefence;
 import com.betmansmall.game.gameLogic.GameField;
@@ -45,6 +41,7 @@ public class GameInterface {
     private float deleteActionThrough, actionInHistoryTime;
     private Label actionsHistoryLabel;
 
+    public TextButton startAndPauseButton;
     public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, underConstructionLabel,
             missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
 
@@ -62,13 +59,8 @@ public class GameInterface {
         this.bitmapFont = bitmapFont;
 
         this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        if (Gdx.app.getType() == Application.ApplicationType.Android) { // Короче тут какая то жопа. нужно будет разобраться в будущем
-////            this.stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())); // странный костыль, у меня на телефоне было все мелко. теперь нет
-            this.stage = new Stage(new FitViewport(1280, 720)); // REsize nePashet HZ po4emy
-        } else {
-            this.stage = new Stage(/*new FitViewport(1280, 720)*/); // a на декстопе норм
-            stage.setDebugAll(true);
-        }
+        this.stage = new Stage(new ScreenViewport());
+        stage.setDebugAll(true);
 
         this.tableBack = new Table(skin);
 //        tableBack.setDebug(true);
@@ -81,17 +73,16 @@ public class GameInterface {
         actionsHistoryLabel = new Label("actionsHistory1\nactionsHistory2\nactionsHistory3", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tableBack.add(actionsHistoryLabel).expand().left();
 
-        TextButton startAndPauseButton = new TextButton("START", skin, "default");
-        startAndPauseButton.setSize(startAndPauseButton.getWidth()*2f, startAndPauseButton.getHeight());
-        startAndPauseButton.setScale(2f);
+        startAndPauseButton = new TextButton((!gameField.gamePaused)? "PAUSE" : "PLAY", skin, "default");
         startAndPauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("GameInterface::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- startAndPauseButton");
                 gameField.gamePaused = !gameField.gamePaused;
+                startAndPauseButton.setText((!gameField.gamePaused)? "PAUSE" : "PLAY");
             }
         });
-        tableBack.add(startAndPauseButton).bottom().expand();
+        tableBack.add(startAndPauseButton).size(startAndPauseButton.getWidth()*3f, startAndPauseButton.getHeight()*1.5f).bottom();
 
         VerticalGroup infoGroup = new VerticalGroup();
 //        infoGroup.space(1f);
@@ -238,6 +229,21 @@ public class GameInterface {
         if(towersSelector != null) {
             if(towersSelector.panStop(x, y, pointer, button)) {
 //                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean scrolled(int amount) {
+        Gdx.app.log("GameInterface::scrolled()", "-- amount:" + amount);
+        if(unitsSelector != null) {
+            if (unitsSelector.scrolled(amount)) {
+                return true;
+            }
+        }
+        if(towersSelector != null) {
+            if(towersSelector.scrolled(amount)) {
+                return true;
             }
         }
         return false;

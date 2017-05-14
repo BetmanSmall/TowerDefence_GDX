@@ -3,10 +3,10 @@
  <properties>
   <property name="factionName" value="Orcs_Faction"/>
   <property name="name" value="Troll Axethrower"/>
-  <property name="healthPoints" value="100"/>
-  <property name="bounty" value="2"/>
-  <property name="cost" value="8"/>
-  <property name="speed" value="0.2"/>
+  <property name="healthPoints" value="250"/>
+  <property name="bounty" value="40"/>
+  <property name="cost" value="40"/>
+  <property name="speed" value="0.7"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>

@@ -5,16 +5,16 @@
   <property name="name" value="Freeze Tower 2"/>
   <property name="radiusDetection" value="150"/>
   <property name="radiusFlyShell" value="0"/>
-  <property name="damage" value="15"/>
-  <property name="size" value="2"/>
-  <property name="cost" value="22"/>
-  <property name="ammoSize" value="10"/>
+  <property name="damage" value="5"/>
+  <property name="size" value="1"/>
+  <property name="cost" value="150"/>
+  <property name="ammoSize" value="100"/>
   <property name="ammoSpeed" value="15"/>
-  <property name="reloadTime" value="1"/>
+  <property name="reloadTime" value="7"/>
   <property name="towerAttackType" value="Range"/>
   <property name="shellAttackType" value="FirstTarget"/>
   <property name="shellEffectType" value="FreezeEffect"/>
-  <property name="shellEffectType_time" value="3"/>
+  <property name="shellEffectType_time" value="6"/>
   <!-- <property name="shellEffectType_damage" value="5"/> -->
   <property name="shellEffectType_speed" value="0.6"/>
  </properties>

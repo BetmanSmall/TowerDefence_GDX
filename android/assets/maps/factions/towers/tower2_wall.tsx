@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="towerBomb" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="tower2_wall" tilewidth="64" tileheight="64" tilecount="1" columns="1">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="towerBomb"/>
-  <property name="radiusDetection" value="150"/>
-  <!-- <property name="radiusFlyShell" value="150"/> -->
-  <property name="damage" value="12"/>
+  <property name="name" value="Wall"/>
+  <property name="radiusDetection" value="1"/>
+  <property name="damage" value="0"/>
   <property name="size" value="1"/>
-  <property name="cost" value="130"/>
-  <property name="ammoSize" value="50"/>
-  <property name="ammoSpeed" value="10"/>
-  <property name="reloadTime" value="2.5"/>
-  <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="MultipleTarget"/>
+  <property name="cost" value="20"/>
+  <property name="ammoSize" value="1"/>
+  <property name="ammoSpeed" value="1"/>
+  <property name="reloadTime" value="0"/> 
+  <property name="towerAttackType" value="Melee"/>
+  <property name="shellAttackType" value="SingleTarget"/>
+  <!-- <property name="shellAttackType" value="MultipleTarget"/> -->
   <!-- <property name="shellEffectType" value="None"/> -->
  </properties>
- <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/tower_wall.png" trans="ff00ff" width="64" height="64"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

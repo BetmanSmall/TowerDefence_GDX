@@ -152,4 +152,15 @@ public class TowersSelector {
         pan = false;
         return true;
     }
+
+    public boolean scrolled(int amount) {
+        Gdx.app.log("TowersSelector::scrolled()", "-- amount:" + amount);
+        float groupWidth = verticalGroupWithTowers.getWidth();
+        float tableWidth = table.getWidth();
+        if (Gdx.input.getX() >= (tableWidth-groupWidth)) {
+            verticalGroupWithTowers.moveBy(0, amount*10f);
+            return true;
+        }
+        return false;
+    }
 }

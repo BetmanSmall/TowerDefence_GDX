@@ -150,7 +150,7 @@ public class GameField {
         maxOfMissedCreepsForComputer0 = mapProperties.get("maxOfMissedCreepsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
 //        maxOfMissedCreepsForComputer0 = Integer.valueOf(mapProperties.get("maxOfMissedCreepsForComputer0", String.valueOf(gamerGold), String.class));
         missedCreepsForComputer0 = 0;
-        maxOfMissedCreepsForPlayer1 = mapProperties.get("maxOfMissedCreepsForPlayer1", waveManager.getNumberOfActions()/4, Integer.class); // it is not true | need implement getNumberOfCreeps()
+        maxOfMissedCreepsForPlayer1 = mapProperties.get("maxOfMissedCreepsForPlayer1", waveManager.getNumberOfActions()/8, Integer.class); // it is not true | need implement getNumberOfCreeps()
 //        maxOfMissedCreepsForPlayer1 = Integer.valueOf(mapProperties.get("maxOfMissedCreepsForPlayer1", String.valueOf(waveManager.getNumberOfActions()/4), String.class)); // it is not true | need implement getNumberOfCreeps()
         missedCreepsForPlayer1 = 0;
         // GAME INTERFACE ZONE2
@@ -1484,9 +1484,12 @@ public class GameField {
                     creepsManager.removeCreep(creep);
 //                Gdx.app.log("GameField::stepAllCreep()", "-- Creep finished!");
                 }
-            } else {
+            }
+            if (!creep.isAlive()) {
                 if (!creep.changeDeathFrame(delta)) {
                     field[oldPosition.getX()][oldPosition.getY()].removeCreep(creep);
+//                    GameField.gamerGold += creep.templateForUnit.bounty;
+                    creep.dispose();
                     creepsManager.removeCreep(creep);
 //                Gdx.app.log("GameField::stepAllCreep()", "-- Creep death! and delete!");
                 }
