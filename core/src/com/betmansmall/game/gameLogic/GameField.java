@@ -1318,10 +1318,11 @@ public class GameField {
     }
 
     public void towerActions(int x, int y) {
-        if (field[x][y].isEmpty()) {
-            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
-            rerouteForAllCreeps();
-        } else if (field[x][y].getTower() != null) {
+//        if (field[x][y].isEmpty()) {
+//            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
+//            rerouteForAllCreeps();
+//        } else
+            if (field[x][y].getTower() != null) {
             removeTower(x, y);
         }
     }
@@ -1421,7 +1422,7 @@ public class GameField {
             }
             towersManager.removeTower(tower);
             rerouteForAllCreeps();
-            gamerGold += (int) tower.getTemplateForTower().cost;//*0.5;
+            gamerGold += tower.getTemplateForTower().cost*0.5;
         }
     }
 
