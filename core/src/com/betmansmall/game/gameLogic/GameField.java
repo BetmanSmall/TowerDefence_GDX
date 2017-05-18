@@ -190,6 +190,7 @@ public class GameField {
 //                                    field[x][y].setTerrain();
                                         Gdx.app.log("GameField::GameField()", "-- Set exitPoint: (" + x + ", " + y + ")");
                                     }
+                                    // task 6. отрисовка деревьев полностью
                                     if(tiledMapTile.getProperties().get("treeName") != null) {
                                         String treeName = tiledMapTile.getProperties().get("treeName", String.class);
                                         int treeWidth = Integer.parseInt(tiledMapTile.getProperties().get("treeWidth", "1", String.class));
@@ -1318,11 +1319,10 @@ public class GameField {
     }
 
     public void towerActions(int x, int y) {
-//        if (field[x][y].isEmpty()) {
-//            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
-//            rerouteForAllCreeps();
-//        } else
-            if (field[x][y].getTower() != null) {
+        if (field[x][y].isEmpty()) {
+            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
+            rerouteForAllCreeps();
+        } else if (field[x][y].getTower() != null) {
             removeTower(x, y);
         }
     }
@@ -1422,7 +1422,7 @@ public class GameField {
             }
             towersManager.removeTower(tower);
             rerouteForAllCreeps();
-            gamerGold += tower.getTemplateForTower().cost*0.5;
+            gamerGold += tower.getTemplateForTower().cost;//*0.5;
         }
     }
 

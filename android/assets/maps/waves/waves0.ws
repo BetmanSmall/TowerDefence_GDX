@@ -57,6 +57,7 @@
         <!-- <unit templateName="unit15_peasant" amount="1"/> -->
     </wave>
     <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="5">
+        <!-- <unit templateName="unitPs_heaveKnight" amount="2"/> -->
         <unit templateName="unit3_footman" amount="40"/>
         <unit templateName="unit1_grunt" amount="15"/>
         <!-- <unit templateName="unit2_troll_axethrower" amount="1"/> -->

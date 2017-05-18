@@ -104,6 +104,7 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(returnButton);
 //        mmStage.addActor(welcomeScreen);
 
+//        towerDefence.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
         FileHandle mapsDir = Gdx.files.internal("maps");
         if(mapsDir.list().length == 0) {

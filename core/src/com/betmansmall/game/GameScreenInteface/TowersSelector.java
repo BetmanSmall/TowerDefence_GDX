@@ -74,19 +74,18 @@ public class TowersSelector {
 
     public boolean tap(float x, float y, int count, int button) {
         Gdx.app.log("TowersSelector::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
-        y = Gdx.graphics.getHeight() - y;
         for (Actor actor : verticalGroupWithTowers.getChildren()) {
-            Gdx.app.log("TowersSelector::tap()", "-- actor:" + actor);
+//            Gdx.app.log("TowersSelector::tap()", "-- actor:" + actor);
             if (actor instanceof Button) {
                 Button buttonActor = (Button)actor;
                 Gdx.app.log("TowersSelector::tap()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
                 if(buttonActor.isPressed()) {
-                    Integer unitIndex = (Integer) buttonActor.getUserObject();
-                    if (unitIndex != null) {
-                        Gdx.app.log("TowersSelector::tap()", "-- unitIndex:" + unitIndex);
-                        gameField.createdUnderConstruction(templateForTowers.get(unitIndex));
+                    Integer towerIndex = (Integer) buttonActor.getUserObject();
+                    if (towerIndex != null) {
+                        Gdx.app.log("TowersSelector::tap()", "-- towerIndex:" + towerIndex);
+                        gameField.createdUnderConstruction(templateForTowers.get(towerIndex));
                     }
-                    Gdx.app.log("TowersSelector::tap()", "-- return true");
+//                    Gdx.app.log("TowersSelector::tap()", "-- return true");
                     return true;
                 }
             }
@@ -96,7 +95,7 @@ public class TowersSelector {
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("TowersSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+//        Gdx.app.log("TowersSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
         float groupX = verticalGroupWithTowers.getX();
         float groupY = verticalGroupWithTowers.getY();
         float groupWidth = verticalGroupWithTowers.getWidth();
@@ -105,14 +104,14 @@ public class TowersSelector {
         float groupPrefHeight = verticalGroupWithTowers.getPrefHeight();
         float tableWidth = table.getWidth();
         float tableHeight = table.getHeight();
-        Gdx.app.log("TowersSelector::pan()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
-        Gdx.app.log("TowersSelector::pan()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
-        Gdx.app.log("TowersSelector::pan()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
-        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
-        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
-        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
-        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
-        Gdx.app.log("TowersSelector::pan()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+//        Gdx.app.log("TowersSelector::pan()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
+//        Gdx.app.log("TowersSelector::pan()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
+//        Gdx.app.log("TowersSelector::pan()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
+//        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
+//        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
+//        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
+//        Gdx.app.log("TowersSelector::pan()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
+//        Gdx.app.log("TowersSelector::pan()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
         if (Math.abs(deltaX) > Math.abs(deltaY) && !pan) {
             if (x >= (tableWidth-groupWidth/**2f*/) && deltaX > 0) {
                 verticalGroupWithTowers.moveBy(deltaX, 0);

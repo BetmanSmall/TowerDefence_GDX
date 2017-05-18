@@ -76,7 +76,6 @@ public class UnitsSelector {
 
     public boolean tap(float x, float y, int count, int button) {
         Gdx.app.log("UnitsSelector::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
-        y = Gdx.graphics.getHeight() - y;
         for (Actor actor : verticalGroupWithUnits.getChildren()) {
             Gdx.app.log("UnitsSelector::tap()", "-- actor:" + actor);
             if (actor instanceof Button) {
@@ -98,7 +97,7 @@ public class UnitsSelector {
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("UnitsSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+//        Gdx.app.log("UnitsSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
         float groupX = verticalGroupWithUnits.getX();
         float groupY = verticalGroupWithUnits.getY();
         float groupWidth = verticalGroupWithUnits.getWidth();
