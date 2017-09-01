@@ -1525,7 +1525,9 @@ public class GameField {
                                 if (Intersector.overlaps(tower.getRadiusDetectionСircle(), creep.circle1)) {
 //                                    Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + creep.toString());
                                     if (tower.shoot(creep)) {
-                                        break;
+                                        if(tower.getTemplateForTower().shellAttackType != ShellAttackType.MassAddEffect) {
+                                            break;
+                                        }
                                     }
                                 }
                             }

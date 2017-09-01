@@ -10,7 +10,8 @@ public enum ShellAttackType {
     AutoTarget("AutoTarget"),
     FirstTarget("FirstTarget"),
     SingleTarget("SingleTarget"),
-    MultipleTarget("MultipleTarget");
+    MultipleTarget("MultipleTarget"),
+    MassAddEffect("MassAddEffect");
 
     private final String text;
 

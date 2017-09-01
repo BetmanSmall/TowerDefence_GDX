@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellAttackType;
+import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
@@ -53,7 +54,20 @@ public class Tower {
 
     public boolean shoot(Creep creep) {
         if(elapsedReloadTime >= templateForTower.reloadTime) {
-            shells.add(new Shell(templateForTower, creep, getCenterGraphicCoord())); // AlexGor
+            if (templateForTower.shellAttackType == ShellAttackType.MassAddEffect) {
+                boolean effect = false;
+                for (ShellEffectType shellEffectType : creep.shellEffectTypes) {
+                    if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
+                        effect = true;
+                        break;
+                    }
+                }
+                if (!effect) {
+                    creep.shellEffectTypes.add(new ShellEffectType(templateForTower.shellEffectType));
+                }
+            } else {
+                shells.add(new Shell(templateForTower, creep, getCenterGraphicCoord())); // AlexGor
+            }
             elapsedReloadTime = 0f;
             return true;
         }

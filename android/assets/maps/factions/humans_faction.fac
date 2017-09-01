@@ -16,4 +16,5 @@
 	<templateForTower source="towers/towerFire1.tsx"/>
 	<templateForTower source="towers/towerFreeze1.tsx"/>
 	<templateForTower source="towers/towerFreeze2.tsx"/>
+	<templateForTower source="towers/towerFreeze3.tsx"/>
 </faction>
