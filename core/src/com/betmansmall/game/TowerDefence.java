@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
  * Created by BetmanSmall on 13.10.2015.
  */
 public class TowerDefence extends Game {
+    public static boolean server;
     /**
      * List of all screens in the stack
      */

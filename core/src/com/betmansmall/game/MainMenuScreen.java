@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.game.server.GameServerScreen;
 
 import java.io.File;
 
@@ -154,7 +155,8 @@ public class MainMenuScreen implements Screen {
                         break;
                     case 2:
                         //TODO: Options menu Descogle
-                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Options function not implemented");
+                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Server start!");
+                        towerDefence.addScreen(new GameServerScreen("maps/arena1.tmx", 1f));
                         break;
                     case 3:
                         //Exit button

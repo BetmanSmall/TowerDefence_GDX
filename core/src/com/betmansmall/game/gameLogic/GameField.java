@@ -39,9 +39,10 @@ import java.util.Iterator;
  * Created by betmansmall on 08.02.2016.
  */
 public class GameField {
-    private ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private SpriteBatch spriteBatch = new SpriteBatch();
-    private BitmapFont bitmapFont = new BitmapFont();
+    public static boolean server;
+    private ShapeRenderer shapeRenderer;
+    private SpriteBatch spriteBatch;
+    private BitmapFont bitmapFont;
 
     private TiledMap map;
     private IsometricTiledMapRenderer renderer;
@@ -99,7 +100,12 @@ public class GameField {
     public int missedCreepsForPlayer1;
     // GAME INTERFACE ZONE2
 
-    public GameField(String mapName, float levelOfDifficulty) {
+    public GameField(String mapName, float levelOfDifficulty, boolean server) {
+        this.server = server;
+        shapeRenderer = new ShapeRenderer();
+        spriteBatch = new SpriteBatch();
+        bitmapFont = new BitmapFont();
+
         Gdx.app.log("GameField::GameField(" + mapName + ", " + levelOfDifficulty + ")", "--");
         waveManager = new WaveManager();
         creepsManager = new CreepsManager();

@@ -1,6 +1,5 @@
 package com.betmansmall.game;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -17,6 +16,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+
+import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class GameScreen /*extends GestureDetector*/ implements Screen, GestureListener, InputProcessor {
 //    class CameraController implements GestureListener {
@@ -337,14 +341,61 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
     private GameField gameField;
     private GameInterface gameInterface;
 //    private CameraController cameraController;
+    private Socket serverSocket = null;
+    private BufferedReader in;
+    private PrintWriter out;
+    private BufferedReader inu;
 
     public GameScreen(String mapName, float levelOfDifficulty) {
+        Gdx.app.log("GameScreen::GameScreen()", "-- Welcome to Client side");
+        String hostname = new String("127.0.0.1");
+        int port = 27016;
+
+        System.out.println("Connecting to... " + hostname + ":" + port);
+        try {
+            serverSocket = new Socket(hostname, port);
+            System.out.println("Connect to server: " + serverSocket);
+
+            in  = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+            out = new PrintWriter(serverSocket.getOutputStream(), true);
+            inu = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("!in:" + (in != null) + " !out:" + (out != null) + " !inu:" + (inu!= null));
+
+            String dataFromServer;
+            out.println("Hello, I TTW::GAme_0.1");
+            dataFromServer = in.readLine();
+            Gdx.app.log("GameScreen::GameScreen()", "-- dataFromServer:" + dataFromServer);
+//            if()
+//            String fuser, fserver;
+//            while (true) {
+//                fuser = inu.readLine();
+////                System.out.println("Wait for messages fuser:" + fuser + " delta:" + Gdx.graphics.getDeltaTime());
+//                if(fuser != null) {
+//                    System.out.println("fuser:" + fuser);
+//                    out.println(fuser);
+//                    fserver = in.readLine();
+//                    System.out.println(fserver);
+//                    if (fuser.equalsIgnoreCase("exit") || fuser.equalsIgnoreCase("close")) {
+//                        break;
+//                    }
+//                }
+//            }
+
+            out.close();
+            in.close();
+            inu.close();
+            serverSocket.close();
+            Gdx.app.log("TowerDefence::create()", "-- Server close!");
+        } catch (Exception exp) {
+            Gdx.app.log("TowerDefence::create()", "-- exp:" + exp);
+        }
         Gdx.app.log("GameScreen::GameScreen(" + mapName + ", " + levelOfDifficulty + ")", "--");
 //        shapeRenderer = new ShapeRenderer();
 //        spriteBatch = new SpriteBatch();
         bitmapFont = new BitmapFont();
 
-        gameField = new GameField(mapName, levelOfDifficulty);
+        gameField = new GameField(mapName, levelOfDifficulty, false);
+
         gameInterface = new GameInterface(gameField, bitmapFont);
         gameInterface.mapNameLabel.setText("MapName:" + mapName);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
