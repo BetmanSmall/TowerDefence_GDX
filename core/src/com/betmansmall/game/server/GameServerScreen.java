@@ -7,14 +7,13 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.TowerDefence;
-import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 
@@ -25,8 +24,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class GameServerScreen /*extends GestureDetector*/ implements Screen, GestureListener, InputProcessor {
-    //    class CameraController implements GestureListener {
+public class GameServerScreen implements Screen, GestureListener, InputProcessor {
     // Need all fix this!!! PIZDEC?1??
     private float zoomMax = 50f; //max size
     private float zoomMin = 0.2f; // 2x zoom
@@ -40,18 +38,114 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
     boolean lastCircleTouched = false;
     // Need all fix this!!! PIZDEC???3
 
-//        public CameraController(float maxZoom, float minZoom, OrthographicCamera camera) {//, float borderLeftX, float borderRightX, float borderUpY, float borderDownY) {
-//            Gdx.app.log("CameraController::CameraController()", "-- maxZoom:" + maxZoom + " minZoom:" + minZoom + " camera:" + camera);
-//            this.zoomMax = maxZoom;
-//            this.zoomMin = minZoom;
-//            this.camera = camera;
-////            this.borderLeftX = borderLeftX;
-////            this.borderRightX = borderRightX;
-////            this.borderUpY = borderUpY;
-////            this.borderDownY = borderDownY;
-//        }
+//    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса и геймФиелда, сюда на уровень геймСкрина.
+//    private SpriteBatch spriteBatch;
+//    private BitmapFont bitmapFont;
 
-//        @Override
+    private GameField gameField;
+//    private GameInterface gameInterface;
+//    private CameraController cameraController;
+
+    private ServerSocket serverSocket = null;
+    private GameServerInfo gameServerInfo;
+    private Array<Client> clients;
+
+    public GameServerScreen(String mapName, float levelOfDifficulty) {
+        Gdx.app.log("GameServerScreen::GameServerScreen(" + mapName + ", " + levelOfDifficulty + ")", "--");
+//        shapeRenderer = new ShapeRenderer();
+//        spriteBatch = new SpriteBatch();
+//        bitmapFont = new BitmapFont();
+
+        gameField = new GameField(mapName, levelOfDifficulty, true);
+//        gameInterface = new GameInterface(gameField, bitmapFont);
+//        gameInterface.mapNameLabel.setText("MapName:" + mapName);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+//        borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
+//        borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
+//        borderUpY    = new Float(0);
+//        borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();//new MyGestureDetector(cameraController));// я хз че делать=(
+//        inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
+        inputMultiplexer.addProcessor(new GestureDetector(this));
+        inputMultiplexer.addProcessor(this);
+//        inputMultiplexer.addProcessor(gameInterface.stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
+        System.out.println("GameServerScreen::GameServerScreen();");
+        for(int port = 27015; port <= 27030; port++) {
+            if(createServerSocket(port) != null) {
+                break;
+            }
+        }
+        gameServerInfo = new GameServerInfo("ServerTTW::01");
+        waitClients();
+        System.out.println("GameServerScreen::GameServerScreen(); -- END!");
+    }
+
+    private ServerSocket createServerSocket(int port) {
+        System.out.println("GameServerScreen::createServerSocket(); -- Try create server on port:" + port);
+        try {
+            serverSocket = new ServerSocket(port);
+            clients = new Array<Client>();
+            return serverSocket;
+        } catch (IOException e) {
+            System.out.println("Couldn't listen to port:" + port);
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void waitClients() {
+        System.out.println("GameServerScreen::waitClients(); --");
+        try {
+            Socket newSocketFromClient = null;
+            try {
+                System.out.println("GameServerScreen::waitClients(); -- Waiting for a client...");
+                newSocketFromClient = serverSocket.accept();
+                System.out.println("GameServerScreen::waitClients(); -- Client connected:" + newSocketFromClient);
+            } catch (IOException exp) {
+                System.out.println("GameServerScreen::waitClients(); -- Can't accept | exp:" + exp);
+                System.exit(-1);
+            }
+
+            Client client = new Client(newSocketFromClient);
+            clients.add(client);
+
+            client.objectOutputStream.writeObject(gameServerInfo);
+            System.out.println("GameServerScreen::waitClients(); -- send gameServerInfo:" + gameServerInfo);
+            String fromClient = client.in.readLine();
+            System.out.println("GameServerScreen::waitClients(); -- fromClient:" + fromClient);
+
+            if(fromClient.equals("true")) {
+                client.objectOutputStream.writeObject(gameField.gameFieldData);
+                fromClient = client.in.readLine();
+                System.out.println("GameServerScreen::waitClients(); -- fromClient:" + fromClient);
+            }
+
+//            if(fromClient.contains(""))
+
+//            System.out.println("GameServerScreen::createServerSocket(); -- Server START!!");
+//            Clients clients = new Clients();
+//            ServerSocket serverSocket = new ServerSocket(port);
+//            System.out.println("GameServerScreen::createServerSocket(); -- Server start:" + serverSocket);
+//            while (true) {
+//                System.out.println("GameServerScreen::createServerSocket(); -- Wait client!");
+//                Socket socketFromClient = serverSocket.accept();
+//                System.out.println("GameServerScreen::createServerSocket(); -- Client connected:" + socketFromClient);
+////                Client client = new Client(socketFromClient, clients);
+////                clients.addClient(client);
+//            }
+            System.err.println("GameServerScreen::waitClients(); -- STOP!");
+        } catch (Exception exp) {
+            Gdx.app.log("GameServerScreen::waitClients()", "-- exp:" + exp);
+        }
+    }
+
+    @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
 //            flinging = false;
@@ -63,9 +157,9 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
     public boolean tap(float x, float y, int count, int button) {
         Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
 ////          CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
-        if (gameInterface.tap(x, y, count, button)) {
-            return false;
-        }
+//        if (gameInterface.tap(x, y, count, button)) {
+//            return false;
+//        }
 //
 //            Vector3 touch = new Vector3(x, y, 0.0f);
 //            camera.unproject(touch);
@@ -113,10 +207,10 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
 //            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
 //            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
-        if (gameInterface.pan(x, y, deltaX, deltaY)) {
-            lastCircleTouched = true;
-            return true;
-        }
+//        if (gameInterface.pan(x, y, deltaX, deltaY)) {
+//            lastCircleTouched = true;
+//            return true;
+//        }
         lastCircleTouched = false;
         if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             float newCameraX = camera.position.x + (-deltaX * camera.zoom);
@@ -151,9 +245,9 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         Gdx.app.log("CameraController::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        if(gameInterface.panStop(x, y, pointer, button)) {
-//                return true;
-        }
+//        if(gameInterface.panStop(x, y, pointer, button)) {
+////                return true;
+//        }
         return false;
     }
 
@@ -200,12 +294,6 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             Gdx.app.error("GameServerScreen::CameraController::update()", "-- Exception:" + exp);
         }
     }
-//    }
-
-//    class MyGestureDetector extends GestureDetector {
-//        public MyGestureDetector(GestureListener listener) {
-//            super(listener);
-//        }
 
     @Override
     public boolean keyDown(int keycode) {
@@ -236,58 +324,58 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
 //                return false;
 //            }
 
-        if (!gameInterface.interfaceTouched) {
-            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-            camera.unproject(touch);
-            if (gameField.getUnderConstruction() != null) {
-                if (button == 1) {
-                    gameField.cancelUnderConstruction();
-                    return false;
-                }
-                GridPoint2 cellCoordinate2 = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
-                if (cellCoordinate2 != null) {
-                    UnderConstruction underConstruction = gameField.getUnderConstruction();
-                    if (button == 0) {
-                        underConstruction.setStartCoors(cellCoordinate2.x, cellCoordinate2.y);
-                    } else if (button == 1) {
-                        gameField.removeTower(cellCoordinate2.x, cellCoordinate2.y);
-                    }
-                }
-            } else {
-                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to creeps too!
-                if (cellCoordinate != null) {
-                    if (button == 0) {
-                        gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
-                    } else if (button == 1) {
-//                    gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
-//                        } else if(button == 2) {
-//                            gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
-                    } else if (button == 3) {
-                        gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
-                    } else if (button == 4) {
-                        gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
-                    }
-
-                }
-            }
-        }
+//        if (!gameInterface.interfaceTouched) {
+//            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+//            camera.unproject(touch);
+//            if (gameField.getUnderConstruction() != null) {
+//                if (button == 1) {
+//                    gameField.cancelUnderConstruction();
+//                    return false;
+//                }
+//                GridPoint2 cellCoordinate2 = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
+//                if (cellCoordinate2 != null) {
+//                    UnderConstruction underConstruction = gameField.getUnderConstruction();
+//                    if (button == 0) {
+//                        underConstruction.setStartCoors(cellCoordinate2.x, cellCoordinate2.y);
+//                    } else if (button == 1) {
+//                        gameField.removeTower(cellCoordinate2.x, cellCoordinate2.y);
+//                    }
+//                }
+//            } else {
+//                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to creeps too!
+//                if (cellCoordinate != null) {
+//                    if (button == 0) {
+//                        gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
+//                    } else if (button == 1) {
+////                    gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
+////                        } else if(button == 2) {
+////                            gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
+//                    } else if (button == 3) {
+//                        gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
+//                    } else if (button == 4) {
+//                        gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
+//                    }
+//
+//                }
+//            }
+//        }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         Gdx.app.log("MyGestureDetector::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-        if (!gameInterface.interfaceTouched) {
-            if (gameField != null && gameField.getUnderConstruction() != null && button == 0) {
-                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-                camera.unproject(touch);
-                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
-                if (cellCoordinate != null) {
-                    gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
-                }
-            }
-        }
-        gameInterface.interfaceTouched = false;
+//        if (!gameInterface.interfaceTouched) {
+//            if (gameField != null && gameField.getUnderConstruction() != null && button == 0) {
+//                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+//                camera.unproject(touch);
+//                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
+//                if (cellCoordinate != null) {
+//                    gameField.buildTowersWithUnderConstruction(cellCoordinate.x, cellCoordinate.y);
+//                }
+//            }
+//        }
+//        gameInterface.interfaceTouched = false;
         return false;
     }
 
@@ -322,9 +410,9 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
     @Override
     public boolean scrolled(int amount) {
         Gdx.app.log("MyGestureDetector::scrolled()", "-- amount:" + amount);
-        if (gameInterface.scrolled(amount)) {
-            return false;
-        }
+//        if (gameInterface.scrolled(amount)) {
+//            return false;
+//        }
         if (amount == 1) {
             if (camera.zoom <= zoomMax)
                 camera.zoom += 0.1f;
@@ -334,54 +422,6 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
         }
         camera.update();
         return false;
-    }
-//    }
-
-    //    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса и геймФиелда, сюда на уровень геймСкрина.
-//    private SpriteBatch spriteBatch;
-    private BitmapFont bitmapFont;
-
-    private GameField gameField;
-    private GameInterface gameInterface;
-//    private CameraController cameraController;
-
-//    private Clients
-    private BufferedReader in = null;
-    private PrintWriter out = null;
-    private ServerSocket serverSocket = null;
-    private Socket socketFromClient = null;
-
-    public GameServerScreen(String mapName, float levelOfDifficulty) {
-        Gdx.app.log("GameServerScreen::GameServerScreen(" + mapName + ", " + levelOfDifficulty + ")", "--");
-//        shapeRenderer = new ShapeRenderer();
-//        spriteBatch = new SpriteBatch();
-        bitmapFont = new BitmapFont();
-
-        gameField = new GameField(mapName, levelOfDifficulty, true);
-        gameInterface = new GameInterface(gameField, bitmapFont);
-        gameInterface.mapNameLabel.setText("MapName:" + mapName);
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-//        borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
-//        borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
-//        borderUpY    = new Float(0);
-//        borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
-
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();//new MyGestureDetector(cameraController));// я хз че делать=(
-//        inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
-        inputMultiplexer.addProcessor(new GestureDetector(this));
-        inputMultiplexer.addProcessor(this);
-        inputMultiplexer.addProcessor(gameInterface.stage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
-
-        System.out.println("GameServerScreen::GameServerScreen();");
-        for(int port = 27015; port <= 27030; port++) {
-            if(createServerSocket(port) != null) {
-                break;
-            }
-        }
-        waitClients();
-        System.out.println("GameServerScreen::GameServerScreen(); -- END!");
     }
 
     @Override
@@ -397,7 +437,7 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
                 camera.zoom += 0.1f;
             }
             camera.update();
-            gameInterface.addActionToHistory("-- camera.zoom:" + camera.zoom);
+            //gameInterface.addActionToHistory("-- camera.zoom:" + camera.zoom);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- camera.zoom:" + camera.zoom);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.PLUS)");
@@ -405,20 +445,20 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
                 camera.zoom -= 0.1f;
             }
             camera.update();
-            gameInterface.addActionToHistory("-- camera.zoom:" + camera.zoom);
+            //gameInterface.addActionToHistory("-- camera.zoom:" + camera.zoom);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- camera.zoom:" + camera.zoom);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
 //            gameInterface.unitsSelector.changeGameState(); need func() here
             gameField.gamePaused = !gameField.gamePaused;
-            gameInterface.addActionToHistory("-- gameField.gamePaused:" + gameField.gamePaused);
+            //gameInterface.addActionToHistory("-- gameField.gamePaused:" + gameField.gamePaused);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
             gameField.isDrawableGrid++;
             if (gameField.isDrawableGrid > 5) {
                 gameField.isDrawableGrid = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
+            //gameInterface.addActionToHistory("-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2)");
@@ -426,7 +466,7 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             if (gameField.isDrawableCreeps > 5) {
                 gameField.isDrawableCreeps = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
+            //gameInterface.addActionToHistory("-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3)");
@@ -434,7 +474,7 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             if (gameField.isDrawableTowers > 5) {
                 gameField.isDrawableTowers = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
+            //gameInterface.addActionToHistory("-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.isDrawableTowers:" + gameField.isDrawableTowers);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_4)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_4 || Input.Keys.NUMPAD_4)");
@@ -442,7 +482,7 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             if (gameField.isDrawableGridNav > 5) {
                 gameField.isDrawableGridNav = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
+            //gameInterface.addActionToHistory("-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.isDrawableGridNav:" + gameField.isDrawableGridNav);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_5)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5)");
@@ -450,7 +490,7 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             if (gameField.isDrawableBackground > 5) {
                 gameField.isDrawableBackground = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
+            //gameInterface.addActionToHistory("-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6)");
@@ -458,7 +498,7 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             if (gameField.isDrawableForeground > 5) {
                 gameField.isDrawableForeground = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
+            //gameInterface.addActionToHistory("-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7)");
@@ -466,7 +506,7 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             if (gameField.drawOrder > 8) {
                 gameField.drawOrder = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.drawOrder:" + gameField.drawOrder);
+            //gameInterface.addActionToHistory("-- gameField.drawOrder:" + gameField.drawOrder);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.drawOrder:" + gameField.drawOrder);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE)");
@@ -479,47 +519,47 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             if (gameField.gameSpeed > 0.1f) {
                 gameField.gameSpeed -= 0.1f;
             }
-            gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
+            //gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.gameSpeed:" + gameField.gameSpeed);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9)");
             gameField.gameSpeed += 0.1f;
-            gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
+            //gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.gameSpeed:" + gameField.gameSpeed);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.A)");
             gameField.turnLeft();
-            gameInterface.addActionToHistory("-- gameField.turnLeft()");
+            //gameInterface.addActionToHistory("-- gameField.turnLeft()");
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.turnLeft()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.S)");
             gameField.turnRight();
-            gameInterface.addActionToHistory("-- gameField.turnRight()");
+            //gameInterface.addActionToHistory("-- gameField.turnRight()");
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.turnRight()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.Q)");
             gameField.flipX();
-            gameInterface.addActionToHistory("-- gameField.flipX()");
+            //gameInterface.addActionToHistory("-- gameField.flipX()");
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.flipX()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.W)");
             gameField.flipY();
-            gameInterface.addActionToHistory("-- gameField.flipY()");
+            //gameInterface.addActionToHistory("-- gameField.flipY()");
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.flipY()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.PERIOD)");
-            gameInterface.arrayActionsHistory.clear();
-            gameInterface.addActionToHistory("-- gameInterface.arrayActionsHistory.clear()");
+            //gameInterface.arrayActionsHistory.clear();
+            //gameInterface.addActionToHistory("-- gameInterface.arrayActionsHistory.clear()");
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameInterface.arrayActionsHistory.clear()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ESCAPE || Input.Keys.N)");
             gameField.cancelUnderConstruction();
-            gameInterface.addActionToHistory("-- gameField.cancelUnderConstruction()");
+            //gameInterface.addActionToHistory("-- gameField.cancelUnderConstruction()");
             Gdx.app.log("GameServerScreen::inputHandler()", "-- gameField.cancelUnderConstruction()");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
             Gdx.app.log("GameServerScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.B)");
             UnderConstruction underConstruction = gameField.createdRandomUnderConstruction();
-            gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
+            //gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
             Gdx.app.log("GameServerScreen::inputHandler()", "-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
         }
     }
@@ -535,9 +575,9 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
             inputHandler(delta);
             update();
             gameField.render(delta, camera);
-            gameInterface.render(delta);
+//            gameInterface.render(delta);
         } else if (gameState.equals("Lose") || gameState.equals("Win")) {
-            gameInterface.renderEndGame(delta, gameState);
+//            gameInterface.renderEndGame(delta, gameState);
         } else {
             Gdx.app.log("GameServerScreen::render()", "-- Not get normal gameState!");
         }
@@ -546,15 +586,9 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
     @Override
     public void resize(int width, int height) {
         Gdx.app.log("GameServerScreen::resize(" + width + ", " + height + ")", "--");
-//        if(Gdx.app.getType() == Application.ApplicationType.Android) {
-//            gameInterface.stage.getViewport().update(width/2, height/2, true);
-//        } else {
-        gameInterface.stage.getViewport().update(width, height, true);
-//        }
         camera.viewportHeight = height;
         camera.viewportWidth = width;
         camera.update();
-//        gameInterface.updateStage(); // Андрей. Твой ресайз не пашет! Если это разкомменить. То не будет работать селектор вообще. Этот инит твой будет по несколько раз вызываться. Один раз при создании и два раза во время ресайза. (эти два ресайза делаются почему то во время инициализации)
     }
 
     @Override
@@ -576,77 +610,15 @@ public class GameServerScreen /*extends GestureDetector*/ implements Screen, Ges
     public void dispose() {
         Gdx.app.log("GameServerScreen::dispose()", "--");
         gameField.dispose();
-        gameInterface.dispose();
+//        gameInterface.dispose();
 //        cameraController.dispose();
-    }
-
-    private ServerSocket createServerSocket(int port) {
-        System.out.println("GameServerScreen::createServerSocket(); -- Try create server on port:" + port);
         try {
-            try {
-                serverSocket = new ServerSocket(port);
-            } catch (IOException e) {
-                System.out.println("Couldn't listen to port:" + port);
-//                System.exit(-1);
-                return null;
+            for (Client client : clients) {
+                client.dispose();
             }
-            return serverSocket;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private void waitClients() {
-        try {
-//            GameField gameField = new GameField("maps/arena0.tmx", 1f, true);
-//            System.out.println("gameField:" + gameField);
-//            System.out.println("gameField.gamePaused:" + gameField.gamePaused);
-
-            try {
-                System.out.println("Waiting for a client...");
-                socketFromClient = serverSocket.accept();
-                System.out.println("Client connected:" + socketFromClient);
-            } catch (IOException e) {
-                System.out.println("Can't accept");
-                System.exit(-1);
-            }
-
-            in = new BufferedReader(new InputStreamReader(socketFromClient.getInputStream()));
-            out = new PrintWriter(socketFromClient.getOutputStream(), true);
-            System.out.println("!in:" + (in != null) + " !out:" + (out != null));
-//            out.println("TTW::SERVER_01");
-//            out.flush();
-
-            String dataFromClient, output;
-            System.out.println("Wait for messages");
-            while ((dataFromClient = in.readLine()) != null) {
-                if (dataFromClient.contains("TTW::GAme_01")) {
-                    out.println("OK, igraem!");
-                }
-                if (dataFromClient.equalsIgnoreCase("exit")) {
-                    break;
-                }
-                out.println("S ::: " + dataFromClient);
-                System.out.println(dataFromClient);
-            }
-//            out.close();
-//            in.close();
-//            socketFromClient.close();
-//            serverSocket.close();
-//            Clients clients = new Clients();
-//            ServerSocket serverSocket = new ServerSocket(port);
-//            System.out.println("GameServerScreen::createServerSocket(); -- Server start:" + serverSocket);
-//            while (true) {
-//                System.out.println("GameServerScreen::createServerSocket(); -- Wait client!");
-//                Socket socketFromClient = serverSocket.accept();
-//                System.out.println("GameServerScreen::createServerSocket(); -- Client connected:" + socketFromClient);
-////                Client client = new Client(socketFromClient, clients);
-////                clients.addClient(client);
-//            }
-//            System.out.println("GameServerScreen::createServerSocket(); -- Server STOP!");
+            serverSocket.close();
         } catch (Exception exp) {
-            Gdx.app.log("GameServerScreen::waitClients()", "-- exp:" + exp);
+            Gdx.app.log("GameServerScreen::dispose()", "-- exp:" + exp);
         }
     }
 }

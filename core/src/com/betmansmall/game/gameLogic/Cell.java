@@ -7,10 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import java.io.Serializable;
+
 /**
  * Created by BetmanSmall on 11.03.2016.
  */
-public class Cell {
+public class Cell implements Serializable {
     public class Tree {
         TextureRegion textureRegion;
         int width, height;

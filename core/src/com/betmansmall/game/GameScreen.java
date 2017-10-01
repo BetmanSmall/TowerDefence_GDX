@@ -16,27 +16,32 @@ import com.badlogic.gdx.math.Vector3;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.game.server.GameFieldData;
+import com.betmansmall.game.server.GameServerInfo;
 
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.rmi.server.ExportException;
 
 public class GameScreen /*extends GestureDetector*/ implements Screen, GestureListener, InputProcessor {
 //    class CameraController implements GestureListener {
         // Need all fix this!!! PIZDEC?1??
-        private float zoomMax = 50f; //max size
-        private float zoomMin = 0.2f; // 2x zoom
-        public Float borderLeftX, borderRightX;
-        public Float borderUpY, borderDownY;
-        public OrthographicCamera camera;
-        // Need all fix this!!! PIZDEC??2?
         float velX, velY;
         boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
         float initialScale = 2f;
         boolean lastCircleTouched = false;
         // Need all fix this!!! PIZDEC???3
+        private float zoomMax = 50f; //max size
+        private float zoomMin = 0.2f; // 2x zoom
+        // Need all fix this!!! PIZDEC??2?
 
+        public OrthographicCamera camera;
+        public Float borderLeftX, borderRightX;
+        public Float borderUpY, borderDownY;
+//    private CameraController cameraController;
 //        public CameraController(float maxZoom, float minZoom, OrthographicCamera camera) {//, float borderLeftX, float borderRightX, float borderUpY, float borderDownY) {
 //            Gdx.app.log("CameraController::CameraController()", "-- maxZoom:" + maxZoom + " minZoom:" + minZoom + " camera:" + camera);
 //            this.zoomMax = maxZoom;
@@ -48,7 +53,105 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 ////            this.borderDownY = borderDownY;
 //        }
 
-//        @Override
+
+//    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса и геймФиелда, сюда на уровень геймСкрина.
+//    private SpriteBatch spriteBatch;
+    private BitmapFont bitmapFont;
+
+    private GameField gameField;
+    private GameInterface gameInterface;
+
+    private Socket serverSocket = null;
+    private BufferedReader in;
+    public ObjectInputStream objectIn;
+    private PrintWriter out;
+    private BufferedReader inu;
+
+    public GameScreen(String mapName, float levelOfDifficulty) {
+        Gdx.app.log("GameScreen::GameScreen()", "-- Welcome to Client side");
+        String hostname = new String("127.0.0.1");
+        int port = 27016;
+
+        createServerSocket(hostname, port);
+
+        Gdx.app.log("GameScreen::GameScreen(" + mapName + ", " + levelOfDifficulty + ")", "--");
+//        shapeRenderer = new ShapeRenderer();
+//        spriteBatch = new SpriteBatch();
+        bitmapFont = new BitmapFont();
+
+//        gameField = new GameField(mapName, levelOfDifficulty, false);
+
+        gameInterface = new GameInterface(gameField, bitmapFont);
+        gameInterface.mapNameLabel.setText("MapName:" + mapName);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+//        borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
+//        borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
+//        borderUpY    = new Float(0);
+//        borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();//new MyGestureDetector(cameraController));// я хз че делать=(
+//        inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
+        inputMultiplexer.addProcessor(new GestureDetector(this));
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(gameInterface.stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
+    public Socket createServerSocket(String hostname, int port) {
+        Gdx.app.log("GameScreen::createServerSocket()", "-- Connecting to... " + hostname + ":" + port);
+        try {
+            serverSocket = new Socket(hostname, port);
+            Gdx.app.log("GameScreen::createServerSocket()", "-- Connect to server: " + serverSocket);
+
+            objectIn = new ObjectInputStream(serverSocket.getInputStream());
+            Gdx.app.log("GameScreen::createServerSocket();", "-- !objectIn:" + (objectIn != null));
+            in  = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+            Gdx.app.log("GameScreen::createServerSocket();", "-- !in:" + (in != null));
+            out = new PrintWriter(serverSocket.getOutputStream(), true);
+            Gdx.app.log("GameScreen::createServerSocket();", "-- !out:" + (out != out));
+            inu = new BufferedReader(new InputStreamReader(System.in));
+            Gdx.app.log("GameScreen::createServerSocket();", "-- !inu:" + (inu!= null));
+
+//            GameServerInfo dataFromServer = (GameServerInfo) in.;
+            GameServerInfo gameServerInfo = (GameServerInfo) objectIn.readObject();
+            Gdx.app.error("GameScreen::createServerSocket()", "-- gameServerInfo:" + gameServerInfo);
+//            inu.readLine();
+//            out.println("GOOD!");
+            if(gameServerInfo.version == 1) {
+                out.println(true);
+                Gdx.app.log("GameScreen::createServerSocket()", "-- send!");
+                GameFieldData gameFieldData = (GameFieldData) objectIn.readObject();
+                System.err.println("GameScreen::createServerSocket(); -- gameFieldData:" + gameFieldData);
+                out.println(inu.readLine());
+            }
+//            if(dataFromServer.contains(""))
+//            out.println("Hello, I TTW::GAme_0.1");
+
+//            if()
+//            String fuser, fserver;
+//            while (true) {
+//                fuser = inu.readLine();
+////                Gdx.app.log("Wait for messages fuser:" + fuser + " delta:" + Gdx.graphics.getDeltaTime());
+//                if(fuser != null) {
+//                    Gdx.app.log("fuser:" + fuser);
+//                    out.println(fuser);
+//                    fserver = in.readLine();
+//                    Gdx.app.log(fserver);
+//                    if (fuser.equalsIgnoreCase("exit") || fuser.equalsIgnoreCase("close")) {
+//                        break;
+//                    }
+//                }
+//            }
+            Gdx.app.error("GameScreen::createServerSocket()", "-- Server close!");
+            return serverSocket;
+        } catch (Exception exp) {
+            Gdx.app.log("GameScreen::createServerSocket()", "-- exp:" + exp);
+            return null;
+        }
+    }
+
+        @Override
         public boolean touchDown(float x, float y, int pointer, int button) {
             Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
 //            flinging = false;
@@ -334,85 +437,6 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
         }
 //    }
 
-//    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса и геймФиелда, сюда на уровень геймСкрина.
-//    private SpriteBatch spriteBatch;
-    private BitmapFont bitmapFont;
-
-    private GameField gameField;
-    private GameInterface gameInterface;
-//    private CameraController cameraController;
-    private Socket serverSocket = null;
-    private BufferedReader in;
-    private PrintWriter out;
-    private BufferedReader inu;
-
-    public GameScreen(String mapName, float levelOfDifficulty) {
-        Gdx.app.log("GameScreen::GameScreen()", "-- Welcome to Client side");
-        String hostname = new String("127.0.0.1");
-        int port = 27016;
-
-        System.out.println("Connecting to... " + hostname + ":" + port);
-        try {
-            serverSocket = new Socket(hostname, port);
-            System.out.println("Connect to server: " + serverSocket);
-
-            in  = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-            out = new PrintWriter(serverSocket.getOutputStream(), true);
-            inu = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("!in:" + (in != null) + " !out:" + (out != null) + " !inu:" + (inu!= null));
-
-            String dataFromServer;
-            out.println("Hello, I TTW::GAme_0.1");
-            dataFromServer = in.readLine();
-            Gdx.app.log("GameScreen::GameScreen()", "-- dataFromServer:" + dataFromServer);
-//            if()
-//            String fuser, fserver;
-//            while (true) {
-//                fuser = inu.readLine();
-////                System.out.println("Wait for messages fuser:" + fuser + " delta:" + Gdx.graphics.getDeltaTime());
-//                if(fuser != null) {
-//                    System.out.println("fuser:" + fuser);
-//                    out.println(fuser);
-//                    fserver = in.readLine();
-//                    System.out.println(fserver);
-//                    if (fuser.equalsIgnoreCase("exit") || fuser.equalsIgnoreCase("close")) {
-//                        break;
-//                    }
-//                }
-//            }
-
-            out.close();
-            in.close();
-            inu.close();
-            serverSocket.close();
-            Gdx.app.log("TowerDefence::create()", "-- Server close!");
-        } catch (Exception exp) {
-            Gdx.app.log("TowerDefence::create()", "-- exp:" + exp);
-        }
-        Gdx.app.log("GameScreen::GameScreen(" + mapName + ", " + levelOfDifficulty + ")", "--");
-//        shapeRenderer = new ShapeRenderer();
-//        spriteBatch = new SpriteBatch();
-        bitmapFont = new BitmapFont();
-
-        gameField = new GameField(mapName, levelOfDifficulty, false);
-
-        gameInterface = new GameInterface(gameField, bitmapFont);
-        gameInterface.mapNameLabel.setText("MapName:" + mapName);
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        cameraController = new CameraController(50.0f, 0.2f, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-//        borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
-//        borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
-//        borderUpY    = new Float(0);
-//        borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
-
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();//new MyGestureDetector(cameraController));// я хз че делать=(
-//        inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
-        inputMultiplexer.addProcessor(new GestureDetector(this));
-        inputMultiplexer.addProcessor(this);
-        inputMultiplexer.addProcessor(gameInterface.stage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
-    }
-
     @Override
     public void show() {
         Gdx.app.log("GameScreen::show()", "--");
@@ -607,5 +631,14 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
         gameField.dispose();
         gameInterface.dispose();
 //        cameraController.dispose();
+        out.close();
+        try {
+            in.close();
+            inu.close();
+            objectIn.close();
+            serverSocket.close();
+        } catch (Exception exp) {
+            Gdx.app.log("GameScreen::dispose()", "-- exp:" + exp);
+        }
     }
 }
