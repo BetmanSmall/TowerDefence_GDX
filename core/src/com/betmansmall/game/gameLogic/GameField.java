@@ -146,7 +146,8 @@ public class GameField {
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
         gamePaused = false;
         gameSpeed = 1.0f;
-        gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one creep for computer!!!
+//        gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one creep for computer!!!
+        gamerGold = 100000;
         maxOfMissedCreepsForComputer0 = mapProperties.get("maxOfMissedCreepsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
 //        maxOfMissedCreepsForComputer0 = Integer.valueOf(mapProperties.get("maxOfMissedCreepsForComputer0", String.valueOf(gamerGold), String.class));
         missedCreepsForComputer0 = 0;

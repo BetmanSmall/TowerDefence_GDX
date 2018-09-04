@@ -4,9 +4,9 @@
   <property name="factionName" value="Orcs_Faction"/>
   <property name="name" value="Grunt"/>
   <property name="healthPoints" value="400"/>
-  <property name="bounty" value="40"/>
-  <property name="cost" value="40"/>
-  <property name="speed" value="0.6"/>
+  <property name="bounty" value="45"/>
+  <property name="cost" value="45"/>
+  <property name="speed" value="0.9"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/grunt.png" trans="ff00ff" width="360" height="1368"/>

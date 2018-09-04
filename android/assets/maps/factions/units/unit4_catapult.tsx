@@ -3,10 +3,10 @@
  <properties>
   <property name="factionName" value="Orcs_Faction"/>
   <property name="name" value="Catapult"/>
-  <property name="healthPoints" value="400"/>
-  <property name="bounty" value="8"/>
-  <property name="cost" value="16"/>
-  <property name="speed" value="0.8"/>
+  <property name="healthPoints" value="300"/>
+  <property name="bounty" value="50"/>
+  <property name="cost" value="50"/>
+  <property name="speed" value="1.0"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/catapult.png" width="320" height="640"/>

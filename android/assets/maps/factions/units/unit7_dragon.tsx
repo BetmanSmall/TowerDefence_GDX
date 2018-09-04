@@ -3,10 +3,10 @@
  <properties>
   <property name="factionName" value="Orcs_Faction"/>
   <property name="name" value="Dragon"/>
-  <property name="healthPoints" value="900"/>
-  <property name="bounty" value="10"/>
-  <property name="cost" value="22"/>
-  <property name="speed" value="0.8"/>
+  <property name="healthPoints" value="650"/>
+  <property name="bounty" value="60"/>
+  <property name="cost" value="60"/>
+  <property name="speed" value="0.9"/>
   <property name="type" value="fly"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/dragon.png" trans="ff00ff" width="440" height="800"/>

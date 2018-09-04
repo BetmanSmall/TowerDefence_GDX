@@ -6,7 +6,7 @@
   <property name="healthPoints" value="165"/>
   <property name="bounty" value="30"/>
   <property name="cost" value="30"/>
-  <property name="speed" value="0.5"/>
+  <property name="speed" value="0.8"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/footman.png" trans="ff00ff" width="360" height="1368"/>

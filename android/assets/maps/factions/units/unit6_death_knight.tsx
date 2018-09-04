@@ -4,9 +4,9 @@
   <property name="factionName" value="Orcs_Faction"/>
   <property name="name" value="Death Knight"/>
   <property name="healthPoints" value="300"/>
-  <property name="bounty" value="35"/>
-  <property name="cost" value="35"/>
-  <property name="speed" value="0.3"/>
+  <property name="bounty" value="40"/>
+  <property name="cost" value="40"/>
+  <property name="speed" value="0.4"/>
   <property name="type" value="unit"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/death_knight.png" trans="ff00ff" width="360" height="936"/>
