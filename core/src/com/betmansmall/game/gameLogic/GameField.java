@@ -777,7 +777,7 @@ public class GameField {
             shapeRenderer.setColor(Color.BLACK);
             shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
             shapeRenderer.setColor(Color.GREEN);
-            int maxHP = creep.templateForUnit.healthPoints;
+            float maxHP = creep.templateForUnit.healthPoints;
             int hp = creep.getHp();
             hpBarHPWidth = hpBarHPWidth / maxHP * hp;
             shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));

@@ -24,10 +24,10 @@ public class TemplateForUnit {
     private Faction faction;
     private String templateName;
 
-    public Integer bounty;
-    public Integer cost;
+    public Float bounty;
+    public Float cost;
     public String factionName;
-    public Integer healthPoints;
+    public Float healthPoints;
     public String name;
     public Float speed;
     public String type;
@@ -53,17 +53,18 @@ public class TemplateForUnit {
                     String key = property.getAttribute("name");
                     String value = property.getAttribute("value");
                     if (key.equals("bounty")) {
-                        this.bounty = Integer.parseInt(value);
+                        this.bounty = FactionsManager.defBounty*Float.parseFloat(value);
                     } else if (key.equals("cost")) {
-                        this.cost = Integer.parseInt(value);
+                        this.cost = FactionsManager.defCost*Float.parseFloat(value);
                     } else if (key.equals("factionName")) {
                         this.factionName = value;
                     } else if (key.equals("healthPoints")) {
-                        this.healthPoints = Integer.parseInt(value);
+//                        this.healthPoints = Integer.parseInt(value);
+                        this.healthPoints = FactionsManager.defHealthPoints*Float.parseFloat(value);
                     } else if (key.equals("name")) {
                         this.name = value;
                     } else if (key.equals("speed")) {
-                        this.speed = Float.parseFloat(value);
+                        this.speed = FactionsManager.defSpeed*Float.parseFloat(value);
                     } else if (key.equals("type")) {
                         this.type = value;
                     }
@@ -153,27 +154,27 @@ public class TemplateForUnit {
         }
     }
 
-    public TemplateForUnit(TiledMapTileSet tileSet) {
-        try {
-            this.templateName = tileSet.getName();
-            this.bounty = Integer.parseInt(tileSet.getProperties().get("bounty", String.class));
-            this.cost = bounty; // TODO fix
-            this.factionName = tileSet.getProperties().get("factionName", String.class);
-            this.healthPoints = Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
-            this.name = tileSet.getProperties().get("name", String.class);
-            this.speed = Float.parseFloat(tileSet.getProperties().get("speed", String.class));
-            this.type = tileSet.getProperties().get("type", String.class);
-
-            this.speed = this.speed * 2;
-        } catch (Exception exp) {
-            Gdx.app.error("TemplateForUnit::TemplateForUnit()", "-- Exp: " + exp + " Cheak the file!");
-        }
-
-        this.animations = new ObjectMap<String, AnimatedTiledMapTile>();
-
-        setAnimationFrames(tileSet);
-        validate();
-    }
+//    public TemplateForUnit(TiledMapTileSet tileSet) {
+//        try {
+//            this.templateName = tileSet.getName();
+//            this.bounty = Integer.parseInt(tileSet.getProperties().get("bounty", String.class));
+//            this.cost = bounty; // TODO fix
+//            this.factionName = tileSet.getProperties().get("factionName", String.class);
+//            this.healthPoints = Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
+//            this.name = tileSet.getProperties().get("name", String.class);
+//            this.speed = Float.parseFloat(tileSet.getProperties().get("speed", String.class));
+//            this.type = tileSet.getProperties().get("type", String.class);
+//
+//            this.speed = this.speed * 2;
+//        } catch (Exception exp) {
+//            Gdx.app.error("TemplateForUnit::TemplateForUnit()", "-- Exp: " + exp + " Cheak the file!");
+//        }
+//
+//        this.animations = new ObjectMap<String, AnimatedTiledMapTile>();
+//
+//        setAnimationFrames(tileSet);
+//        validate();
+//    }
 
     private void setAnimationFrames(TiledMapTileSet tileSet) {
         for (TiledMapTile tile : tileSet) {

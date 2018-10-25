@@ -16,6 +16,11 @@ public class FactionsManager {
     private Array<Faction> factions;
     private float levelOfDifficulty;
 
+    public static Float defHealthPoints = 500f;
+    public static Float defBounty = 50f;
+    public static Float defCost = 50f;
+    public static Float defSpeed = 1f;
+
     public FactionsManager(float levelOfDifficulty) {
         this.factions = new Array<Faction>();
         this.levelOfDifficulty = levelOfDifficulty;
@@ -192,7 +197,7 @@ public class FactionsManager {
                             FileHandle templateFile = getRelativeFileHandle(factionFile, source);
                             TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
                             templateForUnit.setFaction(faction);
-                            templateForUnit.healthPoints = (int)(templateForUnit.healthPoints*levelOfDifficulty); // simple level of difficulty
+                            templateForUnit.healthPoints = templateForUnit.healthPoints*levelOfDifficulty; // simple level of difficulty
                             faction.getTemplateForUnits().add(templateForUnit);
                         }
                     }
