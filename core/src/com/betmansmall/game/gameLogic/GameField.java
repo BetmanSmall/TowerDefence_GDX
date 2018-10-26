@@ -43,23 +43,29 @@ public class GameField {
     private SpriteBatch spriteBatch = new SpriteBatch();
     private BitmapFont bitmapFont = new BitmapFont();
 
+    private PathFinder pathFinder;
     private TiledMap map;
+    private Cell[][] field;
+    public WaveManager waveManager; // ALL public for all || we are friendly :)
+    private FactionsManager factionsManager;
+    private TowersManager towersManager;
+    public static CreepsManager creepsManager; // For Shell
+
     private IsometricTiledMapRenderer renderer;
+
+    private int halfSizeCellX;
+    private int halfSizeCellY;
     private int sizeFieldX, sizeFieldY;
     private static int sizeCellX, sizeCellY;
-
     public int getSizeFieldX() {
         return sizeFieldX;
     }
-
     public int getSizeFieldY() {
         return sizeFieldY;
     }
-
     public static int getSizeCellX() {
         return sizeCellX;
     }
-
     public static int getSizeCellY() {
         return sizeCellY;
     }
@@ -72,17 +78,6 @@ public class GameField {
 //    public boolean isDrawableRoutes = true;3
     public int isDrawableGridNav = 1;
     public int drawOrder = 8;
-
-    private int halfSizeCellX;
-    private int halfSizeCellY;
-
-    private Cell[][] field;
-    private PathFinder pathFinder;
-
-    public WaveManager waveManager; // ALL public for all || we are friendly :)
-    public static CreepsManager creepsManager; // For Shell
-    private TowersManager towersManager;
-    private FactionsManager factionsManager;
 
     private UnderConstruction underConstruction;
     private Texture greenCheckmark;
@@ -102,8 +97,8 @@ public class GameField {
     public GameField(String mapName, float levelOfDifficulty) {
         Gdx.app.log("GameField::GameField(" + mapName + ", " + levelOfDifficulty + ")", "--");
         waveManager = new WaveManager();
-        creepsManager = new CreepsManager();
         towersManager = new TowersManager();
+        creepsManager = new CreepsManager();
         factionsManager = new FactionsManager(levelOfDifficulty);
         factionsManager.loadFactions();
 
