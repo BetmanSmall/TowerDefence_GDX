@@ -109,8 +109,8 @@ public class Tower {
     }
 
     public Vector2 getCenterGraphicCoord(int cellX, int cellY, int map) { // TODO need create 'getCenterGraphicCoord(int map)' func!
-        int halfSizeCellX = GameField.getSizeCellX() / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
-        int halfSizeCellY = GameField.getSizeCellY() / 2;
+        int halfSizeCellX = GameField.sizeCellX / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
+        int halfSizeCellY = GameField.sizeCellY / 2;
         float pxlsX = 0f, pxlsY = 0f;
 //        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellX));
 //        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellY));

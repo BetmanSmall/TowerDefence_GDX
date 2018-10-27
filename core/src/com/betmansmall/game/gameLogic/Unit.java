@@ -167,8 +167,8 @@ public class Unit {
 
             int oldX = oldPosition.getX(), oldY = oldPosition.getY();
             int newX = newPosition.getX(), newY = newPosition.getY();
-            int sizeCellX = GameField.getSizeCellX();
-            int sizeCellY = GameField.getSizeCellY();
+            int sizeCellX = GameField.sizeCellX;
+            int sizeCellY = GameField.sizeCellY;
             float halfSizeCellX = sizeCellX/2;
             float halfSizeCellY = sizeCellY/2;
             float fVx = 0, fVy = 0;

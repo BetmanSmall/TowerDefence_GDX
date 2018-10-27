@@ -53,22 +53,10 @@ public class GameField {
 
     private IsometricTiledMapRenderer renderer;
 
+    public int sizeFieldX, sizeFieldY;
+    public static int sizeCellX, sizeCellY;
     private int halfSizeCellX;
     private int halfSizeCellY;
-    private int sizeFieldX, sizeFieldY;
-    private static int sizeCellX, sizeCellY;
-    public int getSizeFieldX() {
-        return sizeFieldX;
-    }
-    public int getSizeFieldY() {
-        return sizeFieldY;
-    }
-    public static int getSizeCellX() {
-        return sizeCellX;
-    }
-    public static int getSizeCellY() {
-        return sizeCellY;
-    }
 
     public int isDrawableBackground = 1;
     public int isDrawableForeground = 1;
