@@ -55,8 +55,7 @@ public class GameField {
 
     public int sizeFieldX, sizeFieldY;
     public static int sizeCellX, sizeCellY;
-    private int halfSizeCellX;
-    private int halfSizeCellY;
+    private int halfSizeCellX, halfSizeCellY;
 
     public int isDrawableBackground = 1;
     public int isDrawableForeground = 1;
