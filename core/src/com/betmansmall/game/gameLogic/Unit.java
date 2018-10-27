@@ -19,7 +19,7 @@ import java.util.ArrayDeque;
 /**
  * Created by betmansmall on 22.09.2015.
  */
-public class Creep {
+public class Unit {
     private ArrayDeque<Node> route;
     private Node oldPosition;
     private Node newPosition;
@@ -44,7 +44,7 @@ public class Creep {
     private Animation animation;
     public Array<ShellEffectType> shellEffectTypes;
 
-    public Creep(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player) {
+    public Unit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player) {
         if(route != null) {
             this.route = route;
             this.oldPosition = route.peekFirst();
@@ -68,7 +68,7 @@ public class Creep {
             setAnimation("walk_");
             this.shellEffectTypes = new Array<ShellEffectType>();
         } else {
-            Gdx.app.error("Creep::Creep()", "-- route == null");
+            Gdx.app.error("Unit::Unit()", "-- route == null");
         }
     }
 
@@ -81,9 +81,9 @@ public class Creep {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
             }
             animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
-//        Gdx.app.log("Creep::setAnimation()", "-- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
+//        Gdx.app.log("Unit::setAnimation()", "-- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
         } catch (Exception exp) {
-            Gdx.app.log("Creep::setAnimation(" + action + direction + ")", "-- CreepName: " + templateForUnit.name + " Exp: " + exp);
+            Gdx.app.log("Unit::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " Exp: " + exp);
         }
     }
 
@@ -98,11 +98,11 @@ public class Creep {
 
     // что бы ефекты не стакались на крипах
     public Node move(float delta) {
-//        Gdx.app.log("Creep", "move(); -- Creep status:" + this.toString());
+//        Gdx.app.log("Unit", "move(); -- Unit status:" + this.toString());
         if(route != null && !route.isEmpty()) {
             for(ShellEffectType shellEffectType : shellEffectTypes) {
                 if(!shellEffectType.used) {
-//                    Gdx.app.log("Creep", "move(); -- Active shellEffectType:" + shellEffectType);
+//                    Gdx.app.log("Unit", "move(); -- Active shellEffectType:" + shellEffectType);
                     shellEffectType.used = true;
                     if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
                         float smallSpeed = speed/100f;
@@ -126,7 +126,7 @@ public class Creep {
                 }
                 shellEffectType.elapsedTime += delta;
                 if(shellEffectType.elapsedTime >= shellEffectType.time) {
-//                    Gdx.app.log("Creep", "move(); -- Remove shellEffectType:" + shellEffectType);
+//                    Gdx.app.log("Unit", "move(); -- Remove shellEffectType:" + shellEffectType);
                     if(shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
                         float smallSpeed = speed/100f;
                         float percentSteps = stepsInTime/smallSpeed;
@@ -162,7 +162,7 @@ public class Creep {
 //                } else if (newX < oldX && newY < oldY) {
 //                } else if (newX < oldX && newY == oldY) {
 //                }
-//            Gdx.app.log("Creep::move()", "-- fVx:" + fVx + " fVy:" + fVy);
+//            Gdx.app.log("Unit::move()", "-- fVx:" + fVx + " fVy:" + fVy);
             // --- MANUAL ---
 
             int oldX = oldPosition.getX(), oldY = oldPosition.getY();
@@ -173,8 +173,8 @@ public class Creep {
             float halfSizeCellY = sizeCellY/2;
             float fVx = 0, fVy = 0;
             Direction oldDirection = direction;
-            int isDrawableCreeps = GameField.isDrawableCreeps;
-            if(isDrawableCreeps == 4 || isDrawableCreeps == 5) {
+            int isDrawableUnits = GameField.isDrawableUnits;
+            if(isDrawableUnits == 4 || isDrawableUnits == 5) {
                 fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
                 fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY)) + halfSizeCellY;
                 if (newX < oldX && newY > oldY) {
@@ -209,7 +209,7 @@ public class Creep {
                 currentPoint.set(fVx, fVy);
                 circle4.set(fVx, fVy, 16f);
             }
-            if(isDrawableCreeps == 3 || isDrawableCreeps == 5) {
+            if(isDrawableUnits == 3 || isDrawableUnits == 5) {
                 fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
                 fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY*2;
                 if (newX < oldX && newY > oldY) {
@@ -244,7 +244,7 @@ public class Creep {
                 currentPoint.set(fVx, fVy);
                 circle3.set(fVx, fVy, 16f);
             }
-            if(isDrawableCreeps == 2 || isDrawableCreeps == 5) {
+            if(isDrawableUnits == 2 || isDrawableUnits == 5) {
                 fVx = (halfSizeCellX * newY) + (newX * halfSizeCellX) + halfSizeCellX;
                 fVy = (halfSizeCellY * newY) - (newX * halfSizeCellY) + halfSizeCellY;
                 if (newX < oldX && newY > oldY) {
@@ -279,7 +279,7 @@ public class Creep {
                 currentPoint.set(fVx, fVy);
                 circle2.set(fVx, fVy, 16f);
             }
-            if(isDrawableCreeps == 1 || isDrawableCreeps == 5) {
+            if(isDrawableUnits == 1 || isDrawableUnits == 5) {
                 fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
                 fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY));
                 if (newX < oldX && newY < oldY) {
@@ -323,7 +323,7 @@ public class Creep {
                     backStepPoint.y), speed));
             displacement = new Vector2(velocity.x * delta, velocity.y * delta);
 
-//            Gdx.app.log("Creep::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
+//            Gdx.app.log("Unit::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
             if(!direction.equals(oldDirection)) {
                 setAnimation("walk_");
             }
@@ -421,7 +421,7 @@ public class Creep {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Creep[");
+        sb.append("Unit[");
 //        sb.append("route:" + route + ",");
         sb.append("oldPosition:" + oldPosition + ",");
         sb.append("newPosition:" + newPosition + ",");

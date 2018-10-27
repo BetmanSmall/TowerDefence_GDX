@@ -52,21 +52,21 @@ public class Tower {
         return false;
     }
 
-    public boolean shoot(Creep creep) {
+    public boolean shoot(Unit unit) {
         if(elapsedReloadTime >= templateForTower.reloadTime) {
             if (templateForTower.shellAttackType == ShellAttackType.MassAddEffect) {
                 boolean effect = false;
-                for (ShellEffectType shellEffectType : creep.shellEffectTypes) {
+                for (ShellEffectType shellEffectType : unit.shellEffectTypes) {
                     if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
                         effect = true;
                         break;
                     }
                 }
                 if (!effect) {
-                    creep.shellEffectTypes.add(new ShellEffectType(templateForTower.shellEffectType));
+                    unit.shellEffectTypes.add(new ShellEffectType(templateForTower.shellEffectType));
                 }
             } else {
-                shells.add(new Shell(templateForTower, creep, getCenterGraphicCoord())); // AlexGor
+                shells.add(new Shell(templateForTower, unit, getCenterGraphicCoord())); // AlexGor
             }
             elapsedReloadTime = 0f;
             return true;
@@ -90,8 +90,8 @@ public class Tower {
     private void moveShell(float delta, Shell shell) {
         switch (shell.flightOfShell(delta)) {
             case 0:
-//                if(shell.creep.die(damage)) {
-//                    GameField.gamerGold += shell.creep.getTemplateForUnit().bounty;
+//                if(shell.unit.die(damage)) {
+//                    GameField.gamerGold += shell.unit.getTemplateForUnit().bounty;
 //                }
 //                break;
             case -1:

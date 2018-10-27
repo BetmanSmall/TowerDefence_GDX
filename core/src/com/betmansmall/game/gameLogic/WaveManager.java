@@ -27,37 +27,37 @@ public class WaveManager {
     public Array<Wave> waves;
     public GridPoint2 lastExitPoint;
     public Array<Wave> wavesForUser;
-    public float waitForNextSpawnCreep;
+    public float waitForNextSpawnUnit;
 
     WaveManager() {
         this.waves = new Array<Wave>();
         this.wavesForUser = new Array<Wave>();
-//        this.waitForNextSpawnCreep =
+//        this.waitForNextSpawnUnit =
     }
 
     public void addWave(Wave wave) {
         this.waves.add(wave);
     }
 
-    public Array<TemplateNameAndPoints> getAllCreepsForSpawn(float delta) {
-        waitForNextSpawnCreep -= delta;
-        Array<TemplateNameAndPoints> allCreepsForSpawn = new Array<TemplateNameAndPoints>();
+    public Array<TemplateNameAndPoints> getAllUnitsForSpawn(float delta) {
+        waitForNextSpawnUnit -= delta;
+        Array<TemplateNameAndPoints> allUnitsForSpawn = new Array<TemplateNameAndPoints>();
         for (Wave wave : waves) {
             if(!wave.actions.isEmpty()) {
                 String templateName = wave.getTemplateNameForSpawn(delta);
                 if (templateName != null) {
                     if (templateName.contains("wait")) {
-                        waitForNextSpawnCreep = Float.parseFloat(templateName.substring(templateName.indexOf("=") + 1, templateName.length()));// GOVNE GODE parseFloat3
+                        waitForNextSpawnUnit = Float.parseFloat(templateName.substring(templateName.indexOf("=") + 1, templateName.length()));// GOVNE GODE parseFloat3
                         // bitch naxyui =( || but work mb =)
                     } else {
-                        allCreepsForSpawn.add(new TemplateNameAndPoints(templateName, wave.spawnPoint, wave.exitPoint));
+                        allUnitsForSpawn.add(new TemplateNameAndPoints(templateName, wave.spawnPoint, wave.exitPoint));
                     }
                 }
             } else {
                 waves.removeValue(wave, true);
             }
         }
-        return allCreepsForSpawn;
+        return allUnitsForSpawn;
     }
 
     public Array<GridPoint2> getAllSpawnPoint() {
@@ -102,7 +102,7 @@ public class WaveManager {
         return actions;
     }
 
-//    public int getNumberOfCreeps() // need implement
+//    public int getNumberOfUnits() // need implement
 
     public void validationPoints(Cell[][] field) {
         Gdx.app.log("WaveManager::validationPoints(" + field + ")", "--");

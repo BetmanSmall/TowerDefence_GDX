@@ -22,14 +22,6 @@ public class TowersManager {
         return tower;
     }
 
-    public void removeTower(Tower tower) {
-        towers.removeValue(tower, false);
-    }
-
-    public void removeTower(GridPoint2 position) {
-        towers.removeValue(getTower(position), false);
-    }
-
     public Tower getTower(int id) {
         if(id < towers.size) {
             return towers.get(id);
@@ -46,6 +38,14 @@ public class TowersManager {
             }
         }
         return null;
+    }
+
+    public void removeTower(Tower tower) {
+        towers.removeValue(tower, false);
+    }
+
+    public void removeTower(GridPoint2 position) {
+        towers.removeValue(getTower(position), false);
     }
 
     public Array<Tower> getAllTowers() {

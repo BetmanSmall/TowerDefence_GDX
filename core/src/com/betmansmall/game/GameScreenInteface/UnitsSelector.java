@@ -85,7 +85,7 @@ public class UnitsSelector {
                     Integer unitIndex = (Integer) buttonActor.getUserObject();
                     if (unitIndex != null) {
                         Gdx.app.log("UnitsSelector::tap()", "-- unitIndex:" + unitIndex);
-                        gameField.spawnCreepFromUser(templateForUnits.get(unitIndex));
+                        gameField.spawnUnitFromUser(templateForUnits.get(unitIndex));
                     }
                     Gdx.app.log("UnitsSelector::tap()", "-- return true");
                     return true;

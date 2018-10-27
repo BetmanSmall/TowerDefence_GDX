@@ -5,22 +5,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.betmansmall.game.TowerDefence;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
@@ -47,7 +41,7 @@ public class GameInterface {
 
     public TextButton startAndPauseButton;
     public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, underConstructionLabel,
-            missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextCreepSpawnLabel;
+            missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextUnitSpawnLabel;
 
     public boolean interfaceTouched;
     public TowersSelector towersSelector;
@@ -106,14 +100,14 @@ public class GameInterface {
         tablo.addActor(gamerCursorCoordCell);
         underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tablo.addActor(underConstructionLabel);
-        missedAndMaxForPlayer1 = new Label("CreepsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        missedAndMaxForPlayer1 = new Label("UnitsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         tablo.addActor(missedAndMaxForPlayer1);
         gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         tablo.addActor(gamerGoldLabel);
-        missedAndMaxForComputer0 = new Label("CreepsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
+        missedAndMaxForComputer0 = new Label("UnitsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
         tablo.addActor(missedAndMaxForComputer0);
-        nextCreepSpawnLabel = new Label("NextCreepSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
-        tablo.addActor(nextCreepSpawnLabel);
+        nextUnitSpawnLabel = new Label("NextUnitSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
+        tablo.addActor(nextUnitSpawnLabel);
 
         this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
 ////        table.setDebug(true);
@@ -162,10 +156,10 @@ public class GameInterface {
             underConstructionLabel.setText("UnderConstrTemplateName:NULL");
             underConstructionLabel.setColor(Color.RED);
         }
-        missedAndMaxForPlayer1.setText("CreepsLimitPL1:" + gameField.missedCreepsForPlayer1 + "/" + gameField.maxOfMissedCreepsForPlayer1);
+        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameField.missedUnitsForPlayer1 + "/" + gameField.maxOfMissedUnitsForPlayer1);
         gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
-        missedAndMaxForComputer0.setText("CreepsLimitComp0:" + gameField.missedCreepsForComputer0 + "/" + gameField.maxOfMissedCreepsForComputer0);
-        nextCreepSpawnLabel.setText("NextCreepSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnCreep > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnCreep) + "sec" : "PRESS_PLAY_BUTTON"));
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.missedUnitsForComputer0 + "/" + gameField.maxOfMissedUnitsForComputer0);
+        nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         stage.act(delta);
         stage.draw();
     }

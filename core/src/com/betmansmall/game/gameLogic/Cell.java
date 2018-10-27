@@ -28,7 +28,7 @@ public class Cell {
     private boolean empty;
     private boolean terrain;
     private Tower tower;
-    private Array<Creep> creeps;
+    private Array<Unit> units;
     public int cellX, cellY;
     public Vector2 graphicCoordinatesBottom, graphicCoordinatesRight, graphicCoordinatesTop, graphicCoordinatesLeft;
 
@@ -40,7 +40,7 @@ public class Cell {
         this.empty = true;
         this.terrain = false;
         this.tower = null;
-        this.creeps = null;
+        this.units = null;
 //        setGraphicCoordinates(cellX, cellY, halfSizeCellX, halfSizeCellY);
     }
 
@@ -108,7 +108,7 @@ public class Cell {
     }
 
     public boolean isPassable() {
-        if (empty || (!terrain && tower != null) || creeps != null) {
+        if (empty || (!terrain && tower != null) || units != null) {
             return true;
         }
         return false;
@@ -136,39 +136,39 @@ public class Cell {
         return false;
     }
 
-    public Array<Creep> getCreeps() {
-        return creeps;
+    public Array<Unit> getUnits() {
+        return units;
     }
 
-    public Creep getCreep() {
-        if (creeps != null) {
-            return creeps.first();
+    public Unit getUnit() {
+        if (units != null) {
+            return units.first();
         }
         return null;
     }
 
-    public boolean setCreep(Creep creep) {
+    public boolean setUnit(Unit unit) {
         if (empty) {
-            creeps = new Array<Creep>();
-            creeps.add(creep);
+            units = new Array<Unit>();
+            units.add(unit);
             empty = false;
             return true;
-        } else if (creeps != null) {
-            creeps.add(creep);
+        } else if (units != null) {
+            units.add(unit);
             return true;
         }
         return false;
     }
 
-    public int removeCreep(Creep creep) {
-        if (creeps != null) {
-            creeps.removeValue(creep, false);
-            if (creeps.size == 0) {
-                creeps = null;
+    public int removeUnit(Unit unit) {
+        if (units != null) {
+            units.removeValue(unit, false);
+            if (units.size == 0) {
+                units = null;
                 empty = true;
                 return 0;
             }
-            return creeps.size;
+            return units.size;
         }
         return -1;
     }
@@ -179,8 +179,8 @@ public class Cell {
         backgroundTiles = null;
         foregroundTiles = null;
         tower = null;
-        creeps.clear();
-        creeps = null;
+        units.clear();
+        units = null;
     }
 
     public String toString() {
@@ -191,7 +191,7 @@ public class Cell {
         sb.append("," + "empty:" + empty);
         sb.append("," + "terrain:" + terrain);
         sb.append("," + "tower:" + tower);
-        sb.append("," + "creeps:" + creeps);
+        sb.append("," + "units:" + units);
         sb.append("]");
         return sb.toString();
     }

@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
  * Created by betmansmall on 29.03.2016.
  */
 public class Shell {
-    public Creep creep;
+    public Unit unit;
     public float ammoExpSize;
     public float ammoSize;
     public float ammoSpeed;
@@ -29,9 +29,9 @@ public class Shell {
     public Circle endPoint;
     public Vector2 velocity;
 
-    Shell(TemplateForTower templateForTower, Creep creep, Vector2 currentPoint) {
+    Shell(TemplateForTower templateForTower, Unit unit, Vector2 currentPoint) {
 //        Gdx.app.log("Shell", "Shell(" + currentPoint + ", " + endPoint + ");");
-        this.creep = creep;
+        this.unit = unit;
         this.ammoExpSize = templateForTower.ammoSize;
         this.ammoSize = templateForTower.ammoSize;
         this.ammoSpeed = templateForTower.ammoSpeed;
@@ -45,8 +45,8 @@ public class Shell {
         this.circle = new Circle(currentPoint, ammoSize);
         if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
 //<<<<<<< HEAD
-//            Vector2 endPoint = new Vector2(creep.circle1.x, creep.circle1.y);
-//            Direction direction = creep.direction;
+//            Vector2 endPoint = new Vector2(unit.circle1.x, unit.circle1.y);
+//            Direction direction = unit.direction;
 //            float delta = GameField.getSizeCellX();
 //            float del = 1.8f;
 //            if (direction == Direction.UP) {
@@ -68,19 +68,19 @@ public class Shell {
 //            }
 //            this.endPoint = new Circle(endPoint, 3f);
 //=======
-            this.endPoint = new Circle(creep.currentPoint.x + creep.displacement.x, creep.currentPoint.y + creep.displacement.y, 3f);
+            this.endPoint = new Circle(unit.currentPoint.x + unit.displacement.x, unit.currentPoint.y + unit.displacement.y, 3f);
 //>>>>>>> InDevelop
         } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
-            if(GameField.isDrawableCreeps == 1 || GameField.isDrawableCreeps == 5 || GameField.isDrawableCreeps == 0)
-                this.endPoint = creep.circle1;
-            else if(GameField.isDrawableCreeps == 2)
-                this.endPoint = creep.circle1;
-            else if(GameField.isDrawableCreeps == 3)
-                this.endPoint = creep.circle1;
-            else if(GameField.isDrawableCreeps == 4)
-                this.endPoint = creep.circle1;
+            if(GameField.isDrawableUnits == 1 || GameField.isDrawableUnits == 5 || GameField.isDrawableUnits == 0)
+                this.endPoint = unit.circle1;
+            else if(GameField.isDrawableUnits == 2)
+                this.endPoint = unit.circle1;
+            else if(GameField.isDrawableUnits == 3)
+                this.endPoint = unit.circle1;
+            else if(GameField.isDrawableUnits == 4)
+                this.endPoint = unit.circle1;
 //            this.endPoint.setRadius(3f);
-//            this.endPoint = creep.currentPoint // LOL break
+//            this.endPoint = unit.currentPoint // LOL break
         }
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
     }
@@ -94,7 +94,7 @@ public class Shell {
      * 1 - Пуля передвинулась, но не достигла крипа.<br>
      */
     public int flightOfShell(float delta) {
-        if(creep.isAlive()) {
+        if(unit.isAlive()) {
 //            Gdx.app.log("Shell", "flightOfShell(" + delta + "); -- " + currentPoint + ", " + endPoint + ", " + velocity);
             if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
                 float displacementX = velocity.x * delta * ammoSpeed;
@@ -105,11 +105,11 @@ public class Shell {
 
                 if (templateForTower.shellAttackType == ShellAttackType.MultipleTarget) {
                     if(Intersector.overlaps(circle, endPoint)) {
-                        tryToHitCreeps();
+                        tryToHitUnits();
                         return 0;
                     }
                 } else if(templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
-                    if(tryToHitCreeps()) {
+                    if(tryToHitUnits()) {
                         return 0;
                     }
                 }
@@ -118,10 +118,10 @@ public class Shell {
                 velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
                 currentPoint.add(velocity.x * delta * ammoSpeed, velocity.y * delta * ammoSpeed);
                 circle.setPosition(currentPoint);
-                // endPoint2 == endPoint == creep.currentPoint ~= creep.circle1
-                if (Intersector.overlaps(circle, creep.circle1)) {
-                    if (creep.die(templateForTower.damage, templateForTower.shellEffectType)) {
-                        GameField.gamerGold += creep.templateForUnit.bounty;
+                // endPoint2 == endPoint == unit.currentPoint ~= unit.circle1
+                if (Intersector.overlaps(circle, unit.circle1)) {
+                    if (unit.die(templateForTower.damage, templateForTower.shellEffectType)) {
+                        GameField.gamerGold += unit.templateForUnit.bounty;
                     }
                     return 0;
                 }
@@ -131,13 +131,13 @@ public class Shell {
         return -1;
     }
 
-    private boolean tryToHitCreeps() {
+    private boolean tryToHitUnits() {
         boolean hit = false;
-        for (Creep creep : GameField.creepsManager.getAllCreeps()) { // not good
-            if (Intersector.overlaps(circle, creep.circle1)) {
+        for (Unit unit : GameField.unitsManager.units) { // not good
+            if (Intersector.overlaps(circle, unit.circle1)) {
                 hit = true;
-                if (creep.die(templateForTower.damage, templateForTower.shellEffectType)) {
-                    GameField.gamerGold += creep.templateForUnit.bounty;
+                if (unit.die(templateForTower.damage, templateForTower.shellEffectType)) {
+                    GameField.gamerGold += unit.templateForUnit.bounty;
                 }
             }
         }
@@ -145,7 +145,7 @@ public class Shell {
     }
 
     public void dispose() {
-        creep = null;
+        unit = null;
         templateForTower = null;
         ammunitionPictures = null;
     }

@@ -1,6 +1,5 @@
 package com.betmansmall.game;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -62,7 +61,7 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 //
 //            Vector3 touch = new Vector3(x, y, 0.0f);
 //            camera.unproject(touch);
-//            GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to creeps too!
+//            GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to units too!
 //            if (cellCoordinate != null && gameField.getUnderConstruction() == null) {
 //                if (button == 0) {
 ////                    gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
@@ -70,9 +69,9 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 //                    gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
 ////                  gameField.prepareBuildTower(cellCoordinate.x, cellCoordinate.y);
 ////              } else if(button == 2) {
-////                  gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
+////                  gameField.createUnit(cellCoordinate.x, cellCoordinate.y);
 //                } else if (button == 3) {
-//                    gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
+//                    gameField.createUnit(cellCoordinate.x, cellCoordinate.y);
 //                } else if (button == 4) {
 //                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
 //                }
@@ -247,16 +246,16 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
                         }
                     }
                 } else {
-                    GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to creeps too!
+                    GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers); // need to units too!
                     if (cellCoordinate != null) {
                         if (button == 0) {
                             gameField.removeTower(cellCoordinate.x, cellCoordinate.y);
                         } else if (button == 1) {
 //                    gameField.towerActions(cellCoordinate.x, cellCoordinate.y);
 //                        } else if(button == 2) {
-//                            gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
+//                            gameField.createUnit(cellCoordinate.x, cellCoordinate.y);
                         } else if (button == 3) {
-                            gameField.createCreep(cellCoordinate.x, cellCoordinate.y);
+                            gameField.createUnit(cellCoordinate.x, cellCoordinate.y);
                         } else if (button == 4) {
                             gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
                         }
@@ -400,12 +399,12 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2)");
-            gameField.isDrawableCreeps++;
-            if (gameField.isDrawableCreeps > 5) {
-                gameField.isDrawableCreeps = 0;
+            gameField.isDrawableUnits++;
+            if (gameField.isDrawableUnits > 5) {
+                gameField.isDrawableUnits = 0;
             }
-            gameInterface.addActionToHistory("-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableCreeps:" + GameField.isDrawableCreeps);
+            gameInterface.addActionToHistory("-- gameField.isDrawableUnits:" + GameField.isDrawableUnits);
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableUnits:" + GameField.isDrawableUnits);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3)");
             gameField.isDrawableTowers++;
