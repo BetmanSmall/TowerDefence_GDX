@@ -32,19 +32,19 @@ public class WhichCell {
     }
 
     public GridPoint2 whichCell(Vector3 touch, int map) {
-//        Gdx.app.log("WhichCell::whichCell(" + touch + ", " + map + ")", "--");
+        Gdx.app.log("WhichCell::whichCell()", "-graphics- mouseX:" + touch.x + " mouseY:" + touch.x + " map:" + map);
         touch.x /= sizeCellX;
         touch.y = (touch.y - sizeCellY / 2) / sizeCellY + touch.x;
         touch.x -= touch.y - touch.x;
 //        touch.y /= sizeCellY;
 //        touch.x = (touch.x - sizeCellX / 2) / sizeCellX + touch.y;
 //        touch.y -= touch.x - touch.y;
-//        Gdx.app.log("WhichCell::whichCell()", "-- new touch:" + touch);
+        Gdx.app.log("WhichCell::whichCell()", "-new- mouseX:" + touch.x + " mouseY:" + touch.x);
         GridPoint2 cell = new GridPoint2(Math.abs((int) touch.x), Math.abs((int) touch.y));
         if(touch.x < 0) {
             cell.set(cell.y, cell.x);
         } // Где то я накосячил. мб сделать подругому. если это уберать то нужно будет править Cell::setGraphicCoordinates() для 3 и 4 карты
-//        Gdx.app.log("WhichCell::whichCell()", "-- cell:" + cell);
+//        Gdx.app.log("WhichCell::whichCell()", "-cell- cell:" + cell);
         if (cell.x < sizeFieldX && cell.y < sizeFieldY) {
             if (map == 5) {
                 return cell;

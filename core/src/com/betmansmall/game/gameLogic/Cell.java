@@ -26,6 +26,7 @@ public class Cell {
     public Array<TiledMapTile> foregroundTiles;
     public Array<Tree> trees;
     private boolean empty;
+//    private boolean removableTerrain;
     private boolean terrain;
     private Tower tower;
     private Array<Unit> units;

@@ -6,10 +6,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.io.File;
@@ -32,6 +34,8 @@ public class MainMenuScreen implements Screen {
     private Image homeButton;
     private Image welcomeScreen;
     private Image infoScreen;
+
+    public Array<Image> images;
 
     private int menuLvl;
     private float timer;
@@ -104,19 +108,37 @@ public class MainMenuScreen implements Screen {
         mmStage.addActor(returnButton);
 //        mmStage.addActor(welcomeScreen);
 
+//        FileHandle imagesDir = Gdx.files.internal("C:\\Users\\betma\\YandexDisk\\Скриншоты\\TowerDefence");
+//
+//        FileHandle[] fileHandles = imagesDir.list();
+//        Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- fileHandles:", "" + fileHandles.toString());
+//        int rand = MathUtils.random(fileHandles.length);
+//        Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- imagesDir.length():", "" + imagesDir.length());
+//        Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- rand:", "" + rand);
+////        }
+////        for (FileHandle fileHandle : imagesDir.list()) {
+//        for (int fH = 0; fH < fileHandles.length; fH++) {
+//            Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- fileHandle.toString():", "" + fileHandles.toString());
+//            FileHandle fileHandle = imagesDir.child(fileHandles.toString());
+//            Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- fileHandle.toString():", "" + fileHandle.toString());
+////            Image image = new Image(new Texture(Gdx.files.internal(fileHandles.)));
+////            image.setBounds(30, 30, image.getWidth()/3, image.getHeight()/3);
+////            mmStage.addActor(image);
+////            images.add(image);
+//        }
+
 //        towerDefence.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
         FileHandle mapsDir = Gdx.files.internal("maps");
         if(mapsDir.list().length == 0) {
+            towerDefence.gameLevelMaps.add("maps/island.tmx");
             towerDefence.gameLevelMaps.add("maps/arena0.tmx");
             towerDefence.gameLevelMaps.add("maps/arena1.tmx");
             towerDefence.gameLevelMaps.add("maps/arena2.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena3.tmx");
+//            towerDefence.gameLevelMaps.add("maps/old/arena3.tmx");
             towerDefence.gameLevelMaps.add("maps/arena4.tmx");
             towerDefence.gameLevelMaps.add("maps/arena4_1.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena666.tmx");
-            towerDefence.gameLevelMaps.add("maps/govnoAndreyMapa.tmx");
-//            towerDefence.gameLevelMaps.add("maps/arena2.tmx");
+            towerDefence.gameLevelMaps.add("maps/randomMap.tmx");
         } else {
             for(FileHandle fileHandle : mapsDir.list()) {
                 if(fileHandle.extension().equals("tmx")) {

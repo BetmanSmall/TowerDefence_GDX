@@ -78,7 +78,7 @@ public class TowersSelector {
 //            Gdx.app.log("TowersSelector::tap()", "-- actor:" + actor);
             if (actor instanceof Button) {
                 Button buttonActor = (Button)actor;
-                Gdx.app.log("TowersSelector::tap()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
+//                Gdx.app.log("TowersSelector::tap()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
                 if(buttonActor.isPressed()) {
                     Integer towerIndex = (Integer) buttonActor.getUserObject();
                     if (towerIndex != null) {

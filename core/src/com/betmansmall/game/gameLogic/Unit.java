@@ -51,8 +51,8 @@ public class Unit {
             this.newPosition = route.pollFirst();
             this.hp = templateForUnit.healthPoints;
             this.speed = templateForUnit.speed;
-            this.stepsInTime = 0;//templateForUnit.speed; // need respawn animation
-            this.deathElapsedTime = 0;
+            this.stepsInTime = 0f;//templateForUnit.speed; // need respawn animation
+            this.deathElapsedTime = 0f;
 
             this.player = player;
             this.currentPoint = new Vector2(newPosition.getX(), newPosition.getY());
@@ -72,6 +72,15 @@ public class Unit {
         }
     }
 
+    public void dispose() {
+        route = null;
+        oldPosition = null;
+        newPosition = null;
+        templateForUnit = null;
+        direction = null;
+        animation = null;
+    }
+
     private void setAnimation(String action) {
         try {
             AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
@@ -85,15 +94,6 @@ public class Unit {
         } catch (Exception exp) {
             Gdx.app.log("Unit::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " Exp: " + exp);
         }
-    }
-
-    public void dispose() {
-        route = null;
-        oldPosition = null;
-        newPosition = null;
-        templateForUnit = null;
-        direction = null;
-        animation = null;
     }
 
     // что бы ефекты не стакались на крипах
@@ -206,7 +206,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-                currentPoint.set(fVx, fVy);
+//                currentPoint.set(fVx, fVy);
                 circle4.set(fVx, fVy, 16f);
             }
             if(isDrawableUnits == 3 || isDrawableUnits == 5) {
@@ -241,7 +241,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-                currentPoint.set(fVx, fVy);
+//                currentPoint.set(fVx, fVy);
                 circle3.set(fVx, fVy, 16f);
             }
             if(isDrawableUnits == 2 || isDrawableUnits == 5) {
@@ -276,7 +276,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-                currentPoint.set(fVx, fVy);
+//                currentPoint.set(fVx, fVy);
                 circle2.set(fVx, fVy, 16f);
             }
             if(isDrawableUnits == 1 || isDrawableUnits == 5) {
@@ -311,7 +311,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-                currentPoint.set(fVx, fVy);
+//                currentPoint.set(fVx, fVy);
                 circle1.set(fVx, fVy, 16f);
             }
 
@@ -411,7 +411,7 @@ public class Unit {
         return route;
     }
 
-    public TextureRegion getCurentFrame() {
+    public TextureRegion getCurrentFrame() {
         return animation.getKeyFrame(stepsInTime, true);
     }
 

@@ -43,9 +43,9 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 ////            this.borderDownY = borderDownY;
 //        }
 
-//        @Override
+        @Override
         public boolean touchDown(float x, float y, int pointer, int button) {
-            Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+            Gdx.app.log("CameraController::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
 //            flinging = false;
 //            initialScale = camera.zoom;
             return false;
@@ -102,7 +102,7 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
         public boolean pan(float x, float y, float deltaX, float deltaY) {
             Vector3 touch = new Vector3(x, y, 0.0f);
             camera.unproject(touch);
-//            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+            Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.position.x + " y:" + camera.position.y);
 //            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
             if (gameInterface.pan(x, y, deltaX, deltaY)) {
@@ -219,7 +219,7 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            Gdx.app.log("MyGestureDetector::tap()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+            Gdx.app.log("MyGestureDetector::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
             flinging = false;
             initialScale = camera.zoom;
 //            Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + pointer + " button:" + button);
@@ -285,7 +285,7 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-//            Gdx.app.log("MyGestureDetector::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " deviceSettings.getDevice():" + deviceSettings.getDevice());
+            Gdx.app.log("MyGestureDetector::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
             if (gameField != null && gameField.getUnderConstruction() != null) {
                 Vector3 touch = new Vector3(screenX, screenY, 0.0f);
                 camera.unproject(touch);
@@ -302,10 +302,13 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 //            Gdx.app.log("MyGestureDetector::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
             if (gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) { // !LOL! deviceSettings is SHIT
                 Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+                Gdx.app.log("GameScreen::mouseMoved()", "-window- screenX:" + screenX + " screenY:" + screenY);
                 camera.unproject(touch);
+//                Gdx.app.log("GameScreen::mouseMoved()", "-graphics- touch.x:" + touch.x + " touch.y:" + touch.y);
                 GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
                 if (cellCoordinate != null) {
                     gameField.getUnderConstruction().setEndCoors(cellCoordinate.x, cellCoordinate.y);
+                    Gdx.app.log("GameScreen::mouseMoved()", "-cell- cellCoordinate.x:" + cellCoordinate.x + " cellCoordinate.y:" + cellCoordinate.y);
                 }
             }
             return false;

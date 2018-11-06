@@ -72,8 +72,8 @@ public class GameField {
 
     // GAME INTERFACE ZONE1
     private WhichCell whichCell;
-    public boolean gamePaused;
     public float gameSpeed;
+    public boolean gamePaused;
     public static int gamerGold; // For Shell
     public int maxOfMissedUnitsForComputer0;
     public int missedUnitsForComputer0;
@@ -119,6 +119,7 @@ public class GameField {
                 }
                 waveManager.addWave(wave);
             }
+
         }
         waveManager.checkRoutes(pathFinder);
 
@@ -126,8 +127,8 @@ public class GameField {
         Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
         // GAME INTERFACE ZONE1
         whichCell = new WhichCell(sizeFieldX, sizeFieldY, sizeCellX, sizeCellY);
-        gamePaused = false;
         gameSpeed = 1.0f;
+        gamePaused = false;
 //        gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one unit for computer!!!
         gamerGold = 100000;
         maxOfMissedUnitsForComputer0 = mapProperties.get("maxOfMissedUnitsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
@@ -155,7 +156,7 @@ public class GameField {
                             if (cell != null) {
                                 TiledMapTile tiledMapTile = cell.getTile();
                                 if (tiledMapTile != null) {
-                                    if(layer.getProperties().get("background") == null) {
+                                    if(!layer.getProperties().containsKey("background")) {
                                         field[x][y].foregroundTiles.add(tiledMapTile);
                                     } else {
                                         field[x][y].backgroundTiles.add(tiledMapTile);
@@ -319,7 +320,7 @@ public class GameField {
         delta = delta * gameSpeed;
         if (!gamePaused) {
             spawnUnits(delta);
-            stepAllUnit(delta);
+            stepAllUnits(delta);
             shotAllTowers(delta);
             moveAllShells(delta);
         }
@@ -380,9 +381,9 @@ public class GameField {
         spriteBatch.end();
         shapeRenderer.end();
 
-        shapeRenderer.setColor(Color.FIREBRICK);
+        shapeRenderer.setColor(Color.RED);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(0f, 0f, 1.5f);
+        shapeRenderer.circle(0f, 0f, 5);
         shapeRenderer.end();
 
 //        spriteBatch.begin();
@@ -689,7 +690,7 @@ public class GameField {
         }
         TextureRegion currentFrame;
         if (unit.isAlive()) {
-            currentFrame = unit.getCurentFrame();
+            currentFrame = unit.getCurrentFrame();
         } else {
             currentFrame = unit.getCurrentDeathFrame();
         }
@@ -741,7 +742,7 @@ public class GameField {
 
     private void drawUnitBar(ShapeRenderer shapeRenderer, Unit unit, float fVx, float fVy) {
         if (unit.isAlive()) {
-            TextureRegion currentFrame = unit.getCurentFrame();
+            TextureRegion currentFrame = unit.getCurrentFrame();
             fVx -= sizeCellX/2;
             fVy -= sizeCellY/2;
             float currentFrameWidth = currentFrame.getRegionWidth();
@@ -1236,7 +1237,7 @@ public class GameField {
         if (gamerGold >= templateForUnit.cost) {
             gamerGold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
-                createUnit(wave.spawnPoint, templateForUnit, wave.exitPoint, 1); // create Player1 Unit
+                createUnit(wave.spawnPoint, wave.exitPoint, templateForUnit, 1); // create Player1 Unit
             }
         }
     }
@@ -1252,7 +1253,7 @@ public class GameField {
         if (templateNameAndPoints != null) {
             TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateNameAndPoints.templateName);
             if (templateForUnit != null) {
-                createUnit(templateNameAndPoints.spawnPoint, templateForUnit, templateNameAndPoints.exitPoint, 0); // create Computer0 Unit
+                createUnit(templateNameAndPoints.spawnPoint, templateNameAndPoints.exitPoint, templateForUnit, 0); // create Computer0 Unit
             } else {
                 Gdx.app.error("GameField::spawnUnit()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
             }
@@ -1260,14 +1261,14 @@ public class GameField {
     }
 
     public void createUnit(int x, int y) {
-        createUnit(new GridPoint2(x, y), factionsManager.getRandomTemplateForUnitFromFirstFaction(), null, 0); // create computer0 Unit
+        createUnit(new GridPoint2(x, y), waveManager.lastExitPoint, factionsManager.getRandomTemplateForUnitFromFirstFaction(), 0); // create computer0 Unit
     }
 
-    private void createUnit(GridPoint2 spawnPoint, TemplateForUnit templateForUnit, GridPoint2 exitPoint, int player) {
+    private void createUnit(GridPoint2 spawnPoint, GridPoint2 exitPoint, TemplateForUnit templateForUnit, int player) {
 //        Gdx.app.log("GameField::createUnit(" + spawnPoint + ", " + templateForUnit.toString(true) + ", " + exitPoint + ", " + player + ")", "--");
-        if (exitPoint == null) {
-            exitPoint = waveManager.lastExitPoint;
-        }
+//        if (exitPoint == null) {
+//            exitPoint = waveManager.lastExitPoint;
+//        }
         if (spawnPoint != null && exitPoint != null && pathFinder != null) {
 //            pathFinder.loadCharMatrix(getCharMatrix());
             ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
@@ -1280,7 +1281,7 @@ public class GameField {
                 if(towersManager.amountTowers() > 0) {
                     Gdx.app.log("GameField::createUnit()", "-- Remove one last tower! And retry call createUnit()");
                     removeLastTower();
-                    createUnit(spawnPoint, templateForUnit, exitPoint, player);
+                    createUnit(spawnPoint, exitPoint, templateForUnit, player);
                 }
             }
         } else {
@@ -1446,7 +1447,7 @@ public class GameField {
         }
     }
 
-    private void stepAllUnit(float delta) {
+    private void stepAllUnits(float delta) {
         for (Unit unit : unitsManager.units) {
             Node oldPosition = unit.getNewPosition();
             if (unit.isAlive()) {
@@ -1455,7 +1456,7 @@ public class GameField {
                     if (!newPosition.equals(oldPosition)) {
                         field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
                         field[newPosition.getX()][newPosition.getY()].setUnit(unit);
-//                    Gdx.app.log("GameField::stepAllUnit()", "-- Unit move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
+//                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
                     }
                 } else {
                     field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
@@ -1465,7 +1466,7 @@ public class GameField {
                         missedUnitsForComputer0++;
                     } // WTF??? realy?
                     unitsManager.removeUnit(unit);
-//                Gdx.app.log("GameField::stepAllUnit()", "-- Unit finished!");
+//                Gdx.app.log("GameField::stepAllUnits()", "-- Unit finished!");
                 }
             }
             if (!unit.isAlive()) {
@@ -1474,7 +1475,7 @@ public class GameField {
 //                    GameField.gamerGold += unit.templateForUnit.bounty;
                     unit.dispose();
                     unitsManager.removeUnit(unit);
-//                Gdx.app.log("GameField::stepAllUnit()", "-- Unit death! and delete!");
+//                Gdx.app.log("GameField::stepAllUnits()", "-- Unit death! and delete!");
                 }
             }
         }

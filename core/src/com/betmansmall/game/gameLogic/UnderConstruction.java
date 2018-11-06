@@ -11,9 +11,7 @@ public class UnderConstruction {
     public int state;
     public int startX, startY;
     public int endX, endY;
-
     public TemplateForTower templateForTower;
-
     public Array<Integer> coorsX;
     public Array<Integer> coorsY;
 
@@ -65,7 +63,7 @@ public class UnderConstruction {
             coorsX.clear();
             coorsY.clear();
             int towerSize = templateForTower.size;
-            int deltaX = 0, deltaY=0;
+            int deltaX = 0, deltaY = 0;
             if(towerSize != 1) {
                 if(towerSize%2 == 0) {
                     deltaX = towerSize/2;
