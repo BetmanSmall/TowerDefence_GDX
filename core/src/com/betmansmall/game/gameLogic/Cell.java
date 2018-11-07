@@ -74,14 +74,6 @@ public class Cell {
         return null;
     }
 
-//    public void addTiledMapTile(TiledMapTile tiledMapTile) {
-//        tiledMapTiles.add(tiledMapTile);
-//    }
-//
-//    public Array<TiledMapTile> getTiledMapTiles() {
-//        return tiledMapTiles;
-//    }
-
     public boolean isEmpty() {
         return empty;
     }

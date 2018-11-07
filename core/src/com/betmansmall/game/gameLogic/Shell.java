@@ -1,10 +1,10 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.betmansmall.game.gameLogic.mapLoader.Tile;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -22,7 +22,7 @@ public class Shell {
     public TemplateForTower templateForTower;
 
     public TextureRegion textureRegion;
-    public ObjectMap<String, TiledMapTile> ammunitionPictures;
+    public ObjectMap<String, Tile> ammunitionPictures;
 
     public Vector2 currentPoint;
     public Circle circle;
@@ -37,7 +37,7 @@ public class Shell {
         this.ammoSpeed = templateForTower.ammoSpeed;
         this.templateForTower = templateForTower;
 
-        TiledMapTile tiledMapTile = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP);
+        Tile tiledMapTile = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP);
         this.textureRegion = tiledMapTile != null ? tiledMapTile.getTextureRegion() : templateForTower.idleTile.getTextureRegion();
         this.ammunitionPictures = templateForTower.ammunitionPictures;
 

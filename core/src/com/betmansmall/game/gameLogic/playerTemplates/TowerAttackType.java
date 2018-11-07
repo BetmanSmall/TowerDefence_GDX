@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 
 public enum TowerAttackType {
     Pit("Pit"),
+    FireBall("FireBall"),
     Melee("Melee"),
     Range("Range"),
     RangeFly("RangeFly");
@@ -29,7 +30,7 @@ public enum TowerAttackType {
                 return t;
             }
         }
-        Gdx.app.error("TowerAttackType", "getType(" + type + "); -- Bad type!");
+        Gdx.app.error("TowerAttackType::getType()", "-- BadType:" + type);
         return null;
     }
 }

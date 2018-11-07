@@ -29,7 +29,7 @@ public class ShellEffectType {
                     return t;
                 }
             }
-            Gdx.app.error("ShellEffectEnum", "getType(" + type + "); -- Bad type!");
+            Gdx.app.error("ShellEffectEnum::getType()", "-- BadType:" + type);
             return null;
         }
     }
@@ -70,12 +70,12 @@ public class ShellEffectType {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ShellEffectType[");
-        sb.append("shellEffectEnum:" + shellEffectEnum + ",");
-        sb.append("time:" + time + ",");
-        sb.append("elapsedTime:" + elapsedTime + ",");
-        sb.append("damage:" + damage + ",");
-        sb.append("speed:" + speed + ",");
-        sb.append("damage:" + damage + ",");
+        sb.append(",shellEffectEnum:" + shellEffectEnum);
+        sb.append(",time:" + time);
+        sb.append(",elapsedTime:" + elapsedTime);
+        sb.append(",damage:" + damage);
+        sb.append(",speed:" + speed);
+        sb.append(",damage:" + damage);
         sb.append("]");
         return sb.toString();
     }

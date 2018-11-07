@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 
 public class GameScreen /*extends GestureDetector*/ implements Screen, GestureListener, InputProcessor {
 //    class CameraController implements GestureListener {
@@ -340,13 +341,13 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
     private GameInterface gameInterface;
 //    private CameraController cameraController;
 
-    public GameScreen(String mapName, float levelOfDifficulty) {
+    public GameScreen(String mapName, FactionsManager factionsManager, float levelOfDifficulty) {
         Gdx.app.log("GameScreen::GameScreen(" + mapName + ", " + levelOfDifficulty + ")", "--");
 //        shapeRenderer = new ShapeRenderer();
 //        spriteBatch = new SpriteBatch();
         bitmapFont = new BitmapFont();
 
-        gameField = new GameField(mapName, levelOfDifficulty);
+        gameField = new GameField(mapName, factionsManager, levelOfDifficulty);
         gameInterface = new GameInterface(gameField, bitmapFont);
         gameInterface.mapNameLabel.setText("MapName:" + mapName);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

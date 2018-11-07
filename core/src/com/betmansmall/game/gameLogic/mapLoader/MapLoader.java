@@ -30,6 +30,7 @@ import com.betmansmall.game.gameLogic.Wave;
 import com.betmansmall.game.gameLogic.WaveManager;
 
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
 
@@ -228,6 +229,20 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             Gdx.app.log("MapLoader::loadTilemap()", "-- Not found waves block in map:" + tmxFile);
         }
         return map;
+    }
+
+    public static void loadPropertiesStatic(ObjectMap<String, String> properties, Element element) {
+        if (element == null) return;
+        if (element.getName().equals("properties")) {
+            for (Element property : element.getChildrenByName("property")) {
+                String name = property.getAttribute("name", null);
+                String value = property.getAttribute("value", null);
+                if (value == null) {
+                    value = property.getText();
+                }
+                properties.put(name, value);
+            }
+        }
     }
 
     /**
@@ -481,6 +496,20 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             }
             map.getTileSets().addTileSet(tileset);
         }
+    }
+
+    public static FileHandle getRelativeFileHandle(FileHandle file, String path) {
+        StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
+        FileHandle result = file.parent();
+        while (tokenizer.hasMoreElements()) {
+            String token = tokenizer.nextToken();
+            if (token.equals(".."))
+                result = result.parent();
+            else {
+                result = result.child(token);
+            }
+        }
+        return result;
     }
 
     public void wavesParser(Element waves) {

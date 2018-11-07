@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Array;
+import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 
 /**
  * Created by BetmanSmall on 13.10.2015.
@@ -15,6 +16,7 @@ public class TowerDefence extends Game {
     private Array<Screen> screensArray = new Array<Screen>();
 
     private static volatile TowerDefence instance;
+    public FactionsManager factionsManager;
 
     public Array<String> gameLevelMaps = new Array<String>();
 
@@ -22,7 +24,7 @@ public class TowerDefence extends Game {
         Gdx.app.log("TowerDefence::nextGameLevel()", "--");
         if(gameLevelMaps.size > 0) {
 //            removeTopScreen();
-            addScreen(new GameScreen(gameLevelMaps.first(), 1f)); // default level of Difficulty for Campaign
+            addScreen(new GameScreen(gameLevelMaps.first(), factionsManager, 1f)); // default level of Difficulty for Campaign
             gameLevelMaps.removeIndex(0);
         } else {
             removeAllScreens();
@@ -52,8 +54,13 @@ public class TowerDefence extends Game {
     public void create() {
         Gdx.app.log("TowerDefence::create()", "--");
         instance = this;
-        Screen mainMenuScreen = new MainMenuScreen(this);
-        addScreen(mainMenuScreen);
+        try {
+            factionsManager = new FactionsManager();
+            Screen mainMenuScreen = new MainMenuScreen(this);
+            addScreen(mainMenuScreen);
+        } catch (Exception exeption) {
+            exeption.printStackTrace();
+        }
     }
 
     /**

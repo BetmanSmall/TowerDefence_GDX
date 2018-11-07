@@ -162,7 +162,7 @@ public class Tower {
 //    public void setRadiusDetection(int radiusDetection) {
 //        this.radiusDetection = radiusDetection;
 //    }
-    public int getRadiusDetection() {
+    public float getRadiusDetection() {
         return templateForTower.radiusDetection;
     }
 

@@ -30,7 +30,7 @@ public enum ShellAttackType {
                 return t;
             }
         }
-        Gdx.app.error("ShellAttackType", "getType(" + type + "); -- Bad type!");
+        Gdx.app.error("ShellAttackType::getType()", "-- BadType:" + type);
         return null;
     }
 }

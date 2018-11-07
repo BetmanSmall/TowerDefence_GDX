@@ -206,7 +206,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-//                currentPoint.set(fVx, fVy);
+                currentPoint.set(fVx, fVy);
                 circle4.set(fVx, fVy, 16f);
             }
             if(isDrawableUnits == 3 || isDrawableUnits == 5) {
@@ -241,7 +241,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-//                currentPoint.set(fVx, fVy);
+                currentPoint.set(fVx, fVy);
                 circle3.set(fVx, fVy, 16f);
             }
             if(isDrawableUnits == 2 || isDrawableUnits == 5) {
@@ -276,7 +276,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-//                currentPoint.set(fVx, fVy);
+                currentPoint.set(fVx, fVy);
                 circle2.set(fVx, fVy, 16f);
             }
             if(isDrawableUnits == 1 || isDrawableUnits == 5) {
@@ -311,7 +311,7 @@ public class Unit {
                     fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
                     fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
                 }
-//                currentPoint.set(fVx, fVy);
+                currentPoint.set(fVx, fVy);
                 circle1.set(fVx, fVy, 16f);
             }
 

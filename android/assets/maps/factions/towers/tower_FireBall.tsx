@@ -11,7 +11,7 @@
   <property name="ammoSize" value="50"/>
   <property name="ammoSpeed" value="10"/>
   <property name="reloadTime" value="2.5"/>
-  <property name="towerAttackType" value="Range_FireBall"/>
+  <property name="towerAttackType" value="FireBall"/>
   <!-- <property name="shellAttackType" value="MultipleTarget"/> -->
   <!-- <property name="shellEffectType" value="None"/> -->
  </properties>

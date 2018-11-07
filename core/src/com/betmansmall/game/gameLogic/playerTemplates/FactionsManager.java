@@ -13,49 +13,54 @@ import java.util.StringTokenizer;
  * Created by betmansmall on 23.02.2016.
  */
 public class FactionsManager {
+    public SimpleTemplate fireball_0;
+    public SimpleTemplate explosion;
     private Array<Faction> factions;
-    private float levelOfDifficulty;
 
     public static Float defHealthPoints = 500f;
     public static Float defBounty = 50f;
     public static Float defCost = 50f;
     public static Float defSpeed = 1f;
 
-    public FactionsManager(float levelOfDifficulty) {
+    public FactionsManager() throws Exception {
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- :");
+        this.fireball_0 = new SimpleTemplate(Gdx.files.internal("maps/other/fireball_0.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- fireball_0:" + fireball_0.toString());
+        this.explosion = new SimpleTemplate(Gdx.files.internal("maps/other/explosion.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- explosion:" + explosion.toString());
         this.factions = new Array<Faction>();
-        this.levelOfDifficulty = levelOfDifficulty;
+        loadFactions();
     }
 
-    public void addUnitToFaction(TemplateForUnit unit) {
-        String newFactionName = unit.getFactionName();
-        for (Faction faction : factions) {
-            if (faction.getName().equals(newFactionName)) {
-                faction.getTemplateForUnits().add(unit);
-                unit.setFaction(faction);
-                return;
-            }
-        }
-        Faction faction = new Faction(newFactionName);
-        faction.getTemplateForUnits().add(unit);
-        unit.setFaction(faction);
-        factions.add(faction);
-    }
-
-    public void addTowerToFaction(TemplateForTower tower) {
-//        Gdx.app.log("FactionsManager::addTowerToFaction()", "-- Tower name:" + tower.name);
-        String newFactionName = tower.getFactionName();
-        for (Faction faction : factions) {
-            if (faction.getName().equals(newFactionName)) {
-                faction.getTemplateForTowers().add(tower);
-                tower.setFaction(faction);
-                return;
-            }
-        }
-        Faction faction = new Faction(newFactionName);
-        faction.getTemplateForTowers().add(tower);
-        tower.setFaction(faction);
-        factions.add(faction);
-    }
+//    public void addUnitToFaction(TemplateForUnit unit) {
+//        String newFactionName = unit.getFactionName();
+//        for (Faction faction : factions) {
+//            if (faction.getName().equals(newFactionName)) {
+//                faction.getTemplateForUnits().add(unit);
+//                unit.setFaction(faction);
+//                return;
+//            }
+//        }
+//        Faction faction = new Faction(newFactionName);
+//        faction.getTemplateForUnits().add(unit);
+//        unit.setFaction(faction);
+//        factions.add(faction);
+//    }
+//    public void addTowerToFaction(TemplateForTower tower) {
+////        Gdx.app.log("FactionsManager::addTowerToFaction()", "-- Tower name:" + tower.name);
+//        String newFactionName = tower.getFactionName();
+//        for (Faction faction : factions) {
+//            if (faction.getName().equals(newFactionName)) {
+//                faction.getTemplateForTowers().add(tower);
+//                tower.setFaction(faction);
+//                return;
+//            }
+//        }
+//        Faction faction = new Faction(newFactionName);
+//        faction.getTemplateForTowers().add(tower);
+//        tower.setFaction(faction);
+//        factions.add(faction);
+//    }
 
     public TemplateForUnit getRandomTemplateForUnitFromFirstFaction() {
         Faction faction = factions.first();
@@ -153,7 +158,7 @@ public class FactionsManager {
     public void loadFactions() {
         Array<FileHandle> factions = new Array<FileHandle>();
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
-            Gdx.app.log("FactionsManager::loadFactions()", "-- ApplicationType.Android");
+//            Gdx.app.log("FactionsManager::loadFactions()", "-- ApplicationType.Android");
             FileHandle factionsDir = Gdx.files.internal("maps/factions");
             factions.addAll(factionsDir.list());
         } else if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
@@ -161,10 +166,10 @@ public class FactionsManager {
             boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
             String extRoot = Gdx.files.getExternalStoragePath();
             String locRoot = Gdx.files.getLocalStoragePath();
-            Gdx.app.log("FactionsManager::loadFactions()", "-- ApplicationType.Desktop -- isExtAvailable:" + isExtAvailable + " isLocAvailable:" + isLocAvailable);
-            Gdx.app.log("FactionsManager::loadFactions()", "-- extRoot:" + extRoot + " locRoot:" + locRoot);
+//            Gdx.app.log("FactionsManager::loadFactions()", "-- ApplicationType.Desktop -- isExtAvailable:" + isExtAvailable + " isLocAvailable:" + isLocAvailable);
+//            Gdx.app.log("FactionsManager::loadFactions()", "-- extRoot:" + extRoot + " locRoot:" + locRoot);
             FileHandle factionsDir = Gdx.files.internal("maps/factions");
-            Gdx.app.log("FactionsManager::loadFactions()", "-- factionsDir.length:" + factionsDir.list().length);
+//            Gdx.app.log("FactionsManager::loadFactions()", "-- factionsDir.length:" + factionsDir.list().length);
             if(factionsDir.list().length == 0) {
                 factions.add(Gdx.files.internal("maps/factions/humans_faction.fac"));
                 factions.add(Gdx.files.internal("maps/factions/orcs_faction.fac"));
@@ -196,8 +201,7 @@ public class FactionsManager {
                         if (source != null) {
                             FileHandle templateFile = getRelativeFileHandle(factionFile, source);
                             TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
-                            templateForUnit.setFaction(faction);
-                            templateForUnit.healthPoints = templateForUnit.healthPoints*levelOfDifficulty; // simple level of difficulty
+//                            templateForUnit.setFaction(faction);
                             faction.getTemplateForUnits().add(templateForUnit);
                         }
                     }
@@ -207,8 +211,12 @@ public class FactionsManager {
                         if (source != null) {
                             FileHandle templateFile = getRelativeFileHandle(factionFile, source);
                             TemplateForTower templateForTower = new TemplateForTower(templateFile);
-                            templateForTower.setFaction(faction);
+//                            templateForTower.setFaction(faction);
+                            if (templateForTower.templateName.contains("tower_FireBall")) {
+                                templateForTower.loadFireBall(fireball_0);
+                            }
                             faction.getTemplateForTowers().add(templateForTower);
+                            Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForTower.toString(true));
                         }
                     }
                     factions.add(faction);

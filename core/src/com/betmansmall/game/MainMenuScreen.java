@@ -142,12 +142,12 @@ public class MainMenuScreen implements Screen {
         } else {
             for(FileHandle fileHandle : mapsDir.list()) {
                 if(fileHandle.extension().equals("tmx")) {
-                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", " -- towerDefence.gameLevelMaps.add():" + fileHandle.path());
+                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.add():" + fileHandle.path());
                     towerDefence.gameLevelMaps.add(fileHandle.path());
                 }
             }
         }
-        Gdx.app.log("MainMenuScreen::MainMenuScreen()", " -- towerDefence.gameLevelMaps.size:" + towerDefence.gameLevelMaps.size);
+        Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.size:" + towerDefence.gameLevelMaps.size);
     }
 
     private void create(int width, int height) {
@@ -233,15 +233,15 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        towerDefence.addScreen(new GameScreen(mapName, 0.5f));
+                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, 0.5f));
                         break;
                     case 2:
                         //start game with NORMAL
-                        towerDefence.addScreen(new GameScreen(mapName, 1f));
+                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, 1f));
                         break;
                     case 3:
                         //start game with HARD
-                        towerDefence.addScreen(new GameScreen(mapName, 2f));
+                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, 2f));
                         break;
                 }
                 break;

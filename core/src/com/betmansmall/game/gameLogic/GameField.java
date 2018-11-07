@@ -17,7 +17,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Intersector; // AlexGor
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.WhichCell;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
@@ -46,9 +46,9 @@ public class GameField {
     private PathFinder pathFinder;
     private TiledMap map;
     private Cell[][] field;
+    public FactionsManager factionsManager;
     public WaveManager waveManager; // ALL public for all || we are friendly :)
-    private FactionsManager factionsManager;
-    private TowersManager towersManager;
+    public TowersManager towersManager;
     public static UnitsManager unitsManager; // For Shell
 
     private IsometricTiledMapRenderer renderer;
@@ -81,13 +81,12 @@ public class GameField {
     public int missedUnitsForPlayer1;
     // GAME INTERFACE ZONE2
 
-    public GameField(String mapName, float levelOfDifficulty) {
+    public GameField(String mapName, FactionsManager factionsManager, float levelOfDifficulty) {
         Gdx.app.log("GameField::GameField(" + mapName + ", " + levelOfDifficulty + ")", "--");
+        this.factionsManager = factionsManager;
         waveManager = new WaveManager();
         towersManager = new TowersManager();
         unitsManager = new UnitsManager();
-        factionsManager = new FactionsManager(levelOfDifficulty);
-        factionsManager.loadFactions();
 
         map = new MapLoader(waveManager).load(mapName);
         renderer = new IsometricTiledMapRenderer(map, spriteBatch);
@@ -1481,7 +1480,7 @@ public class GameField {
         }
     }
 
-    private void shotAllTowers(float delta) { // AlexGor
+    private void shotAllTowers(float delta) {
         for (Tower tower : towersManager.getAllTowers()) {
             TowerAttackType towerAttackType = tower.getTemplateForTower().towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
@@ -1523,7 +1522,7 @@ public class GameField {
 
     private boolean shotMeleeTower(Tower tower) {
         boolean attack = false;
-        int radius = tower.getRadiusDetection();
+        int radius = (int)tower.getRadiusDetection();
         for (int tmpX = -radius; tmpX <= radius; tmpX++) {
             for (int tmpY = -radius; tmpY <= radius; tmpY++) {
                 GridPoint2 position = tower.getPosition();
@@ -1548,7 +1547,7 @@ public class GameField {
         for (Tower tower : towersManager.getAllTowers()) {
             tower.moveAllShells(delta);
         }
-    } // AlexGor
+    }
 
 //    public Array<TemplateForTower> getFirstTemplateForTowers() {
 //        factionsManager.ge
