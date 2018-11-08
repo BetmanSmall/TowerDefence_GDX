@@ -8,6 +8,8 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.gameLogic.mapLoader.AnimatedTile;
+import com.betmansmall.game.gameLogic.mapLoader.StaticTile;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
@@ -20,13 +22,13 @@ import java.util.ArrayDeque;
  * Created by betmansmall on 22.09.2015.
  */
 public class Unit {
-    private ArrayDeque<Node> route;
-    private Node oldPosition;
-    private Node newPosition;
-    private float hp;
-    private float speed;
-    private float stepsInTime;
-    private float deathElapsedTime;
+    public ArrayDeque<Node> route;
+    public Node oldPosition;
+    public Node newPosition;
+    public float hp;
+    public float speed;
+    public float stepsInTime;
+    public float deathElapsedTime;
 
     public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
     public Vector2 currentPoint;
@@ -83,8 +85,8 @@ public class Unit {
 
     private void setAnimation(String action) {
         try {
-            AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
-            StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+            AnimatedTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
+            StaticTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
             TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
             for (int k = 0; k < staticTiledMapTiles.length; k++) {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
@@ -370,19 +372,19 @@ public class Unit {
         return false;
     }
 
-    public Node getOldPosition() {
-        return oldPosition;
-    }
-    public Node getNewPosition() {
-        return newPosition;
-    }
+//    public Node getOldPosition() {
+//        return oldPosition;
+//    }
+//    public Node getNewPosition() {
+//        return newPosition;
+//    }
 
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-    public int getHp() {
-        return (int)hp;
-    }
+//    public void setHp(int hp) {
+//        this.hp = hp;
+//    }
+//    public int getHp() {
+//        return (int)hp;
+//    }
     public boolean isAlive() {
         if(animation == null) { // TODO Не верно, нужно исправить.
             return false;
@@ -390,26 +392,26 @@ public class Unit {
         return hp > 0 ? true : false;
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-    public float getSpeed() {
-        return speed;
-    }
+//    public void setSpeed(float speed) {
+//        this.speed = speed;
+//    }
+//    public float getSpeed() {
+//        return speed;
+//    }
 
-    public void setStepsInTime(float stepsInTime) {
-        this.stepsInTime = stepsInTime;
-    }
-    public float getStepsInTime() {
-        return stepsInTime;
-    }
+//    public void setStepsInTime(float stepsInTime) {
+//        this.stepsInTime = stepsInTime;
+//    }
+//    public float getStepsInTime() {
+//        return stepsInTime;
+//    }
 
-    public void setRoute(ArrayDeque<Node> route) {
-        this.route = route;
-    }
-    public ArrayDeque<Node> getRoute() {
-        return route;
-    }
+//    public void setRoute(ArrayDeque<Node> route) {
+//        this.route = route;
+//    }
+//    public ArrayDeque<Node> getRoute() {
+//        return route;
+//    }
 
     public TextureRegion getCurrentFrame() {
         return animation.getKeyFrame(stepsInTime, true);

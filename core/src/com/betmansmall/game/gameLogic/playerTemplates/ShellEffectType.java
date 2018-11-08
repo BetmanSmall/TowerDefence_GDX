@@ -75,7 +75,7 @@ public class ShellEffectType {
         sb.append(",elapsedTime:" + elapsedTime);
         sb.append(",damage:" + damage);
         sb.append(",speed:" + speed);
-        sb.append(",damage:" + damage);
+        sb.append(",used:" + used);
         sb.append("]");
         return sb.toString();
     }

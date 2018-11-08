@@ -32,7 +32,7 @@ public class UnitsManager {
 
     public Unit getUnit(Node position) {
         for (int i = 0; i < units.size; i++) {
-            Node unitPosition = units.get(i).getNewPosition();
+            Node unitPosition = units.get(i).newPosition;
             if (unitPosition.equals(position)) {
                 return units.get(i);
             }
@@ -46,10 +46,11 @@ public class UnitsManager {
 
     public boolean setRouteForUnits(PathFinder pathFinder, GridPoint2 exitPoint) {
         for (int i = 0; i < units.size; i++) {
-            ArrayDeque<Node> adv = pathFinder.route(new int[]{units.get(i).getNewPosition().getX(), units.get(i).getNewPosition().getY()},
+            ArrayDeque<Node> adv = pathFinder.route(new int[]{units.get(i).newPosition.getX(), units.get(i).newPosition.getY()},
                     new int[]{exitPoint.x, exitPoint.y}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-            if (adv != null) {
-                units.get(i).setRoute(adv);
+            if (adv != null
+                    ) {
+                units.get(i).route = adv;
             } else {
                 return false;
             }

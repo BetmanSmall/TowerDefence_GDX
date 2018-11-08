@@ -107,7 +107,7 @@ public class FactionsManager {
         if (faction != null) {
             for (TemplateForUnit templateForUnit : faction.getTemplateForUnits()) {
                 if (templateForUnit != null) {
-                    if (templateForUnit.getTemplateName().equals(templateName)) {
+                    if (templateForUnit.templateName.equals(templateName)) {
                         return templateForUnit;
                     }
                 }
@@ -121,7 +121,7 @@ public class FactionsManager {
             if (faction != null) {
                 for (TemplateForUnit templateForUnit : faction.getTemplateForUnits()) {
                     if (templateForUnit != null) {
-                        if (templateForUnit.getTemplateName().equals(templateName)) {
+                        if (templateForUnit.templateName.equals(templateName)) {
                             return templateForUnit;
                         }
                     }

@@ -14,7 +14,6 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Intersector;
@@ -43,20 +42,21 @@ public class GameField {
     private SpriteBatch spriteBatch = new SpriteBatch();
     private BitmapFont bitmapFont = new BitmapFont();
 
-    private PathFinder pathFinder;
-    private TiledMap map;
-    private Cell[][] field;
     public FactionsManager factionsManager;
     public WaveManager waveManager; // ALL public for all || we are friendly :)
     public TowersManager towersManager;
-    public static UnitsManager unitsManager; // For Shell
+    public static UnitsManager unitsManager; // For Bullet
+    private TiledMap map;
+    private Cell[][] field;
+    private PathFinder pathFinder;
 
-    private IsometricTiledMapRenderer renderer;
+//    private IsometricTiledMapRenderer renderer;
 
+    // CameraController1 && map
     public int sizeFieldX, sizeFieldY;
     public static int sizeCellX, sizeCellY;
     private int halfSizeCellX, halfSizeCellY;
-
+    // CameraController2
     public int isDrawableBackground = 1;
     public int isDrawableForeground = 1;
     public int isDrawableGrid = 1;
@@ -65,21 +65,33 @@ public class GameField {
 //    public boolean isDrawableRoutes = true;3
     public int isDrawableGridNav = 1;
     public int drawOrder = 8;
+    private WhichCell whichCell;
+    // CameraController3
 
     private UnderConstruction underConstruction;
     private Texture greenCheckmark;
     private Texture redCross;
 
+    boolean isometric;
+//    QPixmap global_pixmap;
+//    QPixmap global_pixmap_PathPoint;
+//    QPixmap global_pixmap_EnemyPathPoint;
+//    QPixmap global_pixmap_DestinationPoint;
+//    QPixmap global_pixmap_ExitPoint;
+
     // GAME INTERFACE ZONE1
-    private WhichCell whichCell;
+//    float timeOfGame;
     public float gameSpeed;
     public boolean gamePaused;
-    public static int gamerGold; // For Shell
+    public static int gamerGold; // For Bullet
+    // GAME INTERFACE ZONE2
+    Cell cellSpawnHero;
+    Cell cellExitHero;
     public int maxOfMissedUnitsForComputer0;
     public int missedUnitsForComputer0;
     public int maxOfMissedUnitsForPlayer1;
     public int missedUnitsForPlayer1;
-    // GAME INTERFACE ZONE2
+    // GAME INTERFACE ZONE3
 
     public GameField(String mapName, FactionsManager factionsManager, float levelOfDifficulty) {
         Gdx.app.log("GameField::GameField(" + mapName + ", " + levelOfDifficulty + ")", "--");
@@ -89,7 +101,7 @@ public class GameField {
         unitsManager = new UnitsManager();
 
         map = new MapLoader(waveManager).load(mapName);
-        renderer = new IsometricTiledMapRenderer(map, spriteBatch);
+//        renderer = new IsometricTiledMapRenderer(map, spriteBatch);
 
         sizeFieldX = map.getProperties().get("width", Integer.class);
         sizeFieldY = map.getProperties().get("height", Integer.class);
@@ -114,7 +126,7 @@ public class GameField {
                 Wave wave = new Wave(spawnPoint, exitPoint, 0f);
                 for (int k = 0; k < 10; k++) {
                     wave.addAction("interval=" + 1);
-                    wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().getTemplateName());
+                    wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().templateName);
                 }
                 waveManager.addWave(wave);
             }
@@ -146,48 +158,69 @@ public class GameField {
             field = new Cell[sizeFieldX][sizeFieldY];
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    field[x][y] = new Cell();
-                    field[x][y].setGraphicCoordinates(x, y, halfSizeCellX, halfSizeCellY);
+                    Cell cell = field[x][y] = new Cell();
+                    cell.setGraphicCoordinates(x, y, halfSizeCellX, halfSizeCellY);
                     for (MapLayer mapLayer : mapLayers) {
                         if (mapLayer instanceof TiledMapTileLayer) {
                             TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
-                            TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-                            if (cell != null) {
-                                TiledMapTile tiledMapTile = cell.getTile();
+                            TiledMapTileLayer.Cell tileLayerCell = layer.getCell(x, y);
+                            if (tileLayerCell != null) {
+                                TiledMapTile tiledMapTile = tileLayerCell.getTile();
                                 if (tiledMapTile != null) {
-                                    if(!layer.getProperties().containsKey("background")) {
-                                        field[x][y].foregroundTiles.add(tiledMapTile);
-                                    } else {
-                                        field[x][y].backgroundTiles.add(tiledMapTile);
+                                    String layerName = layer.getName();
+                                    if (layerName != null) {
+                                        if ( layerName.equals("background") ) {
+                                            cell.backgroundTiles.add(tiledMapTile);
+                                        } else if ( layerName.equals("ground") || layerName.equals("entity") ) {
+                                            cell.setTerrain(tiledMapTile);
+                                        } else if ( layerName.equals("towers") ) {
+                                            cell.removeTerrain(true);
+                                            this.createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 0);
+                                        } else {
+                                            cell.foregroundTiles.add(tiledMapTile);
+                                        }
                                     }
-                                    if (tiledMapTile.getProperties().get("terrain") != null) {
-                                        field[x][y].setTerrain();
-                                    } else if (tiledMapTile.getProperties().get("spawnPoint") != null) {
-//                                    spawnPoint = new GridPoint2(x, y);
+//                                if (!tiledMapTile.getProperties().) {
+//                                    qDebug() << "GameField::createField(); -- layerName:" << layerName;
+//                                    qDebug() << "GameField::createField(); -- tile->getId():" << tile->getId();
+//                                    qDebug() << "GameField::createField(); -- tile->getProperties()->size():" << tile->getProperties()->size();
+//                                    qDebug() << "GameField::createField(); -- keys:" << tile->getProperties()->keys();
+//                                    qDebug() << "GameField::createField(); -- values:" << tile->getProperties()->values();
+//                                }
+//                                    if(!layer.getProperties().containsKey("background")) {
+//                                        field[x][y].foregroundTiles.add(tiledMapTile);
+//                                    } else {
+//                                        field[x][y].backgroundTiles.add(tiledMapTile);
+//                                    }
+//                                    if (tiledMapTile.getProperties().get("terrain") != null) {
+//                                        field[x][y].setTerrain();
+//                                    } else
+                                    if (tiledMapTile.getProperties().get("spawnPoint") != null) {
+                                        cellSpawnHero = cell;
+                                        cellSpawnHero.spawn = true;
 //                                        waveManager.spawnPoints.add(new GridPoint2(x, y));
-//                                    field[x][y].setTerrain();
-                                        Gdx.app.log("GameField::GameField()", "-- Set spawnPoint: (" + x + ", " + y + ")");
+                                        Gdx.app.log("GameField::createField()", "-- Set cellSpawnHero:" + cellSpawnHero);
                                     } else if (tiledMapTile.getProperties().get("exitPoint") != null) {
-//                                    exitPoint = new GridPoint2(x, y);
+                                        cellExitHero = cell;
+                                        cellExitHero.exit = true;
 //                                        waveManager.exitPoints.add(new GridPoint2(x, y));
-//                                    field[x][y].setTerrain();
-                                        Gdx.app.log("GameField::GameField()", "-- Set exitPoint: (" + x + ", " + y + ")");
+                                        Gdx.app.log("GameField::createField()", "-- Set cellExitHero:" + cellExitHero);
                                     }
-                                    // task 6. отрисовка деревьев полностью
-                                    if(tiledMapTile.getProperties().get("treeName") != null) {
-                                        String treeName = tiledMapTile.getProperties().get("treeName", String.class);
-                                        int treeWidth = Integer.parseInt(tiledMapTile.getProperties().get("treeWidth", "1", String.class));
-                                        int treeHeight = Integer.parseInt(tiledMapTile.getProperties().get("treeHeight", "1", String.class));
-                                        Gdx.app.log("GameField::createField()", "-- New Tree:" + treeName + "[" + treeWidth + "," + treeHeight + "]:{" + x + "," + y + "}");
-                                        float regionX = tiledMapTile.getTextureRegion().getRegionX();
-                                        float regionY = tiledMapTile.getTextureRegion().getRegionY();
-                                        float regionWidth = tiledMapTile.getTextureRegion().getRegionWidth();
-                                        float regionHeight = tiledMapTile.getTextureRegion().getRegionWidth();
-                                        Gdx.app.log("GameField::createField()", "-- regionX:" + regionX + " regionY:" + regionY + " regionWidth:" + regionWidth + " regionHeight:" + regionHeight);
-                                        TextureRegion textureRegion = new TextureRegion(tiledMapTile.getTextureRegion());
-                                        textureRegion.setRegion(regionX - ((treeWidth>2) ? (treeWidth-2)*regionWidth : 0), regionY - ((treeHeight>1) ? (treeHeight-1)*regionHeight : 0), treeWidth*regionWidth, treeHeight*regionHeight);
-//                                        Cell.Tree tree = new Cell.Tree(textureRegion, treeWidth, treeHeight);
-                                    }
+//                                    // task 6. отрисовка деревьев полностью
+//                                    if(tiledMapTile.getProperties().get("treeName") != null) {
+//                                        String treeName = tiledMapTile.getProperties().get("treeName", String.class);
+//                                        int treeWidth = Integer.parseInt(tiledMapTile.getProperties().get("treeWidth", "1", String.class));
+//                                        int treeHeight = Integer.parseInt(tiledMapTile.getProperties().get("treeHeight", "1", String.class));
+//                                        Gdx.app.log("GameField::createField()", "-- New Tree:" + treeName + "[" + treeWidth + "," + treeHeight + "]:{" + x + "," + y + "}");
+//                                        float regionX = tiledMapTile.getTextureRegion().getRegionX();
+//                                        float regionY = tiledMapTile.getTextureRegion().getRegionY();
+//                                        float regionWidth = tiledMapTile.getTextureRegion().getRegionWidth();
+//                                        float regionHeight = tiledMapTile.getTextureRegion().getRegionWidth();
+//                                        Gdx.app.log("GameField::createField()", "-- regionX:" + regionX + " regionY:" + regionY + " regionWidth:" + regionWidth + " regionHeight:" + regionHeight);
+//                                        TextureRegion textureRegion = new TextureRegion(tiledMapTile.getTextureRegion());
+//                                        textureRegion.setRegion(regionX - ((treeWidth>2) ? (treeWidth-2)*regionWidth : 0), regionY - ((treeHeight>1) ? (treeHeight-1)*regionHeight : 0), treeWidth*regionWidth, treeHeight*regionHeight);
+////                                        Cell.Tree tree = new Cell.Tree(textureRegion, treeWidth, treeHeight);
+//                                    }
                                 }
                             }
                         } else {
@@ -287,7 +320,7 @@ public class GameField {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
                     if (field[x][y].isTerrain() || field[x][y].getTower() != null) {
-                        if (field[x][y].getTower() != null && field[x][y].getTower().getTemplateForTower().towerAttackType == TowerAttackType.Pit) {
+                        if (field[x][y].getTower() != null && field[x][y].getTower().templateForTower.towerAttackType == TowerAttackType.Pit) {
                             charMatrix[y][x] = '.';
                         } else {
                             charMatrix[y][x] = 'T';
@@ -310,7 +343,7 @@ public class GameField {
         spriteBatch.dispose();
         bitmapFont.dispose();
         map.dispose();
-        renderer.dispose();
+//        renderer.dispose();
         greenCheckmark.dispose();
         redCross.dispose();
     }
@@ -343,10 +376,14 @@ public class GameField {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         if(isDrawableBackground > 0) {
-            drawBackGrounds(spriteBatch, camera);
+            drawBackGrounds(spriteBatch);
         }
-        if(isDrawableForeground > 0) {
-            drawForeGroundsWithUnitsAndTowers(spriteBatch);
+        if(isDrawableForeground > 0 || isDrawableUnits > 0 || isDrawableTowers > 0) {
+            drawGroundsWithUnitsAndTowers(spriteBatch);
+//            drawTowersUnderConstruction(spriteBatch);
+        }
+        if (isDrawableForeground > 0) {
+            drawForeGrounds(spriteBatch);
         }
         spriteBatch.end();
 
@@ -393,7 +430,7 @@ public class GameField {
 //        spriteBatch.end();
     }
 
-    private void drawBackGrounds(SpriteBatch spriteBatch, OrthographicCamera camera) {
+    private void drawBackGrounds(SpriteBatch spriteBatch) {
         if(drawOrder == 0) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
@@ -490,53 +527,53 @@ public class GameField {
         }
     }
 
-    private void drawForeGroundsWithUnitsAndTowers(SpriteBatch spriteBatch) {
+    private void drawGroundsWithUnitsAndTowers(SpriteBatch spriteBatch) {
         if(drawOrder == 0) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 1) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 2) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 3) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 4) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 5) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 6) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 7) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                 }
             }
         } else if(drawOrder == 8) {
@@ -545,11 +582,11 @@ public class GameField {
             while (x < length) {
                 if(x < sizeFieldX && y < sizeFieldY) {
                     if (x == length - 1 && y == length - 1) {
-                        drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                        drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
 //                        Gdx.app.log("GameField::drawForeGroundsWithUnitsAndTowers()", "-- хуй");
 //                        break;
                     } else {
-                        drawForeGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                        drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
                     }
                 }
                 if (x == length - 1) {
@@ -566,9 +603,9 @@ public class GameField {
         }
     }
 
-    private void drawForeGroundCellWithUnitsAndTower(SpriteBatch spriteBatch, int cellX, int cellY) {
+    private void drawGroundCellWithUnitsAndTower(SpriteBatch spriteBatch, int cellX, int cellY) {
         Cell cell = field[cellX][cellY];
-        Array<TiledMapTile> tiledMapTiles = cell.foregroundTiles;
+        Array<TiledMapTile> tiledMapTiles = cell.groundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if(isDrawableForeground == 1 || isDrawableForeground == 5) {
@@ -595,6 +632,103 @@ public class GameField {
         Tower tower = field[cellX][cellY].getTower();
         if(tower != null) {
             drawTower(tower, spriteBatch);
+        }
+    }
+
+    private void drawForeGrounds(SpriteBatch spriteBatch) {
+        if(drawOrder == 0) {
+            for (int y = 0; y < sizeFieldY; y++) {
+                for (int x = 0; x < sizeFieldX; x++) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 1) {
+            for (int x = 0; x < sizeFieldX; x++) {
+                for (int y = 0; y < sizeFieldY; y++) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 2) {
+            for (int y = sizeFieldY-1; y >= 0; y--) {
+                for (int x = sizeFieldX-1; x >= 0; x--) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 3) {
+            for (int x = sizeFieldX-1; x >= 0; x--) {
+                for (int y = sizeFieldY-1; y >= 0; y--) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 4) {
+            for (int y = sizeFieldY-1; y >= 0; y--) {
+                for (int x = 0; x < sizeFieldX; x++) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 5) {
+            for (int x = 0; x < sizeFieldX; x++) {
+                for (int y = sizeFieldY-1; y >= 0; y--) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 6) {
+            for (int y = 0; y < sizeFieldY; y++) {
+                for (int x = sizeFieldX-1; x >= 0; x--) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 7) {
+            for (int x = sizeFieldX-1; x >= 0; x--) {
+                for (int y = 0; y < sizeFieldY; y++) {
+                    drawForeGroundCell(spriteBatch, x, y);
+                }
+            }
+        } else if(drawOrder == 8) {
+//            Gdx.app.log("GameField::drawBackGrounds()", "-- camera.position:" + camera.position);
+            int x = 0, y = 0;
+            int length = (sizeFieldX > sizeFieldY) ? sizeFieldX : sizeFieldY;
+            while (x < length) {
+                if(x < sizeFieldX && y < sizeFieldY) {
+                    if (x == length - 1 && y == length - 1) {
+                        drawForeGroundCell(spriteBatch, x, y);
+//                        Gdx.app.log("GameField::drawBackGrounds()", "-- хуй");
+//                        break;
+                    } else {
+                        drawForeGroundCell(spriteBatch, x, y);
+                    }
+                }
+                if (x == length - 1) {
+                    x = y + 1;
+                    y = length - 1;
+                } else if (y == 0) {
+                    y = x + 1;
+                    x = 0;
+                } else {
+                    x++;
+                    y--;
+                }
+            }
+        }
+    }
+
+    private void drawForeGroundCell(SpriteBatch spriteBatch, int cellX, int cellY) {
+        Cell cell = field[cellX][cellY];
+        Array<TiledMapTile> tiledMapTiles = cell.foregroundTiles;
+        for (TiledMapTile tiledMapTile : tiledMapTiles) {
+            TextureRegion textureRegion = tiledMapTile.getTextureRegion();
+            if (isDrawableBackground == 1 || isDrawableBackground == 5) {
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if (isDrawableBackground == 2 || isDrawableBackground == 5) {
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if (isDrawableBackground == 3 || isDrawableBackground == 5) {
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
+            if (isDrawableBackground == 4 || isDrawableBackground == 5) {
+                spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+            }
         }
     }
 
@@ -760,7 +894,7 @@ public class GameField {
             shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
             shapeRenderer.setColor(Color.GREEN);
             float maxHP = unit.templateForUnit.healthPoints;
-            int hp = unit.getHp();
+            float hp = unit.hp;
             hpBarHPWidth = hpBarHPWidth / maxHP * hp;
             shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
 
@@ -794,7 +928,7 @@ public class GameField {
 
         float gridNavRadius = sizeCellX/12f;
         for (Unit unit : unitsManager.units) {
-            ArrayDeque<Node> route = unit.getRoute();
+            ArrayDeque<Node> route = unit.route;
             if (route != null) {
                 for (Node coor : route) {
                     Cell cell = field[coor.getX()][coor.getY()];
@@ -869,10 +1003,10 @@ public class GameField {
     private void drawTower(Tower tower, SpriteBatch spriteBatch) {
 //        Gdx.app.log("GameField", "drawTower(" + tower + ", " + camera + ");");
         Vector2 towerPos = new Vector2();
-        GridPoint2 cellPosition = tower.getPosition();
-        int towerSize = tower.getTemplateForTower().size;
+        GridPoint2 cellPosition = tower.position;
+        int towerSize = tower.templateForTower.size;
         Cell cell = field[cellPosition.x][cellPosition.y];
-        TextureRegion currentFrame = tower.getCurentFrame();
+        TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
         if(isDrawableTowers == 5) {
             for(int m = 1; m < isDrawableTowers; m++) {
                 towerPos.set(cell.getGraphicCoordinates(m));
@@ -986,7 +1120,7 @@ public class GameField {
 //        }
 //        shapeRenderer.setColor(Color.PINK);
 //        for (Tower tower : towersManager.getAllTemplateForTowers()) {
-//            for (Shell shell : tower.shells) {
+//            for (Bullet shell : tower.bullets) {
 //                if (null != shell.endPoint) {
 //                    shapeRenderer.circle(shell.endPoint.x, shell.endPoint.y, shell.endPoint.radius);
 //                }
@@ -996,10 +1130,10 @@ public class GameField {
 
         shapeRenderer.setColor(Color.ORANGE);
         for (Tower tower : towersManager.getAllTowers()) {
-            for (Shell shell : tower.shells) {
-                shapeRenderer.rectLine(shell.currentPoint.x, shell.currentPoint.y, shell.endPoint.x, shell.endPoint.y, sizeCellX/40f);
-                if (null != shell.circle) {
-                    shapeRenderer.circle(shell.circle.x, shell.circle.y, shell.circle.radius);
+            for (Bullet bullet : tower.bullets) {
+                shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, sizeCellX/40f);
+                if (null != bullet.circle) {
+                    shapeRenderer.circle(bullet.circle.x, bullet.circle.y, bullet.circle.radius);
                 }
             }
         }
@@ -1020,42 +1154,42 @@ public class GameField {
 
         shapeRenderer.setColor(new Color(153f, 255f, 51f, 255f));
         Vector2 towerPos = new Vector2();
-        for (Tower tower : towersManager.getAllTowers()) { // Draw white towers radius! -- radiusDetectionСircle
+        for (Tower tower : towersManager.getAllTowers()) { // Draw white towers radius! -- radiusDetectionCircle
             if(isDrawableGridNav == 5) {
                 if(isDrawableTowers == 5) {
                     for (int m = 1; m < isDrawableTowers; m++) {
                         towerPos.set(tower.getCenterGraphicCoord(m)); // Need recoding this func!
-                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionСircle.radius);
+                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
                     }
                 } else if(isDrawableTowers != 0) {
                     towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                    shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionСircle.radius);
+                    shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
                 }
             } else /*if(isDrawableGridNav != 0)*/ {
                 if(isDrawableGridNav == isDrawableTowers) {
                     towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                    shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionСircle.radius);
+                    shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
                 }
             }
         }
 
         shapeRenderer.setColor(Color.FIREBRICK);
-        for (Tower tower : towersManager.getAllTowers()) { // Draw FIREBRICK towers radius! -- radiusFlyShellСircle
-            if (tower.radiusFlyShellСircle != null) {
+        for (Tower tower : towersManager.getAllTowers()) { // Draw FIREBRICK towers radius! -- radiusFlyShellCircle
+            if (tower.radiusFlyShellCircle != null) {
                 if(isDrawableGridNav == 5) {
                     if(isDrawableTowers == 5) {
                         for (int m = 1; m <= isDrawableTowers; m++) {
                             towerPos.set(tower.getCenterGraphicCoord(m)); // Need recoding this func!
-                            shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellСircle.radius);
+                            shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
                         }
                     } else {
                         towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellСircle.radius);
+                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
                     }
                 } else {
                     if(isDrawableGridNav == isDrawableTowers) {
                         towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellСircle.radius);
+                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
                     }
                 }
             }
@@ -1066,7 +1200,7 @@ public class GameField {
         bitmapFont.setColor(Color.YELLOW);
         bitmapFont.getData().setScale(0.7f);
         for (Tower tower : towersManager.getAllTowers()) { // Draw pit capacity value
-            if (tower.getTemplateForTower().towerAttackType == TowerAttackType.Pit) {
+            if (tower.templateForTower.towerAttackType == TowerAttackType.Pit) {
                 if(isDrawableGridNav == 5) {
                     if(isDrawableTowers == 5) {
                         for (int m = 1; m <= isDrawableTowers; m++) {
@@ -1090,13 +1224,13 @@ public class GameField {
 
     private void drawShells(SpriteBatch spriteBatch) {
         for (Tower tower : towersManager.getAllTowers()) {
-            for (Shell shell : tower.shells) {
-                TextureRegion textureRegion = shell.textureRegion;
-//                float width = textureRegion.getRegionWidth() * shell.ammoSize;
-//                float height = textureRegion.getRegionHeight() * shell.ammoSize;
-//                spriteBatch.draw(textureRegion, shell.currentPoint.x, shell.currentPoint.y, width, height);
-                spriteBatch.draw(textureRegion, shell.currentPoint.x - shell.circle.radius, shell.currentPoint.y - shell.circle.radius, shell.circle.radius * 2, shell.circle.radius * 2);
-//                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw shell:" + shell.currentPoint);
+            for (Bullet bullet : tower.bullets) {
+                TextureRegion textureRegion = bullet.textureRegion;
+//                float width = textureRegion.getRegionWidth() * bullet.ammoSize;
+//                float height = textureRegion.getRegionHeight() * bullet.ammoSize;
+//                spriteBatch.draw(textureRegion, bullet.currentPoint.x, bullet.currentPoint.y, width, height);
+                spriteBatch.draw(textureRegion, bullet.currentPoint.x - bullet.circle.radius, bullet.currentPoint.y - bullet.circle.radius, bullet.circle.radius * 2, bullet.circle.radius * 2);
+//                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw bullet:" + bullet.currentPoint);
             }
         }
     }
@@ -1156,7 +1290,7 @@ public class GameField {
             for (int y = startY; y <= finishY; y++) {
 //                float pxlsX = halfSizeCellX*(buildY) + (buildX)*halfSizeCellX;
 //                float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-1);
-                if (!cellIsEmpty(buildX + x, buildY + y)) {
+                if (!getCell(buildX + x, buildY + y).isEmpty()) {
                     if (drawFull) {
                         canBuild = false;
 //                    } else {
@@ -1342,7 +1476,7 @@ public class GameField {
             }
             for (int tmpX = startX; tmpX <= finishX; tmpX++)
                 for (int tmpY = startY; tmpY <= finishY; tmpY++)
-                    if (!cellIsEmpty(buildX + tmpX, buildY + tmpY))
+                    if (!getCell(buildX + tmpX, buildY + tmpY).isEmpty())
                         return false;
 
             // GOVNO CODE
@@ -1371,7 +1505,7 @@ public class GameField {
     public void removeLastTower() {
 //        if(towersManager.amountTowers() > 0) {
             Tower tower = towersManager.getTower(towersManager.amountTowers() - 1);
-            GridPoint2 pos = tower.getPosition();
+            GridPoint2 pos = tower.position;
             removeTower(pos.x, pos.y);
 //        }
     }
@@ -1379,9 +1513,9 @@ public class GameField {
     public void removeTower(int touchX, int touchY) {
         Tower tower = field[touchX][touchY].getTower();
         if (tower != null) {
-            int x = tower.getPosition().x;
-            int y = tower.getPosition().y;
-            int towerSize = tower.getTemplateForTower().size;
+            int x = tower.position.x;
+            int y = tower.position.y;
+            int towerSize = tower.templateForTower.size;
             int startX = 0, startY = 0, finishX = 0, finishY = 0;
             if (towerSize != 1) {
                 if (towerSize % 2 == 0) {
@@ -1405,7 +1539,7 @@ public class GameField {
             }
             towersManager.removeTower(tower);
             rerouteForAllUnits();
-            gamerGold += tower.getTemplateForTower().cost;//*0.5;
+            gamerGold += tower.templateForTower.cost;//*0.5;
         }
     }
 
@@ -1421,18 +1555,18 @@ public class GameField {
             for (Unit unit : unitsManager.units) {
                 ArrayDeque<Node> route;
                 if (exitPoint == null) {
-                    route = unit.getRoute();
+                    route = unit.route;
                     if(route != null && route.size() > 0) {
-                        Node node = unit.getRoute().getLast();
+                        Node node = unit.route.getLast();
                         GridPoint2 localExitPoint = new GridPoint2(node.getX(), node.getY());
-                        route = pathFinder.route(unit.getNewPosition().getX(), unit.getNewPosition().getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
+                        route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
                     }
                 } else {
-                    route = pathFinder.route(unit.getNewPosition().getX(), unit.getNewPosition().getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
+                    route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
                 }
                 if (route != null && route.size() > 0) {
                     route.removeFirst();
-                    unit.setRoute(route);
+                    unit.route = route;
                 }
 //                    long end2 = System.nanoTime();
 //                    Gdx.app.log("GameField", "rerouteForAllUnits(); -- Thread End:" + (end2-start2));
@@ -1448,7 +1582,7 @@ public class GameField {
 
     private void stepAllUnits(float delta) {
         for (Unit unit : unitsManager.units) {
-            Node oldPosition = unit.getNewPosition();
+            Node oldPosition = unit.newPosition;
             if (unit.isAlive()) {
                 Node newPosition = unit.move(delta);
                 if (newPosition != null) {
@@ -1482,14 +1616,14 @@ public class GameField {
 
     private void shotAllTowers(float delta) {
         for (Tower tower : towersManager.getAllTowers()) {
-            TowerAttackType towerAttackType = tower.getTemplateForTower().towerAttackType;
+            TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
-                Unit unit = field[tower.getPosition().x][tower.getPosition().y].getUnit();
+                Unit unit = field[tower.position.x][tower.position.y].getUnit();
                 if (unit != null && !unit.templateForUnit.type.equals("fly") && unit.player != tower.player) {
-                    Gdx.app.log("GameField", "shotAllTowers(); -- tower.capacity:" + tower.capacity + " unit.getHp:" + unit.getHp());
+                    Gdx.app.log("GameField", "shotAllTowers(); -- tower.capacity:" + tower.capacity + " unit.getHp:" + unit.hp);
 //                    unit.die(unit.getHp());
                     unitsManager.removeUnit(unit);
-                    field[tower.getPosition().x][tower.getPosition().y].removeUnit(unit);
+                    field[tower.position.x][tower.position.y].removeUnit(unit);
                     tower.capacity--;
                     if (tower.capacity <= 0) {
                         towersManager.removeTower(tower);
@@ -1504,10 +1638,10 @@ public class GameField {
                         if (unit != null && unit.isAlive() && unit.player != tower.player) {
                             if ( (unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
                                     (!unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) { // Тупо но работает, потом переделать need =)
-                                if (Intersector.overlaps(tower.getRadiusDetectionСircle(), unit.circle1)) {
+                                if (Intersector.overlaps(tower.radiusDetectionCircle, unit.circle1)) {
 //                                    Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + unit.toString());
                                     if (tower.shoot(unit)) {
-                                        if(tower.getTemplateForTower().shellAttackType != ShellAttackType.MassAddEffect) {
+                                        if(tower.templateForTower.shellAttackType != ShellAttackType.MassAddEffect) {
                                             break;
                                         }
                                     }
@@ -1516,24 +1650,30 @@ public class GameField {
                         }
                     }
                 }
+            } else if (towerAttackType == TowerAttackType.FireBall) {
+                if (tower.recharge(delta)) {
+//                    fireBallTowerAttack(delta, tower);
+//                    tower.shoot();
+                }
             }
         }
     }
 
     private boolean shotMeleeTower(Tower tower) {
         boolean attack = false;
-        int radius = (int)tower.getRadiusDetection();
+        int radius = Math.round(tower.templateForTower.radiusDetection);
         for (int tmpX = -radius; tmpX <= radius; tmpX++) {
             for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                GridPoint2 position = tower.getPosition();
-                if (cellHasUnit(tmpX + position.x, tmpY + position.y)) {
+                GridPoint2 position = tower.position;
+                Cell cell = getCell(tmpX + position.x, tmpY + position.y);
+                if (cell != null && cell.getUnit() != null) {
                     attack = true;
-                    Unit unit = field[tmpX + position.x][tmpY + position.y].getUnit();
+                    Unit unit = cell.getUnit();
                     if (unit != null && !unit.templateForUnit.type.equals("fly") && unit.player != tower.player) {
-                        if (unit.die(tower.getDamage(), tower.getTemplateForTower().shellEffectType)) {
+                        if (unit.die(tower.templateForTower.damage, tower.templateForTower.shellEffectType)) {
                             gamerGold += unit.templateForUnit.bounty;
                         }
-                        if (tower.getTemplateForTower().shellAttackType == ShellAttackType.SingleTarget) {
+                        if (tower.templateForTower.shellAttackType == ShellAttackType.SingleTarget) {
                             return true;
                         }
                     }
@@ -1542,6 +1682,105 @@ public class GameField {
         }
         return attack;
     }
+
+//    boolean fireBallTowerAttack(float deltaTime, Tower fireBallTower) {
+//            if (fireBallTower.recharge(deltaTime)) {
+//    //            fireBallTower.createBullets(towersManager->difficultyLevel);
+//            }
+//            for (int b = 0; b < fireBallTower.bullets.size; b++) {
+//                Bullet tmpBullet = fireBallTower.bullets.get(b);
+//                int currX = tmpBullet.currCellX;
+//                int currY = tmpBullet.currCellY;
+//                if (currX < 0 || currX >= map->width || currY < 0 || currY >= map->height) {
+//                    fireBallTower.bullets.erase(fireBallTower.bullets.begin()+b);
+//                    delete tmpBullet;
+//                    b--;
+//                } else {
+//                    if (getCell(currX, currY)->getHero() != NULL) {
+//                        unitsManager->attackUnit(currX, currY, 9999);//, getCell(currX, currY)->getHero()); // Magic number 9999
+//                    }
+//                }
+//                if(tmpBullet->animationCurrIter < tmpBullet->animationMaxIter) {
+//                    tmpBullet->pixmap = tmpBullet->activePixmaps[tmpBullet->animationCurrIter++];
+//                } else {
+//                    int exitX = currX, exitY = currY;
+//                    if (tmpBullet->direction == Direction::type::UP) {
+//                        exitX = currX-1;
+//                        exitY = currY-1;
+//                    } else if (tmpBullet->direction == Direction::UP_RIGHT) {
+//                        exitX = currX;
+//                        exitY = currY-1;
+//                    } else if (tmpBullet->direction == Direction::RIGHT) {
+//                        exitX = currX+1;
+//                        exitY = currY-1;
+//                    } else if (tmpBullet->direction == Direction::UP_LEFT) {
+//                        exitX = currX-1;
+//                        exitY = currY;
+//                    } else if (tmpBullet->direction == Direction::DOWN_RIGHT) {
+//                        exitX = currX+1;
+//                        exitY = currY;
+//                    } else if (tmpBullet->direction == Direction::LEFT) {
+//                        exitX = currX-1;
+//                        exitY = currY+1;
+//                    } else if (tmpBullet->direction == Direction::DOWN_LEFT) {
+//                        exitX = currX;
+//                        exitY = currY+1;
+//                    } else if (tmpBullet->direction == Direction::DOWN) {
+//                        exitX = currX+1;
+//                        exitY = currY+1;
+//                    }
+//                    if(exitX != currX || exitY != currY) {
+//                        tmpBullet->lastCellX = currX;
+//                        tmpBullet->lastCellY = currY;
+//                        tmpBullet->currCellX = exitX;
+//                        tmpBullet->currCellY = exitY;
+//                        if(isometric) {
+//                            if(exitX < currX && exitY < currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_up.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_up;
+//                                tmpBullet->direction = Direction::UP;
+//                            } else if(exitX == currX && exitY < currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_up_right.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_up_right;
+//                                tmpBullet->direction = Direction::UP_RIGHT;
+//                            } else if(exitX > currX && exitY < currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_right.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_right;
+//                                tmpBullet->direction = Direction::RIGHT;
+//                            } else if(exitX < currX && exitY == currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_up_left.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_up_left;
+//                                tmpBullet->direction = Direction::UP_LEFT;
+//                            } else if(exitX > currX && exitY == currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_down_right.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_down_right;
+//                                tmpBullet->direction = Direction::DOWN_RIGHT;
+//                            } else if(exitX < currX && exitY > currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_left.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_left;
+//                                tmpBullet->direction = Direction::LEFT;
+//                            } else if(exitX == currX && exitY > currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_down_left.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_down_left;
+//                                tmpBullet->direction = Direction::DOWN_LEFT;
+//                            } else if(exitX > currX && exitY > currY) {
+//                                tmpBullet->animationMaxIter = tmpBullet->defTower->bullet_fly_down.size();
+//                                tmpBullet->activePixmaps = tmpBullet->defTower->bullet_fly_down;
+//                                tmpBullet->direction = Direction::DOWN;
+//                            }
+//                        }
+//                        if (tmpBullet->activePixmaps.empty() && !tmpBullet->defTower->bullet.empty()) {
+//                            tmpBullet->animationMaxIter = tmpBullet->defTower->bullet.size();
+//                            tmpBullet->activePixmaps = tmpBullet->defTower->bullet;
+//                        }
+//                        tmpBullet->pixmap = tmpBullet->activePixmaps[0];
+//                        tmpBullet->animationCurrIter = 0;
+//                    }
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     private void moveAllShells(float delta) {
         for (Tower tower : towersManager.getAllTowers()) {
@@ -1634,23 +1873,23 @@ public class GameField {
 
     // GAME INTERFACE ZONE2
 
-    private boolean cellIsEmpty(int x, int y) {
-        if (x >= 0 && y >= 0) {
-            if (x < sizeFieldX && y < sizeFieldY) {
-                return field[x][y].isEmpty();
-            }
-        }
-        return false;
-    }
-
-    private boolean cellHasUnit(int x, int y) {
-        if (x >= 0 && y >= 0) {
-            if (x < sizeFieldX && y < sizeFieldY) {
-                return field[x][y].getUnit() != null;
-            }
-        }
-        return false;
-    }
+//    private boolean cellIsEmpty(int x, int y) {
+//        if (x >= 0 && y >= 0) {
+//            if (x < sizeFieldX && y < sizeFieldY) {
+//                return field[x][y].isEmpty();
+//            }
+//        }
+//        return false;
+//    }
+//
+//    private boolean cellHasUnit(int x, int y) {
+//        if (x >= 0 && y >= 0) {
+//            if (x < sizeFieldX && y < sizeFieldY) {
+//                return field[x][y].getUnit() != null;
+//            }
+//        }
+//        return false;
+//    }
 
     private Cell getCell(int x, int y) {
         if (x >= 0 && y >= 0) {

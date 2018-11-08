@@ -12,7 +12,7 @@
   <property name="ammoSpeed" value="10"/>
   <property name="reloadTime" value="2.5"/>
   <property name="towerAttackType" value="FireBall"/>
-  <!-- <property name="shellAttackType" value="MultipleTarget"/> -->
+  <property name="shellAttackType" value="FireBall"/>
   <!-- <property name="shellEffectType" value="None"/> -->
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/mage_tower.png" trans="ff00ff" width="128" height="192"/>

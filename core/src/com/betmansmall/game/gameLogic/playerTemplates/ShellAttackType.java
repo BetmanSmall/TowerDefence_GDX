@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
  */
 
 public enum ShellAttackType {
+    FireBall("FireBall"),
     AutoTarget("AutoTarget"),
     FirstTarget("FirstTarget"),
     SingleTarget("SingleTarget"),

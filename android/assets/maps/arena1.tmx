@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="64" height="64" tilewidth="64" tileheight="32" nextobjectid="1">
- <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
  <properties>
-    <property name="gamerGold" type="int" value="600"/>
+  <property name="gamerGold" type="int" value="600"/>
  </properties>
  <waves source="waves/waves1.ws"/>
- <layer name="Слой тайлов 1" width="64" height="64">
+ <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
+ <layer name="background" width="64" height="64">
   <properties>
    <property name="background" value="[eq]"/>
   </properties>
@@ -76,7 +76,7 @@
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
- <layer name="Слой тайлов 2" width="64" height="64">
+ <layer name="ground" width="64" height="64">
   <properties>
    <property name="ground" value="naxui"/>
   </properties>

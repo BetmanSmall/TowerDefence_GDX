@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
-import com.betmansmall.game.gameLogic.playerTemplates.Direction;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -16,32 +16,33 @@ import com.badlogic.gdx.math.Vector2; //AlexGor
  * Created by Андрей on 24.01.2016.
  */
 public class Tower {
-    private GridPoint2 position;
-    private float elapsedReloadTime;
-    private TemplateForTower templateForTower;
+    public GridPoint2 position;
+    public float elapsedReloadTime;
+    public TemplateForTower templateForTower;
 
     public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
     public int capacity;
-    public Array<Shell> shells;
-    public Circle radiusDetectionСircle;
-    public Circle radiusFlyShellСircle;
+    public Array<Bullet> bullets;
+    public Circle radiusDetectionCircle;
+    public Circle radiusFlyShellCircle;
 
     public Tower(GridPoint2 position, TemplateForTower templateForTower, int player){
-        Gdx.app.log("Tower::Tower(" + position + ", " + templateForTower + ")", "--");
+        Gdx.app.log("Tower::Tower()", "-- position:" + position + " templateForTower:" + templateForTower + " player:" + player);
         this.position = position;
         this.elapsedReloadTime = templateForTower.reloadTime;
         this.templateForTower = templateForTower;
 
         this.player = player;
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
-        this.shells = new Array<Shell>();
-        this.radiusDetectionСircle = new Circle(getCenterGraphicCoord(1), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
+        this.bullets = new Array<Bullet>();
+        this.radiusDetectionCircle = new Circle(getCenterGraphicCoord(1), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
         if(templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != null && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-            this.radiusFlyShellСircle = new Circle(getCenterGraphicCoord(1), templateForTower.radiusFlyShell);
+            this.radiusFlyShellCircle = new Circle(getCenterGraphicCoord(1), templateForTower.radiusFlyShell);
         }
     }
 
     public void dispose() {
+        Gdx.app.log("Tower::dispose()", "--");
     }
 
     public boolean recharge(float delta) {
@@ -65,8 +66,10 @@ public class Tower {
                 if (!effect) {
                     unit.shellEffectTypes.add(new ShellEffectType(templateForTower.shellEffectType));
                 }
+            } else if (templateForTower.shellAttackType == ShellAttackType.FireBall) {
+
             } else {
-                shells.add(new Shell(templateForTower, unit, getCenterGraphicCoord())); // AlexGor
+                bullets.add(new Bullet(getCenterGraphicCoord(), templateForTower, unit));
             }
             elapsedReloadTime = 0f;
             return true;
@@ -75,28 +78,28 @@ public class Tower {
     }
 
     public void moveAllShells(float delta) {
-        for(Shell shell : shells) {
-            if(radiusFlyShellСircle == null) {
-                moveShell(delta, shell);
-            } else if(Intersector.overlaps(shell.circle, radiusFlyShellСircle)) {
-                moveShell(delta, shell);
+        for(Bullet bullet : bullets) {
+            if(radiusFlyShellCircle == null) {
+                moveShell(delta, bullet);
+            } else if(Intersector.overlaps(bullet.circle, radiusFlyShellCircle)) {
+                moveShell(delta, bullet);
             } else {
-                shell.dispose();
-                shells.removeValue(shell, false);
+                bullet.dispose();
+                bullets.removeValue(bullet, false);
             }
         }
     }
 
-    private void moveShell(float delta, Shell shell) {
-        switch (shell.flightOfShell(delta)) {
+    private void moveShell(float delta, Bullet bullet) {
+        switch (bullet.flightOfShell(delta)) {
             case 0:
-//                if(shell.unit.die(damage)) {
-//                    GameField.gamerGold += shell.unit.getTemplateForUnit().bounty;
+//                if(bullet.unit.die(damage)) {
+//                    GameField.gamerGold += bullet.unit.getTemplateForUnit().bounty;
 //                }
 //                break;
             case -1:
-                shell.dispose();
-                shells.removeValue(shell, false);
+                bullet.dispose();
+                bullets.removeValue(bullet, false);
         }
     }
 
@@ -133,51 +136,24 @@ public class Tower {
         return new Vector2(pxlsX, pxlsY);
     } // -------------------------------------------------------------- TODD It is analog GameField::getGraphicCoordinates() func!
 
-    private float getRegWidth () {
-        TextureRegion tmpTextureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
-        return ((tmpTextureRegion.getRegionWidth()-(tmpTextureRegion.getRegionWidth()*templateForTower.ammoSize))/2);
+    public String toString() {
+        return toString(false);
     }
 
-    private float getRegHeight () {
-        TextureRegion tmpTextureRegion = templateForTower.ammunitionPictures.get("ammo_" + Direction.UP).getTextureRegion();
-        return ((tmpTextureRegion.getRegionHeight()-(tmpTextureRegion.getRegionHeight()*templateForTower.ammoSize))/2);
-    }
-    //AlexGor
-
-    public GridPoint2 getPosition() {
-        return position;
-    }
-
-    public Circle getRadiusDetectionСircle() {
-        return radiusDetectionСircle;
-    } //AlexGor
-
-//    public void setDamage(int damage) {
-//        this.damage = damage;
-//    }
-    public int getDamage() {
-        return templateForTower.damage;
-    }
-
-//    public void setRadiusDetection(int radiusDetection) {
-//        this.radiusDetection = radiusDetection;
-//    }
-    public float getRadiusDetection() {
-        return templateForTower.radiusDetection;
-    }
-
-//    public void setReloadTime(float reloadTime) {
-//        this.reloadTime = reloadTime;
-//    }
-//    public float getReloadTime() {
-//        return reloadTime;
-//    }
-
-    public TemplateForTower getTemplateForTower() {
-        return templateForTower;
-    }
-
-    public TextureRegion getCurentFrame() {
-        return templateForTower.idleTile.getTextureRegion();
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Tower[");
+        sb.append("position:" + position);
+        if (full) {
+            sb.append("elapsedReloadTime:" + elapsedReloadTime);
+            sb.append("templateForTower:" + templateForTower);
+            sb.append("player:" + player);
+            sb.append("capacity:" + capacity);
+            sb.append("bullets.size:" + bullets.size);
+            sb.append("radiusDetectionCircle:" + radiusDetectionCircle);
+            sb.append("radiusFlyShellCircle:" + radiusFlyShellCircle);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

@@ -32,7 +32,7 @@ public class TowersManager {
 
     public Tower getTower(GridPoint2 position) {
         for(int i=0; i < towers.size; i++) {
-            GridPoint2 towerPosition = towers.get(i).getPosition();
+            GridPoint2 towerPosition = towers.get(i).position;
             if(towerPosition.equals(position)) {
                 return towers.get(i);
             }

@@ -3,6 +3,8 @@ package com.betmansmall.game.gameLogic.playerTemplates;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -17,6 +19,7 @@ public class TemplateForTower extends Template {
 //    private Faction faction;
     public String   factionName;
     public String   name;
+
     public Float    radiusDetection;
     public Float    radiusFlyShell;
     public Integer  damage;
@@ -30,14 +33,16 @@ public class TemplateForTower extends Template {
     public ShellAttackType shellAttackType;
     public ShellEffectType shellEffectType;
     public Integer capacity;
+
+//    public AnimatedTile idleTile;
     public Tile idleTile;
-    public ObjectMap<String, Tile> ammunitionPictures;
+    public ObjectMap<String, AnimatedTile> animations;
 
     public TemplateForTower(FileHandle templateFile) throws Exception {
         try {
             this.radiusDetection = 0.0f;
 //            this.reloadTime = 3000;
-            ammunitionPictures = new ObjectMap<String, Tile>();
+            animations = new ObjectMap<String, AnimatedTile>();
             loadBasicTemplate(templateFile);
             specificLoad();
             validate();
@@ -66,37 +71,49 @@ public class TemplateForTower extends Template {
             if (tileName != null) {
                 if(tileName.equals("idleTile")) {
                     idleTile = tile;
-                } else if(tileName.contains("ammo_")) {
-                    setAmmoTiles(tileName, tile);
+//                } else if(tileName.contains("ammo_")) {
+//                    setAmmoTiles(tileName, tile);
                 }
             }
         }
     }
 
-    private void setAmmoTiles(String tileName, Tile tile) {
+    private void setAmmoTiles(String tileName, AnimatedTile tile) {
         if(tile != null) {
             if(tileName.equals("ammo_" + Direction.UP)) {
-                ammunitionPictures.put("ammo_" + Direction.UP, tile);
+                animations.put("ammo_" + Direction.UP, tile);
             } else if(tileName.equals("ammo_" + Direction.UP_RIGHT)) {
-                ammunitionPictures.put("ammo_" + Direction.UP_RIGHT, tile);
-                ammunitionPictures.put("ammo_" + Direction.UP_LEFT, flipTile(tile));
+                animations.put("ammo_" + Direction.UP_RIGHT, tile);
+                animations.put("ammo_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
             } else if(tileName.equals("ammo_" + Direction.RIGHT)) {
-                ammunitionPictures.put("ammo_" + Direction.RIGHT, tile);
-                ammunitionPictures.put("ammo_" + Direction.LEFT, flipTile(tile));
+                animations.put("ammo_" + Direction.RIGHT, tile);
+                animations.put("ammo_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
             } else if(tileName.equals("ammo_" + Direction.DOWN_RIGHT)) {
-                ammunitionPictures.put("ammo_" + Direction.DOWN_RIGHT, tile);
-                ammunitionPictures.put("ammo_" + Direction.DOWN_LEFT, flipTile(tile));
+                animations.put("ammo_" + Direction.DOWN_RIGHT, tile);
+                animations.put("ammo_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
             } else if(tileName.equals("ammo_" + Direction.DOWN)) {
-                ammunitionPictures.put("ammo_" + Direction.DOWN, tile);
+                animations.put("ammo_" + Direction.DOWN, tile);
             }
         }
     }
 
-    private Tile flipTile(Tile Tile) {
-        TextureRegion textureRegion = new TextureRegion(Tile.getTextureRegion());
-        textureRegion.flip(true, false);
-        return new StaticTile(textureRegion);
+    private AnimatedTile flipAnimatedTiledMapTile(AnimatedTile animatedTiledMapTile) {
+        Array<StaticTile> frames = new Array<StaticTile>(animatedTiledMapTile.getFrameTiles());
+        for (int k = 0; k < frames.size; k++) {
+            TextureRegion textureRegion = new TextureRegion(frames.get(k).getTextureRegion());
+            textureRegion.flip(true, false);
+            StaticTile frame = new StaticTile(textureRegion);
+            frames.set(k, frame);
+        }
+        IntArray intervals = new IntArray(animatedTiledMapTile.getAnimationIntervals());
+        return new AnimatedTile(intervals, frames);
     }
+
+//    private Tile flipTile(Tile Tile) {
+//        TextureRegion textureRegion = new TextureRegion(Tile.getTextureRegion());
+//        textureRegion.flip(true, false);
+//        return new StaticTile(textureRegion);
+//    }
 
     private void validate() {
         basicValidate();
@@ -181,11 +198,12 @@ public class TemplateForTower extends Template {
 
         if(idleTile == null)
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: idleTile");
-        else if(ammunitionPictures.size == 0)
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: ammo");
-//    foreach (QString key, ammunitionPictures.keys()) {
-//        Gdx.app.log("TemplateForTower::validate()", "-- Dir:" << key << " properties:" << ammunitionPictures.value(key)->properties;
-//    }
+        else if(animations.size == 0)
+            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: animations");
+
+//        for (String key : animations.keys()) {
+//            Gdx.app.log("TemplateForTower::validate()", "-- Dir:" + key + " length:" + animations.get(key).getFrameTiles().length);
+//        }
 //        Gdx.app.log("TemplateForTower::validate()", "-- " + toString(true));
     }
 
@@ -198,22 +216,23 @@ public class TemplateForTower extends Template {
         sb.append("TemplateForTower[");
         sb.append(toStringBasicParam());
         if(full) {
-            sb.append("," + "factionName:" + factionName);
-            sb.append("," + "name:" + name);
-            sb.append("," + "radiusDetection:" + radiusDetection);
-            sb.append("," + "radiusFlyShell:" + radiusFlyShell);
-            sb.append("," + "damage:" + damage);
-            sb.append("," + "size:" + size);
-            sb.append("," + "cost:" + cost);
-            sb.append("," + "ammoSize:" + ammoSize);
-            sb.append("," + "ammoSpeed:" + ammoSpeed);
-            sb.append("," + "reloadTime:" + reloadTime);
-            sb.append("," + "towerAttackType:" + towerAttackType);
-            sb.append("," + "shellAttackType:" + shellAttackType);
-            sb.append("," + "shellEffectEnum:" + shellEffectType);
-            sb.append("," + "capacity:" + capacity);
-            sb.append("," + "idleTile:" + (idleTile != null) );
-            sb.append("," + "ammunitionPictures.size:" + ammunitionPictures.size);
+//            sb.append(toStringProperties());
+            sb.append(",factionName:" + factionName);
+            sb.append(",name:" + name);
+            sb.append(",radiusDetection:" + radiusDetection);
+            sb.append(",radiusFlyShell:" + radiusFlyShell);
+            sb.append(",damage:" + damage);
+            sb.append(",size:" + size);
+            sb.append(",cost:" + cost);
+            sb.append(",ammoSize:" + ammoSize);
+            sb.append(",ammoSpeed:" + ammoSpeed);
+            sb.append(",reloadTime:" + reloadTime);
+            sb.append(",towerAttackType:" + towerAttackType);
+            sb.append(",shellAttackType:" + shellAttackType);
+            sb.append(",shellEffectEnum:" + shellEffectType);
+            sb.append(",capacity:" + capacity);
+            sb.append(",idleTile:" + (idleTile != null) );
+            sb.append(",animations.size:" + animations.size);
         }
         sb.append("]");
         return sb.toString();

@@ -130,7 +130,7 @@ public class MainMenuScreen implements Screen {
 //        towerDefence.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
         FileHandle mapsDir = Gdx.files.internal("maps");
-        if(mapsDir.list().length == 0) {
+//        if(mapsDir.list().length == 0) {
             towerDefence.gameLevelMaps.add("maps/island.tmx");
             towerDefence.gameLevelMaps.add("maps/arena0.tmx");
             towerDefence.gameLevelMaps.add("maps/arena1.tmx");
@@ -139,14 +139,14 @@ public class MainMenuScreen implements Screen {
             towerDefence.gameLevelMaps.add("maps/arena4.tmx");
             towerDefence.gameLevelMaps.add("maps/arena4_1.tmx");
             towerDefence.gameLevelMaps.add("maps/randomMap.tmx");
-        } else {
-            for(FileHandle fileHandle : mapsDir.list()) {
-                if(fileHandle.extension().equals("tmx")) {
-                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.add():" + fileHandle.path());
-                    towerDefence.gameLevelMaps.add(fileHandle.path());
-                }
-            }
-        }
+//        } else {
+//            for(FileHandle fileHandle : mapsDir.list()) {
+//                if(fileHandle.extension().equals("tmx")) {
+//                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.add():" + fileHandle.path());
+//                    towerDefence.gameLevelMaps.add(fileHandle.path());
+//                }
+//            }
+//        }
         Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.size:" + towerDefence.gameLevelMaps.size);
     }
 

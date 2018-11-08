@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import com.betmansmall.game.gameLogic.mapLoader.Tile;
+
 /**
  * Created by BetmanSmall on 11.03.2016.
  */
@@ -23,37 +25,62 @@ public class Cell {
     }
 
     public Array<TiledMapTile> backgroundTiles;
+    public Array<TiledMapTile> groundTiles;
     public Array<TiledMapTile> foregroundTiles;
     public Array<Tree> trees;
     private boolean empty;
-//    private boolean removableTerrain;
     private boolean terrain;
+    private boolean removableTerrain;
+
     private Tower tower;
     private Array<Unit> units;
+    public boolean spawn, exit;
+
     public int cellX, cellY;
     public Vector2 graphicCoordinatesBottom, graphicCoordinatesRight, graphicCoordinatesTop, graphicCoordinatesLeft;
+
 
     public Cell() {
 //        Gdx.app.log("Cell::Cell()", "-- ");
         this.backgroundTiles = new Array<TiledMapTile>();
+        this.groundTiles = new Array<TiledMapTile>();
         this.foregroundTiles = new Array<TiledMapTile>();
         this.trees = new Array<Tree>();
         this.empty = true;
         this.terrain = false;
+        this.removableTerrain = true;
+
         this.tower = null;
         this.units = null;
+        this.spawn = false;
+        this.exit = false;
+
 //        setGraphicCoordinates(cellX, cellY, halfSizeCellX, halfSizeCellY);
+    }
+
+    public void dispose() {
+        backgroundTiles.clear();
+        foregroundTiles.clear();
+        trees.clear();
+        backgroundTiles = null;
+        foregroundTiles = null;
+        trees = null;
+
+        tower = null;
+        units.clear();
+        units = null;
+//        delete graphicCoordinatesBottom,graphicCoordinatesRight,graphicCoordinatesTop, graphicCoordinatesLeft;
     }
 
     public void setGraphicCoordinates(int cellX, int cellY, float halfSizeCellX, float halfSizeCellY) {
 //        Gdx.app.log("Cell::setGraphicCoordinates(" + cellX + "," + cellY + "," + halfSizeCellX + ", " + halfSizeCellY + ")", "-- ");
         this.cellX = cellX;
         this.cellY = cellY;
-//        if(map == 1) { // Нижняя карта
+//        if(map == 1) { // Нижняя карта-java // Верхняя карта-с++
         graphicCoordinatesBottom = new Vector2((-(halfSizeCellX * cellY) + (cellX * halfSizeCellX)), (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY)));
 //        } else if(map == 2) { // Правая карта
         graphicCoordinatesRight = new Vector2(((halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX, ((halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY);
-//        } else if(map == 3) { // Верхняя карта
+//        } else if(map == 3) { // Верхняя карта-c++ // Нижняя карта-java
         graphicCoordinatesTop = new Vector2((-(halfSizeCellX * cellY) + (cellX * halfSizeCellX)), ((halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY * 2);
 //        } else if(map == 4) {// Левая карта
         graphicCoordinatesLeft = new Vector2((-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX, ((halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY);
@@ -82,8 +109,16 @@ public class Cell {
         return terrain;
     }
 
-    public boolean setTerrain() {
-        if (empty) {
+    public boolean setTerrain(TiledMapTile tile) {
+        return setTerrain(tile, true);
+    }
+
+    public boolean setTerrain(TiledMapTile tile, boolean removable) {
+        if (tile != null) {
+            groundTiles.add(tile);
+        }
+        if (empty && !spawn && !exit) {
+            removableTerrain = removable;
             terrain = true;
             empty = false;
             return true;
@@ -91,8 +126,8 @@ public class Cell {
         return false;
     }
 
-    public boolean removeTerrain() {
-        if (terrain) {
+    public boolean removeTerrain(boolean force) {
+        if (terrain && (removableTerrain || force) ) {
             terrain = false;
             empty = true;
             return true;
@@ -129,6 +164,15 @@ public class Cell {
         return false;
     }
 
+    public Unit getHero() {
+        for (Unit unit : units) {
+            if (unit.player == 1) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
     public Array<Unit> getUnits() {
         return units;
     }
@@ -153,6 +197,22 @@ public class Cell {
         return false;
     }
 
+    public int containUnit(Unit unit) {
+        if(units != null) {
+            int size = units.size;
+            if(unit == null) {
+                return size;
+            } else {
+                for(int k = 0; k < size; k++) {
+                    if(units.get(k).equals(unit)) { // OR if (units.get(k) == unit)
+                        return k+1;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
     public int removeUnit(Unit unit) {
         if (units != null) {
             units.removeValue(unit, false);
@@ -166,25 +226,22 @@ public class Cell {
         return -1;
     }
 
-    public void dispose() {
-        backgroundTiles.clear();
-        foregroundTiles.clear();
-        backgroundTiles = null;
-        foregroundTiles = null;
-        tower = null;
-        units.clear();
-        units = null;
-    }
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Cell[");
         sb.append("cellX:" + cellX);
-        sb.append("," + "cellY:" + cellY);
-        sb.append("," + "empty:" + empty);
-        sb.append("," + "terrain:" + terrain);
-        sb.append("," + "tower:" + tower);
-        sb.append("," + "units:" + units);
+        sb.append(",cellY:" + cellY);
+        sb.append(",empty:" + empty);
+        sb.append(",terrain:" + terrain);
+        sb.append(",removableTerrain:" + removableTerrain);
+        sb.append(",tower:" + tower);
+        sb.append(",units:" + units);
+        sb.append(",spawn:" + spawn);
+        sb.append(",exit:" + exit);
+        sb.append(",backgroundTiles:" + backgroundTiles.size);
+        sb.append(",groundTiles:" + groundTiles.size);
+        sb.append(",foregroundTiles:" + foregroundTiles.size);
+//        sb.append(",graphicCoordinatesBottom:" + graphicCoordinatesBottom);
         sb.append("]");
         return sb.toString();
     }

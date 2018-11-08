@@ -14,139 +14,34 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.betmansmall.game.gameLogic.mapLoader.AnimatedTile;
+import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
+import com.betmansmall.game.gameLogic.mapLoader.StaticTile;
+import com.betmansmall.game.gameLogic.mapLoader.Tile;
 
 import java.util.StringTokenizer;
 
 /**
  * Created by betmansmall on 09.02.2016.
  */
-public class TemplateForUnit {
-    private Faction faction;
-    private String templateName;
+public class TemplateForUnit extends Template {
+//    private Faction faction;
+    public String factionName;
+    public String name;
 
+    public Float healthPoints;
     public Float bounty;
     public Float cost;
-    public String factionName;
-    public Float healthPoints;
-    public String name;
     public Float speed;
     public String type;
 
-    public ObjectMap<String, AnimatedTiledMapTile> animations;
-    public AnimatedTiledMapTile idleTile;
+    public ObjectMap<String, AnimatedTile> animations;
 
     public TemplateForUnit(FileHandle templateFile) throws Exception {
         try {
-            XmlReader xmlReader = new XmlReader();
-            Element templateORtileset = xmlReader.parse(templateFile);
-            this.templateName = templateORtileset.getAttribute("name");
-
-            int firstgid = templateORtileset.getIntAttribute("firstgid", 0);
-            int tilewidth = templateORtileset.getIntAttribute("tilewidth", 0);
-            int tileheight = templateORtileset.getIntAttribute("tileheight", 0);
-            int spacing = templateORtileset.getIntAttribute("spacing", 0);
-            int margin = templateORtileset.getIntAttribute("margin", 0);
-
-            Element properties = templateORtileset.getChildByName("properties");
-            if (properties != null) {
-                for (Element property : properties.getChildrenByName("property")) {
-                    String key = property.getAttribute("name");
-                    String value = property.getAttribute("value");
-                    if (key.equals("bounty")) {
-                        this.bounty = FactionsManager.defBounty*Float.parseFloat(value);
-                    } else if (key.equals("cost")) {
-                        this.cost = FactionsManager.defCost*Float.parseFloat(value);
-                    } else if (key.equals("factionName")) {
-                        this.factionName = value;
-                    } else if (key.equals("healthPoints")) {
-//                        this.healthPoints = Integer.parseInt(value);
-                        this.healthPoints = FactionsManager.defHealthPoints*Float.parseFloat(value);
-                    } else if (key.equals("name")) {
-                        this.name = value;
-                    } else if (key.equals("speed")) {
-                        this.speed = FactionsManager.defSpeed*Float.parseFloat(value);
-                    } else if (key.equals("type")) {
-                        this.type = value;
-                    }
-                }
-            }
-            Element imageElement = templateORtileset.getChildByName("image");
-            String source = imageElement.getAttribute("source");
-            FileHandle textureFile = getRelativeFileHandle(templateFile, source);
-            Texture texture = new Texture(Gdx.files.internal(textureFile.path()));
-
-            int stopWidth = texture.getWidth() - tilewidth;
-            int stopHeight = texture.getHeight() - tileheight;
-            int id = firstgid;
-
-            ObjectMap<Integer, TiledMapTile> tiles = new ObjectMap<Integer, TiledMapTile>();
-            for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
-                for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
-                    TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
-                    TiledMapTile tile = new StaticTiledMapTile(tileRegion);
-                    tile.setId(id);
-                    tiles.put(id++, tile);
-                }
-            }
-
-            Array<Element> tileElements = templateORtileset.getChildrenByName("tile");
-
-            animations = new ObjectMap<String, AnimatedTiledMapTile>();
-            Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
-
-            for (Element tileElement : tileElements) {
-                int localtid = tileElement.getIntAttribute("id", 0);
-                TiledMapTile tile = tiles.get(localtid);
-                if (tile != null) {
-                    Element propertiesElement = tileElement.getChildByName("properties");
-                    if (propertiesElement != null) {
-                        for (Element property : propertiesElement.getChildrenByName("property")) {
-                            String name = property.getAttribute("name", null);
-                            String value = property.getAttribute("value", null);
-                            if (value == null) {
-                                value = property.getText();
-                            }
-                            tile.getProperties().put(name, value);
-                        }
-                    }
-
-                    Element animationElement = tileElement.getChildByName("animation");
-                    if (animationElement != null) {
-                        Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
-                        IntArray intervals = new IntArray();
-                        for (Element frameElement : animationElement.getChildrenByName("frame")) {
-                            staticTiles.add((StaticTiledMapTile) tiles.get(frameElement.getIntAttribute("tileid")));
-                            intervals.add(frameElement.getIntAttribute("duration"));
-                        }
-
-                        AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
-                        animatedTile.setId(tile.getId());
-                        animatedTile.getProperties().putAll(tile.getProperties());
-                        animatedTiles.add(animatedTile);
-                        tile = animatedTile;
-
-                        String actionAndDirection = tile.getProperties().get("actionAndDirection", String.class);
-                        if(actionAndDirection != null) {
-                            animations.put(actionAndDirection, animatedTile);
-                            if(actionAndDirection.equals("walk_" + Direction.UP_RIGHT)) {
-                                animations.put("walk_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(animatedTile));
-                            } else if(actionAndDirection.equals("walk_" + Direction.RIGHT)) {
-                                animations.put("walk_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
-                            } else if(actionAndDirection.equals("walk_" + Direction.DOWN_RIGHT)) {
-                                animations.put("walk_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
-                            }
-                            if(actionAndDirection.equals("death_" + Direction.UP_RIGHT)) {
-                                animations.put("death_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(animatedTile));
-                            } else if(actionAndDirection.equals("death_" + Direction.RIGHT)) {
-                                animations.put("death_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
-                            } else if(actionAndDirection.equals("death_" + Direction.DOWN_RIGHT)) {
-                                animations.put("death_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
-                            }
-                        }
-                    }
-                }
-            }
-
+            animations = new ObjectMap<String, AnimatedTile>();
+            loadBasicTemplate(templateFile);
+            specificLoad();
             validate();
         } catch (Exception exp) {
             Gdx.app.log("TemplateForUnit::TemplateForUnit()", "-- Could not load TemplateForUnit from " + templateFile.path() + " Exp:" + exp);
@@ -154,46 +49,60 @@ public class TemplateForUnit {
         }
     }
 
-//    public TemplateForUnit(TiledMapTileSet tileSet) {
-//        try {
-//            this.templateName = tileSet.getName();
-//            this.bounty = Integer.parseInt(tileSet.getProperties().get("bounty", String.class));
-//            this.cost = bounty; // TODO fix
-//            this.factionName = tileSet.getProperties().get("factionName", String.class);
-//            this.healthPoints = Integer.parseInt(tileSet.getProperties().get("healthPoints", String.class));
-//            this.name = tileSet.getProperties().get("name", String.class);
-//            this.speed = Float.parseFloat(tileSet.getProperties().get("speed", String.class));
-//            this.type = tileSet.getProperties().get("type", String.class);
-//
-//            this.speed = this.speed * 2;
-//        } catch (Exception exp) {
-//            Gdx.app.error("TemplateForUnit::TemplateForUnit()", "-- Exp: " + exp + " Cheak the file!");
+//    void loadExplosion(SimpleTemplate explosion) {
+//        if (explosion != null) {
+//            for (AnimatedTile animatedTile : explosion.animatedTiles.values()) {
+//                String tileName = animatedTile.getProperties().get("tileName", null);
+//                if (tileName != null) {
+//                    if(tileName.contains("fireball_")) {
+//                        animations(tileName.replace("fireball_", "ammo_"), animatedTile);
+//                    }
+//                }
+//            }
 //        }
-//
-//        this.animations = new ObjectMap<String, AnimatedTiledMapTile>();
-//
-//        setAnimationFrames(tileSet);
-//        validate();
 //    }
 
-    private void setAnimationFrames(TiledMapTileSet tileSet) {
-        for (TiledMapTile tile : tileSet) {
-            if (tile instanceof AnimatedTiledMapTile) {
-                AnimatedTiledMapTile aTile = (AnimatedTiledMapTile) tile;
-                String actionAndDirection = aTile.getProperties().get("actionAndDirection", String.class);
-                if (actionAndDirection != null) {
-                    if (actionAndDirection.contains("idle"))
-                        setIdleAnimationFrames(actionAndDirection, aTile);
-                    else if (actionAndDirection.contains("walk"))
-                        setWalkAnimationFrames(actionAndDirection, aTile);
-                    else if (actionAndDirection.contains("death"))
-                        setDeathAnimationFrames(actionAndDirection, aTile);
+    void specificLoad() {
+        for (AnimatedTile animatedTile : animatedTiles.values()) {
+            String actionAndDirection = animatedTile.getProperties().get("actionAndDirection", null);
+            if (actionAndDirection != null) {
+                animations.put(actionAndDirection, animatedTile);
+                if(actionAndDirection.equals("walk_" + Direction.UP_RIGHT)) {
+                    animations.put("walk_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                } else if(actionAndDirection.equals("walk_" + Direction.RIGHT)) {
+                    animations.put("walk_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
+                } else if(actionAndDirection.equals("walk_" + Direction.DOWN_RIGHT)) {
+                    animations.put("walk_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                }
+                if(actionAndDirection.equals("death_" + Direction.UP_RIGHT)) {
+                    animations.put("death_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                } else if(actionAndDirection.equals("death_" + Direction.RIGHT)) {
+                    animations.put("death_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
+                } else if(actionAndDirection.equals("death_" + Direction.DOWN_RIGHT)) {
+                    animations.put("death_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
                 }
             }
         }
     }
 
-    private void setIdleAnimationFrames(String actionAndDirection, AnimatedTiledMapTile aTile) {
+//    private void setAnimationFrames(TiledMapTileSet tileSet) {
+//        for (TiledMapTile tile : tileSet) {
+//            if (tile instanceof AnimatedTiledMapTile) {
+//                AnimatedTiledMapTile aTile = (AnimatedTiledMapTile) tile;
+//                String actionAndDirection = aTile.getProperties().get("actionAndDirection", String.class);
+//                if (actionAndDirection != null) {
+//                    if (actionAndDirection.contains("idle"))
+//                        setIdleAnimationFrames(actionAndDirection, aTile);
+//                    else if (actionAndDirection.contains("walk"))
+//                        setWalkAnimationFrames(actionAndDirection, aTile);
+//                    else if (actionAndDirection.contains("death"))
+//                        setDeathAnimationFrames(actionAndDirection, aTile);
+//                }
+//            }
+//        }
+//    }
+
+    private void setIdleAnimationFrames(String actionAndDirection, AnimatedTile aTile) {
 //        idle = aTile.getTextureRegion();
         if (actionAndDirection.equals("idle_" + Direction.UP)) {
             animations.put("idle_" + Direction.UP, aTile);
@@ -211,7 +120,7 @@ public class TemplateForUnit {
         }
     }
 
-    private void setWalkAnimationFrames(String actionAndDirection, AnimatedTiledMapTile aTile) {
+    private void setWalkAnimationFrames(String actionAndDirection, AnimatedTile aTile) {
         if (actionAndDirection.equals("walk3_" + Direction.UP)) {
             animations.put("walk_" + Direction.UP, aTile);
         } else if (actionAndDirection.equals("walk3_" + Direction.UP_RIGHT)) {
@@ -228,7 +137,7 @@ public class TemplateForUnit {
         }
     }
 
-    private void setDeathAnimationFrames(String actionAndDirection, AnimatedTiledMapTile aTile) {
+    private void setDeathAnimationFrames(String actionAndDirection, AnimatedTile aTile) {
         if (actionAndDirection.equals("death1_" + Direction.UP)) {
             animations.put("death_" + Direction.UP, aTile);
         } else if (actionAndDirection.equals("death1_" + Direction.UP_RIGHT)) {
@@ -245,68 +154,64 @@ public class TemplateForUnit {
         }
     }
 
-    private AnimatedTiledMapTile flipAnimatedTiledMapTile(AnimatedTiledMapTile animatedTiledMapTile) {
-        Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(animatedTiledMapTile.getFrameTiles());
+    private AnimatedTile flipAnimatedTiledMapTile(AnimatedTile animatedTiledMapTile) {
+        Array<StaticTile> frames = new Array<StaticTile>(animatedTiledMapTile.getFrameTiles());
         for (int k = 0; k < frames.size; k++) {
             TextureRegion textureRegion = new TextureRegion(frames.get(k).getTextureRegion());
             textureRegion.flip(true, false);
-            StaticTiledMapTile frame = new StaticTiledMapTile(textureRegion);
+            StaticTile frame = new StaticTile(textureRegion);
             frames.set(k, frame);
         }
         IntArray intervals = new IntArray(animatedTiledMapTile.getAnimationIntervals());
-        return new AnimatedTiledMapTile(intervals, frames);
+        return new AnimatedTile(intervals, frames);
     }
 
     private void validate() {
+        basicValidate();
         // Need check range values
-
-        if (this.templateName != null) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Load TemplateForUnit: " + this.templateName);
+        if (!properties.containsKey("factionName")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: factionName");
+        } else {
+            factionName = properties.get("factionName");
         }
-        if (this.bounty == null) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'bounty'! Check the file");
-        } else if (this.factionName == null) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'factionName'! Check the file");
-        } else if (this.healthPoints == null) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'healthPoints'! Check the file");
-        } else if (this.name == null) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'name'! Check the file");
-        } else if (this.speed == null) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'speed'! Check the file");
-        } else if (this.type == null) {
-            Gdx.app.log("TemplateForUnit::validate()", "-- Can't get 'type'! Check the file");
+        if (!properties.containsKey("name")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: name");
+        } else {
+            name = properties.get("name");
+        }
+        if (!properties.containsKey("healthPoints")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: healthPoints");
+        } else {
+            healthPoints = Float.parseFloat(properties.get("healthPoints"));
+        }
+        if (!properties.containsKey("bounty")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: bounty");
+        } else {
+            bounty = Float.parseFloat(properties.get("bounty"));
+        }
+        if (!properties.containsKey("cost")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: cost");
+        } else {
+            cost = Float.parseFloat(properties.get("cost"));
+        }
+        if (!properties.containsKey("speed")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: speed");
+        } else {
+            speed = Float.parseFloat(properties.get("speed"));
+        }
+        if (!properties.containsKey("type")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: type");
+        } else {
+            type = properties.get("type");
         }
 
-//        speed = 0.1f;
+        if(animations.size == 0)
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: animations");
+
 //        for (String key : animations.keys()) {
-//            Gdx.app.log("TemplateForUnit::validate()", "-- Dir:" + key + " Lenght:" + animations.get(key).getFrameTiles().length);
+//            Gdx.app.log("TemplateForUnit::validate()", "-- Dir:" + key + " length:" + animations.get(key).getFrameTiles().length);
 //        }
-    }
-
-    public void setFaction(Faction faction) {
-        this.faction = faction;
-    }
-
-    public String getFactionName() {
-        return factionName;
-    }
-
-    public String getTemplateName() {
-        return this.templateName;
-    }
-
-    protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {
-        StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
-        FileHandle result = file.parent();
-        while (tokenizer.hasMoreElements()) {
-            String token = tokenizer.nextToken();
-            if (token.equals(".."))
-                result = result.parent();
-            else {
-                result = result.child(token);
-            }
-        }
-        return result;
+//        Gdx.app.log("TemplateForUnit::validate()", "-- " + toString(true));
     }
 
     public String toString() {
@@ -316,15 +221,16 @@ public class TemplateForUnit {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("TemplateForUnit[");
-        sb.append("templateName:" + templateName);
+        sb.append(toStringBasicParam());
         if(full) {
-            sb.append("," + "bounty:" + bounty);
-            sb.append("," + "cost:" + cost);
-            sb.append("," + "factionName:" + factionName);
-            sb.append("," + "healthPoints:" + healthPoints);
-            sb.append("," + "name:" + name);
-            sb.append("," + "speed:" + speed);
-            sb.append("," + "type:" + type);
+            sb.append(",factionName:" + factionName);
+            sb.append(",name:" + name);
+            sb.append(",healthPoints:" + healthPoints);
+            sb.append(",bounty:" + bounty);
+            sb.append(",cost:" + cost);
+            sb.append(",speed:" + speed);
+            sb.append(",type:" + type);
+            sb.append(",animations.size:" + animations.size);
         }
         sb.append("]");
         return sb.toString();
