@@ -57,13 +57,14 @@ public class GameField {
     public static int sizeCellX, sizeCellY;
     private int halfSizeCellX, halfSizeCellY;
     // CameraController2
-    public int isDrawableBackground = 1;
-    public int isDrawableForeground = 1;
     public int isDrawableGrid = 1;
     public static int isDrawableUnits = 1; // Bad! need make not static!
     public static int isDrawableTowers = 1; // Bad! need make not static!
-//    public boolean isDrawableRoutes = true;3
+    public int isDrawableBackground = 1;
+    public int isDrawableGround = 1;
+    public int isDrawableForeground = 1;
     public int isDrawableGridNav = 1;
+    public int isDrawableRoutes = 1;
     public int drawOrder = 8;
     private WhichCell whichCell;
     // CameraController3
@@ -378,7 +379,7 @@ public class GameField {
         if(isDrawableBackground > 0) {
             drawBackGrounds(spriteBatch);
         }
-        if(isDrawableForeground > 0 || isDrawableUnits > 0 || isDrawableTowers > 0) {
+        if(isDrawableGround > 0 || isDrawableUnits > 0 || isDrawableTowers > 0) {
             drawGroundsWithUnitsAndTowers(spriteBatch);
 //            drawTowersUnderConstruction(spriteBatch);
         }
@@ -608,16 +609,16 @@ public class GameField {
         Array<TiledMapTile> tiledMapTiles = cell.groundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-            if(isDrawableForeground == 1 || isDrawableForeground == 5) {
+            if(isDrawableGround == 1 || isDrawableGround == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
-            if(isDrawableForeground == 2 || isDrawableForeground == 5) {
+            if(isDrawableGround == 2 || isDrawableGround == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
-            if(isDrawableForeground == 3 || isDrawableForeground == 5) {
+            if(isDrawableGround == 3 || isDrawableGround == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
-            if(isDrawableForeground == 4 || isDrawableForeground == 5) {
+            if(isDrawableGround == 4 || isDrawableGround == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
@@ -717,16 +718,16 @@ public class GameField {
         Array<TiledMapTile> tiledMapTiles = cell.foregroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
-            if (isDrawableBackground == 1 || isDrawableBackground == 5) {
+            if (isDrawableForeground == 1 || isDrawableForeground == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
-            if (isDrawableBackground == 2 || isDrawableBackground == 5) {
+            if (isDrawableForeground == 2 || isDrawableForeground == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
-            if (isDrawableBackground == 3 || isDrawableBackground == 5) {
+            if (isDrawableForeground == 3 || isDrawableForeground == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
-            if (isDrawableBackground == 4 || isDrawableBackground == 5) {
+            if (isDrawableForeground == 4 || isDrawableForeground == 5) {
                 spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
