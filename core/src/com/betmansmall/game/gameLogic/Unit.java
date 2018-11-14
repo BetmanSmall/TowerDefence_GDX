@@ -98,6 +98,34 @@ public class Unit {
         }
     }
 
+    void correct_fVc(Vector2 fVc, Direction direction, float sizeCellX) {
+        this.direction = direction;
+        float fVx = fVc.x;
+        float fVy = fVc.y;
+        if (direction == Direction.UP) {
+            fVy -= ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+        } else if (direction == Direction.UP_RIGHT) {
+            fVx -= ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+            fVy -= ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+        } else if (direction == Direction.RIGHT) {
+            fVx -= ( sizeCellX / speed ) * (speed - stepsInTime);
+        } else if (direction == Direction.DOWN_RIGHT) {
+            fVx -= ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+            fVy += ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+        } else if (direction == Direction.DOWN) {
+            fVy += ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+        } else if (direction == Direction.DOWN_LEFT) {
+            fVx += ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+            fVy += ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+        } else if (direction == Direction.LEFT) {
+            fVx += ( sizeCellX / speed ) * (speed - stepsInTime);
+        } else if (direction == Direction.UP_LEFT) {
+            fVx += ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+            fVy -= ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+        }
+        fVc.set(fVx, fVy);
+    }
+
     // что бы ефекты не стакались на крипах
     public Node move(float delta) {
 //        Gdx.app.log("Unit", "move(); -- Unit status:" + this.toString());
@@ -173,152 +201,114 @@ public class Unit {
             int sizeCellY = GameField.sizeCellY;
             float halfSizeCellX = sizeCellX/2;
             float halfSizeCellY = sizeCellY/2;
-            float fVx = 0, fVy = 0;
+            Vector2 fVc = new Vector2(); // fVc = floatVectorCoordinates
             Direction oldDirection = direction;
             int isDrawableUnits = GameField.isDrawableUnits;
             if(isDrawableUnits == 4 || isDrawableUnits == 5) {
-                fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
-                fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY)) + halfSizeCellY;
+//                fVc = new Vector2(getCell(newX, newY).graphicsCoord4)
+                float fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
+                float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY)) + halfSizeCellY;
+                fVc.set(fVx, fVy);
                 if (newX < oldX && newY > oldY) {
-                    direction = Direction.UP;
-                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP, sizeCellX);
                 } else if (newX < oldX && newY == oldY) {
-                    direction = Direction.UP_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
                 } else if (newX < oldX && newY < oldY) {
-                    direction = Direction.RIGHT;
-                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX);
                 } else if (newX == oldX && newY < oldY) {
-                    direction = Direction.DOWN_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
                 } else if (newX > oldX && newY < oldY) {
-                    direction = Direction.DOWN;
-                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX);
                 } else if (newX > oldX && newY == oldY) {
-                    direction = Direction.DOWN_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
                 } else if (newX > oldX && newY > oldY) {
-                    direction = Direction.LEFT;
-                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX);
                 } else if (newX == oldX && newY > oldY) {
-                    direction = Direction.UP_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
                 }
-                currentPoint.set(fVx, fVy);
-                circle4.set(fVx, fVy, 16f);
+//                currentPoint.set(fVc);
+                circle4.setPosition(fVc);
             }
             if(isDrawableUnits == 3 || isDrawableUnits == 5) {
-                fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
-                fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY*2;
+//                fVc = new Vector2(getCell(newX, newY).graphicsCoord3)
+                float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
+                float fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY*2;
+                fVc.set(fVx, fVy);
                 if (newX < oldX && newY > oldY) {
-                    direction = Direction.UP;
-                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP, sizeCellX);
                 } else if (newX > oldX && newY == oldY) {
-                    direction = Direction.UP_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
                 } else if (newX > oldX && newY < oldY) {
-                    direction = Direction.RIGHT;
-                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX);
                 } else if (newX == oldX && newY < oldY) {
-                    direction = Direction.DOWN_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
                 } else if (newX < oldX && newY < oldY) {
-                    direction = Direction.DOWN;
-                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX);
                 } else if (newX < oldX && newY == oldY) {
-                    direction = Direction.DOWN_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
                 } else if (newX < oldX && newY > oldY) {
-                    direction = Direction.LEFT;
-                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX);
                 } else if (newX == oldX && newY > oldY) {
-                    direction = Direction.UP_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
                 }
-                currentPoint.set(fVx, fVy);
-                circle3.set(fVx, fVy, 16f);
+//                currentPoint.set(fVc);
+                circle3.setPosition(fVc);
             }
             if(isDrawableUnits == 2 || isDrawableUnits == 5) {
-                fVx = (halfSizeCellX * newY) + (newX * halfSizeCellX) + halfSizeCellX;
-                fVy = (halfSizeCellY * newY) - (newX * halfSizeCellY) + halfSizeCellY;
+//                fVc = new Vector2(getCell(newX, newY).graphicsCoord2)
+                float fVx = (halfSizeCellX * newY) + (newX * halfSizeCellX) + halfSizeCellX;
+                float fVy = (halfSizeCellY * newY) - (newX * halfSizeCellY) + halfSizeCellY;
+                fVc.set(fVx, fVy);
                 if (newX < oldX && newY > oldY) {
-                    direction = Direction.UP;
-                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP, sizeCellX);
                 } else if (newX == oldX && newY > oldY) {
-                    direction = Direction.UP_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
                 } else if (newX > oldX && newY > oldY) {
-                    direction = Direction.RIGHT;
-                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX);
                 } else if (newX > oldX && newY == oldY) {
-                    direction = Direction.DOWN_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
                 } else if (newX > oldX && newY < oldY) {
-                    direction = Direction.DOWN;
-                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX);
                 } else if (newX == oldX && newY < oldY) {
-                    direction = Direction.DOWN_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
                 } else if (newX < oldX && newY < oldY) {
-                    direction = Direction.LEFT;
-                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX);
                 } else if (newX < oldX && newY == oldY) {
-                    direction = Direction.UP_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
                 }
-                currentPoint.set(fVx, fVy);
-                circle2.set(fVx, fVy, 16f);
+//                currentPoint.set(fVc);
+                circle2.setPosition(fVc);
             }
             if(isDrawableUnits == 1 || isDrawableUnits == 5) {
-                fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
-                fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY));
+//                fVc = new Vector2(getCell(newX, newY).graphicsCoord1)
+                float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
+                float fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY));
+                fVc.set(fVx, fVy);
                 if (newX < oldX && newY < oldY) {
-                    direction = Direction.UP;
-                    fVy -= (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP, sizeCellX);
                 } else if (newX == oldX && newY < oldY) {
-                    direction = Direction.UP_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
                 } else if (newX > oldX && newY < oldY) {
-                    direction = Direction.RIGHT;
-                    fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX);
                 } else if (newX > oldX && newY == oldY) {
-                    direction = Direction.DOWN_RIGHT;
-                    fVx -= (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
                 } else if (newX > oldX && newY > oldY) {
-                    direction = Direction.DOWN;
-                    fVy += (sizeCellY / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX);
                 } else if (newX == oldX && newY > oldY) {
-                    direction = Direction.DOWN_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy += (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
                 } else if (newX < oldX && newY > oldY) {
-                    direction = Direction.LEFT;
-                    fVx += (sizeCellX / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX);
                 } else if (newX < oldX && newY == oldY) {
-                    direction = Direction.UP_LEFT;
-                    fVx += (sizeCellX / 2 / speed) * (speed - stepsInTime);
-                    fVy -= (sizeCellY / 2 / speed) * (speed - stepsInTime);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
                 }
-                currentPoint.set(fVx, fVy);
-                circle1.set(fVx, fVy, 16f);
+//                currentPoint.set(fVc);
+                circle1.setPosition(fVc);
             }
 
             backStepPoint = currentPoint;
-            currentPoint.set(fVx, fVy);
+//            currentPoint.set(fVx, fVy);
+            currentPoint.set(fVc);
+            fVc = null;
 
             velocity = new Vector2(backStepPoint.x - currentPoint.x,
                     backStepPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(backStepPoint.x,
