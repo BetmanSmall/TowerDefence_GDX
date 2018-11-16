@@ -137,6 +137,10 @@ public class Cell {
         return false;
     }
 
+    public boolean removeTerrain() {
+        return removeTerrain(false);
+    }
+
     public boolean removeTerrain(boolean force) {
         if (terrain && (removableTerrain || force) ) {
             terrain = false;
@@ -224,9 +228,19 @@ public class Cell {
         return 0;
     }
 
+    public int removeUnit() {
+        return removeUnit(null);
+    }
+
     public int removeUnit(Unit unit) {
-        if (units != null) {
-            units.removeValue(unit, false);
+        if (!empty && units != null) {
+            if (unit == null) {
+                units.clear();
+            } else /*if (int num = containUnit(unit))*/ {
+                if (units.contains(unit, false)) {
+                    units.removeValue(unit, false);
+                }
+            }
             if (units.size == 0) {
                 units = null;
                 empty = true;

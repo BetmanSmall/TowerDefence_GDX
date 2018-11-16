@@ -36,10 +36,6 @@ import java.util.Iterator;
  * Created by betmansmall on 08.02.2016.
  */
 public class GameField {
-    private ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private SpriteBatch spriteBatch = new SpriteBatch();
-    private BitmapFont bitmapFont = new BitmapFont();
-
     public FactionsManager factionsManager;
     public WaveManager waveManager; // ALL public for all || we are friendly :)
     public TowersManager towersManager;
@@ -358,125 +354,122 @@ public class GameField {
 
     public void dispose() {
         Gdx.app.log("GameField::dispose()", "-- Called!");
-        shapeRenderer.dispose();
-        spriteBatch.dispose();
-        bitmapFont.dispose();
+//        shapeRenderer.dispose();
+//        spriteBatch.dispose();
+//        bitmapFont.dispose();
         map.dispose();
         greenCheckmark.dispose();
         redCross.dispose();
     }
 
-    public void render(float delta, OrthographicCamera camera) {
+    public void render(float delta, CameraController cameraController) {
         delta = delta * gameSpeed;
         if (!gamePaused) {
             spawnUnits(delta);
             stepAllUnits(delta);
-            shotAllTowers(delta);
+            shotAllTowers(delta, cameraController);
             moveAllShells(delta);
         }
 
-        spriteBatch.setProjectionMatrix(camera.combined);
-        spriteBatch.begin();
+        cameraController.spriteBatch.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.spriteBatch.begin();
         if(isDrawableBackground > 0) {
-            drawBackGrounds(spriteBatch);
+            drawBackGrounds(cameraController);
         }
         if(isDrawableGround > 0 || isDrawableUnits > 0 || isDrawableTowers > 0) {
-            drawGroundsWithUnitsAndTowers(spriteBatch);
-//            drawTowersUnderConstruction(spriteBatch);
+            drawGroundsWithUnitsAndTowers(cameraController);
+//            drawTowersUnderConstruction(cameraController);
         }
         if (isDrawableForeground > 0) {
-            drawForeGrounds(spriteBatch);
+            drawForeGrounds(cameraController);
         }
-        spriteBatch.end();
+        cameraController.spriteBatch.end();
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        drawUnitsBars(shapeRenderer);
-        shapeRenderer.end();
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        drawUnitsBars(cameraController);
+        cameraController.shapeRenderer.end();
 
         if (isDrawableGrid > 0)
-            drawGrid(camera);
+            drawGrid(cameraController);
 
         if (isDrawableGridNav > 0) {
-            drawRoutes(camera);
+            drawRoutes(cameraController);
 //            drawWavesRoutes(camera);
-            drawGridNav(camera);
+            drawGridNav(cameraController);
         }
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        spriteBatch.begin();
-        drawShells(spriteBatch);
-        drawTowersUnderConstruction(spriteBatch, shapeRenderer);
-        spriteBatch.end();
-        shapeRenderer.end();
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        cameraController.spriteBatch.begin();
+        drawShells(cameraController);
+        drawTowersUnderConstruction(cameraController);
+        cameraController.spriteBatch.end();
+        cameraController.shapeRenderer.end();
 
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(0f, 0f, 5);
-        shapeRenderer.end();
+        cameraController.shapeRenderer.setColor(Color.RED);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        cameraController.shapeRenderer.circle(0f, 0f, 5);
+        cameraController.shapeRenderer.end();
     }
 
-    private void drawBackGrounds(SpriteBatch spriteBatch) {
+    private void drawBackGrounds(CameraController cameraController) {
         if(drawOrder == 0) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 1) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 2) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 3) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 4) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 5) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 6) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 7) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawBackGroundCell(spriteBatch, x, y);
+                    drawBackGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 8) {
-//            Gdx.app.log("GameField::drawBackGrounds()", "-- camera.position:" + camera.position);
             int x = 0, y = 0;
             int length = (sizeFieldX > sizeFieldY) ? sizeFieldX : sizeFieldY;
             while (x < length) {
                 if(x < sizeFieldX && y < sizeFieldY) {
                     if (x == length - 1 && y == length - 1) {
-                        drawBackGroundCell(spriteBatch, x, y);
-//                        Gdx.app.log("GameField::drawBackGrounds()", "-- хуй");
-//                        break;
+                        drawBackGroundCell(cameraController, x, y);
                     } else {
-                        drawBackGroundCell(spriteBatch, x, y);
+                        drawBackGroundCell(cameraController, x, y);
                     }
                 }
                 if (x == length - 1) {
@@ -493,73 +486,73 @@ public class GameField {
         }
     }
 
-    private void drawBackGroundCell(SpriteBatch spriteBatch, int cellX, int cellY) {
+    private void drawBackGroundCell(CameraController cameraController, int cellX, int cellY) {
         Cell cell = field[cellX][cellY];
         Array<TiledMapTile> tiledMapTiles = cell.backgroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if (isDrawableBackground == 1 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 2 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 3 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 4 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
     }
 
-    private void drawGroundsWithUnitsAndTowers(SpriteBatch spriteBatch) {
+    private void drawGroundsWithUnitsAndTowers(CameraController cameraController) {
         if(drawOrder == 0) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 1) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 2) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 3) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 4) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 5) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 6) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 7) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                    drawGroundCellWithUnitsAndTower(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 8) {
@@ -568,11 +561,9 @@ public class GameField {
             while (x < length) {
                 if(x < sizeFieldX && y < sizeFieldY) {
                     if (x == length - 1 && y == length - 1) {
-                        drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
-//                        Gdx.app.log("GameField::drawForeGroundsWithUnitsAndTowers()", "-- хуй");
-//                        break;
+                        drawGroundCellWithUnitsAndTower(cameraController, x, y);
                     } else {
-                        drawGroundCellWithUnitsAndTower(spriteBatch, x, y);
+                        drawGroundCellWithUnitsAndTower(cameraController, x, y);
                     }
                 }
                 if (x == length - 1) {
@@ -589,99 +580,96 @@ public class GameField {
         }
     }
 
-    private void drawGroundCellWithUnitsAndTower(SpriteBatch spriteBatch, int cellX, int cellY) {
+    private void drawGroundCellWithUnitsAndTower(CameraController cameraController, int cellX, int cellY) {
         Cell cell = field[cellX][cellY];
         Array<TiledMapTile> tiledMapTiles = cell.groundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if(isDrawableGround == 1 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableGround == 2 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableGround == 3 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableGround == 4 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
         Array<Unit> units = field[cellX][cellY].getUnits();
         if(units != null) {
-            Color oldColorSB = spriteBatch.getColor();
+            Color oldColorSB = cameraController.spriteBatch.getColor();
             for (Unit unit : units) {
-                drawUnit(unit, spriteBatch);
+                drawUnit(cameraController, unit);
             }
-            spriteBatch.setColor(oldColorSB);
+            cameraController.spriteBatch.setColor(oldColorSB);
         }
         Tower tower = field[cellX][cellY].getTower();
         if(tower != null) {
-            drawTower(tower, spriteBatch);
+            drawTower(cameraController, tower);
         }
     }
 
-    private void drawForeGrounds(SpriteBatch spriteBatch) {
+    private void drawForeGrounds(CameraController cameraController) {
         if(drawOrder == 0) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 1) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 2) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 3) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 4) {
             for (int y = sizeFieldY-1; y >= 0; y--) {
                 for (int x = 0; x < sizeFieldX; x++) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 5) {
             for (int x = 0; x < sizeFieldX; x++) {
                 for (int y = sizeFieldY-1; y >= 0; y--) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 6) {
             for (int y = 0; y < sizeFieldY; y++) {
                 for (int x = sizeFieldX-1; x >= 0; x--) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 7) {
             for (int x = sizeFieldX-1; x >= 0; x--) {
                 for (int y = 0; y < sizeFieldY; y++) {
-                    drawForeGroundCell(spriteBatch, x, y);
+                    drawForeGroundCell(cameraController, x, y);
                 }
             }
         } else if(drawOrder == 8) {
-//            Gdx.app.log("GameField::drawBackGrounds()", "-- camera.position:" + camera.position);
             int x = 0, y = 0;
             int length = (sizeFieldX > sizeFieldY) ? sizeFieldX : sizeFieldY;
             while (x < length) {
                 if(x < sizeFieldX && y < sizeFieldY) {
                     if (x == length - 1 && y == length - 1) {
-                        drawForeGroundCell(spriteBatch, x, y);
-//                        Gdx.app.log("GameField::drawBackGrounds()", "-- хуй");
-//                        break;
+                        drawForeGroundCell(cameraController, x, y);
                     } else {
-                        drawForeGroundCell(spriteBatch, x, y);
+                        drawForeGroundCell(cameraController, x, y);
                     }
                 }
                 if (x == length - 1) {
@@ -698,30 +686,30 @@ public class GameField {
         }
     }
 
-    private void drawForeGroundCell(SpriteBatch spriteBatch, int cellX, int cellY) {
+    private void drawForeGroundCell(CameraController cameraController, int cellX, int cellY) {
         Cell cell = field[cellX][cellY];
         Array<TiledMapTile> tiledMapTiles = cell.foregroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if (isDrawableForeground == 1 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableForeground == 2 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableForeground == 3 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableForeground == 4 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
     }
 
-    private void drawGrid(OrthographicCamera camera) {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
+    private void drawGrid(CameraController cameraController) {
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
 
         int widthForTop = sizeFieldY * halfSizeCellX; // A - B
         int heightForTop = sizeFieldY * halfSizeCellY; // B - Top
@@ -731,32 +719,32 @@ public class GameField {
 
         if(isDrawableGrid == 1 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldX; x++)
-                shapeRenderer.line( (halfSizeCellX*x),-(halfSizeCellY*x),-(widthForTop)+(halfSizeCellX*x),   -(heightForTop)-(x*halfSizeCellY));
+                cameraController.shapeRenderer.line( (halfSizeCellX*x),-(halfSizeCellY*x),-(widthForTop)+(halfSizeCellX*x),   -(heightForTop)-(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldY; y++)
-                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y), (widthForBottom)-(halfSizeCellX*y),-(heightForBottom)-(halfSizeCellY*y));
+                cameraController.shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y), (widthForBottom)-(halfSizeCellX*y),-(heightForBottom)-(halfSizeCellY*y));
         }
         if(isDrawableGrid == 2 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldX; x++)
-                shapeRenderer.line((halfSizeCellX*x),-(halfSizeCellY*x),(widthForTop)+(halfSizeCellX*x),    (heightForTop)-(x*halfSizeCellY));
+                cameraController.shapeRenderer.line((halfSizeCellX*x),-(halfSizeCellY*x),(widthForTop)+(halfSizeCellX*x),    (heightForTop)-(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldY; y++)
-                shapeRenderer.line((halfSizeCellX*y), (halfSizeCellY*y),(widthForBottom)+(halfSizeCellX*y),-(heightForBottom)+(halfSizeCellY*y));
+                cameraController.shapeRenderer.line((halfSizeCellX*y), (halfSizeCellY*y),(widthForBottom)+(halfSizeCellX*y),-(heightForBottom)+(halfSizeCellY*y));
         }
         if(isDrawableGrid == 3 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldY; x++) // WHT??? sizeFieldY check groundDraw
-                shapeRenderer.line(-(halfSizeCellX*x),(halfSizeCellY*x), (widthForBottom)-(halfSizeCellX*x),(heightForBottom)+(x*halfSizeCellY));
+                cameraController.shapeRenderer.line(-(halfSizeCellX*x),(halfSizeCellY*x), (widthForBottom)-(halfSizeCellX*x),(heightForBottom)+(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldX; y++) // WHT??? sizeFieldX check groundDraw
-                shapeRenderer.line( (halfSizeCellX*y),(halfSizeCellY*y),-(widthForTop)+(halfSizeCellX*y),   (heightForTop)+(halfSizeCellY*y));
+                cameraController.shapeRenderer.line( (halfSizeCellX*y),(halfSizeCellY*y),-(widthForTop)+(halfSizeCellX*y),   (heightForTop)+(halfSizeCellY*y));
         }
         if(isDrawableGrid == 4 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldY; x++) // WHT??? sizeFieldY check groundDraw
-                shapeRenderer.line(-(halfSizeCellX*x), (halfSizeCellY*x),-(widthForBottom)-(halfSizeCellX*x),   -(heightForBottom)+(x*halfSizeCellY));
+                cameraController.shapeRenderer.line(-(halfSizeCellX*x), (halfSizeCellY*x),-(widthForBottom)-(halfSizeCellX*x),   -(heightForBottom)+(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldX; y++) // WHT??? sizeFieldX check groundDraw
-                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y),-(widthForTop)-(halfSizeCellX*y),(heightForTop)-(halfSizeCellY*y));
+                cameraController.shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y),-(widthForTop)-(halfSizeCellX*y),(heightForTop)-(halfSizeCellY*y));
         }
-        shapeRenderer.end();
+        cameraController.shapeRenderer.end();
     }
 
-//    private void drawUnitsAndTowers(SpriteBatch spriteBatch) {
+//    private void drawUnitsAndTowers(CameraController cameraController) {
 //        getPriorityMap();
 //        for (Object obj : priorityMap.values()) {
 //            if (obj instanceof Tower) {
@@ -789,21 +777,21 @@ public class GameField {
 //        }
 //    }
 
-//    private void drawUnits(SpriteBatch spriteBatch) {
+//    private void drawUnits(CameraController cameraController) {
 //        for (Unit unit : unitsManager.units) {
 //            drawUnit(unit, spriteBatch);
 //        }
 //    }
 
-    private void drawUnit(Unit unit, SpriteBatch spriteBatch) { //TODO Need to refactor this
+    private void drawUnit(CameraController cameraController, Unit unit) { //TODO Need to refactor this
 //        Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- Start!");
         for (ShellEffectType shellAttackType : unit.shellEffectTypes) {
             if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
-                spriteBatch.setColor(0.0f, 0.0f, 1.0f, 0.9f);
+                cameraController.spriteBatch.setColor(0.0f, 0.0f, 1.0f, 0.9f);
                 // Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- FreezeEffect!");
             }
             if(shellAttackType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
-                spriteBatch.setColor(1.0f, 0.0f, 0.0f, 0.9f);
+                cameraController.spriteBatch.setColor(1.0f, 0.0f, 0.0f, 0.9f);
                 // Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- FireEffect!");
             }
         }
@@ -820,44 +808,44 @@ public class GameField {
         if(isDrawableUnits == 1 || isDrawableUnits == 5) {
             fVx = unit.circle1.x - deltaX;
             fVy = unit.circle1.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
+            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
         }
         if(isDrawableUnits == 2 || isDrawableUnits == 5) {
             fVx = unit.circle2.x - deltaX;
             fVy = unit.circle2.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
+            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
         }
         if(isDrawableUnits == 3 || isDrawableUnits == 5) {
             fVx = unit.circle3.x - deltaX;
             fVy = unit.circle3.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
+            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
         }
         if(isDrawableUnits == 4 || isDrawableUnits == 5) {
             fVx = unit.circle4.x - deltaX;
             fVy = unit.circle4.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
+            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
         }
 //        drawUnitBar(shapeRenderer, unit, currentFrame, fVx, fVy);
     }
 
-    private void drawUnitsBars(ShapeRenderer shapeRenderer) {
+    private void drawUnitsBars(CameraController cameraController) {
         for (Unit unit : unitsManager.units) {
             if(isDrawableUnits == 1 || isDrawableUnits == 5) {
-                drawUnitBar(shapeRenderer, unit, unit.circle1.x, unit.circle1.y);
+                drawUnitBar(cameraController, unit, unit.circle1.x, unit.circle1.y);
             }
             if(isDrawableUnits == 2 || isDrawableUnits == 5) {
-                drawUnitBar(shapeRenderer, unit, unit.circle2.x, unit.circle2.y);
+                drawUnitBar(cameraController, unit, unit.circle2.x, unit.circle2.y);
             }
             if(isDrawableUnits == 3 || isDrawableUnits == 5) {
-                drawUnitBar(shapeRenderer, unit, unit.circle3.x, unit.circle3.y);
+                drawUnitBar(cameraController, unit, unit.circle3.x, unit.circle3.y);
             }
             if(isDrawableUnits == 4 || isDrawableUnits == 5) {
-                drawUnitBar(shapeRenderer, unit, unit.circle4.x, unit.circle4.y);
+                drawUnitBar(cameraController, unit, unit.circle4.x, unit.circle4.y);
             }
         }
     }
 
-    private void drawUnitBar(ShapeRenderer shapeRenderer, Unit unit, float fVx, float fVy) {
+    private void drawUnitBar(CameraController cameraController, Unit unit, float fVx, float fVy) {
         if (unit.isAlive()) {
             TextureRegion currentFrame = unit.getCurrentFrame();
             fVx -= sizeCellX/2;
@@ -874,13 +862,13 @@ public class GameField {
             float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
             float hpBarTopIndent = hpBarHeight;
 
-            shapeRenderer.setColor(Color.BLACK);
-            shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
-            shapeRenderer.setColor(Color.GREEN);
+            cameraController.shapeRenderer.setColor(Color.BLACK);
+            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
+            cameraController.shapeRenderer.setColor(Color.GREEN);
             float maxHP = unit.templateForUnit.healthPoints;
             float hp = unit.hp;
             hpBarHPWidth = hpBarHPWidth / maxHP * hp;
-            shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
 
             float allTime = 0f;
             for (ShellEffectType shellEffectType : unit.shellEffectTypes)
@@ -893,22 +881,22 @@ public class GameField {
             for (int effectIndex = 0; effectIndex < unit.shellEffectTypes.size; effectIndex++) {
                 ShellEffectType shellEffectType = unit.shellEffectTypes.get(effectIndex);
                 if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
-                    shapeRenderer.setColor(Color.RED);
+                    cameraController.shapeRenderer.setColor(Color.RED);
                 } else if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
-                    shapeRenderer.setColor(Color.ROYAL);
+                    cameraController.shapeRenderer.setColor(Color.ROYAL);
                 }
                 float efWidth = effectBlockWidth - effectWidth * shellEffectType.elapsedTime;
-                shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
+                cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
                 efX += effectBlockWidth;
 //                Gdx.app.log("GameField::drawUnit()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
             }
         }
     }
 
-    private void drawRoutes(OrthographicCamera camera) {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
+    private void drawRoutes(CameraController cameraController) {
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
 
         float gridNavRadius = sizeCellX/12f;
         for (Unit unit : unitsManager.units) {
@@ -917,39 +905,39 @@ public class GameField {
                 for (Node coor : route) {
                     Cell cell = field[coor.getX()][coor.getY()];
                     if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinates1.x, cell.graphicCoordinates1.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates1.x, cell.graphicCoordinates1.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinates2.x, cell.graphicCoordinates2.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates2.x, cell.graphicCoordinates2.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinates3.x, cell.graphicCoordinates3.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates3.x, cell.graphicCoordinates3.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinates4.x, cell.graphicCoordinates4.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates4.x, cell.graphicCoordinates4.y, gridNavRadius);
                     }
                 }
             }
         }
-        shapeRenderer.end();
+        cameraController.shapeRenderer.end();
     }
 
-    private void drawWavesRoutes(OrthographicCamera camera) {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+    private void drawWavesRoutes(CameraController cameraController) {
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        shapeRenderer.setColor(Color.BROWN);
+        cameraController.shapeRenderer.setColor(Color.BROWN);
         for (Wave wave : waveManager.waves) {
-            drawWave(wave);
+            drawWave(cameraController, wave);
         }
-        shapeRenderer.setColor(Color.BLUE);
+        cameraController.shapeRenderer.setColor(Color.BLUE);
         for (Wave wave : waveManager.wavesForUser) {
-            drawWave(wave);
+            drawWave(cameraController, wave);
         }
-        shapeRenderer.end();
+        cameraController.shapeRenderer.end();
     }
 
-    public void drawWave(Wave wave) {
+    public void drawWave(CameraController cameraController, Wave wave) {
 //        Gdx.app.log("GameField::drawWave(" + wave + ")", "--");
         float linesWidth = sizeCellX/15f;
         ArrayDeque<Node> route = wave.route;
@@ -962,29 +950,29 @@ public class GameField {
                 Cell startCell = field[startNode.getX()][startNode.getY()];
                 Cell endCell = field[endNode.getX()][endNode.getY()];
                 if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinates1, endCell.graphicCoordinates1, linesWidth);
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates1, endCell.graphicCoordinates1, linesWidth);
                 }
                 if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinates2, endCell.graphicCoordinates2, linesWidth);
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates2, endCell.graphicCoordinates2, linesWidth);
                 }
                 if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinates3, endCell.graphicCoordinates3, linesWidth);
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates3, endCell.graphicCoordinates3, linesWidth);
                 }
                 if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinates4, endCell.graphicCoordinates4, linesWidth);
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates4, endCell.graphicCoordinates4, linesWidth);
                 }
                 startNode = endNode;
             }
         }
     }
 
-//    private void drawTowers(SpriteBatch spriteBatch) {
+//    private void drawTowers(CameraController cameraController) {
 //        for (Tower tower : towersManager.getAllTemplateForTowers()) {
 //            drawTower(tower, spriteBatch);
 //        }
 //    }
 
-    private void drawTower(Tower tower, SpriteBatch spriteBatch) {
+    private void drawTower(CameraController cameraController, Tower tower) {
         GridPoint2 cellPosition = tower.position;
         int towerSize = tower.templateForTower.size;
         Cell cell = getCell(cellPosition.x, cellPosition.y);
@@ -996,19 +984,19 @@ public class GameField {
             for (int m = 1; m < isDrawableTowers; m++) {
                 towerPos.set(cell.getGraphicCoordinates(m));
                 getCorrectGraphicTowerCoord(towerPos, towerSize, m);
-                spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+                cameraController.spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
             }
         } else if (isDrawableTowers != 0) {
             towerPos.set(cell.getGraphicCoordinates(isDrawableTowers));
             getCorrectGraphicTowerCoord(towerPos, towerSize, isDrawableTowers);
-            spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+            cameraController.spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
         }
         towerPos = null; // delete towerPos;
     }
 
-    private void drawGridNav(OrthographicCamera camera) {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+    private void drawGridNav(CameraController cameraController) {
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         Vector2 pos = new Vector2();
         float gridNavRadius = sizeCellX/20f;
@@ -1017,203 +1005,203 @@ public class GameField {
                 Cell cell = field[x][y];
                 if (cell != null && !cell.isEmpty()) {
                     if (cell.isTerrain()) {
-                        shapeRenderer.setColor(Color.RED);
+                        cameraController.shapeRenderer.setColor(Color.RED);
                     } else if (cell.getUnit() != null) {
-                        shapeRenderer.setColor(Color.GREEN);
+                        cameraController.shapeRenderer.setColor(Color.GREEN);
                     } else if (cell.getTower() != null) {
-//                        shapeRenderer.setColor(new Color(225f, 224f, 0f, 255f));
-                        shapeRenderer.setColor(Color.YELLOW);
+//                        cameraController.shapeRenderer.setColor(new Color(225f, 224f, 0f, 255f));
+                        cameraController.shapeRenderer.setColor(Color.YELLOW);
                     }
                     if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
                         pos.set(cell.getGraphicCoordinates(1));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
                         pos.set(cell.getGraphicCoordinates(2));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
                         pos.set(cell.getGraphicCoordinates(3));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
                         pos.set(cell.getGraphicCoordinates(4));
-                        shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
                     }
                 }
             }
         }
 
         Array<GridPoint2> spawnPoints = waveManager.getAllSpawnPoint();
-        shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
+        cameraController.shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
         for (GridPoint2 spawnPoint : spawnPoints) {
             Cell cell = field[spawnPoint.x][spawnPoint.y];
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(1));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(2));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(3));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(4));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
         }
 
         Array<GridPoint2> exitPoints = waveManager.getAllExitPoint();
-        shapeRenderer.setColor(new Color(255f, 0f, 102f, 255f));
+        cameraController.shapeRenderer.setColor(new Color(255f, 0f, 102f, 255f));
         for (GridPoint2 exitPoint : exitPoints) {
 //            Gdx.app.log("GameField::drawGridNav()", "-- exitCell.cellX:" + exitCell.cellX + " exitCell.y:" + exitCell.y + " isDrawableGridNav:" + isDrawableGridNav);
             Cell cell = field[exitPoint.x][exitPoint.y];
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(1));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(2));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(3));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
             if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(4));
-                shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
             }
         }
 
-        shapeRenderer.setColor(Color.ORANGE);
+        cameraController.shapeRenderer.setColor(Color.ORANGE);
         for (Tower tower : towersManager.towers) {
             for (Bullet bullet : tower.bullets) {
-                shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, sizeCellX/40f);
+                cameraController.shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, sizeCellX/40f);
                 if (null != bullet.circle) {
-                    shapeRenderer.circle(bullet.circle.x, bullet.circle.y, bullet.circle.radius);
+                    cameraController.shapeRenderer.circle(bullet.circle.x, bullet.circle.y, bullet.circle.radius);
                 }
             }
         }
-        shapeRenderer.end();
+        cameraController.shapeRenderer.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        cameraController.shapeRenderer.setColor(Color.RED);
         for (Unit unit : unitsManager.units) {
             if(isDrawableUnits == 1 || isDrawableUnits == 5)
-                shapeRenderer.circle(unit.circle1.x, unit.circle1.y, unit.circle1.radius);
+                cameraController.shapeRenderer.circle(unit.circle1.x, unit.circle1.y, unit.circle1.radius);
             if(isDrawableUnits == 2 || isDrawableUnits == 5)
-                shapeRenderer.circle(unit.circle2.x, unit.circle2.y, unit.circle2.radius);
+                cameraController.shapeRenderer.circle(unit.circle2.x, unit.circle2.y, unit.circle2.radius);
             if(isDrawableUnits == 3 || isDrawableUnits == 5)
-                shapeRenderer.circle(unit.circle3.x, unit.circle3.y, unit.circle3.radius);
+                cameraController.shapeRenderer.circle(unit.circle3.x, unit.circle3.y, unit.circle3.radius);
             if(isDrawableUnits == 4 || isDrawableUnits == 5)
-                shapeRenderer.circle(unit.circle4.x, unit.circle4.y, unit.circle4.radius);
+                cameraController.shapeRenderer.circle(unit.circle4.x, unit.circle4.y, unit.circle4.radius);
         }
 
-        shapeRenderer.setColor(new Color(153f, 255f, 51f, 1f));
+        cameraController.shapeRenderer.setColor(new Color(153f, 255f, 51f, 1f));
         Vector2 towerPos = new Vector2();
         for (Tower tower : towersManager.towers) { // Draw white towers radius! -- radiusDetectionCircle
             if(isDrawableGridNav == 5) {
                 if(isDrawableTowers == 5) {
                     for (int m = 1; m < isDrawableTowers; m++) {
-                        towerPos.set(tower.getCenterGraphicCoord(m)); // Need recoding this func!
-                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
+                        towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, m)); // Need recoding this func!
+                        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
                     }
                 } else if(isDrawableTowers != 0) {
-                    towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                    shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
+                    towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, isDrawableTowers));
+                    cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
                 }
             } else /*if(isDrawableGridNav != 0)*/ {
                 if(isDrawableGridNav == isDrawableTowers) {
-                    towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                    shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
+                    towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, isDrawableTowers));
+                    cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius);
                 }
             }
         }
 
-        shapeRenderer.setColor(Color.FIREBRICK);
+        cameraController.shapeRenderer.setColor(Color.FIREBRICK);
         for (Tower tower : towersManager.towers) { // Draw FIREBRICK towers radius! -- radiusFlyShellCircle
             if (tower.radiusFlyShellCircle != null) {
                 if(isDrawableGridNav == 5) {
                     if(isDrawableTowers == 5) {
                         for (int m = 1; m <= isDrawableTowers; m++) {
-                            towerPos.set(tower.getCenterGraphicCoord(m)); // Need recoding this func!
-                            shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
+                            towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, m)); // Need recoding this func!
+                            cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
                         }
                     } else {
-                        towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
+                        towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, isDrawableTowers));
+                        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
                     }
                 } else {
                     if(isDrawableGridNav == isDrawableTowers) {
-                        towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                        shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
+                        towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, isDrawableTowers));
+                        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusFlyShellCircle.radius);
                     }
                 }
             }
         }
-        shapeRenderer.end();
+        cameraController.shapeRenderer.end();
 
-        spriteBatch.begin();
-        bitmapFont.setColor(Color.YELLOW);
-        bitmapFont.getData().setScale(0.7f);
+        cameraController.spriteBatch.begin();
+        cameraController.bitmapFont.setColor(Color.YELLOW);
+        cameraController.bitmapFont.getData().setScale(0.7f);
         for (Tower tower : towersManager.towers) { // Draw pit capacity value
             if (tower.templateForTower.towerAttackType == TowerAttackType.Pit) {
                 if(isDrawableGridNav == 5) {
                     if(isDrawableTowers == 5) {
                         for (int m = 1; m <= isDrawableTowers; m++) {
-                            towerPos.set(tower.getCenterGraphicCoord(m)); // Need recoding this func!
-                            bitmapFont.draw(spriteBatch, String.valueOf(tower.capacity), towerPos.x, towerPos.y);
+                            towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, m)); // Need recoding this func!
+                            cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.capacity), towerPos.x, towerPos.y);
                         }
                     } else {
-                        towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                        bitmapFont.draw(spriteBatch, String.valueOf(tower.capacity), towerPos.x, towerPos.y);
+                        towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, isDrawableTowers));
+                        cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.capacity), towerPos.x, towerPos.y);
                     }
                 } else {
                     if(isDrawableGridNav == isDrawableTowers) {
-                        towerPos.set(tower.getCenterGraphicCoord(isDrawableTowers));
-                        bitmapFont.draw(spriteBatch, String.valueOf(tower.capacity), towerPos.x, towerPos.y);
+                        towerPos.set(cameraController.getCenterGraphicCoord(tower.position.x, tower.position.y, isDrawableTowers));
+                        cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.capacity), towerPos.x, towerPos.y);
                     }
                 }
             }
         }
-        spriteBatch.end();
+        cameraController.spriteBatch.end();
     }
 
-    private void drawShells(SpriteBatch spriteBatch) {
+    private void drawShells(CameraController cameraController) {
         for (Tower tower : towersManager.towers) {
             for (Bullet bullet : tower.bullets) {
                 TextureRegion textureRegion = bullet.textureRegion;
 //                float width = textureRegion.getRegionWidth() * bullet.ammoSize;
 //                float height = textureRegion.getRegionHeight() * bullet.ammoSize;
 //                spriteBatch.draw(textureRegion, bullet.currentPoint.x, bullet.currentPoint.y, width, height);
-                spriteBatch.draw(textureRegion, bullet.currentPoint.x - bullet.circle.radius, bullet.currentPoint.y - bullet.circle.radius, bullet.circle.radius * 2, bullet.circle.radius * 2);
+                cameraController.spriteBatch.draw(textureRegion, bullet.currentPoint.x - bullet.circle.radius, bullet.currentPoint.y - bullet.circle.radius, bullet.circle.radius * 2, bullet.circle.radius * 2);
 //                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw bullet:" + bullet.currentPoint);
             }
         }
     }
 
-    private void drawTowersUnderConstruction(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
+    private void drawTowersUnderConstruction(CameraController cameraController) {
         if (underConstruction != null) {
             int goldNeed = underConstruction.templateForTower.cost;
             boolean enoughGold = (gamerGold >= goldNeed) ? true : false;
             if (underConstruction.state == 0) {
-                drawTowerUnderConstruction(spriteBatch, shapeRenderer, underConstruction.endX, underConstruction.endY, underConstruction.templateForTower, enoughGold);
+                drawTowerUnderConstruction(cameraController, underConstruction.endX, underConstruction.endY, underConstruction.templateForTower, enoughGold);
             } else if (underConstruction.state == 1) {
-                drawTowerUnderConstruction(spriteBatch, shapeRenderer, underConstruction.startX, underConstruction.startY, underConstruction.templateForTower, enoughGold);
+                drawTowerUnderConstruction(cameraController, underConstruction.startX, underConstruction.startY, underConstruction.templateForTower, enoughGold);
                 for (int k = 0; k < underConstruction.coorsX.size; k++) {
                     goldNeed += underConstruction.templateForTower.cost;
                     enoughGold = (gamerGold >= goldNeed) ? true : false;
-                    drawTowerUnderConstruction(spriteBatch, shapeRenderer, underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, enoughGold);
+                    drawTowerUnderConstruction(cameraController, underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, enoughGold);
                 }
             }
         }
     }
 
-    private void drawTowerUnderConstruction(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer, int buildX, int buildY, TemplateForTower templateForTower, boolean enoughGold) {
+    private void drawTowerUnderConstruction(CameraController cameraController, int buildX, int buildY, TemplateForTower templateForTower, boolean enoughGold) {
 //        Gdx.app.log("GameField::drawTowerUnderConstruction()", "-- buildX:" + buildX + " buildY:" + buildY /*+ " templateForTower:" + templateForTower*/ + " enoughGold:" + enoughGold);
         boolean drawFull = true;
         boolean canBuild = true;
@@ -1262,38 +1250,39 @@ public class GameField {
         if (drawFull) {
             Cell mainCell = getCell(buildX, buildY);
             if(mainCell != null) {
-                Color oldColorSB = spriteBatch.getColor();
-                Color oldColorSR = shapeRenderer.getColor();
+                Color oldColorSB = cameraController.spriteBatch.getColor();
+                Color oldColorSR = cameraController.shapeRenderer.getColor();
                 if (enoughGold && canBuild) {
-                    spriteBatch.setColor(0, 1f, 0, 0.55f);
-                    shapeRenderer.setColor(0, 1f, 0, 0.55f);
+                    cameraController.spriteBatch.setColor(0, 1f, 0, 0.55f);
+                    cameraController.shapeRenderer.setColor(0, 1f, 0, 0.55f);
                 } else {
-                    spriteBatch.setColor(1f, 0, 0, 0.55f);
-                    shapeRenderer.setColor(1f, 0, 0, 0.55f);
+                    cameraController.spriteBatch.setColor(1f, 0, 0, 0.55f);
+                    cameraController.shapeRenderer.setColor(1f, 0, 0, 0.55f);
                 }
                 if (isDrawableTowers == 5) {
                     for (int map = 1; map < isDrawableTowers; map++) {
-                        drawTowerUnderConstructionAndMarks(spriteBatch, shapeRenderer, map, templateForTower, mainCell, startDrawCell, finishDrawCell);
+                        drawTowerUnderConstructionAndMarks(cameraController, map, templateForTower, mainCell, startDrawCell, finishDrawCell);
                     }
                 } else if (isDrawableTowers != 0) {
-                    drawTowerUnderConstructionAndMarks(spriteBatch, shapeRenderer, isDrawableTowers, templateForTower, mainCell, startDrawCell, finishDrawCell);
+                    drawTowerUnderConstructionAndMarks(cameraController, isDrawableTowers, templateForTower, mainCell, startDrawCell, finishDrawCell);
                 }
-                spriteBatch.setColor(oldColorSB);
-                shapeRenderer.setColor(oldColorSR);
+                cameraController.spriteBatch.setColor(oldColorSB);
+                cameraController.shapeRenderer.setColor(oldColorSR);
             }
         }
     }
 
-    private void drawTowerUnderConstructionAndMarks(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer, int map, TemplateForTower templateForTower, Cell mainCell, GridPoint2 startDrawCell, GridPoint2 finishDrawCell) {
+    private void drawTowerUnderConstructionAndMarks(CameraController cameraController, int map, TemplateForTower templateForTower, Cell mainCell, GridPoint2 startDrawCell, GridPoint2 finishDrawCell) {
 //        Gdx.app.log("GameField::drawTowerUnderConstructionAndMarks()", "-- spriteBatch:" + /*spriteBatch +*/ " shapeRenderer:" + /*shapeRenderer +*/ " map:" + map + " templateForTower:" + templateForTower + " mainCell:" + mainCell + " startDrawCell:" + startDrawCell + " finishDrawCell:" + finishDrawCell);
         TextureRegion textureRegion = templateForTower.idleTile.getTextureRegion();
         int towerSize = templateForTower.size;
         Vector2 towerPos = new Vector2(mainCell.getGraphicCoordinates(map));
         if (templateForTower.radiusDetection != null) {
-            shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection);
+            cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection);
         }
         getCorrectGraphicTowerCoord(towerPos, towerSize, map);
-        spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+        cameraController.spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection/4);
         if (greenCheckmark != null && redCross != null) {
             Vector2 markPos = new Vector2();
             for (int x = startDrawCell.x; x <= finishDrawCell.x; x++) {
@@ -1303,9 +1292,9 @@ public class GameField {
                         markPos.set(markCell.getGraphicCoordinates(map));
                         markPos.add(-(halfSizeCellX), -(halfSizeCellY));
                         if(markCell.isEmpty()) {
-                            spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+                            cameraController.spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
                         } else {
-                            spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
+                            cameraController.spriteBatch.draw(redCross, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
                         }
                     }
                 }
@@ -1612,7 +1601,7 @@ public class GameField {
         }
     }
 
-    private void shotAllTowers(float delta) {
+    private void shotAllTowers(float delta, CameraController cameraController) {
         for (Tower tower : towersManager.towers) {
             TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
@@ -1638,7 +1627,7 @@ public class GameField {
                                     (!unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) { // Тупо но работает, потом переделать need =)
                                 if (Intersector.overlaps(tower.radiusDetectionCircle, unit.circle1)) {
 //                                    Gdx.app.log("GameField", "shotAllTowers(); -- Intersector.overlaps(" + tower.toString() + ", " + unit.toString());
-                                    if (tower.shoot(unit)) {
+                                    if (tower.shoot(unit, cameraController)) {
                                         if(tower.templateForTower.shellAttackType != ShellAttackType.MassAddEffect) {
                                             break;
                                         }

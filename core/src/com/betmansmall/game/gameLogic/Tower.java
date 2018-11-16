@@ -35,14 +35,25 @@ public class Tower {
         this.player = player;
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
         this.bullets = new Array<Bullet>();
-        this.radiusDetectionCircle = new Circle(getCenterGraphicCoord(1), (templateForTower.radiusDetection == null) ? 0f : templateForTower.radiusDetection); // AlexGor
-        if(templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != null && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-            this.radiusFlyShellCircle = new Circle(getCenterGraphicCoord(1), templateForTower.radiusFlyShell);
-        }
+        this.radiusDetectionCircle = null;
+        this.radiusFlyShellCircle = null;
     }
 
     public void dispose() {
         Gdx.app.log("Tower::dispose()", "--");
+    }
+
+    void updateGraphicCoordinates(CameraController cameraController) {
+        if (radiusDetectionCircle != null) {
+            radiusDetectionCircle = null; // delete radiusDetectionCircle;
+        }
+        this.radiusDetectionCircle = new Circle(cameraController.getCenterTowerGraphicCoord(position.x, position.y), templateForTower.radiusDetection);
+        if (templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
+            if (radiusFlyShellCircle != null) {
+                radiusFlyShellCircle = null; // delete radiusFlyShellCircle;
+            }
+            this.radiusFlyShellCircle = new Circle(cameraController.getCenterTowerGraphicCoord(position.x, position.y), templateForTower.radiusFlyShell);
+        }
     }
 
     public boolean recharge(float delta) {
@@ -53,7 +64,7 @@ public class Tower {
         return false;
     }
 
-    public boolean shoot(Unit unit) {
+    public boolean shoot(Unit unit, CameraController cameraController) {
         if(elapsedReloadTime >= templateForTower.reloadTime) {
             if (templateForTower.shellAttackType == ShellAttackType.MassAddEffect) {
                 boolean effect = false;
@@ -69,7 +80,7 @@ public class Tower {
             } else if (templateForTower.shellAttackType == ShellAttackType.FireBall) {
 
             } else {
-                bullets.add(new Bullet(getCenterGraphicCoord(), templateForTower, unit));
+                bullets.add(new Bullet(cameraController.getCenterTowerGraphicCoord(position.x, position.y), templateForTower, unit));
             }
             elapsedReloadTime = 0f;
             return true;
@@ -102,39 +113,6 @@ public class Tower {
                 bullets.removeValue(bullet, false);
         }
     }
-
-    public Vector2 getCenterGraphicCoord() {
-        return getCenterGraphicCoord(GameField.isDrawableTowers);
-    }
-
-    public Vector2 getCenterGraphicCoord(int map) {
-        return getCenterGraphicCoord(position.x, position.y, map);
-    }
-
-    public Vector2 getCenterGraphicCoord(int cellX, int cellY, int map) { // TODO need create 'getCenterGraphicCoord(int map)' func!
-        int halfSizeCellX = GameField.sizeCellX / 2; // TODO ПЕРЕОСМЫСЛИТЬ!
-        int halfSizeCellY = GameField.sizeCellY / 2;
-        float pxlsX = 0f, pxlsY = 0f;
-//        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellX));
-//        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellY));
-////        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : (templateForTower.size-1)*halfSizeCellX);
-////        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : (templateForTower.size-1)*halfSizeCellY);
-        if(map == 1) {
-            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
-            pxlsY = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY));
-        } else if(map == 2) {
-            pxlsX = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX;
-            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
-        } else if(map == 3) {
-            pxlsX = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
-            pxlsY = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY*2;
-        } else if(map == 4) {
-            pxlsX = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX;
-            pxlsY = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY;
-        }
-//        return new Vector2(pxlsX - halfSizeCellX, pxlsY + halfSizeCellY*templateForTower.size);
-        return new Vector2(pxlsX, pxlsY);
-    } // -------------------------------------------------------------- TODD It is analog GameField::getGraphicCoordinates() func!
 
     public String toString() {
         return toString(false);
