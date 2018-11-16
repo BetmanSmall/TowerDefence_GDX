@@ -1044,7 +1044,7 @@ public class GameField {
             }
         }
 
-        Array<GridPoint2> spawnPoints = waveManager.getAllSpawnCells();
+        Array<GridPoint2> spawnPoints = waveManager.getAllSpawnPoint();
         shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
         for (GridPoint2 spawnPoint : spawnPoints) {
             Cell cell = field[spawnPoint.x][spawnPoint.y];
@@ -1316,7 +1316,7 @@ public class GameField {
     }
 
     public void setExitPoint(int x, int y) {
-        waveManager.setExitCell(new GridPoint2(x, y));
+        waveManager.setExitPoint(new GridPoint2(x, y));
         rerouteForAllUnits(new GridPoint2(x, y));
     }
 
@@ -1325,8 +1325,8 @@ public class GameField {
         if (gamerGold >= templateForUnit.cost) {
             gamerGold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
-                Cell spawnCell = getCell(wave.spawnCell.x, wave.spawnCell.y);
-                Cell destExitCell = getCell(wave.exitCell.x, wave.exitCell.y);
+                Cell spawnCell = getCell(wave.spawnPoint.x, wave.spawnPoint.y);
+                Cell destExitCell = getCell(wave.exitPoint.x, wave.exitPoint.y);
                 createUnit(spawnCell, destExitCell, templateForUnit, 1, destExitCell); // create Player1 Unit
             }
         }
@@ -1343,8 +1343,8 @@ public class GameField {
         if (templateNameAndPoints != null) {
             TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateNameAndPoints.templateName);
             if (templateForUnit != null) {
-                Cell spawnCell = getCell(templateNameAndPoints.spawnCell.x, templateNameAndPoints.spawnCell.y);
-                Cell destExitCell = getCell(templateNameAndPoints.exitCell.x, templateNameAndPoints.exitCell.y);
+                Cell spawnCell = getCell(templateNameAndPoints.spawnPoint.x, templateNameAndPoints.spawnPoint.y);
+                Cell destExitCell = getCell(templateNameAndPoints.exitPoint.x, templateNameAndPoints.exitPoint.y);
                 createUnit(spawnCell, destExitCell, templateForUnit, 0, destExitCell); // create Computer0 Unit
             } else {
                 Gdx.app.error("GameField::spawnUnit()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
@@ -1368,7 +1368,7 @@ public class GameField {
 
     public void createUnit(int x, int y) {
         Cell spawnCell = getCell(x, y);
-        Cell destExitCell = getCell(waveManager.lastExitCell.x, waveManager.lastExitCell.y);
+        Cell destExitCell = getCell(waveManager.lastExitPoint.x, waveManager.lastExitPoint.y);
         createUnit(spawnCell, destExitCell, factionsManager.getRandomTemplateForUnitFromFirstFaction(), 0, destExitCell); // create computer0 Unit
     }
 
