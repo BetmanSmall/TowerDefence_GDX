@@ -16,8 +16,8 @@ public class UnitsManager {
         units = new Array<Unit>();
     }
 
-    public Unit createUnit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player) {
-        Unit unit = new Unit(route, templateForUnit, player);
+    public Unit createUnit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
+        Unit unit = new Unit(route, templateForUnit, player, exitCell);
         units.add(unit);
         return unit;
     }
@@ -42,19 +42,5 @@ public class UnitsManager {
 
     public void removeUnit(Unit unit) {
         units.removeValue(unit, false);
-    }
-
-    public boolean setRouteForUnits(PathFinder pathFinder, GridPoint2 exitPoint) {
-        for (int i = 0; i < units.size; i++) {
-            ArrayDeque<Node> adv = pathFinder.route(new int[]{units.get(i).newPosition.getX(), units.get(i).newPosition.getY()},
-                    new int[]{exitPoint.x, exitPoint.y}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, true);
-            if (adv != null
-                    ) {
-                units.get(i).route = adv;
-            } else {
-                return false;
-            }
-        }
-        return true;
     }
 }

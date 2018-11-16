@@ -32,8 +32,6 @@ import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 
-//import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-
 /**
  * Created by betmansmall on 08.02.2016.
  */
@@ -49,8 +47,6 @@ public class GameField {
     private TiledMap map;
     private Cell[][] field;
     private PathFinder pathFinder;
-
-//    private IsometricTiledMapRenderer renderer;
 
     // CameraController1 && map
     public int sizeFieldX, sizeFieldY;
@@ -102,7 +98,6 @@ public class GameField {
         unitsManager = new UnitsManager();
 
         map = new MapLoader(waveManager).load(mapName);
-//        renderer = new IsometricTiledMapRenderer(map, spriteBatch);
 
         sizeFieldX = map.getProperties().get("width", Integer.class);
         sizeFieldY = map.getProperties().get("height", Integer.class);
@@ -119,21 +114,42 @@ public class GameField {
         }
 
         createField(sizeFieldX, sizeFieldY, map.getLayers());
-        waveManager.validationPoints(field);
-        if (waveManager.waves.size == 0) {
-            for (int w = 0; w < 10; w++) {
-                GridPoint2 spawnPoint = new GridPoint2((int)(Math.random()*sizeFieldX), (int)(Math.random()*sizeFieldY));
-                GridPoint2 exitPoint = new GridPoint2((int)(Math.random()*sizeFieldX), (int)(Math.random()*sizeFieldY));
-                Wave wave = new Wave(spawnPoint, exitPoint, 0f);
-                for (int k = 0; k < 10; k++) {
-                    wave.addAction("interval=" + 1);
-                    wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().templateName);
+        if (mapName.contains("randomMap")) {
+            maxOfMissedUnitsForPlayer1 = 5;
+            int randomEnemyCount = 5;
+            for (int k = 0; k < randomEnemyCount; k++) {
+                int randomX = (int)(Math.random()*sizeFieldX);
+                int randomY = (int)(Math.random()*sizeFieldY);
+                Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
+                Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
+                if (getCell(randomX, randomY).isEmpty()) {
+                    spawnCompUnitToRandomExit(randomX, randomY);
+                } else {
+                    k--;
                 }
-                waveManager.addWave(wave);
             }
 
+        } else {
+            waveManager.validationPoints(field);
+            if (waveManager.waves.size == 0) {
+                for (int w = 0; w < 10; w++) {
+                    GridPoint2 spawnCell = new GridPoint2((int) (Math.random() * sizeFieldX), (int) (Math.random() * sizeFieldY));
+                    GridPoint2 exitCell = new GridPoint2((int) (Math.random() * sizeFieldX), (int) (Math.random() * sizeFieldY));
+//                    if (spawnCell != null && spawnCell.isEmpty()) {
+//                        if (exitCell != null && exitCell.isEmpty()) {
+                            Wave wave = new Wave(spawnCell, exitCell, 0f);
+                            for (int k = 0; k < 10; k++) {
+                                wave.addAction("interval=" + 1);
+                                wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().templateName);
+                            }
+                            waveManager.addWave(wave);
+//                        }
+//                    }
+                }
+
+            }
+            waveManager.checkRoutes(pathFinder);
         }
-        waveManager.checkRoutes(pathFinder);
 
         MapProperties mapProperties = map.getProperties();
         Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
@@ -146,8 +162,10 @@ public class GameField {
         maxOfMissedUnitsForComputer0 = mapProperties.get("maxOfMissedUnitsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
 //        maxOfMissedUnitsForComputer0 = Integer.valueOf(mapProperties.get("maxOfMissedUnitsForComputer0", String.valueOf(gamerGold), String.class));
         missedUnitsForComputer0 = 0;
-        maxOfMissedUnitsForPlayer1 = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions()/8, Integer.class); // it is not true | need implement getNumberOfUnits()
+        if (maxOfMissedUnitsForPlayer1 == 0) {
+            maxOfMissedUnitsForPlayer1 = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions() / 8, Integer.class); // it is not true | need implement getNumberOfUnits()
 //        maxOfMissedUnitsForPlayer1 = Integer.valueOf(mapProperties.get("maxOfMissedUnitsForPlayer1", String.valueOf(waveManager.getNumberOfActions()/4), String.class)); // it is not true | need implement getNumberOfUnits()
+        }
         missedUnitsForPlayer1 = 0;
         // GAME INTERFACE ZONE2
         Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gamerGold + " maxOfMissedUnitsForComputer0:" + maxOfMissedUnitsForComputer0 + " maxOfMissedUnitsForPlayer1:" + maxOfMissedUnitsForPlayer1);
@@ -196,12 +214,12 @@ public class GameField {
 //                                    if (tiledMapTile.getProperties().get("terrain") != null) {
 //                                        field[x][y].setTerrain();
 //                                    } else
-                                    if (tiledMapTile.getProperties().get("spawnPoint") != null) {
+                                    if (tiledMapTile.getProperties().get("spawnCell") != null) {
                                         cellSpawnHero = cell;
                                         cellSpawnHero.spawn = true;
 //                                        waveManager.spawnPoints.add(new GridPoint2(x, y));
                                         Gdx.app.log("GameField::createField()", "-- Set cellSpawnHero:" + cellSpawnHero);
-                                    } else if (tiledMapTile.getProperties().get("exitPoint") != null) {
+                                    } else if (tiledMapTile.getProperties().get("exitCell") != null) {
                                         cellExitHero = cell;
                                         cellExitHero.exit = true;
 //                                        waveManager.exitPoints.add(new GridPoint2(x, y));
@@ -234,9 +252,9 @@ public class GameField {
 //        turnRight();
         flipY();
 //        turnRight();
-        Gdx.app.log("GameField::createField()", "-- pathFinder:" + pathFinder);
         pathFinder = new PathFinder();
         pathFinder.loadCharMatrix(getCharMatrix());
+        Gdx.app.log("GameField::createField()", "-- pathFinder:" + pathFinder);
     }
 
     public void turnRight() {
@@ -344,7 +362,6 @@ public class GameField {
         spriteBatch.dispose();
         bitmapFont.dispose();
         map.dispose();
-//        renderer.dispose();
         greenCheckmark.dispose();
         redCross.dispose();
     }
@@ -357,22 +374,6 @@ public class GameField {
             shotAllTowers(delta);
             moveAllShells(delta);
         }
-
-//        if (isDrawableTerrain) {
-//            renderer.setView(camera);
-//            renderer.render();
-//            renderer.getBatch().begin();
-//            for (MapLayer mapLayer : map.getLayers()) {
-//                if (mapLayer instanceof TiledMapTileLayer) {
-//                    TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
-//                    String background = layer.getProperties().get("background", String.class);
-//                    if(background != null) {
-//                        renderer.renderTileLayer(layer);
-//                    }
-//                }
-//            }
-//            renderer.getBatch().end();
-//        }
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
@@ -395,21 +396,12 @@ public class GameField {
 
         if (isDrawableGrid > 0)
             drawGrid(camera);
-//        // just workaround
-//        if (isDrawableUnits && isDrawableTowers) {
-//            drawUnitsAndTowers(camera);
-//        } else {
-//            if (isDrawableTowers)
-//                drawTowers(camera);
-//            if (isDrawableUnits)
-//                drawUnits(camera);
-//        }
+
         if (isDrawableGridNav > 0) {
-//            drawRoutes(camera);
-            drawWavesRoutes(camera);
+            drawRoutes(camera);
+//            drawWavesRoutes(camera);
             drawGridNav(camera);
         }
-//        spriteBatch.setProjectionMatrix(camera.combined);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         spriteBatch.begin();
@@ -422,13 +414,6 @@ public class GameField {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.circle(0f, 0f, 5);
         shapeRenderer.end();
-
-//        spriteBatch.begin();
-//        bitmapFont.setColor(Color.YELLOW);
-//        bitmapFont.draw(spriteBatch, String.valueOf("0, 0"), 0, 0);
-//        bitmapFont.getData().setScale(4);
-//        bitmapFont.draw(spriteBatch, String.valueOf("Gold amount: " + gamerGold), Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() - 10);
-//        spriteBatch.end();
     }
 
     private void drawBackGrounds(SpriteBatch spriteBatch) {
@@ -514,16 +499,16 @@ public class GameField {
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if (isDrawableBackground == 1 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 2 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 3 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableBackground == 4 || isDrawableBackground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
     }
@@ -610,16 +595,16 @@ public class GameField {
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if(isDrawableGround == 1 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableGround == 2 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableGround == 3 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if(isDrawableGround == 4 || isDrawableGround == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
         Array<Unit> units = field[cellX][cellY].getUnits();
@@ -719,16 +704,16 @@ public class GameField {
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if (isDrawableForeground == 1 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesBottom.x-halfSizeCellX, cell.graphicCoordinatesBottom.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-halfSizeCellX, cell.graphicCoordinates1.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableForeground == 2 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesRight.x-halfSizeCellX, cell.graphicCoordinatesRight.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-halfSizeCellX, cell.graphicCoordinates2.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableForeground == 3 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesTop.x-halfSizeCellX, cell.graphicCoordinatesTop.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-halfSizeCellX, cell.graphicCoordinates3.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
             if (isDrawableForeground == 4 || isDrawableForeground == 5) {
-                spriteBatch.draw(textureRegion, cell.graphicCoordinatesLeft.x-halfSizeCellX, cell.graphicCoordinatesLeft.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-halfSizeCellX, cell.graphicCoordinates4.y-halfSizeCellY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
             }
         }
     }
@@ -746,27 +731,27 @@ public class GameField {
 
         if(isDrawableGrid == 1 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldX; x++)
-                shapeRenderer.line( (halfSizeCellX*x),-(halfSizeCellY*x)+halfSizeCellY,-(widthForTop)+(halfSizeCellX*x),   -(heightForTop)-(x*halfSizeCellY)+halfSizeCellY);
+                shapeRenderer.line( (halfSizeCellX*x),-(halfSizeCellY*x),-(widthForTop)+(halfSizeCellX*x),   -(heightForTop)-(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldY; y++)
-                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y)+halfSizeCellY, (widthForBottom)-(halfSizeCellX*y),-(heightForBottom)-(halfSizeCellY*y)+halfSizeCellY);
+                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y), (widthForBottom)-(halfSizeCellX*y),-(heightForBottom)-(halfSizeCellY*y));
         }
         if(isDrawableGrid == 2 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldX; x++)
-                shapeRenderer.line((halfSizeCellX*x),-(halfSizeCellY*x)+halfSizeCellY,(widthForTop)+(halfSizeCellX*x),    (heightForTop)-(x*halfSizeCellY)+halfSizeCellY);
+                shapeRenderer.line((halfSizeCellX*x),-(halfSizeCellY*x),(widthForTop)+(halfSizeCellX*x),    (heightForTop)-(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldY; y++)
-                shapeRenderer.line((halfSizeCellX*y), (halfSizeCellY*y)+halfSizeCellY,(widthForBottom)+(halfSizeCellX*y),-(heightForBottom)+(halfSizeCellY*y)+halfSizeCellY);
+                shapeRenderer.line((halfSizeCellX*y), (halfSizeCellY*y),(widthForBottom)+(halfSizeCellX*y),-(heightForBottom)+(halfSizeCellY*y));
         }
         if(isDrawableGrid == 3 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldY; x++) // WHT??? sizeFieldY check groundDraw
-                shapeRenderer.line(-(halfSizeCellX*x),(halfSizeCellY*x)+halfSizeCellY, (widthForBottom)-(halfSizeCellX*x),(heightForBottom)+(x*halfSizeCellY)+halfSizeCellY);
+                shapeRenderer.line(-(halfSizeCellX*x),(halfSizeCellY*x), (widthForBottom)-(halfSizeCellX*x),(heightForBottom)+(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldX; y++) // WHT??? sizeFieldX check groundDraw
-                shapeRenderer.line( (halfSizeCellX*y),(halfSizeCellY*y)+halfSizeCellY,-(widthForTop)+(halfSizeCellX*y),   (heightForTop)+(halfSizeCellY*y)+halfSizeCellY);
+                shapeRenderer.line( (halfSizeCellX*y),(halfSizeCellY*y),-(widthForTop)+(halfSizeCellX*y),   (heightForTop)+(halfSizeCellY*y));
         }
         if(isDrawableGrid == 4 || isDrawableGrid == 5) {
             for (int x = 0; x <= sizeFieldY; x++) // WHT??? sizeFieldY check groundDraw
-                shapeRenderer.line(-(halfSizeCellX*x), (halfSizeCellY*x)+halfSizeCellY,-(widthForBottom)-(halfSizeCellX*x),   -(heightForBottom)+(x*halfSizeCellY)+halfSizeCellY);
+                shapeRenderer.line(-(halfSizeCellX*x), (halfSizeCellY*x),-(widthForBottom)-(halfSizeCellX*x),   -(heightForBottom)+(x*halfSizeCellY));
             for (int y = 0; y <= sizeFieldX; y++) // WHT??? sizeFieldX check groundDraw
-                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y)+halfSizeCellY,-(widthForTop)-(halfSizeCellX*y),(heightForTop)-(halfSizeCellY*y)+halfSizeCellY);
+                shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y),-(widthForTop)-(halfSizeCellX*y),(heightForTop)-(halfSizeCellY*y));
         }
         shapeRenderer.end();
     }
@@ -828,10 +813,8 @@ public class GameField {
         } else {
             currentFrame = unit.getCurrentDeathFrame();
         }
-//        int deltaX = (currentFrame.getRegionWidth()) / 2;
-//        int deltaY = (currentFrame.getRegionHeight()) / 2;
-        int deltaX = (sizeCellX) / 2;
-        int deltaY = (sizeCellY) / 2;
+        int deltaX = halfSizeCellX;
+        int deltaY = sizeCellY;
 
         float fVx = 0f, fVy = 0f;
         if(isDrawableUnits == 1 || isDrawableUnits == 5) {
@@ -878,7 +861,7 @@ public class GameField {
         if (unit.isAlive()) {
             TextureRegion currentFrame = unit.getCurrentFrame();
             fVx -= sizeCellX/2;
-            fVy -= sizeCellY/2;
+            fVy -= sizeCellY;
             float currentFrameWidth = currentFrame.getRegionWidth();
             float currentFrameHeight = currentFrame.getRegionHeight();
             float hpBarSpace = 0.8f;
@@ -934,16 +917,16 @@ public class GameField {
                 for (Node coor : route) {
                     Cell cell = field[coor.getX()][coor.getY()];
                     if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesBottom.x, cell.graphicCoordinatesBottom.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinates1.x, cell.graphicCoordinates1.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesRight.x, cell.graphicCoordinatesRight.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinates2.x, cell.graphicCoordinates2.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesTop.x, cell.graphicCoordinatesTop.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinates3.x, cell.graphicCoordinates3.y, gridNavRadius);
                     }
                     if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                        shapeRenderer.circle(cell.graphicCoordinatesLeft.x, cell.graphicCoordinatesLeft.y, gridNavRadius);
+                        shapeRenderer.circle(cell.graphicCoordinates4.x, cell.graphicCoordinates4.y, gridNavRadius);
                     }
                 }
             }
@@ -979,16 +962,16 @@ public class GameField {
                 Cell startCell = field[startNode.getX()][startNode.getY()];
                 Cell endCell = field[endNode.getX()][endNode.getY()];
                 if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinatesBottom, endCell.graphicCoordinatesBottom, linesWidth);
+                    shapeRenderer.rectLine(startCell.graphicCoordinates1, endCell.graphicCoordinates1, linesWidth);
                 }
                 if(isDrawableGridNav == 2 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinatesRight, endCell.graphicCoordinatesRight, linesWidth);
+                    shapeRenderer.rectLine(startCell.graphicCoordinates2, endCell.graphicCoordinates2, linesWidth);
                 }
                 if(isDrawableGridNav == 3 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinatesTop, endCell.graphicCoordinatesTop, linesWidth);
+                    shapeRenderer.rectLine(startCell.graphicCoordinates3, endCell.graphicCoordinates3, linesWidth);
                 }
                 if(isDrawableGridNav == 4 || isDrawableGridNav == 5) {
-                    shapeRenderer.rectLine(startCell.graphicCoordinatesLeft, endCell.graphicCoordinatesLeft, linesWidth);
+                    shapeRenderer.rectLine(startCell.graphicCoordinates4, endCell.graphicCoordinates4, linesWidth);
                 }
                 startNode = endNode;
             }
@@ -1002,23 +985,25 @@ public class GameField {
 //    }
 
     private void drawTower(Tower tower, SpriteBatch spriteBatch) {
-//        Gdx.app.log("GameField", "drawTower(" + tower + ", " + camera + ");");
-        Vector2 towerPos = new Vector2();
         GridPoint2 cellPosition = tower.position;
         int towerSize = tower.templateForTower.size;
-        Cell cell = field[cellPosition.x][cellPosition.y];
+        Cell cell = getCell(cellPosition.x, cellPosition.y);
+//        Vector2 towerPos = cell.getGraphicCoordinates(isDrawableTowers);
+//        cameraController.shapeRender.circle(towerPos)
+        Vector2 towerPos = new Vector2();
         TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
-        if(isDrawableTowers == 5) {
-            for(int m = 1; m < isDrawableTowers; m++) {
+        if (isDrawableTowers == 5) {
+            for (int m = 1; m < isDrawableTowers; m++) {
                 towerPos.set(cell.getGraphicCoordinates(m));
-                towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, m));
+                getCorrectGraphicTowerCoord(towerPos, towerSize, m);
                 spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
             }
-        } else if(isDrawableTowers != 0) {
+        } else if (isDrawableTowers != 0) {
             towerPos.set(cell.getGraphicCoordinates(isDrawableTowers));
-            towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, isDrawableTowers));
+            getCorrectGraphicTowerCoord(towerPos, towerSize, isDrawableTowers);
             spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
         }
+        towerPos = null; // delete towerPos;
     }
 
     private void drawGridNav(OrthographicCamera camera) {
@@ -1059,7 +1044,7 @@ public class GameField {
             }
         }
 
-        Array<GridPoint2> spawnPoints = waveManager.getAllSpawnPoint();
+        Array<GridPoint2> spawnPoints = waveManager.getAllSpawnCells();
         shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
         for (GridPoint2 spawnPoint : spawnPoints) {
             Cell cell = field[spawnPoint.x][spawnPoint.y];
@@ -1084,7 +1069,7 @@ public class GameField {
         Array<GridPoint2> exitPoints = waveManager.getAllExitPoint();
         shapeRenderer.setColor(new Color(255f, 0f, 102f, 255f));
         for (GridPoint2 exitPoint : exitPoints) {
-//            Gdx.app.log("GameField::drawGridNav()", "-- exitPoint.x:" + exitPoint.x + " exitPoint.y:" + exitPoint.y + " isDrawableGridNav:" + isDrawableGridNav);
+//            Gdx.app.log("GameField::drawGridNav()", "-- exitCell.cellX:" + exitCell.cellX + " exitCell.y:" + exitCell.y + " isDrawableGridNav:" + isDrawableGridNav);
             Cell cell = field[exitPoint.x][exitPoint.y];
             if(isDrawableGridNav == 1 || isDrawableGridNav == 5) {
                 pos.set(cell.getGraphicCoordinates(1));
@@ -1104,33 +1089,8 @@ public class GameField {
             }
         }
 
-        // Trush
-//        shapeRenderer.setColor(Color.BLUE);
-//        for (Unit unit : unitsManager.units) {
-//            shapeRenderer.circle(unit.circle1.x, unit.circle1.y, 1f);
-//            shapeRenderer.circle(unit.circle2.x, unit.circle2.y, 1f);
-//            shapeRenderer.circle(unit.circle3.x, unit.circle3.y, 1f);
-//            shapeRenderer.circle(unit.circle4.x, unit.circle4.y, 1f);
-//        }
-//        shapeRenderer.setColor(Color.LIME);
-//        for (Unit unit : unitsManager.units) {
-//            shapeRenderer.circle(unit.circle1.x, unit.circle1.y, 2f);
-//            shapeRenderer.circle(unit.circle2.x, unit.circle2.y, 2f);
-//            shapeRenderer.circle(unit.circle3.x, unit.circle3.y, 2f);
-//            shapeRenderer.circle(unit.circle4.x, unit.circle4.y, 2f);
-//        }
-//        shapeRenderer.setColor(Color.PINK);
-//        for (Tower tower : towersManager.getAllTemplateForTowers()) {
-//            for (Bullet shell : tower.bullets) {
-//                if (null != shell.endPoint) {
-//                    shapeRenderer.circle(shell.endPoint.x, shell.endPoint.y, shell.endPoint.radius);
-//                }
-//            }
-//        }
-        // ???
-
         shapeRenderer.setColor(Color.ORANGE);
-        for (Tower tower : towersManager.getAllTowers()) {
+        for (Tower tower : towersManager.towers) {
             for (Bullet bullet : tower.bullets) {
                 shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, sizeCellX/40f);
                 if (null != bullet.circle) {
@@ -1153,9 +1113,9 @@ public class GameField {
                 shapeRenderer.circle(unit.circle4.x, unit.circle4.y, unit.circle4.radius);
         }
 
-        shapeRenderer.setColor(new Color(153f, 255f, 51f, 255f));
+        shapeRenderer.setColor(new Color(153f, 255f, 51f, 1f));
         Vector2 towerPos = new Vector2();
-        for (Tower tower : towersManager.getAllTowers()) { // Draw white towers radius! -- radiusDetectionCircle
+        for (Tower tower : towersManager.towers) { // Draw white towers radius! -- radiusDetectionCircle
             if(isDrawableGridNav == 5) {
                 if(isDrawableTowers == 5) {
                     for (int m = 1; m < isDrawableTowers; m++) {
@@ -1175,7 +1135,7 @@ public class GameField {
         }
 
         shapeRenderer.setColor(Color.FIREBRICK);
-        for (Tower tower : towersManager.getAllTowers()) { // Draw FIREBRICK towers radius! -- radiusFlyShellCircle
+        for (Tower tower : towersManager.towers) { // Draw FIREBRICK towers radius! -- radiusFlyShellCircle
             if (tower.radiusFlyShellCircle != null) {
                 if(isDrawableGridNav == 5) {
                     if(isDrawableTowers == 5) {
@@ -1200,7 +1160,7 @@ public class GameField {
         spriteBatch.begin();
         bitmapFont.setColor(Color.YELLOW);
         bitmapFont.getData().setScale(0.7f);
-        for (Tower tower : towersManager.getAllTowers()) { // Draw pit capacity value
+        for (Tower tower : towersManager.towers) { // Draw pit capacity value
             if (tower.templateForTower.towerAttackType == TowerAttackType.Pit) {
                 if(isDrawableGridNav == 5) {
                     if(isDrawableTowers == 5) {
@@ -1224,7 +1184,7 @@ public class GameField {
     }
 
     private void drawShells(SpriteBatch spriteBatch) {
-        for (Tower tower : towersManager.getAllTowers()) {
+        for (Tower tower : towersManager.towers) {
             for (Bullet bullet : tower.bullets) {
                 TextureRegion textureRegion = bullet.textureRegion;
 //                float width = textureRegion.getRegionWidth() * bullet.ammoSize;
@@ -1289,18 +1249,13 @@ public class GameField {
         GridPoint2 finishDrawCell = new GridPoint2(finishX, finishY);
         for (int x = startX; x <= finishX; x++) {
             for (int y = startY; y <= finishY; y++) {
-//                float pxlsX = halfSizeCellX*(buildY) + (buildX)*halfSizeCellX;
-//                float pxlsY = (halfSizeCellY*(buildY) - (buildX)*halfSizeCellY) - halfSizeCellY*(towerSize-1);
-                if (!getCell(buildX + x, buildY + y).isEmpty()) {
-                    if (drawFull) {
-                        canBuild = false;
-//                    } else {
-//                        spriteBatch.setColor(1f, 0, 0, 0.55f);
-//                        spriteBatch.draw(smallTextureRegions[x][y], pxlsX + (sizeCellX * y), pxlsY + ((sizeCellY * 2) * (towerSize - x - 1)), sizeCellX, sizeCellY * 2);
+                Cell mainCell = getCell(buildX + x, buildY + y);
+                if(mainCell != null) {
+                    if (!mainCell.isEmpty()) {
+                        if (drawFull) {
+                            canBuild = false;
+                        }
                     }
-//                } else {
-//                    spriteBatch.setColor(0, 1f, 0, 0.55f);
-//                    spriteBatch.draw(smallTextureRegions[x][y], pxlsX + (sizeCellX * y), pxlsY + ((sizeCellY * 2) * (towerSize - x - 1)), sizeCellX, sizeCellY * 2);
                 }
             }
         }
@@ -1333,23 +1288,20 @@ public class GameField {
 //        Gdx.app.log("GameField::drawTowerUnderConstructionAndMarks()", "-- spriteBatch:" + /*spriteBatch +*/ " shapeRenderer:" + /*shapeRenderer +*/ " map:" + map + " templateForTower:" + templateForTower + " mainCell:" + mainCell + " startDrawCell:" + startDrawCell + " finishDrawCell:" + finishDrawCell);
         TextureRegion textureRegion = templateForTower.idleTile.getTextureRegion();
         int towerSize = templateForTower.size;
-        Vector2 towerPos = new Vector2();
-        towerPos.set(mainCell.getGraphicCoordinates(map));
+        Vector2 towerPos = new Vector2(mainCell.getGraphicCoordinates(map));
         if (templateForTower.radiusDetection != null) {
             shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection);
         }
-        towerPos.set(getCorrectGraphicTowerCoord(towerPos, towerSize, map));
+        getCorrectGraphicTowerCoord(towerPos, towerSize, map);
         spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
-        if(greenCheckmark != null && redCross != null) {
+        if (greenCheckmark != null && redCross != null) {
             Vector2 markPos = new Vector2();
             for (int x = startDrawCell.x; x <= finishDrawCell.x; x++) {
                 for (int y = startDrawCell.y; y <= finishDrawCell.y; y++) {
                     Cell markCell = getCell(mainCell.cellX + x, mainCell.cellY + y);
                     if (markCell != null) {
-//                        Gdx.app.log("GameField::drawTowerUnderConstructionAndMarks()", "-- markCell:" + markCell);
                         markPos.set(markCell.getGraphicCoordinates(map));
                         markPos.add(-(halfSizeCellX), -(halfSizeCellY));
-//                        if (cellIsEmpty(mainCell.cellX + x, mainCell.cellY + y)) {
                         if(markCell.isEmpty()) {
                             spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY * 2);
                         } else {
@@ -1358,11 +1310,13 @@ public class GameField {
                     }
                 }
             }
+            markPos = null; // delete markPos;
         }
+        towerPos = null; // delete towerPos;
     }
 
     public void setExitPoint(int x, int y) {
-        waveManager.setExitPoint(new GridPoint2(x, y));
+        waveManager.setExitCell(new GridPoint2(x, y));
         rerouteForAllUnits(new GridPoint2(x, y));
     }
 
@@ -1371,7 +1325,9 @@ public class GameField {
         if (gamerGold >= templateForUnit.cost) {
             gamerGold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
-                createUnit(wave.spawnPoint, wave.exitPoint, templateForUnit, 1); // create Player1 Unit
+                Cell spawnCell = getCell(wave.spawnCell.x, wave.spawnCell.y);
+                Cell destExitCell = getCell(wave.exitCell.x, wave.exitCell.y);
+                createUnit(spawnCell, destExitCell, templateForUnit, 1, destExitCell); // create Player1 Unit
             }
         }
     }
@@ -1387,39 +1343,66 @@ public class GameField {
         if (templateNameAndPoints != null) {
             TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateNameAndPoints.templateName);
             if (templateForUnit != null) {
-                createUnit(templateNameAndPoints.spawnPoint, templateNameAndPoints.exitPoint, templateForUnit, 0); // create Computer0 Unit
+                Cell spawnCell = getCell(templateNameAndPoints.spawnCell.x, templateNameAndPoints.spawnCell.y);
+                Cell destExitCell = getCell(templateNameAndPoints.exitCell.x, templateNameAndPoints.exitCell.y);
+                createUnit(spawnCell, destExitCell, templateForUnit, 0, destExitCell); // create Computer0 Unit
             } else {
                 Gdx.app.error("GameField::spawnUnit()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
             }
         }
     }
 
-    public void createUnit(int x, int y) {
-        createUnit(new GridPoint2(x, y), waveManager.lastExitPoint, factionsManager.getRandomTemplateForUnitFromFirstFaction(), 0); // create computer0 Unit
+    private void spawnHeroInSpawnPoint() {
+        cellSpawnHero.removeTerrain(true);
+        removeTower(cellSpawnHero.cellX, cellSpawnHero.cellY);
+        createUnit(cellSpawnHero.cellX, cellSpawnHero.cellY, cellExitHero.cellX, cellExitHero.cellY, 1); // player1 = hero
     }
 
-    private void createUnit(GridPoint2 spawnPoint, GridPoint2 exitPoint, TemplateForUnit templateForUnit, int player) {
-//        Gdx.app.log("GameField::createUnit(" + spawnPoint + ", " + templateForUnit.toString(true) + ", " + exitPoint + ", " + player + ")", "--");
-//        if (exitPoint == null) {
-//            exitPoint = waveManager.lastExitPoint;
+    void spawnCompUnitToRandomExit(int x, int y) {
+        Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- x:" + x + " y:" + y);
+        int randomX = (int)(Math.random()*sizeFieldX);
+        int randomY = (int)(Math.random()*sizeFieldY);
+        Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
+        createUnit(x, y, randomX, randomY, 0);
+    }
+
+    public void createUnit(int x, int y) {
+        Cell spawnCell = getCell(x, y);
+        Cell destExitCell = getCell(waveManager.lastExitCell.x, waveManager.lastExitCell.y);
+        createUnit(spawnCell, destExitCell, factionsManager.getRandomTemplateForUnitFromFirstFaction(), 0, destExitCell); // create computer0 Unit
+    }
+
+    public void createUnit(int x, int y, int x2, int y2, int player) {
+        if (player == 0) {
+            createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getRandomTemplateForUnitFromFirstFaction(), player, null);
+        } else if (player == 1) {
+            createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getTemplateForUnitByName("unit3_footman"), player, cellExitHero);
+//        updateHeroDestinationPoint(exitPointX, exitPointY);
+        }
+    }
+
+    private void createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, int player, Cell exitCell) {
+//        Gdx.app.log("GameField::createUnit(" + spawnCell + ", " + templateForUnit.toString(true) + ", " + destCell + ", " + player + ")", "--");
+//        if (destCell == null) {
+//            destCell = waveManager.lastExitCell;
 //        }
-        if (spawnPoint != null && exitPoint != null && pathFinder != null) {
+        if (spawnCell != null && destCell != null && pathFinder != null) {
 //            pathFinder.loadCharMatrix(getCharMatrix());
-            ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
+            ArrayDeque<Node> route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
             if (route != null) {
-                Unit unit = unitsManager.createUnit(route, templateForUnit, player);
-                field[spawnPoint.x][spawnPoint.y].setUnit(unit); // TODO field maybe out array | NO, we have WaveManager.validationPoints()
+                Unit unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
+                field[spawnCell.cellX][spawnCell.cellY].setUnit(unit); // TODO field maybe out array | NO, we have WaveManager.validationPoints()
 //                Gdx.app.log("GameField::createUnit()", "-- route:" + route);
             } else {
                 Gdx.app.log("GameField::createUnit()", "-- Not found route for createUnit!");
-                if(towersManager.amountTowers() > 0) {
+                if(towersManager.towers.size > 0) {
                     Gdx.app.log("GameField::createUnit()", "-- Remove one last tower! And retry call createUnit()");
                     removeLastTower();
-                    createUnit(spawnPoint, exitPoint, templateForUnit, player);
+                    createUnit(spawnCell, destCell, templateForUnit, player, exitCell);
                 }
             }
         } else {
-            Gdx.app.log("GameField::createUnit()", "-- Bad spawnPoint:" + spawnPoint + " || exitPoint:" + exitPoint + " || pathFinder:" + pathFinder);
+            Gdx.app.log("GameField::createUnit()", "-- Bad spawnCell:" + spawnCell + " || destCell:" + destCell + " || pathFinder:" + pathFinder);
         }
     }
 
@@ -1505,7 +1488,7 @@ public class GameField {
 
     public void removeLastTower() {
 //        if(towersManager.amountTowers() > 0) {
-            Tower tower = towersManager.getTower(towersManager.amountTowers() - 1);
+            Tower tower = towersManager.getTower(towersManager.towers.size - 1);
             GridPoint2 pos = tower.position;
             removeTower(pos.x, pos.y);
 //        }
@@ -1582,6 +1565,7 @@ public class GameField {
     }
 
     private void stepAllUnits(float delta) {
+//        Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.units:" + unitsManager.units.size);
         for (Unit unit : unitsManager.units) {
             Node oldPosition = unit.newPosition;
             if (unit.isAlive()) {
@@ -1593,30 +1577,43 @@ public class GameField {
 //                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
                     }
                 } else {
-                    field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
-                    if(unit.player == 0) {
-                        missedUnitsForPlayer1++;
-                    } else if(unit.player == 1) {
+                    Cell cell = getCell(oldPosition.getX(), oldPosition.getY());
+//                    Gdx.app.log("GameField::stepAllUnits()", "-- cell:" + cell.toString());
+                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit finished!");
+                    if (unit.player == 1) {
                         missedUnitsForComputer0++;
-                    } // WTF??? realy?
-                    unitsManager.removeUnit(unit);
-//                Gdx.app.log("GameField::stepAllUnits()", "-- Unit finished!");
+                    } else if (unit.player == 0) {
+                        if (unit.exitCell == cell) {
+                            missedUnitsForPlayer1++;
+                            cell.removeUnit(unit);
+                            unitsManager.removeUnit(unit);
+                            Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(unit):");
+                        } else {
+                            if (unit.route == null || unit.route.isEmpty()) {
+                                int randomX = (int)(Math.random()*sizeFieldX);
+                                int randomY = (int)(Math.random()*sizeFieldY);
+                                unit.route = pathFinder.route(oldPosition.getX(), oldPosition.getY(), randomX, randomY);
+                                Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + unit.route);
+                            }
+                        }
+                    }
                 }
-            }
-            if (!unit.isAlive()) {
+            } else {
+//            if (!unit.isAlive()) {
                 if (!unit.changeDeathFrame(delta)) {
                     field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
 //                    GameField.gamerGold += unit.templateForUnit.bounty;
                     unit.dispose();
                     unitsManager.removeUnit(unit);
-//                Gdx.app.log("GameField::stepAllUnits()", "-- Unit death! and delete!");
+                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit death! and delete!");
                 }
             }
+//            Gdx.app.log("GameField::stepAllUnits()", "-- Unit:" + unit.toString());
         }
     }
 
     private void shotAllTowers(float delta) {
-        for (Tower tower : towersManager.getAllTowers()) {
+        for (Tower tower : towersManager.towers) {
             TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
                 Unit unit = field[tower.position.x][tower.position.y].getUnit();
@@ -1784,7 +1781,7 @@ public class GameField {
 //    }
 
     private void moveAllShells(float delta) {
-        for (Tower tower : towersManager.getAllTowers()) {
+        for (Tower tower : towersManager.towers) {
             tower.moveAllShells(delta);
         }
     }
@@ -1815,6 +1812,12 @@ public class GameField {
     }
 
     public String getGameState() {
+//        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForPlayer1:" + missedUnitsForPlayer1);
+//        Gdx.app.log("GameField::getGameState()", "-- maxOfMissedUnitsForPlayer1:" + maxOfMissedUnitsForPlayer1);
+//        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForComputer0:" + missedUnitsForComputer0);
+//        Gdx.app.log("GameField::getGameState()", "-- maxOfMissedUnitsForComputer0:" + maxOfMissedUnitsForComputer0);
+//        Gdx.app.log("GameField::getGameState()", "-- waveManager.getNumberOfActions():" + waveManager.getNumberOfActions());
+//        Gdx.app.log("GameField::getGameState()", "-- unitsManager.units.size:" + unitsManager.units.size);
         if (missedUnitsForPlayer1 >= maxOfMissedUnitsForPlayer1) {
 //            Gdx.app.log("GameField::getGameState()", "-- LOSE!!");
             return "Lose";
@@ -1893,12 +1896,11 @@ public class GameField {
 //    }
 
     private Cell getCell(int x, int y) {
-        if (x >= 0 && y >= 0) {
-            if (x < sizeFieldX && y < sizeFieldY) {
+        if (x >= 0 && x < sizeFieldX) {
+            if (y >= 0 && y < sizeFieldY) {
                 return field[x][y];
             }
         }
-        Gdx.app.log("GameField::getCell(" + x + "," + y + ")", "-- Bad coord, not found cell | return null");
         return null;
     }
 
@@ -1921,18 +1923,23 @@ public class GameField {
 //        return new Vector2(pxlsX, pxlsY);
 //    }
 
-    public Vector2 getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
+    public boolean getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
         if(map == 1) {
-            towerPos.add(-(halfSizeCellX * towerSize), -(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
+            towerPos.x += (-(halfSizeCellX * towerSize) );
+            towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
         } else if(map == 2) {
-            towerPos.add(-(halfSizeCellX*((towerSize % 2 != 0) ? towerSize : towerSize+1)), -(halfSizeCellY*towerSize));
+            towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
+            towerPos.y += (-(halfSizeCellY * towerSize));
         } else if(map == 3) {
-            towerPos.add(-(halfSizeCellX*towerSize), -(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)));
+            towerPos.x += (-(halfSizeCellX * towerSize) );
+            towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)));
         } else if(map == 4) {
-            towerPos.add(-(halfSizeCellX*(towerSize - ((towerSize % 2 != 0) ? 0 : 1))), -(halfSizeCellY*towerSize));
+            towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
+            towerPos.y += (-(halfSizeCellY * towerSize));
         } else {
             Gdx.app.log("GameField::getCorrectGraphicTowerCoord(" + towerPos + ", " + towerSize + ", " + map + ")", "-- Bad map[1-4] value:" + map);
+            return false;
         }
-        return towerPos;
+        return true;
     }
 }

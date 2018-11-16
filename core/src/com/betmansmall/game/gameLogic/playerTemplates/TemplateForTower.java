@@ -182,6 +182,21 @@ public class TemplateForTower extends Template {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType");
         } else {
             shellEffectType = new ShellEffectType(ShellEffectType.ShellEffectEnum.getType(properties.get("shellEffectType")));
+            if (!properties.containsKey("shellEffectType_time")) {
+                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_time");
+            } else {
+                shellEffectType.time = Float.parseFloat(properties.get("shellEffectType_time"));
+            }
+            if (!properties.containsKey("shellEffectType_damage")) {
+                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_damage");
+            } else {
+                shellEffectType.damage = Float.parseFloat(properties.get("shellEffectType_damage"));
+            }
+            if (!properties.containsKey("shellEffectType_speed")) {
+                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_speed");
+            } else {
+                shellEffectType.speed = Float.parseFloat(properties.get("shellEffectType_speed"));
+            }
         }
         if (towerAttackType == TowerAttackType.Pit && properties.containsKey("capacity")) {
             capacity = Integer.parseInt(properties.get("capacity"));

@@ -7,15 +7,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 
-import com.betmansmall.game.gameLogic.mapLoader.Tile;
-
 /**
  * Created by BetmanSmall on 11.03.2016.
  */
 public class Cell {
     public class Tree {
-        TextureRegion textureRegion;
-        int width, height;
+        public TextureRegion textureRegion;
+        public int width;
+        public int height;
 
         public Tree(TextureRegion textureRegion, int width, int height) {
             this.textureRegion = textureRegion;
@@ -28,17 +27,20 @@ public class Cell {
     public Array<TiledMapTile> groundTiles;
     public Array<TiledMapTile> foregroundTiles;
     public Array<Tree> trees;
-    private boolean empty;
-    private boolean terrain;
-    private boolean removableTerrain;
+    public boolean empty;
+    public boolean terrain;
+    public boolean removableTerrain;
 
-    private Tower tower;
-    private Array<Unit> units;
-    public boolean spawn, exit;
+    public Tower tower;
+    public Array<Unit> units;
+    public boolean spawn;
+    public boolean exit;
 
     public int cellX, cellY;
-    public Vector2 graphicCoordinatesBottom, graphicCoordinatesRight, graphicCoordinatesTop, graphicCoordinatesLeft;
-
+    public Vector2 graphicCoordinates1;
+    public Vector2 graphicCoordinates2;
+    public Vector2 graphicCoordinates3;
+    public Vector2 graphicCoordinates4;
 
     public Cell() {
 //        Gdx.app.log("Cell::Cell()", "-- ");
@@ -55,21 +57,26 @@ public class Cell {
         this.spawn = false;
         this.exit = false;
 
-//        setGraphicCoordinates(cellX, cellY, halfSizeCellX, halfSizeCellY);
+        graphicCoordinates1 = new Vector2();
+        graphicCoordinates2 = new Vector2();
+        graphicCoordinates3 = new Vector2();
+        graphicCoordinates4 = new Vector2();
     }
 
     public void dispose() {
         backgroundTiles.clear();
+        groundTiles.clear();
         foregroundTiles.clear();
         trees.clear();
         backgroundTiles = null;
+        groundTiles = null;
         foregroundTiles = null;
         trees = null;
 
         tower = null;
         units.clear();
         units = null;
-//        delete graphicCoordinatesBottom,graphicCoordinatesRight,graphicCoordinatesTop, graphicCoordinatesLeft;
+//        delete graphicCoordinates1,graphicCoordinates2,graphicCoordinates3, graphicCoordinates4;
     }
 
     public void setGraphicCoordinates(int cellX, int cellY, float halfSizeCellX, float halfSizeCellY) {
@@ -77,25 +84,29 @@ public class Cell {
         this.cellX = cellX;
         this.cellY = cellY;
 //        if(map == 1) { // Нижняя карта-java // Верхняя карта-с++
-        graphicCoordinatesBottom = new Vector2((-(halfSizeCellX * cellY) + (cellX * halfSizeCellX)), (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY)));
+        graphicCoordinates1.x = ( (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) );
+        graphicCoordinates1.y = ( (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) - halfSizeCellY );
 //        } else if(map == 2) { // Правая карта
-        graphicCoordinatesRight = new Vector2(((halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX, ((halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY);
+        graphicCoordinates2.x = ( ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) + halfSizeCellX );
+        graphicCoordinates2.y = ( ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) );
 //        } else if(map == 3) { // Верхняя карта-c++ // Нижняя карта-java
-        graphicCoordinatesTop = new Vector2((-(halfSizeCellX * cellY) + (cellX * halfSizeCellX)), ((halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY * 2);
+        graphicCoordinates3.x = ( (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) );
+        graphicCoordinates3.y = ( ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY) ) + halfSizeCellY );
 //        } else if(map == 4) {// Левая карта
-        graphicCoordinatesLeft = new Vector2((-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX, ((halfSizeCellY * cellY) - (cellX * halfSizeCellY)) + halfSizeCellY);
+        graphicCoordinates4.x = ( (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX) ) - halfSizeCellX );
+        graphicCoordinates4.y = ( ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) );
 //        }
     }
 
     public Vector2 getGraphicCoordinates(int map) {
         if(map == 1) {
-            return graphicCoordinatesBottom;
+            return graphicCoordinates1;
         } else if(map == 2) {
-            return graphicCoordinatesRight;
+            return graphicCoordinates2;
         } else if(map == 3) {
-            return graphicCoordinatesTop;
+            return graphicCoordinates3;
         } else if(map == 4) {
-            return graphicCoordinatesLeft;
+            return graphicCoordinates4;
         }
         Gdx.app.log("Cell::getGraphicCoordinates(" + map + ")", "-- Bad map | return null!");
         return null;
@@ -235,13 +246,13 @@ public class Cell {
         sb.append(",terrain:" + terrain);
         sb.append(",removableTerrain:" + removableTerrain);
         sb.append(",tower:" + tower);
-        sb.append(",units:" + units);
+        sb.append(",units:" + ((units!=null) ? units.size : false) );
         sb.append(",spawn:" + spawn);
         sb.append(",exit:" + exit);
         sb.append(",backgroundTiles:" + backgroundTiles.size);
         sb.append(",groundTiles:" + groundTiles.size);
         sb.append(",foregroundTiles:" + foregroundTiles.size);
-//        sb.append(",graphicCoordinatesBottom:" + graphicCoordinatesBottom);
+//        sb.append(",graphicCoordinates1:" + graphicCoordinates1);
         sb.append("]");
         return sb.toString();
     }

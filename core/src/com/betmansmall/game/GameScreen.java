@@ -74,7 +74,7 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
 //                } else if (button == 3) {
 //                    gameField.createUnit(cellCoordinate.x, cellCoordinate.y);
 //                } else if (button == 4) {
-//                    gameField.setExitPoint(cellCoordinate.x, cellCoordinate.y);
+//                    gameField.setExitCell(cellCoordinate.x, cellCoordinate.y);
 //                }
 //            } else if(gameField.getUnderConstruction() != null && button == 1) {
 //                gameField.cancelUnderConstruction();
@@ -399,12 +399,16 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
 //            gameInterface.unitsSelector.changeGameState(); need func() here
+            camera.position.set(0.0f, 0.0f, 0.0f);
+            gameInterface.addActionToHistory("-- camera.position:" + camera.position);
+            Gdx.app.log("GameScreen::inputHandler()", "-- camera.position:" + camera.position);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.SPACE)");
             gameField.gamePaused = !gameField.gamePaused;
             gameInterface.addActionToHistory("-- gameField.gamePaused:" + gameField.gamePaused);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.gamePaused:" + gameField.gamePaused);
-            camera.position.set(0.0f, 0.0f, 0.0f);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.PLUS)");
+            Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.F1)");
             if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
                 gameField.isDrawableGrid--;
                 if (gameField.isDrawableGrid < 0) {
@@ -422,7 +426,7 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
             gameField.isDrawableGround = gameField.isDrawableGrid;
             gameField.isDrawableForeground = gameField.isDrawableGrid;
             gameField.isDrawableGridNav = gameField.isDrawableGrid;
-//            gameField.is = gameField.isDrawableGrid;
+            gameField.isDrawableRoutes = gameField.isDrawableGrid;
             gameInterface.addActionToHistory("-and other- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
             Gdx.app.log("GameScreen::inputHandler()", "-and other- gameField.isDrawableGrid:" + gameField.isDrawableGrid);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
@@ -459,20 +463,20 @@ public class GameScreen /*extends GestureDetector*/ implements Screen, GestureLi
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableBackground:" + gameField.isDrawableBackground);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_5)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5)");
-            gameField.isDrawableForeground++;
-            if (gameField.isDrawableForeground > 5) {
-                gameField.isDrawableForeground = 0;
-            }
-            gameInterface.addActionToHistory("-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
-            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6)");
             gameField.isDrawableGround++;
             if (gameField.isDrawableGround > 5) {
                 gameField.isDrawableGround = 0;
             }
             gameInterface.addActionToHistory("-- gameField.isDrawableGround:" + gameField.isDrawableGround);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableGround:" + gameField.isDrawableGround);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6)");
+            gameField.isDrawableForeground++;
+            if (gameField.isDrawableForeground > 5) {
+                gameField.isDrawableForeground = 0;
+            }
+            gameInterface.addActionToHistory("-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameField.isDrawableForeground:" + gameField.isDrawableForeground);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7)");
             gameField.isDrawableGridNav++;

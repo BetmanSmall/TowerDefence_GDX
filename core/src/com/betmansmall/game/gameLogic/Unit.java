@@ -25,6 +25,7 @@ public class Unit {
     public ArrayDeque<Node> route;
     public Node oldPosition;
     public Node newPosition;
+    public Cell exitCell;
     public float hp;
     public float speed;
     public float stepsInTime;
@@ -32,7 +33,7 @@ public class Unit {
 
     public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
     public Vector2 currentPoint;
-    public Vector2 backStepPoint;// AlexGor
+    public Vector2 backStepPoint;
     public Circle circle1;
     public Circle circle2;
     public Circle circle3;
@@ -46,11 +47,16 @@ public class Unit {
     private Animation animation;
     public Array<ShellEffectType> shellEffectTypes;
 
-    public Unit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player) {
+//    public Unit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player) {
+//        Unit(route, templateForUnit, player, null);
+//    }
+
+    public Unit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
         if(route != null) {
             this.route = route;
             this.oldPosition = route.peekFirst();
             this.newPosition = route.pollFirst();
+            this.exitCell = exitCell;
             this.hp = templateForUnit.healthPoints;
             this.speed = templateForUnit.speed;
             this.stepsInTime = 0f;//templateForUnit.speed; // need respawn animation
@@ -59,10 +65,10 @@ public class Unit {
             this.player = player;
             this.currentPoint = new Vector2(newPosition.getX(), newPosition.getY());
             this.backStepPoint = new Vector2(oldPosition.getX(), oldPosition.getY());
-            this.circle1 = new Circle();
-            this.circle2 = new Circle();
-            this.circle3 = new Circle();
-            this.circle4 = new Circle();
+            this.circle1 = new Circle(0, 0, 16f);
+            this.circle2 = new Circle(0, 0, 16f);
+            this.circle3 = new Circle(0, 0, 16f);
+            this.circle4 = new Circle(0, 0, 16f);
 
             this.templateForUnit = templateForUnit;
 
@@ -207,7 +213,7 @@ public class Unit {
             if(isDrawableUnits == 4 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord4)
                 float fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
-                float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY)) + halfSizeCellY;
+                float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY));
                 fVc.set(fVx, fVy);
                 if (newX < oldX && newY > oldY) {
                     correct_fVc(fVc, Direction.UP, sizeCellX);
@@ -232,7 +238,7 @@ public class Unit {
             if(isDrawableUnits == 3 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord3)
                 float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
-                float fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY*2;
+                float fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY;
                 fVc.set(fVx, fVy);
                 if (newX < oldX && newY > oldY) {
                     correct_fVc(fVc, Direction.UP, sizeCellX);
@@ -257,7 +263,7 @@ public class Unit {
             if(isDrawableUnits == 2 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord2)
                 float fVx = (halfSizeCellX * newY) + (newX * halfSizeCellX) + halfSizeCellX;
-                float fVy = (halfSizeCellY * newY) - (newX * halfSizeCellY) + halfSizeCellY;
+                float fVy = (halfSizeCellY * newY) - (newX * halfSizeCellY);
                 fVc.set(fVx, fVy);
                 if (newX < oldX && newY > oldY) {
                     correct_fVc(fVc, Direction.UP, sizeCellX);
@@ -282,7 +288,7 @@ public class Unit {
             if(isDrawableUnits == 1 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord1)
                 float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
-                float fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY));
+                float fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY)) - halfSizeCellY;
                 fVc.set(fVx, fVy);
                 if (newX < oldX && newY < oldY) {
                     correct_fVc(fVc, Direction.UP, sizeCellX);
@@ -306,7 +312,6 @@ public class Unit {
             }
 
             backStepPoint = currentPoint;
-//            currentPoint.set(fVx, fVy);
             currentPoint.set(fVc);
             fVc = null;
 
@@ -321,7 +326,7 @@ public class Unit {
             }
             return newPosition;
         } else {
-            dispose();
+//            dispose();
             return null;
         }
     }
@@ -417,12 +422,22 @@ public class Unit {
 //        sb.append("route:" + route + ",");
         sb.append("oldPosition:" + oldPosition + ",");
         sb.append("newPosition:" + newPosition + ",");
+        sb.append("exitCell:" + (exitCell!=null) + ",");
         sb.append("hp:" + hp + ",");
         sb.append("speed:" + speed + ",");
         sb.append("stepsInTime:" + stepsInTime + ",");
         sb.append("deathElapsedTime:" + deathElapsedTime + ",");
+
+        sb.append("player:" + player + ",");
+        sb.append("currentPoint:" + currentPoint + ",");
+        sb.append("backStepPoint:" + backStepPoint + ",");
         sb.append("circle1:" + circle1 + ",");
         sb.append("circle2:" + circle2 + ",");
+        sb.append("circle3:" + circle3 + ",");
+        sb.append("circle4:" + circle4 + ",");
+        sb.append("velocity:" + velocity + ",");
+        sb.append("displacement:" + displacement + ",");
+
         sb.append("templateForUnit:" + templateForUnit + ",");
         sb.append("direction:" + direction + ",");
         sb.append("animation:" + animation + ",");

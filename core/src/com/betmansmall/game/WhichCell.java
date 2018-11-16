@@ -32,26 +32,38 @@ public class WhichCell {
     }
 
     public GridPoint2 whichCell(Vector3 touch, int map) {
-        Gdx.app.log("WhichCell::whichCell()", "-graphics- mouseX:" + touch.x + " mouseY:" + touch.x + " map:" + map);
-        touch.x /= sizeCellX;
-        touch.y = (touch.y - sizeCellY / 2) / sizeCellY + touch.x;
-        touch.x -= touch.y - touch.x;
+        Gdx.app.log("WhichCell::whichCell()", "-graphics- mouseX:" + touch.x + " mouseY:" + touch.y + " map:" + map);
+//        touch.x /= sizeCellX;
+//        touch.y = (touch.y - sizeCellY / 2) / sizeCellY + touch.x;
+//        touch.x -= touch.y - touch.x;
 //        touch.y /= sizeCellY;
 //        touch.x = (touch.x - sizeCellX / 2) / sizeCellX + touch.y;
 //        touch.y -= touch.x - touch.y;
-        Gdx.app.log("WhichCell::whichCell()", "-new- mouseX:" + touch.x + " mouseY:" + touch.x);
-        GridPoint2 cell = new GridPoint2(Math.abs((int) touch.x), Math.abs((int) touch.y));
-        if(touch.x < 0) {
-            cell.set(cell.y, cell.x);
-        } // Где то я накосячил. мб сделать подругому. если это уберать то нужно будет править Cell::setGraphicCoordinates() для 3 и 4 карты
+//        Gdx.app.log("WhichCell::whichCell()", "-new- mouseX:" + touch.x + " mouseY:" + touch.x);
+//        GridPoint2 cell = new GridPoint2(Math.abs((int) touch.x), Math.abs((int) touch.y));
+        float gameX = ( (touch.x / (halfSizeCellX)) + (touch.y / (halfSizeCellY)) ) / 2;
+        float gameY = ( (touch.y / (halfSizeCellY)) - (touch.x / (halfSizeCellX)) ) / 2;
+        Gdx.app.log("WhichCell::whichCell()", "-new- gameX:" + gameX + " gameY:" + gameY);
+        int cellX = Math.abs((int) gameX);
+        int cellY = Math.abs((int) gameY);
+        if(gameY < 0) {
+            int tmpX = cellX;
+            cellX = cellY;
+            cellY = tmpX;
+//            cell.set(cell.y, cell.x);
+        } // Где то я накосячил. мб сделать подругому.
+        // если это убирать то нужно будет править Cell::setGraphicCoordinates() для 3 и 4 карты
+        GridPoint2 cell = new GridPoint2(cellX, cellY);
 //        Gdx.app.log("WhichCell::whichCell()", "-cell- cell:" + cell);
         if (cell.x < sizeFieldX && cell.y < sizeFieldY) {
             if (map == 5) {
                 return cell;
             } else {
-                if ( (map == 1 && touch.x > 0 && touch.y < 0) || (map == 2 && touch.x > 0 && touch.y > 0) ) {
+                if ( (map == 2 && gameX > 0 && gameY < 0)
+                  || (map == 3 && gameX > 0 && gameY > 0) ) {
                     return cell;
-                } else if ( (map == 3 && touch.x < 0 && touch.y > 0) || (map == 4 && touch.x < 0 && touch.y < 0) ) {
+                } else if ( (map == 4 && gameX < 0 && gameY > 0)
+                         || (map == 1 && gameX < 0 && gameY < 0) ) {
                     return cell;
                 }
             }

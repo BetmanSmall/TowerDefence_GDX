@@ -10,7 +10,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
  * Created by betmansmall on 22.02.2016.
  */
 public class TowersManager {
-    private Array<Tower> towers;
+    public Array<Tower> towers;
 
     public TowersManager() {
         towers = new Array<Tower>();
@@ -46,13 +46,5 @@ public class TowersManager {
 
     public void removeTower(GridPoint2 position) {
         towers.removeValue(getTower(position), false);
-    }
-
-    public Array<Tower> getAllTowers() {
-        return towers;
-    }
-
-    public int amountTowers() {
-        return towers.size;
     }
 }

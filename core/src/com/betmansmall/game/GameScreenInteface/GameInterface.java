@@ -41,7 +41,8 @@ public class GameInterface {
 
     public TextButton startAndPauseButton;
     public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, underConstructionLabel,
-            missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextUnitSpawnLabel;
+            missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextUnitSpawnLabel,
+            unitsManagerSize, towersManagerSize;
 
     public boolean interfaceTouched;
     public TowersSelector towersSelector;
@@ -108,6 +109,10 @@ public class GameInterface {
         tablo.addActor(missedAndMaxForComputer0);
         nextUnitSpawnLabel = new Label("NextUnitSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
         tablo.addActor(nextUnitSpawnLabel);
+        unitsManagerSize = new Label("unitsManagerSize:", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        tablo.addActor(unitsManagerSize);
+        towersManagerSize = new Label("towersManagerSize:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        tablo.addActor(towersManagerSize);
 
         this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
 ////        table.setDebug(true);
@@ -160,6 +165,10 @@ public class GameInterface {
         gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
         missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.missedUnitsForComputer0 + "/" + gameField.maxOfMissedUnitsForComputer0);
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.missedUnitsForComputer0 + "/" + gameField.maxOfMissedUnitsForComputer0);
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.missedUnitsForComputer0 + "/" + gameField.maxOfMissedUnitsForComputer0);
+        unitsManagerSize.setText("unitsManagerSize:" + gameField.unitsManager.units.size);
+        towersManagerSize.setText("towersManagerSize:" + gameField.towersManager.towers.size);
         stage.act(delta);
         stage.draw();
     }
