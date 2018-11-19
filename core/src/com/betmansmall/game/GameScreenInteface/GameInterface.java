@@ -161,12 +161,12 @@ public class GameInterface {
             underConstructionLabel.setText("UnderConstrTemplateName:NULL");
             underConstructionLabel.setColor(Color.RED);
         }
-        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameField.missedUnitsForPlayer1 + "/" + gameField.maxOfMissedUnitsForPlayer1);
+        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameField.gameSettings.missedUnitsForPlayer1 + "/" + gameField.gameSettings.maxOfMissedUnitsForPlayer1);
         gamerGoldLabel.setText("GamerGold:" + gameField.getGamerGold());
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.missedUnitsForComputer0 + "/" + gameField.maxOfMissedUnitsForComputer0);
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.missedUnitsForComputer0 + "/" + gameField.maxOfMissedUnitsForComputer0);
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.missedUnitsForComputer0 + "/" + gameField.maxOfMissedUnitsForComputer0);
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
         unitsManagerSize.setText("unitsManagerSize:" + gameField.unitsManager.units.size);
         towersManagerSize.setText("towersManagerSize:" + gameField.towersManager.towers.size);
         stage.act(delta);

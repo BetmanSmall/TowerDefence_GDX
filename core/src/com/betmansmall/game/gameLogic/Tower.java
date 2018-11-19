@@ -1,8 +1,6 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -16,43 +14,53 @@ import com.badlogic.gdx.math.Vector2; //AlexGor
  * Created by Андрей on 24.01.2016.
  */
 public class Tower {
-    public GridPoint2 position;
+//    public GridPoint2 cell;
+    public Cell cell;
     public float elapsedReloadTime;
     public TemplateForTower templateForTower;
 
     public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
     public int capacity;
     public Array<Bullet> bullets;
+    public Vector2 centerGraphicCoord;
     public Circle radiusDetectionCircle;
     public Circle radiusFlyShellCircle;
 
-    public Tower(GridPoint2 position, TemplateForTower templateForTower, int player) {
-        Gdx.app.log("Tower::Tower()", "-- position:" + position + " templateForTower:" + templateForTower + " player:" + player);
-        this.position = position;
+    public Tower(Cell cell, TemplateForTower templateForTower, int player) {
+        Gdx.app.log("Tower::Tower()", "-- cell:" + cell + " templateForTower:" + templateForTower + " player:" + player);
+        this.cell = cell;
         this.elapsedReloadTime = templateForTower.reloadTime;
         this.templateForTower = templateForTower;
 
         this.player = player;
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
         this.bullets = new Array<Bullet>();
-        this.radiusDetectionCircle = null;
-        this.radiusFlyShellCircle = null;
+        this.centerGraphicCoord = new Vector2();
+        this.radiusDetectionCircle = new Circle(0, 0, templateForTower.radiusDetection);
+        this.radiusFlyShellCircle = new Circle(0, 0, templateForTower.radiusFlyShell);
     }
 
     public void dispose() {
         Gdx.app.log("Tower::dispose()", "--");
     }
 
-    void updateGraphicCoordinates(CameraController cameraController) {
-        if (radiusDetectionCircle != null) {
-            radiusDetectionCircle = null; // delete radiusDetectionCircle;
-        }
-        this.radiusDetectionCircle = new Circle(cameraController.getCenterTowerGraphicCoord(position.x, position.y), templateForTower.radiusDetection);
-        if (templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-            if (radiusFlyShellCircle != null) {
-                radiusFlyShellCircle = null; // delete radiusFlyShellCircle;
+    void updateCenterGraphicCoordinates(CameraController cameraController) {
+//        if (centerGraphicCoord == null) {
+            if (cameraController.isDrawableTowers == 1 || cameraController.isDrawableTowers == 5) {
+                centerGraphicCoord.set(cell.graphicCoordinates1);
+            } else if (cameraController.isDrawableTowers == 2) {
+                centerGraphicCoord.set(cell.graphicCoordinates2);
+            } else if (cameraController.isDrawableTowers == 3) {
+                centerGraphicCoord.set(cell.graphicCoordinates3);
+            } else if (cameraController.isDrawableTowers == 4) {
+                centerGraphicCoord.set(cell.graphicCoordinates4);
+            } else {
+                centerGraphicCoord.setZero();
             }
-            this.radiusFlyShellCircle = new Circle(cameraController.getCenterTowerGraphicCoord(position.x, position.y), templateForTower.radiusFlyShell);
+//        }
+        this.radiusDetectionCircle.setPosition(centerGraphicCoord);
+        if (templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
+            this.radiusFlyShellCircle.setPosition(centerGraphicCoord);
         }
     }
 
@@ -80,7 +88,7 @@ public class Tower {
             } else if (templateForTower.shellAttackType == ShellAttackType.FireBall) {
 
             } else {
-                bullets.add(new Bullet(cameraController.getCenterTowerGraphicCoord(position.x, position.y), templateForTower, unit));
+                bullets.add(new Bullet(centerGraphicCoord, templateForTower, unit, cameraController));
             }
             elapsedReloadTime = 0f;
             return true;
@@ -121,7 +129,7 @@ public class Tower {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("Tower[");
-        sb.append("position:" + position);
+        sb.append("cell:" + cell);
         if (full) {
             sb.append("elapsedReloadTime:" + elapsedReloadTime);
             sb.append("templateForTower:" + templateForTower);

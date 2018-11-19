@@ -133,6 +133,9 @@ public class MainMenuScreen implements Screen {
 //        if(mapsDir.list().length == 0) {
             towerDefence.gameLevelMaps.add("maps/island.tmx");
             towerDefence.gameLevelMaps.add("maps/randomMap.tmx");
+            towerDefence.gameLevelMaps.add("maps/desert.tmx");
+            towerDefence.gameLevelMaps.add("maps/summer.tmx");
+            towerDefence.gameLevelMaps.add("maps/winter.tmx");
             towerDefence.gameLevelMaps.add("maps/arena0.tmx");
             towerDefence.gameLevelMaps.add("maps/arena1.tmx");
             towerDefence.gameLevelMaps.add("maps/desert.tmx");
@@ -234,15 +237,15 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, 0.5f));
+                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, new GameSettings(GameType.TowerDefence, 0.5f)));
                         break;
                     case 2:
                         //start game with NORMAL
-                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, 1f));
+                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, new GameSettings(GameType.TowerDefence, 1f)));
                         break;
                     case 3:
                         //start game with HARD
-                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, 2f));
+                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, new GameSettings(GameType.TowerDefence, 2f)));
                         break;
                 }
                 break;

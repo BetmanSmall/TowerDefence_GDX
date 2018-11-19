@@ -6,7 +6,7 @@
   <property name="radiusDetection" value="150"/>
   <property name="radiusFlyShell" value="150"/>
   <property name="damage" value="5"/>
-  <property name="size" value="1"/>
+  <property name="size" value="4"/>
   <property name="cost" value="200"/>
   <property name="ammoSize" value="5"/>
   <property name="ammoSpeed" value="15"/>

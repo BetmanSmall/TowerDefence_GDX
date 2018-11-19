@@ -1,10 +1,8 @@
 package com.betmansmall.game.gameLogic;
 
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
-import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
 /**
  * Created by betmansmall on 22.02.2016.
@@ -16,8 +14,8 @@ public class TowersManager {
         towers = new Array<Tower>();
     }
 
-    public Tower createTower(GridPoint2 position, TemplateForTower templateForTower, int player) {
-        Tower tower = new Tower(position, templateForTower, player);
+    public Tower createTower(Cell cell, TemplateForTower templateForTower, int player) {
+        Tower tower = new Tower(cell, templateForTower, player);
         towers.add(tower);
         return tower;
     }
@@ -30,10 +28,10 @@ public class TowersManager {
         }
     }
 
-    public Tower getTower(GridPoint2 position) {
+    public Tower getTower(Cell cell) {
         for(int i=0; i < towers.size; i++) {
-            GridPoint2 towerPosition = towers.get(i).position;
-            if(towerPosition.equals(position)) {
+            Cell towerCell = towers.get(i).cell;
+            if(towerCell.equals(cell)) {
                 return towers.get(i);
             }
         }
@@ -44,7 +42,7 @@ public class TowersManager {
         towers.removeValue(tower, false);
     }
 
-    public void removeTower(GridPoint2 position) {
-        towers.removeValue(getTower(position), false);
+    public void removeTower(Cell cell) {
+        towers.removeValue(getTower(cell), false);
     }
 }

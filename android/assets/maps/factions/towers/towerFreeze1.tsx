@@ -3,8 +3,8 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Freeze Tower 1"/>
-  <property name="radiusDetection" value="150"/>
-  <property name="radiusFlyShell" value="150"/>
+  <property name="radiusDetection" value="100"/>
+  <property name="radiusFlyShell" value="100"/>
   <property name="damage" value="30"/>
   <property name="size" value="1"/>
   <property name="cost" value="450"/>

@@ -17,7 +17,9 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.BaseTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
@@ -49,11 +51,11 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         super(resolver);
     }
 
-    public TiledMap load(String fileName) {
+    public Map load(String fileName) {
         return load(fileName, new MapLoader.Parameters());
     }
 
-    public TiledMap load(String fileName, MapLoader.Parameters parameters) {
+    public Map load(String fileName, MapLoader.Parameters parameters) {
         try {
             this.convertObjectToTileSpace = parameters.convertObjectToTileSpace;
             this.flipY = parameters.flipY;
@@ -70,7 +72,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             }
 
             DirectImageResolver imageResolver = new DirectImageResolver(textures);
-            TiledMap map = loadTilemap(root, tmxFile, imageResolver);
+            Map map = loadTilemap(root, tmxFile, imageResolver);
             map.setOwnedResources(textures.values().toArray());
             return map;
         } catch (IOException e) {
@@ -90,7 +92,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             flipY = true;
         }
         try {
-            map = loadTilemap(root, tmxFile, new AssetManagerImageResolver(manager));
+//            map = loadTilemap(root, tmxFile, new AssetManagerImageResolver(manager));
         } catch (Exception e) {
             throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
         }
@@ -140,8 +142,8 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
      * @param imageResolver the {@link ImageResolver}
      * @return the {@link TiledMap}
      */
-    protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
-        TiledMap map = new TiledMap();
+    protected Map loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
+        Map map = new Map(tmxFile.path());
 
         String mapOrientation = root.getAttribute("orientation", null);
         int mapWidth = root.getIntAttribute("width", 0);
@@ -200,10 +202,10 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             String name = element.getName();
             if (name.equals("layer")) {
                 loadTileLayer(map, element);
-            } else if (name.equals("objectgroup")) {
-                loadObjectGroup(map, element);
-            } else if (name.equals("imagelayer")) {
-                loadImageLayer(map, element, tmxFile, imageResolver);
+//            } else if (name.equals("objectgroup")) {
+//                loadObjectGroup(map, element);
+//            } else if (name.equals("imagelayer")) {
+//                loadImageLayer(map, element, tmxFile, imageResolver);
             }
         }
         Element waves = root.getChildByName("waves");
@@ -228,6 +230,10 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         } else {
             Gdx.app.log("MapLoader::loadTilemap()", "-- Not found waves block in map:" + tmxFile);
         }
+        map.width = mapWidth;
+        map.height = mapHeight;
+        map.tileWidth = tileWidth;
+        map.tileHeight = tileHeight;
         return map;
     }
 
@@ -343,7 +349,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
      * @param tmxFile       the Filehandle of the tmx file
      * @param imageResolver the {@link ImageResolver}
      */
-    protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+    protected void loadTileSet(Map map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
         if (element.getName().equals("tileset")) {
             String name = element.get("name", null);
             int firstgid = element.getIntAttribute("firstgid", 1);
@@ -510,6 +516,42 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             }
         }
         return result;
+    }
+
+    public void loadTileLayer (Map map, Element element) {
+        if (element.getName().equals("layer")) {
+            int width = element.getIntAttribute("width", 0);
+            int height = element.getIntAttribute("height", 0);
+            int tileWidth = element.getParent().getIntAttribute("tilewidth", 0);
+            int tileHeight = element.getParent().getIntAttribute("tileheight", 0);
+            TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+
+            loadBasicLayerInfo(layer, element);
+
+            int[] ids = getTileIds(element, width, height);
+            TiledMapTileSets tilesets = map.getTileSets();
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int id = ids[y * width + x];
+                    boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
+                    boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
+                    boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
+
+                    TiledMapTile tile = tilesets.getTile(id & ~MASK_CLEAR);
+                    if (tile != null) {
+                        TiledMapTileLayer.Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
+                        cell.setTile(tile);
+                        layer.setCell(x, flipY ? height - 1 - y : y, cell);
+                    }
+                }
+            }
+
+            Element properties = element.getChildByName("properties");
+            if (properties != null) {
+                loadProperties(layer.getProperties(), properties);
+            }
+            map.getLayers().add(layer);
+        }
     }
 
     public void wavesParser(Element waves) {

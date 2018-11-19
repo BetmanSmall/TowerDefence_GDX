@@ -84,17 +84,17 @@ public class Cell {
         this.cellX = cellX;
         this.cellY = cellY;
 //        if(map == 1) { // Нижняя карта-java // Верхняя карта-с++
-        graphicCoordinates1.x = ( (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) );
-        graphicCoordinates1.y = ( (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) - halfSizeCellY );
+        graphicCoordinates1.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
+        graphicCoordinates1.y = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) - halfSizeCellY;
 //        } else if(map == 2) { // Правая карта
-        graphicCoordinates2.x = ( ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) + halfSizeCellX );
-        graphicCoordinates2.y = ( ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) );
+        graphicCoordinates2.x = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) + halfSizeCellX;
+        graphicCoordinates2.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
 //        } else if(map == 3) { // Верхняя карта-c++ // Нижняя карта-java
-        graphicCoordinates3.x = ( (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) );
-        graphicCoordinates3.y = ( ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY) ) + halfSizeCellY );
+        graphicCoordinates3.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
+        graphicCoordinates3.y = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY) ) + halfSizeCellY;
 //        } else if(map == 4) {// Левая карта
-        graphicCoordinates4.x = ( (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX) ) - halfSizeCellX );
-        graphicCoordinates4.y = ( ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) );
+        graphicCoordinates4.x = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX) ) - halfSizeCellX;
+        graphicCoordinates4.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
 //        }
     }
 
@@ -260,7 +260,7 @@ public class Cell {
         sb.append(",terrain:" + terrain);
         sb.append(",removableTerrain:" + removableTerrain);
         sb.append(",tower:" + tower);
-        sb.append(",units:" + ((units!=null) ? units.size : false) );
+        sb.append(",units:" + ( (units!=null) ? units.size : false) );
         sb.append(",spawn:" + spawn);
         sb.append(",exit:" + exit);
         sb.append(",backgroundTiles:" + backgroundTiles.size);

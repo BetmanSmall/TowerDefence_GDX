@@ -41,7 +41,7 @@ public class Bullet {
     Direction direction;
     Animation animation;
 
-    Bullet(Vector2 currentPoint, TemplateForTower templateForTower, Unit unit) {
+    Bullet(Vector2 currentPoint, TemplateForTower templateForTower, Unit unit, CameraController cameraController) {
 //        Gdx.app.log("Bullet", "Bullet(" + currentPoint + ", " + endPoint + ");");
         this.unit = unit;
         this.ammoExpSize = templateForTower.ammoSize;
@@ -55,23 +55,24 @@ public class Bullet {
 
         this.currentPoint = new Vector2(currentPoint.x, currentPoint.y);
         this.circle = new Circle(currentPoint, ammoSize);
+        this.endPoint = new Circle(0, 0, 3f);
         if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
-            this.endPoint = new Circle(unit.currentPoint.x + unit.displacement.x, unit.currentPoint.y + unit.displacement.y, 3f);
+            this.endPoint.setPosition(unit.currentPoint.x + unit.displacement.x, unit.currentPoint.y + unit.displacement.y);
         } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
-            if(GameField.isDrawableUnits == 1 || GameField.isDrawableUnits == 5 || GameField.isDrawableUnits == 0)
-                this.endPoint = unit.circle1;
-            else if(GameField.isDrawableUnits == 2)
-                this.endPoint = unit.circle1;
-            else if(GameField.isDrawableUnits == 3)
-                this.endPoint = unit.circle1;
-            else if(GameField.isDrawableUnits == 4)
-                this.endPoint = unit.circle1;
-//            this.endPoint.setRadius(3f);
-//            this.endPoint = unit.currentPoint // LOL break
+            if(cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5 || cameraController.isDrawableUnits == 0)
+                this.endPoint.setPosition(unit.circle1.x, unit.circle1.y);
+            else if(cameraController.isDrawableUnits == 2)
+                this.endPoint.setPosition(unit.circle3.x, unit.circle2.y);
+            else if(cameraController.isDrawableUnits == 3)
+                this.endPoint.setPosition(unit.circle3.x, unit.circle3.y);
+            else if(cameraController.isDrawableUnits == 4)
+                this.endPoint.setPosition(unit.circle4.x, unit.circle4.y);
+            this.endPoint.setRadius(3f);
+            this.endPoint.setPosition(unit.currentPoint); // LOL break
         } else if (templateForTower.shellAttackType == ShellAttackType.FireBall) {
             Vector2 endPoint = new Vector2(unit.circle1.x, unit.circle1.y);
             Direction direction = unit.direction;
-            float delta = GameField.sizeCellX;
+            float delta = cameraController.sizeCellX;
             float del = 1.8f;
             if (direction == Direction.UP) {
                 endPoint.add(0, delta);
@@ -90,8 +91,10 @@ public class Bullet {
             } else if (direction == Direction.UP_LEFT) {
                 endPoint.add(-(delta / del), delta / del);
             }
-            this.endPoint = new Circle(endPoint, 3f);
+            this.endPoint.setPosition(endPoint);
         }
+        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", endPoint:" + endPoint);
+        Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
     }
 

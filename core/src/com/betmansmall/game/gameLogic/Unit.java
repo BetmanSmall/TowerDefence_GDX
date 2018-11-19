@@ -133,7 +133,7 @@ public class Unit {
     }
 
     // что бы ефекты не стакались на крипах
-    public Node move(float delta) {
+    public Node move(float delta, CameraController cameraController) {
 //        Gdx.app.log("Unit", "move(); -- Unit status:" + this.toString());
         if(route != null && !route.isEmpty()) {
             for(ShellEffectType shellEffectType : shellEffectTypes) {
@@ -203,13 +203,13 @@ public class Unit {
 
             int oldX = oldPosition.getX(), oldY = oldPosition.getY();
             int newX = newPosition.getX(), newY = newPosition.getY();
-            int sizeCellX = GameField.sizeCellX;
-            int sizeCellY = GameField.sizeCellY;
+            float sizeCellX = cameraController.sizeCellX;
+            float sizeCellY = cameraController.sizeCellY;
             float halfSizeCellX = sizeCellX/2;
             float halfSizeCellY = sizeCellY/2;
             Vector2 fVc = new Vector2(); // fVc = floatVectorCoordinates
             Direction oldDirection = direction;
-            int isDrawableUnits = GameField.isDrawableUnits;
+            int isDrawableUnits = cameraController.isDrawableUnits;
             if(isDrawableUnits == 4 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord4)
                 float fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
