@@ -37,7 +37,7 @@ public class Tower {
         this.bullets = new Array<Bullet>();
         this.centerGraphicCoord = new Vector2();
         this.radiusDetectionCircle = new Circle(0, 0, templateForTower.radiusDetection);
-        this.radiusFlyShellCircle = new Circle(0, 0, templateForTower.radiusFlyShell);
+        this.radiusFlyShellCircle = null;
     }
 
     public void dispose() {
@@ -60,7 +60,9 @@ public class Tower {
 //        }
         this.radiusDetectionCircle.setPosition(centerGraphicCoord);
         if (templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-            this.radiusFlyShellCircle.setPosition(centerGraphicCoord);
+            if (radiusFlyShellCircle == null) {
+                this.radiusFlyShellCircle = new Circle(centerGraphicCoord, templateForTower.radiusFlyShell);
+            }
         }
     }
 

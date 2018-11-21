@@ -3,7 +3,7 @@
  <properties>
   <property name="factionName" value="Humans_Faction"/>
   <property name="name" value="Footman"/>
-  <property name="healthPoints" value="165"/>
+  <property name="healthPoints" value="500"/>
   <property name="bounty" value="30"/>
   <property name="cost" value="30"/>
   <property name="speed" value="0.8"/>

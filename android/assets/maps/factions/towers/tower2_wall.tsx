@@ -6,7 +6,7 @@
   <property name="radiusDetection" value="1"/>
   <property name="damage" value="0"/>
   <property name="size" value="1"/>
-  <property name="cost" value="20"/>
+  <property name="cost" value="0"/>
   <property name="ammoSize" value="1"/>
   <property name="ammoSpeed" value="1"/>
   <property name="reloadTime" value="0"/> 

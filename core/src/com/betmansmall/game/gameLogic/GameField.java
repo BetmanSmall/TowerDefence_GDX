@@ -42,41 +42,15 @@ public class GameField {
     private Cell[][] field;
     private PathFinder pathFinder;
 
-    // CameraController1 && map
-//    public int map.width, map.height;
-//    public static int sizeCellX, sizeCellY;
-//    private int halfSizeCellX, halfSizeCellY;
-    // CameraController2
-//    public int isDrawableGrid = 1;
-//    public static int isDrawableUnits = 1; // Bad! need make not static!
-//    public static int isDrawableTowers = 1; // Bad! need make not static!
-//    public int isDrawableBackground = 1;
-//    public int isDrawableGround = 1;
-//    public int isDrawableForeground = 1;
-//    public int isDrawableGridNav = 1;
-//    public int isDrawableRoutes = 1;
-//    public int drawOrder = 8;
-//    private WhichCell whichCell;
-//    // CameraController3
-
     private UnderConstruction underConstruction;
     private Texture greenCheckmark;
     private Texture redCross;
 
     // GAME INTERFACE ZONE1
-//    float timeOfGame;
+    float timeOfGame;
     public float gameSpeed;
     public boolean gamePaused;
     public static int gamerGold; // For Bullet
-    // GAME INTERFACE ZONE2
-//    Cell cellSpawnHero;
-//    Cell cellExitHero;
-////    boolean isometric;
-//    public int maxOfMissedUnitsForComputer0;
-//    public int missedUnitsForComputer0;
-//    public int maxOfMissedUnitsForPlayer1;
-//    public int missedUnitsForPlayer1;
-    // GAME INTERFACE ZONE3
 
     public GameField(String mapName, FactionsManager factionsManager, GameSettings gameSettings) {
         Gdx.app.log("GameField::GameField()", "-- mapName:" + mapName);
@@ -89,13 +63,6 @@ public class GameField {
         this.gameSettings = gameSettings;
 
         map = new MapLoader(waveManager).load(mapName);
-
-//        map.width = map.getProperties().get("width", Integer.class);
-//        map.height = map.getProperties().get("height", Integer.class);
-//        sizeCellX = map.getProperties().get("tilewidth", Integer.class);
-//        sizeCellY = map.getProperties().get("tileheight", Integer.class);
-//        halfSizeCellX = sizeCellX / 2;
-//        halfSizeCellY = sizeCellY / 2;
 
         underConstruction = null;
         greenCheckmark = new Texture(Gdx.files.internal("maps/textures/green_checkmark.png"));
@@ -114,20 +81,39 @@ public class GameField {
         Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
         Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
-            gameSettings.maxOfMissedUnitsForPlayer1 = 1;
             int randomEnemyCount = gameSettings.enemyCount;
+            Gdx.app.log("GameField::GameField()", "-- randomEnemyCount:" + randomEnemyCount);
             for (int k = 0; k < randomEnemyCount; k++) {
                 int randomX = (int)(Math.random()*map.width);
                 int randomY = (int)(Math.random()*map.height);
+                Gdx.app.log("GameField::GameField()", "-- k:" + k);
                 Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
                 Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
                 if (getCell(randomX, randomY).isEmpty()) {
-                    spawnCompUnitToRandomExit(randomX, randomY);
+                    if (spawnCompUnitToRandomExit(randomX, randomY) == null) {
+                        k--;
+                    }
                 } else {
                     k--;
                 }
             }
-//            spawnHeroInSpawnPoint();
+            int randomTowerCount = gameSettings.towersCount;
+            Gdx.app.log("GameField::GameField()", "-- randomTowerCount:" + randomTowerCount);
+            for (int k = 0; k < randomTowerCount; k++) {
+                int randomX = (int)(Math.random()*map.width);
+                int randomY = (int)(Math.random()*map.height);
+                Gdx.app.log("GameField::GameField()", "-- k:" + k);
+                Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
+                Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
+                if (getCell(randomX, randomY).isEmpty()) {
+                    if (createTower(randomX, randomY, factionsManager.getRandomTemplateForTowerFromAllFaction(), 0) == null) {
+                        k--;
+                    }
+                } else {
+                    k--;
+                }
+            }
+            spawnHeroInSpawnPoint();
         } else if (gameSettings.gameType == GameType.TowerDefence) {
             waveManager.validationPoints(field);
             if (waveManager.waves.size == 0) {
@@ -150,8 +136,7 @@ public class GameField {
 
             }
             waveManager.checkRoutes(pathFinder);
-//            gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one unit for computer!!!
-            gamerGold = 100000;
+            gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one unit for computer!!!
             gameSettings.maxOfMissedUnitsForComputer0 = mapProperties.get("maxOfMissedUnitsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
 //            gameSettings.maxOfMissedUnitsForComputer0 = Integer.valueOf(mapProperties.get("maxOfMissedUnitsForComputer0", String.valueOf(gamerGold), String.class));
             gameSettings.missedUnitsForComputer0 = 0;
@@ -167,6 +152,7 @@ public class GameField {
 //            Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
 
+        gamerGold = 100000;
         gameSpeed = 1.0f;
         gamePaused = false;
     }
@@ -180,8 +166,8 @@ public class GameField {
 //        Gdx.app.log("GameField::createField()", "-1- field:" + field);
         if (field == null) {
             field = new Cell[map.width][map.height];
-            for (int y = 0; y < map.width; y++) {
-                for (int x = 0; x < map.height; x++) {
+            for (int y = 0; y < map.height; y++) {
+                for (int x = 0; x < map.width; x++) {
                     Cell cell = field[x][y] = new Cell();
                     cell.setGraphicCoordinates(x, y, map.tileWidth/2, map.tileHeight/2);
                     for (MapLayer mapLayer : map.getLayers()) {
@@ -196,7 +182,7 @@ public class GameField {
                                         if ( layerName.equals("background") ) {
                                             cell.backgroundTiles.add(tiledMapTile);
                                         } else if ( layerName.equals("ground") || layerName.equals("entity") ) {
-                                            cell.setTerrain(tiledMapTile);
+                                            cell.setTerrain(tiledMapTile, false, false);
                                         } else if ( layerName.equals("towers") ) {
                                             cell.removeTerrain(true);
                                             this.createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 0);
@@ -219,12 +205,12 @@ public class GameField {
 //                                    if (tiledMapTile.getProperties().get("terrain") != null) {
 //                                        field[x][y].setTerrain();
 //                                    } else
-                                    if (tiledMapTile.getProperties().get("spawnCell") != null) {
+                                    if (tiledMapTile.getProperties().get("spawnPoint") != null) {
                                         gameSettings.cellSpawnHero = cell;
                                         gameSettings.cellSpawnHero.spawn = true;
 //                                        waveManager.spawnPoints.add(new GridPoint2(x, y));
                                         Gdx.app.log("GameField::createField()", "-- Set gameSettings.cellSpawnHero:" + gameSettings.cellSpawnHero);
-                                    } else if (tiledMapTile.getProperties().get("exitCell") != null) {
+                                    } else if (tiledMapTile.getProperties().get("exitPoint") != null) {
                                         gameSettings.cellExitHero = cell;
                                         gameSettings.cellExitHero.exit = true;
 //                                        waveManager.exitPoints.add(new GridPoint2(x, y));
@@ -912,7 +898,7 @@ public class GameField {
         cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
 
-        float gridNavRadius = cameraController.sizeCellX/15f;
+        float gridNavRadius = cameraController.sizeCellX/22f;
         for (Unit unit : unitsManager.units) {
             ArrayDeque<Node> route = unit.route;
             if (route != null) {
@@ -951,7 +937,7 @@ public class GameField {
         cameraController.shapeRenderer.end();
     }
 
-    public void drawWave(CameraController cameraController, Wave wave) {
+    private void drawWave(CameraController cameraController, Wave wave) {
 //        Gdx.app.log("GameField::drawWave(" + wave + ")", "--");
         float linesWidth = cameraController.sizeCellX/15f;
         ArrayDeque<Node> route = wave.route;
@@ -1021,6 +1007,9 @@ public class GameField {
                 if (cell != null && !cell.isEmpty()) {
                     if (cell.isTerrain()) {
                         cameraController.shapeRenderer.setColor(Color.RED);
+                        if (cell.removableTerrain) {
+                            cameraController.shapeRenderer.getColor().set(255, 0, 0, 100);
+                        }
                     } else if (cell.getUnit() != null) {
                         cameraController.shapeRenderer.setColor(Color.GREEN);
                     } else if (cell.getTower() != null) {
@@ -1163,25 +1152,41 @@ public class GameField {
         cameraController.shapeRenderer.end();
 
         cameraController.spriteBatch.begin();
-        cameraController.bitmapFont.setColor(Color.YELLOW);
-        cameraController.bitmapFont.getData().setScale(0.7f);
         for (Tower tower : towersManager.towers) { // Draw pit capacity value
             if (tower.templateForTower.towerAttackType == TowerAttackType.Pit) {
+                cameraController.bitmapFont.setColor(Color.YELLOW);
+                cameraController.bitmapFont.getData().setScale(0.7f);
                 if(cameraController.isDrawableGridNav == 5) {
                     if(cameraController.isDrawableTowers == 5) {
                         for (int m = 1; m <= cameraController.isDrawableTowers; m++) {
-//                            towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, m)); // Need recoding this func!
                             cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.capacity), tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
                         }
                     } else {
-//                        towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, cameraController.isDrawableTowers));
                         cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.capacity), tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
                     }
                 } else {
                     if(cameraController.isDrawableGridNav == cameraController.isDrawableTowers) {
-//                        towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, cameraController.isDrawableTowers));
                         cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.capacity), tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
                     }
+                }
+            }
+            cameraController.bitmapFont.getData().setScale(1);
+            if (tower.player == 0) {
+                cameraController.bitmapFont.setColor(Color.RED);
+            } else if (tower.player == 1) {
+                cameraController.bitmapFont.setColor(Color.BLUE);
+            }
+            if(cameraController.isDrawableGridNav == 5) {
+                if(cameraController.isDrawableTowers == 5) {
+                    for (int m = 1; m <= cameraController.isDrawableTowers; m++) {
+                        cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player), tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
+                    }
+                } else {
+                    cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player), tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
+                }
+            } else {
+                if(cameraController.isDrawableGridNav == cameraController.isDrawableTowers) {
+                    cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player), tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
                 }
             }
         }
@@ -1319,10 +1324,43 @@ public class GameField {
         towerPos = null; // delete towerPos;
     }
 
-    public void setExitPoint(int x, int y) {
-        waveManager.setExitPoint(new GridPoint2(x, y));
-        rerouteForAllUnits(new GridPoint2(x, y));
+
+    public void updateHeroDestinationPoint() {
+        Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- ");
+//    Unit* hero = unitsManager->hero;
+        for (Unit hero : unitsManager.hero) {
+            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero:" + hero);
+            if (hero != null && !hero.route.isEmpty()) {
+                updateHeroDestinationPoint(hero.route.getFirst().getX(), hero.route.getFirst().getY());
+            } else {
+//                updatePathFinderWalls();
+            }
+        }
     }
+
+    public void updateHeroDestinationPoint(int x, int y) {
+        updatePathFinderWalls();
+//    Unit* hero = unitsManager->hero;
+        for (Unit hero : unitsManager.hero) {
+            hero.route = pathFinder.route(hero.newPosition.getX(), hero.newPosition.getY(), x, y);
+            Gdx.app.log("GameField::updateHeroDestionPoint()", "-- hero.route:" + hero.route);
+            if (hero.route != null && !hero.route.isEmpty()) {
+                hero.route.removeFirst();
+            }
+        }
+    }
+
+    public void updatePathFinderWalls() {
+        Gdx.app.log("GameField::updatePathFinderWalls()", "-start- pathFinder->walls.size():" + pathFinder.nodeMatrix.length);
+//        pathFinder->clearCollisions();
+        pathFinder.loadCharMatrix(getCharMatrix());
+        Gdx.app.log("GameField::updatePathFinderWalls()", "-end- pathFinder->walls.size():" + pathFinder.nodeMatrix.length);
+    }
+
+//    public void setExitPoint(int x, int y) {
+//        waveManager.setExitPoint(new GridPoint2(x, y));
+//        rerouteForAllUnits(new GridPoint2(x, y));
+//    }
 
     public void spawnUnitFromUser(TemplateForUnit templateForUnit) {
         Gdx.app.log("GameField::spawnUnitFromUser()", "-- templateForUnit:" + templateForUnit);
@@ -1356,67 +1394,96 @@ public class GameField {
         }
     }
 
-    private void spawnHeroInSpawnPoint() {
-        gameSettings.cellSpawnHero.removeTerrain(true);
-        removeTower(gameSettings.cellSpawnHero.cellX, gameSettings.cellSpawnHero.cellY);
-        createUnit(gameSettings.cellSpawnHero.cellX, gameSettings.cellSpawnHero.cellY, gameSettings.cellExitHero.cellX, gameSettings.cellExitHero.cellY, 1); // player1 = hero
+    private Unit spawnHeroInSpawnPoint() {
+        Gdx.app.log("GameField::spawnHeroInSpawnPoint()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero + " gameSettings.cellSpawnHero:" + gameSettings.cellSpawnHero);
+        if (gameSettings.cellSpawnHero != null && gameSettings.cellExitHero != null) {
+            gameSettings.cellSpawnHero.removeTerrain(true);
+            gameSettings.cellExitHero.removeTerrain(true);
+            removeTower(gameSettings.cellSpawnHero.cellX, gameSettings.cellSpawnHero.cellY);
+            removeTower(gameSettings.cellExitHero.cellX, gameSettings.cellExitHero.cellY);
+            return createUnit(gameSettings.cellSpawnHero, gameSettings.cellExitHero, factionsManager.getTemplateForUnitByName("unit3_footman"), 1, gameSettings.cellExitHero); // player1 = hero
+        }
+        return null;
     }
 
-    void spawnCompUnitToRandomExit(int x, int y) {
+    public Unit spawnHero(int cellX, int cellY) {
+        Gdx.app.log("GameField::spawnHero()", "-- cellX:" + cellX + " cellY:" + cellY);
+        Gdx.app.log("GameField::spawnHero()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero);
+        if (gameSettings.cellExitHero != null) {
+            Cell cell = getCell(cellX, cellY);
+            if (cell != null) {
+                cell.removeTerrain(true);
+                removeTower(cell.cellX, cell.cellY);
+                return createUnit(cell, cell, factionsManager.getTemplateForUnitByName("unit3_footman"), 1, gameSettings.cellExitHero); // player1 = hero
+            }
+        }
+        return null;
+    }
+
+    Unit spawnCompUnitToRandomExit(int x, int y) {
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- x:" + x + " y:" + y);
         int randomX = (int)(Math.random()*map.width);
         int randomY = (int)(Math.random()*map.height);
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
-        createUnit(x, y, randomX, randomY, 0);
+        return createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromFirstFaction(), 0, null);
     }
 
-    public void createUnit(int x, int y) {
-        Cell spawnCell = getCell(x, y);
-        Cell destExitCell = getCell(waveManager.lastExitPoint.x, waveManager.lastExitPoint.y);
-        createUnit(spawnCell, destExitCell, factionsManager.getRandomTemplateForUnitFromFirstFaction(), 0, destExitCell); // create computer0 Unit
-    }
+//    public Unit createUnit(int x, int y, int x2, int y2, int player) {
+//        if (player == 0) {
+//            return createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getRandomTemplateForUnitFromFirstFaction(), player, null);
+//        } else if (player == 1) {
+//            return createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getTemplateForUnitByName("unit3_footman"), player, gameSettings.cellExitHero);
+////        updateHeroDestinationPoint(exitPointX, exitPointY);
+//        }
+//        return null;
+//    }
 
-    public void createUnit(int x, int y, int x2, int y2, int player) {
-        if (player == 0) {
-            createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getRandomTemplateForUnitFromFirstFaction(), player, null);
-        } else if (player == 1) {
-            createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getTemplateForUnitByName("unit3_footman"), player, gameSettings.cellExitHero);
-//        updateHeroDestinationPoint(exitPointX, exitPointY);
-        }
-    }
+//    public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, int player) {
+//        return createUnit(spawnCell, destCell, templateForUnit, player, null);
+//    }
 
-    private void createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, int player, Cell exitCell) {
-//        Gdx.app.log("GameField::createUnit(" + spawnCell + ", " + templateForUnit.toString(true) + ", " + destCell + ", " + player + ")", "--");
+    private Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, int player, Cell exitCell) {
+//        Gdx.app.log("GameField::createUnit()", "-- spawnCell:" + spawnCell);
+//        Gdx.app.log("GameField::createUnit()", "-- destCell:" + destCell);
+//        Gdx.app.log("GameField::createUnit()", "-- templateForUnit:" + templateForUnit.toString());
+//        Gdx.app.log("GameField::createUnit()", "-- player:" + player);
+//        Gdx.app.log("GameField::createUnit()", "-- exitCell:" + exitCell);
 //        if (destCell == null) {
 //            destCell = waveManager.lastExitCell;
 //        }
+        Unit unit = null;
         if (spawnCell != null && destCell != null && pathFinder != null) {
 //            pathFinder.loadCharMatrix(getCharMatrix());
             ArrayDeque<Node> route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
             if (route != null) {
-                Unit unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
-                field[spawnCell.cellX][spawnCell.cellY].setUnit(unit); // TODO field maybe out array | NO, we have WaveManager.validationPoints()
-//                Gdx.app.log("GameField::createUnit()", "-- route:" + route);
+                unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
+                spawnCell.setUnit(unit);
+                Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
+//                Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
             } else {
                 Gdx.app.log("GameField::createUnit()", "-- Not found route for createUnit!");
-                if(towersManager.towers.size > 0) {
-                    Gdx.app.log("GameField::createUnit()", "-- Remove one last tower! And retry call createUnit()");
-                    removeLastTower();
-                    createUnit(spawnCell, destCell, templateForUnit, player, exitCell);
-                }
+//                if(towersManager.towers.size > 0) {
+//                    Gdx.app.log("GameField::createUnit()", "-- Remove one last tower! And retry call createUnit()");
+//                    removeLastTower();
+//                    unit = createUnit(spawnCell, destCell, templateForUnit, player, exitCell);
+//                } else {
+                    return null;
+//                }
             }
+            return unit;
         } else {
             Gdx.app.log("GameField::createUnit()", "-- Bad spawnCell:" + spawnCell + " || destCell:" + destCell + " || pathFinder:" + pathFinder);
+            return null;
         }
     }
 
     public void buildTowersWithUnderConstruction(int x, int y) {
         if (underConstruction != null) {
             underConstruction.setEndCoors(x, y);
-            createTower(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower, 1);
+            createTowerWithGoldCheck(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower, 1);
             for (int k = 0; k < underConstruction.coorsX.size; k++) {
 //            for(int k = underConstruction.coorsX.size-1; k >= 0; k--) {
-                createTower(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, 1);
+                createTowerWithGoldCheck(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, 1);
             }
             underConstruction.clearStartCoors();
             rerouteForAllUnits();
@@ -1425,71 +1492,67 @@ public class GameField {
 
     public void towerActions(int x, int y) {
         if (field[x][y].isEmpty()) {
-            createTower(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
+            createTowerWithGoldCheck(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
             rerouteForAllUnits();
         } else if (field[x][y].getTower() != null) {
             removeTower(x, y);
         }
     }
 
-    public boolean createTower(int buildX, int buildY, TemplateForTower templateForTower, int player) {
+    public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower, int player) {
         if (gamerGold >= templateForTower.cost) {
+            Tower tower = createTower(buildX, buildY, templateForTower, player);
+//            rerouteForAllUnits();
+            gamerGold -= templateForTower.cost;
+            Gdx.app.log("GameField::createTowerWithGoldCheck()", "-- Now gamerGold:" + gamerGold);
+            return tower;
+        } else {
+            return null;
+        }
+    }
+
+    public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, int player) {
+        if (templateForTower != null) {
             int towerSize = templateForTower.size;
             int startX = 0, startY = 0, finishX = 0, finishY = 0;
             if (towerSize != 1) {
-                // Нижняя карта
                 if (towerSize % 2 == 0) {
                     startX = -(towerSize / 2);
                     startY = -(towerSize / 2);
-                    finishX = (towerSize / 2)-1;
-                    finishY = (towerSize / 2)-1;
+                    finishX = (towerSize / 2) - 1;
+                    finishY = (towerSize / 2) - 1;
                 } else {
                     startX = -(towerSize / 2);
                     startY = -(towerSize / 2);
                     finishX = (towerSize / 2);
                     finishY = (towerSize / 2);
                 }
-                // Правая карта
-//                if (towerSize % 2 == 0) {
-//                    startX = -(towerSize / 2);
-//                    startY = -((towerSize / 2) - 1);
-//                    finishX = ((towerSize / 2) - 1);
-//                    finishY = (towerSize / 2);
-//                } else {
-//                    startX = -(towerSize / 2);
-//                    startY = -(towerSize / 2);
-//                    finishX = (towerSize / 2);
-//                    finishY = (towerSize / 2);
-//                }
             }
             for (int tmpX = startX; tmpX <= finishX; tmpX++) {
                 for (int tmpY = startY; tmpY <= finishY; tmpY++) {
                     Cell cell = getCell(buildX + tmpX, buildY + tmpY);
                     if (cell == null || !cell.isEmpty()) {
-                        return false;
+                        return null;
                     }
                 }
             }
 
             Cell cell = getCell(buildX, buildY);
             Tower tower = towersManager.createTower(cell, templateForTower, player);
-            Gdx.app.log("GameField::createTower()", "-- templateForTower.towerAttackType:" + templateForTower.towerAttackType);
+            Gdx.app.log("GameField::createTower()", "-- tower.toString(false):" + tower.toString(false));
             if (templateForTower.towerAttackType != TowerAttackType.Pit) {
                 for (int tmpX = startX; tmpX <= finishX; tmpX++) {
                     for (int tmpY = startY; tmpY <= finishY; tmpY++) {
                         field[buildX + tmpX][buildY + tmpY].setTower(tower);
-                        pathFinder.nodeMatrix[buildY + tmpY][buildX + tmpX].setKey('T');
+                        if (pathFinder != null) {
+                            pathFinder.nodeMatrix[buildY + tmpY][buildX + tmpX].setKey('T');
+                        }
                     }
                 }
             }
-
-//            rerouteForAllUnits();
-            gamerGold -= templateForTower.cost;
-            Gdx.app.log("GameField::createTower()", "-- Now gamerGold:" + gamerGold);
-            return true;
-        } else {
-            return false;
+            return tower;
         }
+        return null;
     }
 
     public void removeLastTower() {
@@ -1500,8 +1563,18 @@ public class GameField {
 //        }
     }
 
-    public void removeTower(int touchX, int touchY) {
-        Tower tower = field[touchX][touchY].getTower();
+    public boolean removeTowerWithGold(int cellX, int cellY) {
+        int towerCost = removeTower(cellX, cellY);
+        if (towerCost > 0) {
+//            rerouteForAllUnits();
+            gamerGold += towerCost;
+            return true;
+        }
+        return false;
+    }
+
+    public int removeTower(int cellX, int cellY) {
+        Tower tower = field[cellX][cellY].getTower();
         if (tower != null) {
             int x = tower.cell.cellX;
             int y = tower.cell.cellY;
@@ -1524,20 +1597,23 @@ public class GameField {
             for (int tmpX = startX; tmpX <= finishX; tmpX++) {
                 for (int tmpY = startY; tmpY <= finishY; tmpY++) {
                     field[x + tmpX][y + tmpY].removeTower();
-                    pathFinder.getNodeMatrix()[y + tmpY][x + tmpX].setKey('.');
+                    if (pathFinder != null) {
+                        pathFinder.getNodeMatrix()[y + tmpY][x + tmpX].setKey('.');
+                    }
                 }
             }
+            int towerCost = tower.templateForTower.cost;
             towersManager.removeTower(tower);
-            rerouteForAllUnits();
-            gamerGold += tower.templateForTower.cost;//*0.5;
+            return towerCost;
         }
+        return 0;
     }
 
-    private void rerouteForAllUnits() {
+    public void rerouteForAllUnits() {
         rerouteForAllUnits(null);
     }
 
-    private void rerouteForAllUnits(GridPoint2 exitPoint) {
+    public void rerouteForAllUnits(GridPoint2 exitPoint) {
         if (pathFinder != null) {
             long start = System.nanoTime();
             Gdx.app.log("GameField::rerouteForAllUnits()", "-- Start:" + start);
@@ -1559,7 +1635,7 @@ public class GameField {
                     unit.route = route;
                 }
 //                    long end2 = System.nanoTime();
-//                    Gdx.app.log("GameField", "rerouteForAllUnits(); -- Thread End:" + (end2-start2));
+//                    Gdx.app.log("GameField", "rerouteForAllUnits()', "-- Thread End:" + (end2-start2));
 //                }
 //            }.init(unit, outExitPoint)).start();
             }
@@ -1585,7 +1661,7 @@ public class GameField {
                 } else {
                     Cell cell = getCell(oldPosition.getX(), oldPosition.getY());
 //                    Gdx.app.log("GameField::stepAllUnits()", "-- cell:" + cell.toString());
-                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit finished!");
+//                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit finished!");
                     if (unit.player == 1) {
                         gameSettings.missedUnitsForComputer0++;
                     } else if (unit.player == 0) {
@@ -1599,8 +1675,11 @@ public class GameField {
                                 int randomX = (int)(Math.random()*map.width);
                                 int randomY = (int)(Math.random()*map.height);
                                 unit.route = pathFinder.route(oldPosition.getX(), oldPosition.getY(), randomX, randomY);
-                                unit.route.removeFirst();
-                                Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + unit.route);
+                                if (unit.route != null && !unit.route.isEmpty()) {
+                                    unit.route.removeFirst();
+//                                    unit.route.removeLast();
+                                }
+//                                Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + unit.route);
                             }
                         }
                     }
@@ -1627,7 +1706,7 @@ public class GameField {
             if (towerAttackType == TowerAttackType.Pit) {
                 Unit unit = field[tower.cell.cellX][tower.cell.cellY].getUnit();
                 if (unit != null && !unit.templateForUnit.type.equals("fly") && unit.player != tower.player) {
-                    Gdx.app.log("GameField", "shotAllTowers(); -- tower.capacity:" + tower.capacity + " unit.getHp:" + unit.hp);
+                    Gdx.app.log("GameField::shotAllTowers()", "-- tower.capacity:" + tower.capacity + " unit.getHp:" + unit.hp);
 //                    unit.die(unit.getHp());
                     unitsManager.removeUnit(unit);
                     field[tower.cell.cellX][tower.cell.cellY].removeUnit(unit);
@@ -1645,13 +1724,13 @@ public class GameField {
                         if (unit != null && unit.isAlive() && unit.player != tower.player) {
                             if ( (unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
                                     (!unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) { // Тупо но работает, потом переделать need =)
-                                Gdx.app.log("GameField::shotAllTowers()", "-- tower.radiusDetectionCircle:" + tower.radiusDetectionCircle);
-                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle1:" + unit.circle1);
+//                                Gdx.app.log("GameField::shotAllTowers()", "-- tower.radiusDetectionCircle:" + tower.radiusDetectionCircle);
+//                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle1:" + unit.circle1);
 //                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle2:" + unit.circle2);
 //                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle3:" + unit.circle3);
 //                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle4:" + unit.circle4);
                                 if (Intersector.overlaps(unit.circle1, tower.radiusDetectionCircle)) {
-                                    Gdx.app.log("GameField::shotAllTowers()", "-- overlaps");
+//                                    Gdx.app.log("GameField::shotAllTowers()", "-- overlaps");
                                     if (tower.shoot(unit, cameraController)) {
                                         if(tower.templateForTower.shellAttackType != ShellAttackType.MassAddEffect) {
                                             break;
@@ -1827,24 +1906,39 @@ public class GameField {
     }
 
     public String getGameState() {
-//        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForPlayer1:" + missedUnitsForPlayer1);
-//        Gdx.app.log("GameField::getGameState()", "-- maxOfMissedUnitsForPlayer1:" + maxOfMissedUnitsForPlayer1);
-//        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForComputer0:" + missedUnitsForComputer0);
-//        Gdx.app.log("GameField::getGameState()", "-- maxOfMissedUnitsForComputer0:" + maxOfMissedUnitsForComputer0);
+//        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForPlayer1:" + gameSettings.missedUnitsForPlayer1);
+//        Gdx.app.log("GameField::getGameState()", "-- maxOfMissedUnitsForPlayer1:" + gameSettings.maxOfMissedUnitsForPlayer1);
+//        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForComputer0:" + gameSettings.missedUnitsForComputer0);
+//        Gdx.app.log("GameField::getGameState()", "-- maxOfMissedUnitsForComputer0:" + gameSettings.maxOfMissedUnitsForComputer0);
 //        Gdx.app.log("GameField::getGameState()", "-- waveManager.getNumberOfActions():" + waveManager.getNumberOfActions());
 //        Gdx.app.log("GameField::getGameState()", "-- unitsManager.units.size:" + unitsManager.units.size);
-        if (gameSettings.missedUnitsForPlayer1 >= gameSettings.maxOfMissedUnitsForPlayer1) {
-//            Gdx.app.log("GameField::getGameState()", "-- LOSE!!");
-            return "Lose";
+//        Gdx.app.log("GameField::getGameState()", "-- gameSettings.gameType:" + gameSettings.gameType);
+        if (gameSettings.gameType == GameType.LittleGame) {
+            if (unitsManager.hero.size != 0) {
+                Unit hero = unitsManager.hero.first();
+                Node pos = hero.newPosition;
+                if (pos.getX() == hero.exitCell.cellX && pos.getY() == hero.exitCell.cellY) {
+                    Gdx.app.log("GameField::getGameState()", "-- hero.newPosition:" + hero.newPosition);
+                    Gdx.app.log("GameField::getGameState()", "-- hero.exitCell:" + hero.exitCell);
+                    return "LittleGame_Win";
+                }
+            }
+        } else if (gameSettings.gameType == GameType.TowerDefence) {
+            if (gameSettings.missedUnitsForPlayer1 >= gameSettings.maxOfMissedUnitsForPlayer1) {
+//                Gdx.app.log("GameField::getGameState()", "-- LOSE!!");
+                return "Lose";
+            } else {
+                if (gameSettings.missedUnitsForComputer0 >= gameSettings.maxOfMissedUnitsForComputer0) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
+//                    Gdx.app.log("GameField::getGameState()", "-- WIN!!");
+                    return "Win";
+                }
+                if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
+//                    Gdx.app.log("GameField::getGameState()", "-- WIN!!");
+                    return "Win";
+                }
+            }
         } else {
-            if(gameSettings.missedUnitsForComputer0 >= gameSettings.maxOfMissedUnitsForComputer0) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
-//                Gdx.app.log("GameField::getGameState()", "-- WIN!!");
-                return "Win";
-            }
-            if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
-//                Gdx.app.log("GameField::getGameState()", "-- WIN!!");
-                return "Win";
-            }
+            Gdx.app.log("GameField::getGameState()", "-bad- gameSettings.gameType:" + gameSettings.gameType);
         }
 //        Gdx.app.log("GameField::getGameState()", "-- IN PROGRESS!!");
         return "In progress";
@@ -1890,7 +1984,7 @@ public class GameField {
         return underConstruction;
     }
 
-    private Cell getCell(int x, int y) {
+    public Cell getCell(int x, int y) {
         if (x >= 0 && x < map.width) {
             if (y >= 0 && y < map.height) {
                 return field[x][y];

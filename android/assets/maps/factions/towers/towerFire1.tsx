@@ -5,12 +5,12 @@
   <property name="name" value="Fire Tower 1"/>
   <property name="radiusDetection" value="150"/>
   <property name="radiusFlyShell" value="300"/>
-  <property name="damage" value="15"/>
+  <property name="damage" value="50"/>
   <property name="size" value="1"/>
-  <property name="cost" value="400"/>
-  <property name="ammoSize" value="100"/>
-  <property name="ammoSpeed" value="15"/>
-  <property name="reloadTime" value="5"/>
+  <property name="cost" value="150"/>
+  <property name="ammoSize" value="50"/>
+  <property name="ammoSpeed" value="10"/>
+  <property name="reloadTime" value="2"/>
   <property name="towerAttackType" value="Range"/>
   <property name="shellAttackType" value="MultipleTarget"/>
   <property name="shellEffectType" value="FireEffect"/>

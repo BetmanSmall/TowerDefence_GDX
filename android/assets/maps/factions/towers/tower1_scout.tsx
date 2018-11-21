@@ -3,14 +3,14 @@
  <properties>
   <property name="factionName" value="Humans_Faction"/>
   <property name="name" value="Scout1"/>
-  <property name="radiusDetection" value="200"/>
+  <property name="radiusDetection" value="250"/>
   <!-- <property name="radiusFlyShell" value="220"/> -->
-  <property name="damage" value="15"/>
+  <property name="damage" value="20"/>
   <property name="size" value="1"/>
   <property name="cost" value="120"/>
   <property name="ammoSize" value="5"/>
-  <property name="ammoSpeed" value="15"/>
-  <property name="reloadTime" value="0.7"/>
+  <property name="ammoSpeed" value="20"/>
+  <property name="reloadTime" value="0.5"/>
   <property name="towerAttackType" value="Range"/>
   <property name="shellAttackType" value="AutoTarget"/>
   <!-- <property name="shellEffectType" value="None"/> -->

@@ -6,14 +6,14 @@
   <property name="radiusDetection" value="0"/>
   <property name="damage" value="1000000"/>
   <property name="size" value="1"/>
-  <property name="cost" value="100"/>
-  <property name="ammoSize" value="20"/>
-  <property name="ammoSpeed" value="1000"/>
+  <property name="cost" value="200"/>
+  <property name="ammoSize" value="0"/>
+  <property name="ammoSpeed" value="0"/>
   <property name="reloadTime" value="0"/>
   <property name="towerAttackType" value="Pit"/>
   <!-- <property name="shellAttackType" value="None"/> -->
   <!-- <property name="shellEffectType" value="None"/> -->
-  <property name="capacity" value="10"/>
+  <property name="capacity" value="2"/>
  </properties>
  <image source="../../textures/pit.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

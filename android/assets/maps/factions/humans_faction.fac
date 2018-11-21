@@ -7,13 +7,13 @@
 	<templateForUnit source="units/unit13_knight.tsx"/>
 	<templateForUnit source="units/unit14_mage.tsx"/>
 	<templateForUnit source="units/unit15_peasant.tsx"/>
-	<templateForTower source="towers/tower_FireBall.tsx"/>
 	<templateForTower source="towers/tower1_scout.tsx"/>
 	<templateForTower source="towers/tower11_scoutContreFly.tsx"/>
 	<templateForTower source="towers/towerBomb.tsx"/>
 	<templateForTower source="towers/tower2_melee.tsx"/>
 	<templateForTower source="towers/tower2_wall.tsx"/>
 	<templateForTower source="towers/tower_pit.tsx"/>
+	<templateForTower source="towers/tower_FireBall.tsx"/>
 	<templateForTower source="towers/towerFire1.tsx"/>
 	<templateForTower source="towers/towerFreeze1.tsx"/>
 	<templateForTower source="towers/towerFreeze2.tsx"/>

@@ -38,8 +38,8 @@ public class TowersManager {
         return null;
     }
 
-    public void removeTower(Tower tower) {
-        towers.removeValue(tower, false);
+    public boolean removeTower(Tower tower) {
+        return towers.removeValue(tower, false);
     }
 
     public void removeTower(Cell cell) {

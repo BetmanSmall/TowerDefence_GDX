@@ -24,12 +24,20 @@ public class GameSettings {
     public GameSettings(String mapPath) {
         if (mapPath.contains("randomMap")) {
             gameType = GameType.LittleGame;
+            this.difficultyLevel = 1f;
+            this.enemyCount = 10;
+            this.towersCount = 5;
+        } else if (mapPath.contains("island")) {
+            gameType = GameType.LittleGame;
+            this.difficultyLevel = 1f;
+            this.enemyCount = 10;
+            this.towersCount = 5;
         } else {
             gameType = GameType.TowerDefence;
+            this.difficultyLevel = 1f;
+            this.enemyCount = 0;
+            this.towersCount = 0;
         }
-        this.difficultyLevel = 1f;
-        this.enemyCount = 2;
-        this.towersCount = 0;
     }
 
     public GameSettings(GameType gameType) {

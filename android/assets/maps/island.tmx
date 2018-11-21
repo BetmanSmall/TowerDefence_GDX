@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-down" width="32" height="32" tilewidth="64" tileheight="32" nextobjectid="4">
- <tileset firstgid="1" name="iso-64x64-outside" tilewidth="64" tileheight="64" tilecount="160" columns="10">
-  <image source="textures/iso-64x64-outside.png" width="640" height="1024"/>
-  <tile id="18">
-   <properties>
-    <property name="exitPoint" value="true"/>
-   </properties>
-  </tile>
-  <tile id="28">
-   <properties>
-    <property name="spawnPoint" value=""/>
-   </properties>
-  </tile>
- </tileset>
+ <tileset firstgid="1" source="other/iso-64x64-outside.tsx"/>
+ <!-- <waves source="waves/island.ws"/> -->
  <layer name="background" width="32" height="32">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,24,24,2,2,2,2,2,2,2,2,2,2,2,2,2,

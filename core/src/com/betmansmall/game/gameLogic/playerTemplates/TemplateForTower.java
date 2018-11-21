@@ -46,6 +46,7 @@ public class TemplateForTower extends Template {
             loadBasicTemplate(templateFile);
             specificLoad();
             validate();
+            this.size = 1;
         } catch (Exception exp) {
             Gdx.app.log("TemplateForTower::TemplateForTower()", "-- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
             throw new Exception("TemplateForTower::TemplateForTower() -- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);

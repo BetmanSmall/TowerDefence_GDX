@@ -121,14 +121,14 @@ public class Cell {
     }
 
     public boolean setTerrain(TiledMapTile tile) {
-        return setTerrain(tile, true);
+        return setTerrain(tile, true, true);
     }
 
-    public boolean setTerrain(TiledMapTile tile, boolean removable) {
+    public boolean setTerrain(TiledMapTile tile, boolean removable, boolean withTower) {
         if (tile != null) {
             groundTiles.add(tile);
         }
-        if (empty && !spawn && !exit) {
+        if ( (empty && !spawn && !exit) || withTower) {
             removableTerrain = removable;
             terrain = true;
             empty = false;
@@ -143,6 +143,7 @@ public class Cell {
 
     public boolean removeTerrain(boolean force) {
         if (terrain && (removableTerrain || force) ) {
+//            groundTiles.clear();
             terrain = false;
             empty = true;
             return true;
@@ -252,21 +253,27 @@ public class Cell {
     }
 
     public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("Cell[");
         sb.append("cellX:" + cellX);
         sb.append(",cellY:" + cellY);
-        sb.append(",empty:" + empty);
-        sb.append(",terrain:" + terrain);
-        sb.append(",removableTerrain:" + removableTerrain);
-        sb.append(",tower:" + tower);
-        sb.append(",units:" + ( (units!=null) ? units.size : false) );
-        sb.append(",spawn:" + spawn);
-        sb.append(",exit:" + exit);
-        sb.append(",backgroundTiles:" + backgroundTiles.size);
-        sb.append(",groundTiles:" + groundTiles.size);
-        sb.append(",foregroundTiles:" + foregroundTiles.size);
+        if (full) {
+            sb.append(",empty:" + empty);
+            sb.append(",terrain:" + terrain);
+            sb.append(",removableTerrain:" + removableTerrain);
+            sb.append(",tower:" + (tower != null));
+            sb.append(",units:" + ((units != null) ? units.size : false));
+            sb.append(",spawn:" + spawn);
+            sb.append(",exit:" + exit);
+            sb.append(",backgroundTiles:" + backgroundTiles.size);
+            sb.append(",groundTiles:" + groundTiles.size);
+            sb.append(",foregroundTiles:" + foregroundTiles.size);
 //        sb.append(",graphicCoordinates1:" + graphicCoordinates1);
+        }
         sb.append("]");
         return sb.toString();
     }

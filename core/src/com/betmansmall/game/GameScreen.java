@@ -560,6 +560,10 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
             gameField.render(delta, cameraController);
             gameInterface.render(delta);
         } else if (gameState.equals("Lose") || gameState.equals("Win")) {
+//            gameField.dispose();
+            gameInterface.renderEndGame(delta, gameState);
+        } else if (gameState.equals("LittleGame_Win")) {
+            gameField.dispose();
             gameInterface.renderEndGame(delta, gameState);
         } else {
             Gdx.app.log("GameScreen::render()", "-- Not get normal gameState!");

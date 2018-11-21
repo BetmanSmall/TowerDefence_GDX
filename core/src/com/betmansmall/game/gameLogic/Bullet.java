@@ -59,43 +59,45 @@ public class Bullet {
         if(templateForTower.shellAttackType == ShellAttackType.MultipleTarget || templateForTower.shellAttackType == ShellAttackType.FirstTarget) {
             this.endPoint.setPosition(unit.currentPoint.x + unit.displacement.x, unit.currentPoint.y + unit.displacement.y);
         } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
-            if(cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5 || cameraController.isDrawableUnits == 0)
-                this.endPoint.setPosition(unit.circle1.x, unit.circle1.y);
-            else if(cameraController.isDrawableUnits == 2)
-                this.endPoint.setPosition(unit.circle3.x, unit.circle2.y);
-            else if(cameraController.isDrawableUnits == 3)
-                this.endPoint.setPosition(unit.circle3.x, unit.circle3.y);
-            else if(cameraController.isDrawableUnits == 4)
-                this.endPoint.setPosition(unit.circle4.x, unit.circle4.y);
-            this.endPoint.setRadius(3f);
-            this.endPoint.setPosition(unit.currentPoint); // LOL break
+//            if(cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5 || cameraController.isDrawableUnits == 0)
+//                this.endPoint.setPosition(unit.circle1.x, unit.circle1.y);
+//            else if(cameraController.isDrawableUnits == 2)
+//                this.endPoint.setPosition(unit.circle3.x, unit.circle2.y);
+//            else if(cameraController.isDrawableUnits == 3)
+//                this.endPoint.setPosition(unit.circle3.x, unit.circle3.y);
+//            else if(cameraController.isDrawableUnits == 4)
+//                this.endPoint.setPosition(unit.circle4.x, unit.circle4.y);
+//            this.endPoint.setRadius(3f);
+            this.endPoint.setPosition(unit.currentPoint);
         } else if (templateForTower.shellAttackType == ShellAttackType.FireBall) {
-            Vector2 endPoint = new Vector2(unit.circle1.x, unit.circle1.y);
-            Direction direction = unit.direction;
-            float delta = cameraController.sizeCellX;
-            float del = 1.8f;
-            if (direction == Direction.UP) {
-                endPoint.add(0, delta);
-            } else if (direction == Direction.UP_RIGHT) {
-                endPoint.add(delta / del, delta / del);
-            } else if (direction == Direction.RIGHT) {
-                endPoint.add(delta, 0);
-            } else if (direction == Direction.DOWN_RIGHT) {
-                endPoint.add(delta / del, -(delta / del));
-            } else if (direction == Direction.DOWN) {
-                endPoint.add(0, -delta);
-            } else if (direction == Direction.DOWN_LEFT) {
-                endPoint.add(-(delta / del), -(delta / del));
-            } else if (direction == Direction.LEFT) {
-                endPoint.add(-delta, 0);
-            } else if (direction == Direction.UP_LEFT) {
-                endPoint.add(-(delta / del), delta / del);
-            }
-            this.endPoint.setPosition(endPoint);
+            this.endPoint.setPosition(unit.currentPoint.x + unit.displacement.x, unit.currentPoint.y + unit.displacement.y);
+//            Vector2 endPoint = new Vector2(unit.circle1.x, unit.circle1.y);
+//            Direction direction = unit.direction;
+//            float delta = cameraController.sizeCellX;
+//            float del = 1.8f;
+//            if (direction == Direction.UP) {
+//                endPoint.add(0, delta);
+//            } else if (direction == Direction.UP_RIGHT) {
+//                endPoint.add(delta / del, delta / del);
+//            } else if (direction == Direction.RIGHT) {
+//                endPoint.add(delta, 0);
+//            } else if (direction == Direction.DOWN_RIGHT) {
+//                endPoint.add(delta / del, -(delta / del));
+//            } else if (direction == Direction.DOWN) {
+//                endPoint.add(0, -delta);
+//            } else if (direction == Direction.DOWN_LEFT) {
+//                endPoint.add(-(delta / del), -(delta / del));
+//            } else if (direction == Direction.LEFT) {
+//                endPoint.add(-delta, 0);
+//            } else if (direction == Direction.UP_LEFT) {
+//                endPoint.add(-(delta / del), delta / del);
+//            }
+//            this.endPoint.setPosition(endPoint);
         }
         Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", endPoint:" + endPoint);
         Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
+        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
     }
 
     public Bullet(int currCellX, int currCellY, Direction direction, TemplateForTower templateForTower) {
@@ -157,6 +159,7 @@ public class Bullet {
                 }
                 return 1;
             } else if(templateForTower.shellAttackType == ShellAttackType.AutoTarget) {
+                this.endPoint.setPosition(unit.currentPoint);
                 velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
                 currentPoint.add(velocity.x * delta * ammoSpeed, velocity.y * delta * ammoSpeed);
                 circle.setPosition(currentPoint);
