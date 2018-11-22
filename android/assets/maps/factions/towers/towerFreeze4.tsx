@@ -12,8 +12,8 @@
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="0.7"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="AutoTarget"/>
-  <property name="shellEffectType" value="FreezeEffect"/>
+  <property name="towerShellType" value="AutoTarget"/>
+  <property name="towerShellEffect" value="FreezeEffect"/>
   <property name="shellEffectType_time" value="2"/>
   <property name="shellEffectType_speed" value="0.5"/>
   <!-- <property name="shellEffectType_damage" value="5"/> -->

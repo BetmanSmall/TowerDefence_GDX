@@ -11,9 +11,9 @@
   <property name="ammoSpeed" value="1"/>
   <property name="reloadTime" value="1.5"/>
   <property name="towerAttackType" value="Melee"/>
-  <property name="shellAttackType" value="SingleTarget"/>
-  <!-- <property name="shellAttackType" value="MultipleTarget"/> -->
-  <!-- <property name="shellEffectType" value="None"/> -->
+  <property name="towerShellType" value="SingleTarget"/>
+  <!-- <property name="TowerShellType" value="MultipleTarget"/> -->
+  <!-- <property name="towerShellEffect" value="None"/> -->
  </properties>
  <image source="../../textures/tower_melee.png" trans="ff00ff" width="64" height="64"/>
  <terraintypes>

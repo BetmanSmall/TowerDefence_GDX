@@ -128,7 +128,11 @@ public class CameraController implements GestureDetector.GestureListener, InputP
                     }
                 } else if (button == 2) {
                     if (whichCell(touch, isDrawableUnits)) {
-                        gameField.spawnHero((int) touch.x, (int) touch.y);
+                        if ( ((int)(Math.random()*5) == 0) ) {
+                            gameField.spawnHero((int) touch.x, (int) touch.y);
+                        } else {
+                            gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
+                        }
                     }
                 }
             } else if (gameField.gameSettings.gameType == GameType.TowerDefence) {

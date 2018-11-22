@@ -30,8 +30,8 @@ public class TemplateForTower extends Template {
     public Float    reloadTime;
 //    public String   type;
     public TowerAttackType towerAttackType;
-    public ShellAttackType shellAttackType;
-    public ShellEffectType shellEffectType;
+    public TowerShellType towerShellType;
+    public TowerShellEffect towerShellEffect;
     public Integer capacity;
 
 //    public AnimatedTile idleTile;
@@ -174,29 +174,29 @@ public class TemplateForTower extends Template {
         } else {
             towerAttackType = TowerAttackType.getType(properties.get("towerAttackType"));
         }
-        if (!properties.containsKey("shellAttackType") && towerAttackType != TowerAttackType.Pit) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellAttackType");
+        if (!properties.containsKey("towerShellType") && towerAttackType != TowerAttackType.Pit) {
+            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellType");
         } else {
-            shellAttackType = ShellAttackType.getType(properties.get("shellAttackType"));
+            towerShellType = towerShellType.getType(properties.get("towerShellType"));
         }
-        if (!properties.containsKey("shellEffectType")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType");
+        if (!properties.containsKey("towerShellEffect")) {
+            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellEffect");
         } else {
-            shellEffectType = new ShellEffectType(ShellEffectType.ShellEffectEnum.getType(properties.get("shellEffectType")));
+            towerShellEffect = new TowerShellEffect(TowerShellEffect.ShellEffectEnum.getType(properties.get("towerShellEffect")));
             if (!properties.containsKey("shellEffectType_time")) {
                 Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_time");
             } else {
-                shellEffectType.time = Float.parseFloat(properties.get("shellEffectType_time"));
+                towerShellEffect.time = Float.parseFloat(properties.get("shellEffectType_time"));
             }
             if (!properties.containsKey("shellEffectType_damage")) {
                 Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_damage");
             } else {
-                shellEffectType.damage = Float.parseFloat(properties.get("shellEffectType_damage"));
+                towerShellEffect.damage = Float.parseFloat(properties.get("shellEffectType_damage"));
             }
             if (!properties.containsKey("shellEffectType_speed")) {
                 Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_speed");
             } else {
-                shellEffectType.speed = Float.parseFloat(properties.get("shellEffectType_speed"));
+                towerShellEffect.speed = Float.parseFloat(properties.get("shellEffectType_speed"));
             }
         }
         if (towerAttackType == TowerAttackType.Pit && properties.containsKey("capacity")) {
@@ -207,7 +207,7 @@ public class TemplateForTower extends Template {
         if(this.radiusDetection == null && this.towerAttackType != TowerAttackType.Pit) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusDetection");
         }
-        if(this.radiusFlyShell == null && this.shellAttackType != ShellAttackType.FirstTarget) {
+        if(this.radiusFlyShell == null && this.towerShellType != towerShellType.FirstTarget) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusFlyShell");
             this.radiusFlyShell = 0f;
         }
@@ -244,8 +244,8 @@ public class TemplateForTower extends Template {
             sb.append(",ammoSpeed:" + ammoSpeed);
             sb.append(",reloadTime:" + reloadTime);
             sb.append(",towerAttackType:" + towerAttackType);
-            sb.append(",shellAttackType:" + shellAttackType);
-            sb.append(",shellEffectEnum:" + shellEffectType);
+            sb.append(",towerShellType:" + towerShellType);
+            sb.append(",shellEffectEnum:" + towerShellEffect);
             sb.append(",capacity:" + capacity);
             sb.append(",idleTile:" + (idleTile != null) );
             sb.append(",animations.size:" + animations.size);

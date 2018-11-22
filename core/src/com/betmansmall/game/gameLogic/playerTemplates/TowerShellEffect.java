@@ -7,14 +7,13 @@ import com.badlogic.gdx.utils.StringBuilder;
  * Created by betma on 19.01.2017.
  */
 
-public class ShellEffectType {
+public class TowerShellEffect {
     public enum ShellEffectEnum {
         FreezeEffect("FreezeEffect"),
         FireEffect("FireEffect");
 
         private final String text;
-
-        private ShellEffectEnum(final String text) {
+        ShellEffectEnum(final String text) {
             this.text = text;
         }
 
@@ -41,24 +40,24 @@ public class ShellEffectType {
     public float speed;
     public boolean used = false;
 
-    public ShellEffectType(ShellEffectEnum shellEffectEnum) {
+    public TowerShellEffect(ShellEffectEnum shellEffectEnum) {
         this.shellEffectEnum = shellEffectEnum;
         this.elapsedTime = 0;
     }
 
-    public ShellEffectType(ShellEffectType shellEffectType) {
-        this.shellEffectEnum = shellEffectType.shellEffectEnum;
-        this.time = shellEffectType.time;
-        this.elapsedTime = shellEffectType.elapsedTime;
-        this.damage = shellEffectType.damage;
-        this.speed = shellEffectType.speed;
+    public TowerShellEffect(TowerShellEffect towerShellEffect) {
+        this.shellEffectEnum = towerShellEffect.shellEffectEnum;
+        this.time = towerShellEffect.time;
+        this.elapsedTime = towerShellEffect.elapsedTime;
+        this.damage = towerShellEffect.damage;
+        this.speed = towerShellEffect.speed;
     }
 
 //    @Override
 //    public boolean equals(Object object) {
-//        if(object instanceof ShellEffectType) {
-//            ShellEffectType shellEffectType = (ShellEffectType) object;
-//            if (this.shellEffectEnum.equals(shellEffectType.shellEffectEnum)) {
+//        if(object instanceof TowerShellEffect) {
+//            TowerShellEffect towerShellEffect = (TowerShellEffect) object;
+//            if (this.shellEffectEnum.equals(towerShellEffect.shellEffectEnum)) {
 //                return true;
 //            } else {
 //                return false;
@@ -69,7 +68,7 @@ public class ShellEffectType {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ShellEffectType[");
+        sb.append("TowerShellEffect[");
         sb.append(",shellEffectEnum:" + shellEffectEnum);
         sb.append(",time:" + time);
         sb.append(",elapsedTime:" + elapsedTime);

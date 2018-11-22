@@ -3,19 +3,19 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Fire Tower 1"/>
-  <property name="radiusDetection" value="150"/>
-  <property name="radiusFlyShell" value="300"/>
+  <property name="radiusDetection" value="220"/>
+  <!-- <property name="radiusFlyShell" value="300"/> -->
   <property name="damage" value="50"/>
   <property name="size" value="1"/>
-  <property name="cost" value="150"/>
-  <property name="ammoSize" value="50"/>
-  <property name="ammoSpeed" value="10"/>
+  <property name="cost" value="170"/>
+  <property name="ammoSize" value="25"/>
+  <property name="ammoSpeed" value="17"/>
   <property name="reloadTime" value="2"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="MultipleTarget"/>
-  <property name="shellEffectType" value="FireEffect"/>
-  <property name="shellEffectType_time" value="5"/>
-  <property name="shellEffectType_damage" value="0.5"/>
+  <property name="towerShellType" value="MultipleTarget"/>
+  <property name="towerShellEffect" value="FireEffect"/>
+  <property name="shellEffectType_time" value="4"/>
+  <property name="shellEffectType_damage" value="0.4"/>
   <!-- <property name="shellEffectType_speed" value="2"/> -->
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower_fire.png" trans="ff00ff" width="128" height="192"/>

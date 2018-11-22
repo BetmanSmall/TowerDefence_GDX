@@ -3,8 +3,6 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -12,7 +10,7 @@ import com.betmansmall.game.gameLogic.mapLoader.AnimatedTile;
 import com.betmansmall.game.gameLogic.mapLoader.StaticTile;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
-import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
+import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Circle;
 
@@ -45,7 +43,7 @@ public class Unit {
 
     public Direction direction;
     private Animation animation;
-    public Array<ShellEffectType> shellEffectTypes;
+    public Array<TowerShellEffect> shellEffectTypes;
 
     public Unit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
         if(route != null) {
@@ -70,15 +68,17 @@ public class Unit {
 
             this.direction = Direction.UP;
             setAnimation("walk_");
-            this.shellEffectTypes = new Array<ShellEffectType>();
+            this.shellEffectTypes = new Array<TowerShellEffect>();
         } else {
             Gdx.app.error("Unit::Unit()", "-- route == null");
         }
     }
 
     public void dispose() {
-        route.clear();
-        route = null;
+        if (route != null) {
+            route.clear();
+            route = null;
+        }
 
         oldPosition.clear();
         oldPosition = null;
@@ -118,41 +118,41 @@ public class Unit {
     }
 
     void shellEffectsMove(float delta) {
-        for (ShellEffectType shellEffectType : shellEffectTypes) {
-//            Gdx.app.log("Unit::shellEffectsMove()", "-- shellEffectType:" + shellEffectType);
-            if (!shellEffectType.used) {
-                shellEffectType.used = true;
-                if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
+        for (TowerShellEffect towerShellEffect : shellEffectTypes) {
+//            Gdx.app.log("Unit::shellEffectsMove()", "-- towerShellEffect:" + towerShellEffect);
+            if (!towerShellEffect.used) {
+                towerShellEffect.used = true;
+                if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
                     float smallSpeed = speed/100f;
                     float percentSteps = stepsInTime/smallSpeed;
-                    speed += shellEffectType.speed;
+                    speed += towerShellEffect.speed;
                     smallSpeed = speed/100f;
                     stepsInTime = smallSpeed*percentSteps;
-                } else if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
-                    hp -= shellEffectType.damage;
-//                    if(die(shellEffectType.damage, null)) {
+                } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
+                    hp -= towerShellEffect.damage;
+//                    if(die(towerShellEffect.damage, null)) {
 //                        GameField.gamerGold += templateForUnit.bounty;
 //                    }
                 }
             } else {
-                if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FireEffect) {
-                    hp -= shellEffectType.damage;
-//                    if(die(shellEffectType.damage, null)) {
+                if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
+                    hp -= towerShellEffect.damage;
+//                    if(die(towerShellEffect.damage, null)) {
 //                        GameField.gamerGold += templateForUnit.bounty;
 //                    }
                 }
             }
-            shellEffectType.elapsedTime += delta;
-            if (shellEffectType.elapsedTime >= shellEffectType.time) {
-//                Gdx.app.log("Unit::shellEffectsMove()", "-- Remove shellEffectType:" + shellEffectType);
-                if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
+            towerShellEffect.elapsedTime += delta;
+            if (towerShellEffect.elapsedTime >= towerShellEffect.time) {
+//                Gdx.app.log("Unit::shellEffectsMove()", "-- Remove towerShellEffect:" + towerShellEffect);
+                if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
                     float smallSpeed = speed/100f;
                     float percentSteps = stepsInTime/smallSpeed;
-                    speed = speed-shellEffectType.speed;
+                    speed = speed- towerShellEffect.speed;
                     smallSpeed = speed/100f;
                     stepsInTime = smallSpeed*percentSteps;
                 }
-                shellEffectTypes.removeValue(shellEffectType, true);
+                shellEffectTypes.removeValue(towerShellEffect, true);
             }
         }
     }
@@ -201,12 +201,16 @@ public class Unit {
     public Node move(float delta, CameraController cameraController) {
 //        Gdx.app.log("Unit", "move(); -- Unit status:" + this.toString());
         shellEffectsMove(delta);
-        stepsInTime += delta;
+//        stepsInTime += (speed*delta);
+        stepsInTime += delta; // wtf? check Bullet::flightOfShell()
         if (stepsInTime >= speed) {
             if(route != null && !route.isEmpty()) {
                 stepsInTime = 0f;
                 oldPosition = newPosition;
                 newPosition = route.pollFirst();
+                if (newPosition == null) {
+                    newPosition = oldPosition;
+                }
             } else {
                 direction = Direction.UP;
                 setAnimation("idle_");
@@ -335,10 +339,10 @@ public class Unit {
         return newPosition;
     }
 
-    public boolean die(float damage, ShellEffectType shellEffectType) {
+    public boolean die(float damage, TowerShellEffect towerShellEffect) {
         if(hp > 0) {
             hp -= damage;
-            addEffect(shellEffectType);
+            addEffect(towerShellEffect);
             if(hp <= 0) {
                 deathElapsedTime = 0;
                 setAnimation("death_");
@@ -349,10 +353,10 @@ public class Unit {
         return false;
     }
 
-    private boolean addEffect(ShellEffectType shellEffectType) {
-        if(shellEffectType != null){
-            if(!shellEffectTypes.contains(shellEffectType, false)) {
-                shellEffectTypes.add(new ShellEffectType(shellEffectType));
+    private boolean addEffect(TowerShellEffect towerShellEffect) {
+        if(towerShellEffect != null){
+            if(!shellEffectTypes.contains(towerShellEffect, false)) {
+                shellEffectTypes.add(new TowerShellEffect(towerShellEffect));
             }
         }
         return true;

@@ -11,8 +11,8 @@
   <property name="ammoSpeed" value="0"/>
   <property name="reloadTime" value="0"/>
   <property name="towerAttackType" value="Pit"/>
-  <!-- <property name="shellAttackType" value="None"/> -->
-  <!-- <property name="shellEffectType" value="None"/> -->
+  <!-- <property name="TowerShellType" value="None"/> -->
+  <!-- <property name="towerShellEffect" value="None"/> -->
   <property name="capacity" value="2"/>
  </properties>
  <image source="../../textures/pit.png" trans="ff00ff" width="128" height="192"/>

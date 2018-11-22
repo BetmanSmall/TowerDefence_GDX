@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.game.gameLogic.playerTemplates.ShellAttackType;
-import com.betmansmall.game.gameLogic.playerTemplates.ShellEffectType;
+import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
+import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
+import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
+
 
 /**
  * Created by Андрей on 24.01.2016.
@@ -27,7 +29,7 @@ public class Tower {
     public Circle radiusFlyShellCircle;
 
     public Tower(Cell cell, TemplateForTower templateForTower, int player) {
-        Gdx.app.log("Tower::Tower()", "-- cell:" + cell + " templateForTower:" + templateForTower + " player:" + player);
+//        Gdx.app.log("Tower::Tower()", "-- cell:" + cell + " templateForTower:" + templateForTower + " player:" + player);
         this.cell = cell;
         this.elapsedReloadTime = templateForTower.reloadTime;
         this.templateForTower = templateForTower;
@@ -59,9 +61,13 @@ public class Tower {
             }
 //        }
         this.radiusDetectionCircle.setPosition(centerGraphicCoord);
-        if (templateForTower.shellAttackType == ShellAttackType.FirstTarget && templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-            if (radiusFlyShellCircle == null) {
-                this.radiusFlyShellCircle = new Circle(centerGraphicCoord, templateForTower.radiusFlyShell);
+        if (templateForTower.towerShellType == TowerShellType.FirstTarget) {
+            if (templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
+                if (radiusFlyShellCircle == null) {
+                    this.radiusFlyShellCircle = new Circle(centerGraphicCoord, templateForTower.radiusFlyShell);
+                } else {
+                    this.radiusFlyShellCircle.setPosition(centerGraphicCoord);
+                }
             }
         }
     }
@@ -74,21 +80,52 @@ public class Tower {
         return false;
     }
 
+    public boolean shotFireBall(CameraController cameraController) {
+        if (elapsedReloadTime >= templateForTower.reloadTime) {
+            if (templateForTower.towerAttackType == TowerAttackType.FireBall) {
+                elapsedReloadTime = 0f;
+                int radius = Math.round(cameraController.gameField.gameSettings.difficultyLevel);
+                if ( radius == 0 ) {
+                    radius = Math.round(templateForTower.radiusDetection);
+                }
+                Cell towerCell = cell;
+                Gdx.app.log("Tower::shotFireBall()", "-- radius:" + radius + " towerCell:" + towerCell + " player:" + player);
+                for (int tmpX = -radius; tmpX <= radius; tmpX++) {
+                    for (int tmpY = -radius; tmpY <= radius; tmpY++) {
+                        Cell cell = cameraController.gameField.getCell(tmpX + towerCell.cellX, tmpY + towerCell.cellY);
+                        if (cell != null && cell != towerCell) {
+                            bullets.add(new Bullet(centerGraphicCoord, templateForTower, cell.graphicCoordinates1, cameraController));
+                        }
+                    }
+                }
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.UP));
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.UP_RIGHT));
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.RIGHT));
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.DOWN_RIGHT));
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.DOWN));
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.DOWN_LEFT));
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.LEFT));
+//                bullets.add(new Bullet(centerGraphicCoord, templateForTower, cameraController, Direction.UP_LEFT));
+                Gdx.app.log("Tower::shotFireBall()", "-- bullets:" + bullets + " templateForTower:" + templateForTower + " player:" + player);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean shoot(Unit unit, CameraController cameraController) {
         if(elapsedReloadTime >= templateForTower.reloadTime) {
-            if (templateForTower.shellAttackType == ShellAttackType.MassAddEffect) {
+            if (templateForTower.towerShellType == TowerShellType.MassAddEffect) {
                 boolean effect = false;
-                for (ShellEffectType shellEffectType : unit.shellEffectTypes) {
-                    if (shellEffectType.shellEffectEnum == ShellEffectType.ShellEffectEnum.FreezeEffect) {
+                for (TowerShellEffect towerShellEffect : unit.shellEffectTypes) {
+                    if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
                         effect = true;
                         break;
                     }
                 }
                 if (!effect) {
-                    unit.shellEffectTypes.add(new ShellEffectType(templateForTower.shellEffectType));
+                    unit.shellEffectTypes.add(new TowerShellEffect(templateForTower.towerShellEffect));
                 }
-            } else if (templateForTower.shellAttackType == ShellAttackType.FireBall) {
-
             } else {
                 bullets.add(new Bullet(centerGraphicCoord, templateForTower, unit, cameraController));
             }
@@ -102,7 +139,7 @@ public class Tower {
         for(Bullet bullet : bullets) {
             if(radiusFlyShellCircle == null) {
                 moveShell(delta, bullet);
-            } else if(Intersector.overlaps(bullet.circle, radiusFlyShellCircle)) {
+            } else if(Intersector.overlaps(bullet.currCircle, radiusFlyShellCircle)) {
                 moveShell(delta, bullet);
             } else {
                 bullet.dispose();
@@ -113,14 +150,13 @@ public class Tower {
 
     private void moveShell(float delta, Bullet bullet) {
         switch (bullet.flightOfShell(delta)) {
+            case 1:
+                break;
             case 0:
-//                if(bullet.unit.die(damage)) {
-//                    GameField.gamerGold += bullet.unit.getTemplateForUnit().bounty;
-//                }
 //                break;
             case -1:
-                bullet.dispose();
                 bullets.removeValue(bullet, false);
+                break;
         }
     }
 

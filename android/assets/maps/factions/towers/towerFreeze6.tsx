@@ -12,8 +12,8 @@
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="0"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="MassAddEffect"/>
-  <property name="shellEffectType" value="FreezeEffect"/>
+  <property name="towerShellType" value="MassAddEffect"/>
+  <property name="towerShellEffect" value="FreezeEffect"/>
   <property name="shellEffectType_time" value="0.1"/>
   <!-- <property name="shellEffectType_damage" value="5"/> -->
   <property name="shellEffectType_speed" value="0.6"/>

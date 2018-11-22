@@ -12,8 +12,8 @@
   <property name="ammoSpeed" value="20"/>
   <property name="reloadTime" value="0.5"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="AutoTarget"/>
-  <!-- <property name="shellEffectType" value="None"/> -->
+  <property name="towerShellType" value="AutoTarget"/>
+  <!-- <property name="towerShellEffect" value="None"/> -->
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower_test.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

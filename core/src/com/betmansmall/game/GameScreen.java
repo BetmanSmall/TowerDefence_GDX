@@ -566,7 +566,7 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
             gameField.dispose();
             gameInterface.renderEndGame(delta, gameState);
         } else {
-            Gdx.app.log("GameScreen::render()", "-- Not get normal gameState!");
+            Gdx.app.log("GameScreen::render()", "-- Not get normal gameState:" + gameState);
         }
     }
 

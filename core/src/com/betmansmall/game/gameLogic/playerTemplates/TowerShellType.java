@@ -6,17 +6,18 @@ import com.badlogic.gdx.Gdx;
  * Created by betma on 19.01.2017.
  */
 
-public enum ShellAttackType {
-    FireBall("FireBall"),
+public enum TowerShellType {
+//    FireBall("FireBall"),
+
     AutoTarget("AutoTarget"),
     FirstTarget("FirstTarget"),
     SingleTarget("SingleTarget"),
     MultipleTarget("MultipleTarget"),
+
     MassAddEffect("MassAddEffect");
 
     private final String text;
-
-    private ShellAttackType(final String text) {
+    TowerShellType(final String text) {
         this.text = text;
     }
 
@@ -25,13 +26,13 @@ public enum ShellAttackType {
         return text;
     }
 
-    public static ShellAttackType getType(String type) {
-        for (ShellAttackType t : ShellAttackType.values()) {
+    public static TowerShellType getType(String type) {
+        for (TowerShellType t : TowerShellType.values()) {
             if (t.name().equals(type)) {
                 return t;
             }
         }
-        Gdx.app.error("ShellAttackType::getType()", "-- BadType:" + type);
+        Gdx.app.error("towerShellType::getType()", "-- BadType:" + type);
         return null;
     }
 }

@@ -48,5 +48,8 @@ public class UnitsManager {
 
     public void removeUnit(Unit unit) {
         units.removeValue(unit, false);
+        if (hero.contains(unit, false)) {
+            hero.removeValue(unit, false);
+        }
     }
 }

@@ -8,6 +8,14 @@
 	<templateForUnit source="units/unit7_dragon.tsx"/>
 	<templateForUnit source="units/unit8_ogre.tsx"/>
 	<templateForUnit source="units/unit9_peon.tsx"/>
+	
+	<templateForUnit source="units/unit10_ballista.tsx"/>
+	<templateForUnit source="units/unit11_elven_archer.tsx"/>
+	<templateForUnit source="units/unit12_gryphon_rider.tsx"/>
+	<templateForUnit source="units/unit13_knight.tsx"/>
+	<templateForUnit source="units/unit14_mage.tsx"/>
+	<templateForUnit source="units/unit15_peasant.tsx"/>
+
 	<!-- <templateForUnit source="unitPs_heaveKnight.tsx"/> -->
 	<!-- <templateForTower source="towers/tower3_cannon.tsx"/> -->
 	<!-- <templateForTower source="towers/tower4_cannon.tsx"/> -->

@@ -8,12 +8,12 @@
   <property name="damage" value="50"/>
   <property name="size" value="1"/>
   <property name="cost" value="130"/>
-  <property name="ammoSize" value="40"/>
+  <property name="ammoSize" value="30"/>
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="2"/>
   <property name="towerAttackType" value="Range"/>
-  <property name="shellAttackType" value="MultipleTarget"/>
-  <!-- <property name="shellEffectType" value="None"/> -->
+  <property name="towerShellType" value="MultipleTarget"/>
+  <!-- <property name="towerShellEffect" value="None"/> -->
  </properties>
  <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>

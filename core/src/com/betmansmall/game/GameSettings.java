@@ -12,7 +12,7 @@ public class GameSettings {
     public int enemyCount;
     public int towersCount;
 
-    public boolean isometric;
+    public boolean isometric = false;
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
@@ -24,14 +24,14 @@ public class GameSettings {
     public GameSettings(String mapPath) {
         if (mapPath.contains("randomMap")) {
             gameType = GameType.LittleGame;
-            this.difficultyLevel = 1f;
+            this.difficultyLevel = 0f;
             this.enemyCount = 10;
-            this.towersCount = 5;
+            this.towersCount = 0;
         } else if (mapPath.contains("island")) {
             gameType = GameType.LittleGame;
             this.difficultyLevel = 1f;
             this.enemyCount = 10;
-            this.towersCount = 5;
+            this.towersCount = 0;
         } else {
             gameType = GameType.TowerDefence;
             this.difficultyLevel = 1f;

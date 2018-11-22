@@ -32,38 +32,19 @@ public class FactionsManager {
         loadFactions();
     }
 
-//    public void addUnitToFaction(TemplateForUnit unit) {
-//        String newFactionName = unit.getFactionName();
-//        for (Faction faction : factions) {
-//            if (faction.getName().equals(newFactionName)) {
-//                faction.getTemplateForUnits().add(unit);
-//                unit.setFaction(faction);
-//                return;
-//            }
-//        }
-//        Faction faction = new Faction(newFactionName);
-//        faction.getTemplateForUnits().add(unit);
-//        unit.setFaction(faction);
-//        factions.add(faction);
-//    }
-//    public void addTowerToFaction(TemplateForTower tower) {
-////        Gdx.app.log("FactionsManager::addTowerToFaction()", "-- Tower name:" + tower.name);
-//        String newFactionName = tower.getFactionName();
-//        for (Faction faction : factions) {
-//            if (faction.getName().equals(newFactionName)) {
-//                faction.getTemplateForTowers().add(tower);
-//                tower.setFaction(faction);
-//                return;
-//            }
-//        }
-//        Faction faction = new Faction(newFactionName);
-//        faction.getTemplateForTowers().add(tower);
-//        tower.setFaction(faction);
-//        factions.add(faction);
-//    }
-
     public TemplateForUnit getRandomTemplateForUnitFromFirstFaction() {
         Faction faction = factions.first();
+        if (faction != null) {
+            TemplateForUnit templateForUnit = faction.getTemplateForUnits().random();
+            if (templateForUnit != null) {
+                return templateForUnit;
+            }
+        }
+        return null;
+    }
+
+    public TemplateForUnit getRandomTemplateForUnitFromSecondFaction() {
+        Faction faction = factions.get(1);
         if (faction != null) {
             TemplateForUnit templateForUnit = faction.getTemplateForUnits().random();
             if (templateForUnit != null) {
