@@ -1625,36 +1625,36 @@ public class GameField {
         return 0;
     }
 
-    public void updateHeroDestinationPoint() {
-        Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- ");
-//    Unit* hero = unitsManager.hero;
-        for (Unit hero : unitsManager.hero) {
-            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero:" + hero);
-            if (hero != null && !hero.route.isEmpty()) {
-                updateHeroDestinationPoint(hero.route.getFirst().getX(), hero.route.getFirst().getY());
-            } else {
-//                updatePathFinderWalls();
-            }
-        }
-    }
-
-    public void updateHeroDestinationPoint(int x, int y) {
-        updatePathFinderWalls();
-//    Unit* hero = unitsManager.hero;
-        for (Unit hero : unitsManager.hero) {
-            Node old = hero.oldPosition;
-            Node pos = hero.newPosition;
-            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- old:" + old);
-            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- pos:" + pos);
-            if (pos != null) {
-                hero.route = pathFinder.route(hero.newPosition.getX(), hero.newPosition.getY(), x, y);
-                Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero.route:" + hero.route);
-                if (hero.route != null && !hero.route.isEmpty()) {
-                    hero.route.removeFirst();
-                }
-            }
-        }
-    }
+//    public void updateHeroDestinationPoint() {
+//        Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- ");
+////    Unit* hero = unitsManager.hero;
+//        for (Unit hero : unitsManager.hero) {
+//            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero:" + hero);
+//            if (hero != null && !hero.route.isEmpty()) {
+//                updateHeroDestinationPoint(hero.route.getFirst().getX(), hero.route.getFirst().getY());
+//            } else {
+////                updatePathFinderWalls();
+//            }
+//        }
+//    }
+//
+//    public void updateHeroDestinationPoint(int x, int y) {
+//        updatePathFinderWalls();
+////    Unit* hero = unitsManager.hero;
+//        for (Unit hero : unitsManager.hero) {
+//            Node old = hero.oldPosition;
+//            Node pos = hero.newPosition;
+//            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- old:" + old);
+//            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- pos:" + pos);
+//            if (pos != null) {
+//                hero.route = pathFinder.route(hero.newPosition.getX(), hero.newPosition.getY(), x, y);
+//                Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero.route:" + hero.route);
+//                if (hero.route != null && !hero.route.isEmpty()) {
+//                    hero.route.removeFirst();
+//                }
+//            }
+//        }
+//    }
 
     public void updatePathFinderWalls() {
         Gdx.app.log("GameField::updatePathFinderWalls()", "-start- pathFinder.walls.size():" + pathFinder.nodeMatrix.length);

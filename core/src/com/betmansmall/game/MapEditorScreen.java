@@ -103,7 +103,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("MapEditorScreen::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+        Gdx.app.log("MapEditorScreen::touchDown()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
         return false;
     }
 

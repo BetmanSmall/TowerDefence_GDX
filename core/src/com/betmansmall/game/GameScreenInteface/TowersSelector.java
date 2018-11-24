@@ -72,25 +72,24 @@ public class TowersSelector {
         }
     }
 
-    public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("TowersSelector::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+    public boolean touchDown(float x, float y, int pointer, int button) {
         for (Actor actor : verticalGroupWithTowers.getChildren()) {
-//            Gdx.app.log("TowersSelector::tap()", "-- actor:" + actor);
+//            Gdx.app.log("TowersSelector::touchDown()", "-- actor:" + actor);
             if (actor instanceof Button) {
                 Button buttonActor = (Button)actor;
-//                Gdx.app.log("TowersSelector::tap()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
+//                Gdx.app.log("TowersSelector::touchDown()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
                 if(buttonActor.isPressed()) {
                     Integer towerIndex = (Integer) buttonActor.getUserObject();
                     if (towerIndex != null) {
-                        Gdx.app.log("TowersSelector::tap()", "-- towerIndex:" + towerIndex);
+                        Gdx.app.log("TowersSelector::touchDown()", "-- towerIndex:" + towerIndex);
                         gameField.createdUnderConstruction(templateForTowers.get(towerIndex));
                     }
-//                    Gdx.app.log("TowersSelector::tap()", "-- return true");
+//                    Gdx.app.log("TowersSelector::touchDown()", "-- return true");
                     return true;
                 }
             }
         }
-        Gdx.app.log("TowersSelector::tap()", "-- return false");
+//        Gdx.app.log("TowersSelector::touchDown()", "-- return false");
         return false;
     }
 

@@ -200,28 +200,28 @@ public class GameInterface {
         loseTexture.dispose();
     }
 
-    public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("GameInterface::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+    public boolean touchDown(float screenX, float screenY, int pointer, int button) {
+        Gdx.app.log("GameInterface::touchDown()", "-- prevScreenX:" + screenX + " prevScreenY:" + screenY + " pointer:" + pointer + " button:" + button);
         if (startAndPauseButton.isPressed()) {
-            Gdx.app.log("GameInterface::tap()", "-- startAndPauseButton.isPressed()");
+            Gdx.app.log("GameInterface::touchDown()", "-- startAndPauseButton.isPressed()");
             gameField.gamePaused = !gameField.gamePaused;
             startAndPauseButton.setText((!gameField.gamePaused)? "PAUSE" : "PLAY");
             interfaceTouched = true;
         }
         if(unitsSelector != null) {
-            if(unitsSelector.tap(x, y, count, button)) {
+            if(unitsSelector.touchDown(screenX, screenY, pointer, button)) {
                 interfaceTouched = true;
-                Gdx.app.log("GameInterface::tap()", "-- return true");
+                Gdx.app.log("GameInterface::touchDown()", "-- return true");
                 return true;
             }
         }
         if(towersSelector != null) {
-            if (towersSelector.tap(x, y, count, button)) {
+            if (towersSelector.touchDown(screenX, screenY, pointer, button)) {
                 interfaceTouched = true;
                 return true;
             }
         }
-        Gdx.app.log("GameInterface::tap()", "-- return false");
+        Gdx.app.log("GameInterface::touchDown()", "-- return false");
         return false;
     }
 

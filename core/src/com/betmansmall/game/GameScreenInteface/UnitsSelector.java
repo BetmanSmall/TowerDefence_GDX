@@ -74,25 +74,24 @@ public class UnitsSelector {
         }
     }
 
-    public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("UnitsSelector::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+    public boolean touchDown(float x, float y, int pointer, int button) {
         for (Actor actor : verticalGroupWithUnits.getChildren()) {
-            Gdx.app.log("UnitsSelector::tap()", "-- actor:" + actor);
+//            Gdx.app.log("UnitsSelector::touchDown()", "-- actor:" + actor);
             if (actor instanceof Button) {
                 Button buttonActor = (Button)actor;
-                Gdx.app.log("UnitsSelector::tap()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
+//                Gdx.app.log("UnitsSelector::touchDown()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
                 if(buttonActor.isPressed()) {
                     Integer unitIndex = (Integer) buttonActor.getUserObject();
                     if (unitIndex != null) {
-                        Gdx.app.log("UnitsSelector::tap()", "-- unitIndex:" + unitIndex);
+                        Gdx.app.log("UnitsSelector::touchDown()", "-- unitIndex:" + unitIndex);
                         gameField.spawnUnitFromUser(templateForUnits.get(unitIndex));
                     }
-                    Gdx.app.log("UnitsSelector::tap()", "-- return true");
+//                    Gdx.app.log("UnitsSelector::touchDown()", "-- return true");
                     return true;
                 }
             }
         }
-        Gdx.app.log("UnitsSelector::tap()", "-- return false");
+//        Gdx.app.log("UnitsSelector::touchDown()", "-- return false");
         return false;
     }
 
