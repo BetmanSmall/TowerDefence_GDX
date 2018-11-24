@@ -33,7 +33,7 @@ public class UnitsSelector {
         this.bitmapFont = bitmapFont;
         this.table = table;
 
-        this.templateForUnits = gameField.getAllTemplateForUnits();
+        this.templateForUnits = gameField.factionsManager.getAllTemplateForUnits();
         Gdx.app.log("UnitsSelector::UnitsSelector()", "-- templateForUnits:" + templateForUnits);
 
         this.verticalGroupWithUnits = new VerticalGroup();

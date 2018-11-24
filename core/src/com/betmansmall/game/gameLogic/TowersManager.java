@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -11,7 +12,13 @@ public class TowersManager {
     public Array<Tower> towers;
 
     public TowersManager() {
+        Gdx.app.log("TowersManager::TowersManager()", "-- ");
         towers = new Array<Tower>();
+    }
+
+    public void dispose() {
+        Gdx.app.log("TowersManager::dispose()", "-- ");
+        towers.clear();
     }
 
     public Tower createTower(Cell cell, TemplateForTower templateForTower, int player) {
@@ -28,12 +35,27 @@ public class TowersManager {
         }
     }
 
+    public Tower getTower() {
+        return getTower(null);
+    }
+
     public Tower getTower(Cell cell) {
-        for(int i=0; i < towers.size; i++) {
-            Cell towerCell = towers.get(i).cell;
-            if(towerCell.equals(cell)) {
-                return towers.get(i);
+        if (cell == null) {
+            if (towers.size > 0) {
+                return towers.get(towers.size);
             }
+        } else {
+            for (Tower tower : towers) {
+                if (tower.cell.cellX == cell.cellX && tower.cell.cellY == cell.cellY) {
+                    return tower;
+                }
+            }
+//            for (int i = 0; i < towers.size; i++) {
+//                Cell towerCell = towers.get(i).cell;
+//                if (towerCell.equals(cell)) {
+//                    return towers.get(i);
+//                }
+//            }
         }
         return null;
     }

@@ -31,7 +31,7 @@ public class TowersSelector {
         this.bitmapFont = bitmapFont;
         this.table = table;
 
-        templateForTowers = gameField.getAllTemplateForTowers();
+        templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
         Gdx.app.log("TowersSelector::TowersSelector()", "-- templateForTowers:" + templateForTowers);
 
         verticalGroupWithTowers = new VerticalGroup();

@@ -128,7 +128,7 @@ public class Cell {
         if (tile != null) {
             groundTiles.add(tile);
         }
-        if ( (empty && !spawn && !exit) || withTower) {
+        if ( (empty && !spawn && !exit) || (withTower && tower != null) ) {
             removableTerrain = removable;
             terrain = true;
             empty = false;

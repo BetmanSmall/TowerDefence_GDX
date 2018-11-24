@@ -11,13 +11,11 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.GameType;
 import com.betmansmall.game.gameLogic.mapLoader.Map;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
-import com.betmansmall.game.gameLogic.mapLoader.Tile;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
@@ -48,13 +46,13 @@ public class GameField {
     private Texture redCross;
 
     // GAME INTERFACE ZONE1
-    float timeOfGame;
+    public float timeOfGame;
     public float gameSpeed;
     public boolean gamePaused;
-    public static int gamerGold; // For Bullet
+    public int gamerGold;
 
-    public GameField(String mapName, FactionsManager factionsManager, GameSettings gameSettings) {
-        Gdx.app.log("GameField::GameField()", "-- mapName:" + mapName);
+    public GameField(String mapPath, FactionsManager factionsManager, GameSettings gameSettings) {
+        Gdx.app.log("GameField::GameField()", "-- mapPath:" + mapPath);
         Gdx.app.log("GameField::GameField()", "-- factionsManager:" + factionsManager);
         Gdx.app.log("GameField::GameField()", "-- gameSettings:" + gameSettings);
         this.factionsManager = factionsManager;
@@ -63,13 +61,14 @@ public class GameField {
         unitsManager = new UnitsManager();
         this.gameSettings = gameSettings;
 
-        map = new MapLoader(waveManager).load(mapName);
+        map = new MapLoader(waveManager).load(mapPath);
+        Gdx.app.log("GameField::GameField()", "-- map:" + map);
 
         underConstruction = null;
         greenCheckmark = new Texture(Gdx.files.internal("maps/textures/green_checkmark.png"));
         redCross = new Texture(Gdx.files.internal("maps/textures/red_cross.png"));
         if (greenCheckmark == null || redCross == null) {
-            Gdx.app.error("GameField::GameField()", "-- Achtung fuck. NOT FOUND 'maps/textures/green_checkmark.png' & 'maps/textures/red_cross.png' YEBAK");
+            Gdx.app.error("GameField::GameField()", "-- Achtung! NOT FOUND 'maps/textures/green_checkmark.png' || 'maps/textures/red_cross.png'");
         }
 
         createField();
@@ -80,8 +79,6 @@ public class GameField {
         pathFinder.loadCharMatrix(getCharMatrix());
         Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
 
-        MapProperties mapProperties = map.getProperties();
-        Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
         Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
             int randomEnemyCount = gameSettings.enemyCount;
@@ -118,7 +115,7 @@ public class GameField {
             }
             spawnHeroInSpawnPoint();
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            waveManager.validationPoints(field);
+            waveManager.validationPoints(field, map.width, map.height);
             if (waveManager.waves.size == 0) {
                 for (int w = 0; w < 10; w++) {
                     GridPoint2 spawnPoint = new GridPoint2((int) (Math.random() * map.width), (int) (Math.random() * map.height));
@@ -139,25 +136,35 @@ public class GameField {
 
             }
             waveManager.checkRoutes(pathFinder);
+            MapProperties mapProperties = map.getProperties();
+            Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
             gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one unit for computer!!!
             gameSettings.maxOfMissedUnitsForComputer0 = mapProperties.get("maxOfMissedUnitsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
-//            gameSettings.maxOfMissedUnitsForComputer0 = Integer.valueOf(mapProperties.get("maxOfMissedUnitsForComputer0", String.valueOf(gamerGold), String.class));
             gameSettings.missedUnitsForComputer0 = 0;
             if (gameSettings.maxOfMissedUnitsForPlayer1 == 0) {
                 gameSettings.maxOfMissedUnitsForPlayer1 = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions() / 8, Integer.class); // it is not true | need implement getNumberOfUnits()
-//                gameSettings.maxOfMissedUnitsForPlayer1 = Integer.valueOf(mapProperties.get("maxOfMissedUnitsForPlayer1", String.valueOf(waveManager.getNumberOfActions()/4), String.class)); // it is not true | need implement getNumberOfUnits()
             }
             gameSettings.missedUnitsForPlayer1 = 0;
             Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gamerGold);
             Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForComputer0:" + gameSettings.maxOfMissedUnitsForComputer0);
             Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForPlayer1:" + gameSettings.maxOfMissedUnitsForPlayer1);
-//        } else {
-//            Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
+        } else {
+            Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
 
         gamerGold = 100000;
         gameSpeed = 1.0f;
         gamePaused = false;
+    }
+
+    public void dispose() {
+        Gdx.app.log("GameField::dispose()", "-- Called!");
+//        shapeRenderer.dispose();
+//        spriteBatch.dispose();
+//        bitmapFont.dispose();
+        map.dispose();
+        greenCheckmark.dispose();
+        redCross.dispose();
     }
 
     private void createField() {
@@ -193,30 +200,13 @@ public class GameField {
                                             cell.foregroundTiles.add(tiledMapTile);
                                         }
                                     }
-//                                if (!tiledMapTile.getProperties().) {
-//                                    qDebug() << "GameField::createField(); -- layerName:" << layerName;
-//                                    qDebug() << "GameField::createField(); -- tile.getId():" << tile.getId();
-//                                    qDebug() << "GameField::createField(); -- tile.getProperties().size():" << tile.getProperties().size();
-//                                    qDebug() << "GameField::createField(); -- keys:" << tile.getProperties().keys();
-//                                    qDebug() << "GameField::createField(); -- values:" << tile.getProperties().values();
-//                                }
-//                                    if(!layer.getProperties().containsKey("background")) {
-//                                        field[x][y].foregroundTiles.add(tiledMapTile);
-//                                    } else {
-//                                        field[x][y].backgroundTiles.add(tiledMapTile);
-//                                    }
-//                                    if (tiledMapTile.getProperties().get("terrain") != null) {
-//                                        field[x][y].setTerrain();
-//                                    } else
-                                    if (tiledMapTile.getProperties().get("spawnPoint") != null) {
+                                    if (tiledMapTile.getProperties().containsKey("spawnPoint")) {
                                         gameSettings.cellSpawnHero = cell;
                                         gameSettings.cellSpawnHero.spawn = true;
-//                                        waveManager.spawnPoints.add(new GridPoint2(x, y));
                                         Gdx.app.log("GameField::createField()", "-- Set gameSettings.cellSpawnHero:" + gameSettings.cellSpawnHero);
-                                    } else if (tiledMapTile.getProperties().get("exitPoint") != null) {
+                                    } else if (tiledMapTile.getProperties().containsKey("exitPoint")) {
                                         gameSettings.cellExitHero = cell;
                                         gameSettings.cellExitHero.exit = true;
-//                                        waveManager.exitPoints.add(new GridPoint2(x, y));
                                         Gdx.app.log("GameField::createField()", "-- Set gameSettings.cellExitHero:" + gameSettings.cellExitHero);
                                     }
 //                                    // task 6. отрисовка деревьев полностью
@@ -246,124 +236,45 @@ public class GameField {
         Gdx.app.log("GameField::createField()", "-2- field:" + field);
     }
 
-    public void turnRight() {
-        if(map.width == map.height) {
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < map.height; y++) {
-                for(int x = 0; x < map.width; x++) {
-                    newCells[map.width-y-1][x] = field[x][y];
-                    newCells[map.width-y-1][x].setGraphicCoordinates(map.width-y-1, x, map.tileWidth/2, map.tileHeight/2);
-                }
-            }
-            field = newCells;
-        } else {
-            Gdx.app.log("GameField::turnRight()", "-- Not work || Work, but mb not Good!");
-            int oldWidth = map.width;
-            int oldHeight = map.height;
-            map.width = map.height;
-            map.height = oldWidth;
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < oldHeight; y++) {
-                for(int x = 0; x < oldWidth; x++) {
-                    newCells[map.width-y-1][x] = field[x][y];
-                    newCells[map.width-y-1][x].setGraphicCoordinates(map.width-y-1, x, map.tileWidth/2, map.tileHeight/2);
-                }
-            }
-            field = newCells;
-        }
+    public boolean landscapeGenerator(String mapPath) {
+        Gdx.app.log("GameField::landscapeGenerator()", "-- mapPath:" + mapPath);
+        return true;
     }
 
-    public void turnLeft() {
-        if(map.width == map.height) {
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < map.height; y++) {
-                for(int x = 0; x < map.width; x++) {
-                    newCells[y][map.height-x-1] = field[x][y];
-                    newCells[y][map.height-x-1].setGraphicCoordinates(y, map.height-x-1, map.tileWidth/2, map.tileHeight/2);
-                }
+    public Cell getCell(int x, int y) {
+        if (x >= 0 && x < map.width) {
+            if (y >= 0 && y < map.height) {
+                return field[x][y];
             }
-            field = newCells;
-        } else {
-            Gdx.app.log("GameField::turnLeft()", "-- Not work || Work, but mb not Good!");
-            int oldWidth = map.width;
-            int oldHeight = map.height;
-            map.width = map.height;
-            map.height = oldWidth;
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < oldHeight; y++) {
-                for(int x = 0; x < oldWidth; x++) {
-                    newCells[y][map.height-x-1] = field[x][y];
-                    newCells[y][map.height-x-1].setGraphicCoordinates(y, map.height-x-1, map.tileWidth/2, map.tileHeight/2);
-                }
-            }
-            field = newCells;
-        }
-    }
-
-    public void flipX() {
-        Cell[][] newCells = new Cell[map.width][map.height];
-        for (int y = 0; y < map.height; y++) {
-            for (int x = 0; x < map.width; x++) {
-                newCells[map.width-x-1][y] = field[x][y];
-                newCells[map.width-x-1][y].setGraphicCoordinates(map.width-x-1, y, map.tileWidth/2, map.tileHeight/2);
-            }
-        }
-        field = newCells;
-    }
-
-    public void flipY() {
-        Cell[][] newCells = new Cell[map.width][map.height];
-        for(int y = 0; y < map.height; y++) {
-            for(int x = 0; x < map.width; x++) {
-                newCells[x][map.height-y-1] = field[x][y];
-                newCells[x][map.height-y-1].setGraphicCoordinates(x, map.height-y-1, map.tileWidth/2, map.tileHeight/2);
-            }
-        }
-        field = newCells;
-    }
-
-    public char[][] getCharMatrix() {
-        if (field != null) {
-            char[][] charMatrix = new char[map.height][map.width];
-            for (int y = 0; y < map.height; y++) {
-                for (int x = 0; x < map.width; x++) {
-                    if (field[x][y].isTerrain() || field[x][y].getTower() != null) {
-                        if (field[x][y].getTower() != null && field[x][y].getTower().templateForTower.towerAttackType == TowerAttackType.Pit) {
-                            charMatrix[y][x] = '.';
-                        } else {
-                            charMatrix[y][x] = 'T';
-                        }
-                    } else {
-                        charMatrix[y][x] = '.';
-                    }
-//                    System.out.print(charMatrix[y][x]);
-                }
-//                System.out.print("\n");
-            }
-            return charMatrix;
         }
         return null;
     }
 
-    public void dispose() {
-        Gdx.app.log("GameField::dispose()", "-- Called!");
-//        shapeRenderer.dispose();
-//        spriteBatch.dispose();
-//        bitmapFont.dispose();
-        map.dispose();
-        greenCheckmark.dispose();
-        redCross.dispose();
+    public void updateCellsGraphicCoordinates(float halfSizeCellX, float halfSizeCellY) {
+        for (int cellX = 0; cellX < map.width; cellX++) {
+            for (int cellY = 0; cellY < map.height; cellY++) {
+                field[cellX][cellY].setGraphicCoordinates(cellX, cellY, halfSizeCellX, halfSizeCellY);
+            }
+        }
     }
 
-    public void render(float delta, CameraController cameraController) {
-        delta = delta * gameSpeed;
+    public void updateTowersGraphicCoordinates(CameraController cameraController) {
+        for (Tower tower : towersManager.towers) {
+            tower.updateCenterGraphicCoordinates(cameraController);
+        }
+    }
+
+    public void render(float deltaTime, CameraController cameraController) {
+        deltaTime = deltaTime * gameSpeed;
         if (!gamePaused) {
-            spawnUnits(delta);
-            stepAllUnits(delta, cameraController);
-            shotAllTowers(delta, cameraController);
-            moveAllShells(delta);
+            timeOfGame += deltaTime;
+            spawnUnits(deltaTime);
+            stepAllUnits(deltaTime, cameraController);
+            shotAllTowers(deltaTime, cameraController);
+            moveAllShells(deltaTime, cameraController);
         }
 
+//        drawFullField(cameraController);
         cameraController.spriteBatch.setProjectionMatrix(cameraController.camera.combined);
         cameraController.spriteBatch.begin();
         if(cameraController.isDrawableBackground > 0) {
@@ -385,11 +296,12 @@ public class GameField {
 
         if (cameraController.isDrawableGrid > 0)
             drawGrid(cameraController);
-
-        if (cameraController.isDrawableGridNav > 0) {
+        if (cameraController.isDrawableGridNav > 0)
+            drawGridNav(cameraController);
+//            drawGridNavs(cameraController);
+        if (cameraController.isDrawableRoutes > 0) {
             drawRoutes(cameraController);
 //            drawWavesRoutes(camera);
-            drawGridNav(cameraController);
         }
 
         cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -402,6 +314,74 @@ public class GameField {
         cameraController.shapeRenderer.setColor(Color.RED);
         cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         cameraController.shapeRenderer.circle(0f, 0f, 5);
+        cameraController.shapeRenderer.end();
+    }
+
+//void GameField::drawFullField(CameraController* cameraController) {
+////    qDebug() << "GameField::drawFullField(); -- map:" << map;
+////    qDebug() << "GameField::drawFullField(); -- map->tileSets:size" << map->tileSets.size();
+////    qDebug() << "GameField::drawFullField(); -- map->tileSets.getTile(85):" << map->tileSets.getTile(85);
+////    qDebug() << "GameField::drawFullField(); -- map->tileSets.getTile(85)->getPixmap():" << map->tileSets.getTile(85)->getPixmap();
+//    if(gameSettings->isometric) {
+//        QPixmap pixmap = map->tileSets.getTile(85)->getPixmap(); // draw water2
+//        int sizeX = 30;//width()/sizeCellX)+1;
+//        int sizeY = 30;//(height()/sizeCellY)*2+2;
+//        int isometricSpaceX = 0;
+//        int isometricSpaceY = -(cameraController->sizeCellY/2);
+//        for (int y = 0; y <= sizeY; y++) {
+//            for (int x = 0; x <= sizeX; x++) {
+//                cameraController->painter->drawPixmap(isometricSpaceX - cameraController->sizeCellX/2 + x*cameraController->sizeCellX, isometricSpaceY - cameraController->sizeCellY, cameraController->sizeCellX, cameraController->sizeCellY*2, pixmap);
+//            }
+//            isometricSpaceY += cameraController->sizeCellY/2;
+//            isometricSpaceX = isometricSpaceX != 0 ? 0 : cameraController->sizeCellX/2;
+//        }
+//    }
+//}
+
+    private void drawGrid(CameraController cameraController) {
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
+        if (!gameSettings.isometric) {
+            for (int x = 0; x < map.width+1; x++) {
+                cameraController.shapeRenderer.line(x*cameraController.sizeCellX, 0, x*cameraController.sizeCellX, cameraController.sizeCellX*map.height);
+            }
+            for (int y = 0; y < map.height+1; y++) {
+                cameraController.shapeRenderer.line(0, y*cameraController.sizeCellX, cameraController.sizeCellX*map.width, y*cameraController.sizeCellX);
+            }
+        } else {
+            float halfSizeCellX = cameraController.halfSizeCellX;
+            float halfSizeCellY = cameraController.halfSizeCellY;
+            float widthForTop = map.height * halfSizeCellX; // A - B
+            float heightForTop = map.height * halfSizeCellY; // B - Top
+            float widthForBottom = map.width * halfSizeCellX; // A - C
+            float heightForBottom = map.width * halfSizeCellY; // C - Bottom
+//        Gdx.app.log("GameField::drawGrid(camera)", "-- widthForTop:" + widthForTop + " heightForTop:" + heightForTop + " widthForBottom:" + widthForBottom + " heightForBottom:" + heightForBottom);
+            if (cameraController.isDrawableGrid == 1 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x <= map.width; x++)
+                    cameraController.shapeRenderer.line((halfSizeCellX * x), -(halfSizeCellY * x), -(widthForTop) + (halfSizeCellX * x), -(heightForTop) - (x * halfSizeCellY));
+                for (int y = 0; y <= map.height; y++)
+                    cameraController.shapeRenderer.line(-(halfSizeCellX * y), -(halfSizeCellY * y), (widthForBottom) - (halfSizeCellX * y), -(heightForBottom) - (halfSizeCellY * y));
+            }
+            if (cameraController.isDrawableGrid == 2 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x <= map.width; x++)
+                    cameraController.shapeRenderer.line((halfSizeCellX * x), -(halfSizeCellY * x), (widthForTop) + (halfSizeCellX * x), (heightForTop) - (x * halfSizeCellY));
+                for (int y = 0; y <= map.height; y++)
+                    cameraController.shapeRenderer.line((halfSizeCellX * y), (halfSizeCellY * y), (widthForBottom) + (halfSizeCellX * y), -(heightForBottom) + (halfSizeCellY * y));
+            }
+            if (cameraController.isDrawableGrid == 3 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x <= map.height; x++) // WHT??? map.height check groundDraw
+                    cameraController.shapeRenderer.line(-(halfSizeCellX * x), (halfSizeCellY * x), (widthForBottom) - (halfSizeCellX * x), (heightForBottom) + (x * halfSizeCellY));
+                for (int y = 0; y <= map.width; y++) // WHT??? map.width check groundDraw
+                    cameraController.shapeRenderer.line((halfSizeCellX * y), (halfSizeCellY * y), -(widthForTop) + (halfSizeCellX * y), (heightForTop) + (halfSizeCellY * y));
+            }
+            if (cameraController.isDrawableGrid == 4 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x <= map.height; x++) // WHT??? map.height check groundDraw
+                    cameraController.shapeRenderer.line(-(halfSizeCellX * x), (halfSizeCellY * x), -(widthForBottom) - (halfSizeCellX * x), -(heightForBottom) + (x * halfSizeCellY));
+                for (int y = 0; y <= map.width; y++) // WHT??? map.width check groundDraw
+                    cameraController.shapeRenderer.line(-(halfSizeCellX * y), -(halfSizeCellY * y), -(widthForTop) - (halfSizeCellX * y), (heightForTop) - (halfSizeCellY * y));
+            }
+        }
         cameraController.shapeRenderer.end();
     }
 
@@ -768,53 +748,6 @@ public class GameField {
         }
     }
 
-    private void drawGrid(CameraController cameraController) {
-        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
-        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
-        if (!gameSettings.isometric) {
-            for (int x = 0; x < map.width+1; x++) {
-                cameraController.shapeRenderer.line(x*cameraController.sizeCellX, 0, x*cameraController.sizeCellX, cameraController.sizeCellX*map.height);
-            }
-            for (int y = 0; y < map.height+1; y++) {
-                cameraController.shapeRenderer.line(0, y*cameraController.sizeCellX, cameraController.sizeCellX*map.width, y*cameraController.sizeCellX);
-            }
-        } else {
-            float halfSizeCellX = cameraController.halfSizeCellX;
-            float halfSizeCellY = cameraController.halfSizeCellY;
-            float widthForTop = map.height * halfSizeCellX; // A - B
-            float heightForTop = map.height * halfSizeCellY; // B - Top
-            float widthForBottom = map.width * halfSizeCellX; // A - C
-            float heightForBottom = map.width * halfSizeCellY; // C - Bottom
-//        Gdx.app.log("GameField::drawGrid(camera)", "-- widthForTop:" + widthForTop + " heightForTop:" + heightForTop + " widthForBottom:" + widthForBottom + " heightForBottom:" + heightForBottom);
-            if (cameraController.isDrawableGrid == 1 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.width; x++)
-                    cameraController.shapeRenderer.line((halfSizeCellX * x), -(halfSizeCellY * x), -(widthForTop) + (halfSizeCellX * x), -(heightForTop) - (x * halfSizeCellY));
-                for (int y = 0; y <= map.height; y++)
-                    cameraController.shapeRenderer.line(-(halfSizeCellX * y), -(halfSizeCellY * y), (widthForBottom) - (halfSizeCellX * y), -(heightForBottom) - (halfSizeCellY * y));
-            }
-            if (cameraController.isDrawableGrid == 2 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.width; x++)
-                    cameraController.shapeRenderer.line((halfSizeCellX * x), -(halfSizeCellY * x), (widthForTop) + (halfSizeCellX * x), (heightForTop) - (x * halfSizeCellY));
-                for (int y = 0; y <= map.height; y++)
-                    cameraController.shapeRenderer.line((halfSizeCellX * y), (halfSizeCellY * y), (widthForBottom) + (halfSizeCellX * y), -(heightForBottom) + (halfSizeCellY * y));
-            }
-            if (cameraController.isDrawableGrid == 3 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.height; x++) // WHT??? map.height check groundDraw
-                    cameraController.shapeRenderer.line(-(halfSizeCellX * x), (halfSizeCellY * x), (widthForBottom) - (halfSizeCellX * x), (heightForBottom) + (x * halfSizeCellY));
-                for (int y = 0; y <= map.width; y++) // WHT??? map.width check groundDraw
-                    cameraController.shapeRenderer.line((halfSizeCellX * y), (halfSizeCellY * y), -(widthForTop) + (halfSizeCellX * y), (heightForTop) + (halfSizeCellY * y));
-            }
-            if (cameraController.isDrawableGrid == 4 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.height; x++) // WHT??? map.height check groundDraw
-                    cameraController.shapeRenderer.line(-(halfSizeCellX * x), (halfSizeCellY * x), -(widthForBottom) - (halfSizeCellX * x), -(heightForBottom) + (x * halfSizeCellY));
-                for (int y = 0; y <= map.width; y++) // WHT??? map.width check groundDraw
-                    cameraController.shapeRenderer.line(-(halfSizeCellX * y), -(halfSizeCellY * y), -(widthForTop) - (halfSizeCellX * y), (heightForTop) - (halfSizeCellY * y));
-            }
-        }
-        cameraController.shapeRenderer.end();
-    }
-
 //    private void drawUnitsAndTowers(CameraController cameraController) {
 //        getPriorityMap();
 //        for (Object obj : priorityMap.values()) {
@@ -872,33 +805,57 @@ public class GameField {
         } else {
             currentFrame = unit.getCurrentDeathFrame();
         }
-        float deltaX = cameraController.halfSizeCellX;
-        float deltaY = cameraController.sizeCellY;
+
         float sizeCellX = cameraController.sizeCellX;
         float sizeCellY = cameraController.sizeCellY;
-
         float fVx = 0f, fVy = 0f;
-        if(cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5) {
-            fVx = unit.circle1.x - deltaX;
-            fVy = unit.circle1.y - deltaY;
-            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
-        }
-        if(cameraController.isDrawableUnits == 2 || cameraController.isDrawableUnits == 5) {
-            fVx = unit.circle2.x - deltaX;
-            fVy = unit.circle2.y - deltaY;
-            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
-        }
-        if(cameraController.isDrawableUnits == 3 || cameraController.isDrawableUnits == 5) {
-            fVx = unit.circle3.x - deltaX;
-            fVy = unit.circle3.y - deltaY;
-            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
-        }
-        if(cameraController.isDrawableUnits == 4 || cameraController.isDrawableUnits == 5) {
-            fVx = unit.circle4.x - deltaX;
-            fVy = unit.circle4.y - deltaY;
-            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY*2);
-        }
+        if(!gameSettings.isometric) {
+            fVx = unit.newPosition.getX() * cameraController.sizeCellX;//+1;
+            fVy = unit.newPosition.getY() * cameraController.sizeCellX;// - sizeCellX/2;//+1;
+            float localSizeCell = cameraController.sizeCellX;//-1;
+            float localSpaceCell = cameraController.sizeCellX / 3;
+            fVx = unit.newPosition.getX() * cameraController.sizeCellX - localSpaceCell;
+            fVy = unit.newPosition.getY() * cameraController.sizeCellX - localSpaceCell;
+//        if(lastX < x)
+//            pxlsX -= (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
+//        if(lastX > x)
+//            pxlsX += (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
+//        if(lastY < y)
+//            pxlsY -= (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
+//        if(lastY > y)
+//            pxlsY += (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
+            cameraController.spriteBatch.draw(currentFrame, fVx, fVy, localSizeCell + localSpaceCell * 2, localSizeCell + localSpaceCell * 2);
+//            int maxHP = 100;
+//            int hp = unit.hp;
+//            float hpWidth = localSizeCell - 5;
+//            hpWidth = hpWidth / maxHP * hp;
+//            cameraController.painter.drawRect(pxlsX + localSpaceCell + 2, pxlsY, localSizeCell - 4, 10);
+//            cameraController.painter.fillRect(pxlsX + localSpaceCell + 3, pxlsY + 1, hpWidth, 9, QColor(Qt::green));
+        } else {
+            float deltaX = cameraController.halfSizeCellX;
+            float deltaY = cameraController.sizeCellY;
+            if (cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5) {
+                fVx = unit.circle1.x - deltaX;
+                fVy = unit.circle1.y - deltaY;
+                cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY * 2);
+            }
+            if (cameraController.isDrawableUnits == 2 || cameraController.isDrawableUnits == 5) {
+                fVx = unit.circle2.x - deltaX;
+                fVy = unit.circle2.y - deltaY;
+                cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY * 2);
+            }
+            if (cameraController.isDrawableUnits == 3 || cameraController.isDrawableUnits == 5) {
+                fVx = unit.circle3.x - deltaX;
+                fVy = unit.circle3.y - deltaY;
+                cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY * 2);
+            }
+            if (cameraController.isDrawableUnits == 4 || cameraController.isDrawableUnits == 5) {
+                fVx = unit.circle4.x - deltaX;
+                fVy = unit.circle4.y - deltaY;
+                cameraController.spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY * 2);
+            }
 //        drawUnitBar(shapeRenderer, unit, currentFrame, fVx, fVy);
+        }
     }
 
     private void drawUnitsBars(CameraController cameraController) {
@@ -966,91 +923,12 @@ public class GameField {
         }
     }
 
-    private void drawRoutes(CameraController cameraController) {
-        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
-        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
-
-        float gridNavRadius = cameraController.sizeCellX/22f;
-        for (Unit unit : unitsManager.units) {
-            ArrayDeque<Node> route = unit.route;
-            if (route != null) {
-                for (Node coor : route) {
-                    Cell cell = field[coor.getX()][coor.getY()];
-                    if(cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
-                        cameraController.shapeRenderer.circle(cell.graphicCoordinates1.x, cell.graphicCoordinates1.y, gridNavRadius);
-                    }
-                    if(cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
-                        cameraController.shapeRenderer.circle(cell.graphicCoordinates2.x, cell.graphicCoordinates2.y, gridNavRadius);
-                    }
-                    if(cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
-                        cameraController.shapeRenderer.circle(cell.graphicCoordinates3.x, cell.graphicCoordinates3.y, gridNavRadius);
-                    }
-                    if(cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
-                        cameraController.shapeRenderer.circle(cell.graphicCoordinates4.x, cell.graphicCoordinates4.y, gridNavRadius);
-                    }
-                }
-            }
-        }
-        cameraController.shapeRenderer.end();
-    }
-
-    private void drawWavesRoutes(CameraController cameraController) {
-        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
-        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        cameraController.shapeRenderer.setColor(Color.BROWN);
-        for (Wave wave : waveManager.waves) {
-            drawWave(cameraController, wave);
-        }
-        cameraController.shapeRenderer.setColor(Color.BLUE);
-        for (Wave wave : waveManager.wavesForUser) {
-            drawWave(cameraController, wave);
-        }
-        cameraController.shapeRenderer.end();
-    }
-
-    private void drawWave(CameraController cameraController, Wave wave) {
-//        Gdx.app.log("GameField::drawWave(" + wave + ")", "--");
-        float linesWidth = cameraController.sizeCellX/15f;
-        ArrayDeque<Node> route = wave.route;
-        if (route != null && !route.isEmpty()) {
-            Iterator<Node> nodeIterator = route.iterator();
-            Node startNode = nodeIterator.next();
-            Node endNode = null;
-            while (nodeIterator.hasNext()) {
-                endNode = nodeIterator.next();
-                Cell startCell = field[startNode.getX()][startNode.getY()];
-                Cell endCell = field[endNode.getX()][endNode.getY()];
-                if(cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
-                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates1, endCell.graphicCoordinates1, linesWidth);
-                }
-                if(cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
-                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates2, endCell.graphicCoordinates2, linesWidth);
-                }
-                if(cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
-                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates3, endCell.graphicCoordinates3, linesWidth);
-                }
-                if(cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
-                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates4, endCell.graphicCoordinates4, linesWidth);
-                }
-                startNode = endNode;
-            }
-        }
-    }
-
-//    private void drawTowers(CameraController cameraController) {
-//        for (Tower tower : towersManager.getAllTemplateForTowers()) {
-//            drawTower(tower, spriteBatch);
-//        }
-//    }
-
     private void drawTower(CameraController cameraController, Tower tower) {
         Cell cell = tower.cell;
         int towerSize = tower.templateForTower.size;
-//        Vector2 towerPos = cell.getGraphicCoordinates(cameraController.isDrawableTowers);
-//        cameraController.shapeRender.currCircle(towerPos)
-        Vector2 towerPos = new Vector2();
+        Vector2 towerPos = new Vector2(cell.getGraphicCoordinates(cameraController.isDrawableTowers));
+//        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, 3);
+//        Vector2 towerPos = new Vector2();
         TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
         float sizeCellX = cameraController.sizeCellX;
         float sizeCellY = cameraController.sizeCellY;
@@ -1059,13 +937,32 @@ public class GameField {
                 towerPos.set(cell.getGraphicCoordinates(m));
                 cameraController.getCorrectGraphicTowerCoord(towerPos, towerSize, m);
                 cameraController.spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+//                cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius/2);
+//                cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
             }
         } else if (cameraController.isDrawableTowers != 0) {
             towerPos.set(cell.getGraphicCoordinates(cameraController.isDrawableTowers));
             cameraController.getCorrectGraphicTowerCoord(towerPos, towerSize, cameraController.isDrawableTowers);
             cameraController.spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
+//            cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius/2);
+//            cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
         towerPos = null; // delete towerPos;
+    }
+
+    private void drawBullets(CameraController cameraController) {
+        for (Tower tower : towersManager.towers) {
+            for (Bullet bullet : tower.bullets) {
+                TextureRegion textureRegion = bullet.textureRegion;
+                if (textureRegion != null) {
+//                float width = textureRegion.getRegionWidth() * bullet.ammoSize;
+//                float height = textureRegion.getRegionHeight() * bullet.ammoSize;
+//                spriteBatch.draw(textureRegion, bullet.currentPoint.x, bullet.currentPoint.y, width, height);
+                    cameraController.spriteBatch.draw(textureRegion, bullet.currentPoint.x - bullet.currCircle.radius, bullet.currentPoint.y - bullet.currCircle.radius, bullet.currCircle.radius * 2, bullet.currCircle.radius * 2);
+//                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw bullet:" + bullet.currentPoint);
+                }
+            }
+        }
     }
 
     private void drawGridNav(CameraController cameraController) {
@@ -1275,21 +1172,84 @@ public class GameField {
                     cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player), tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
                 }
             }
-    }
+        }
         cameraController.spriteBatch.end();
     }
 
-    private void drawBullets(CameraController cameraController) {
-        for (Tower tower : towersManager.towers) {
-            for (Bullet bullet : tower.bullets) {
-                TextureRegion textureRegion = bullet.textureRegion;
-                if (textureRegion != null) {
-//                float width = textureRegion.getRegionWidth() * bullet.ammoSize;
-//                float height = textureRegion.getRegionHeight() * bullet.ammoSize;
-//                spriteBatch.draw(textureRegion, bullet.currentPoint.x, bullet.currentPoint.y, width, height);
-                    cameraController.spriteBatch.draw(textureRegion, bullet.currentPoint.x - bullet.currCircle.radius, bullet.currentPoint.y - bullet.currCircle.radius, bullet.currCircle.radius * 2, bullet.currCircle.radius * 2);
-//                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw bullet:" + bullet.currentPoint);
+    private void drawRoutes(CameraController cameraController) {
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
+
+        float gridNavRadius = cameraController.sizeCellX/22f;
+        for (Unit unit : unitsManager.units) {
+            if (unit.player == 1) {
+                cameraController.shapeRenderer.setColor(Color.WHITE);
+            } else {
+                cameraController.shapeRenderer.setColor(Color.RED);
+            }
+            ArrayDeque<Node> route = unit.route;
+            if (route != null) {
+                for (Node coor : route) {
+                    Cell cell = field[coor.getX()][coor.getY()];
+                    if(cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates1.x, cell.graphicCoordinates1.y, gridNavRadius);
+                    }
+                    if(cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates2.x, cell.graphicCoordinates2.y, gridNavRadius);
+                    }
+                    if(cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates3.x, cell.graphicCoordinates3.y, gridNavRadius);
+                    }
+                    if(cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
+                        cameraController.shapeRenderer.circle(cell.graphicCoordinates4.x, cell.graphicCoordinates4.y, gridNavRadius);
+                    }
                 }
+            }
+        }
+        cameraController.shapeRenderer.end();
+    }
+
+    private void drawWavesRoutes(CameraController cameraController) {
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        cameraController.shapeRenderer.setColor(Color.BROWN);
+        for (Wave wave : waveManager.waves) {
+            drawWave(cameraController, wave);
+        }
+        cameraController.shapeRenderer.setColor(Color.BLUE);
+        for (Wave wave : waveManager.wavesForUser) {
+            drawWave(cameraController, wave);
+        }
+        cameraController.shapeRenderer.end();
+    }
+
+    private void drawWave(CameraController cameraController, Wave wave) {
+//        Gdx.app.log("GameField::drawWave(" + wave + ")", "--");
+        float linesWidth = cameraController.sizeCellX/15f;
+        ArrayDeque<Node> route = wave.route;
+        if (route != null && !route.isEmpty()) {
+            Iterator<Node> nodeIterator = route.iterator();
+            Node startNode = nodeIterator.next();
+            Node endNode = null;
+            while (nodeIterator.hasNext()) {
+                endNode = nodeIterator.next();
+                Cell startCell = field[startNode.getX()][startNode.getY()];
+                Cell endCell = field[endNode.getX()][endNode.getY()];
+                if(cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates1, endCell.graphicCoordinates1, linesWidth);
+                }
+                if(cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates2, endCell.graphicCoordinates2, linesWidth);
+                }
+                if(cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates3, endCell.graphicCoordinates3, linesWidth);
+                }
+                if(cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
+                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates4, endCell.graphicCoordinates4, linesWidth);
+                }
+                startNode = endNode;
             }
         }
     }
@@ -1330,25 +1290,13 @@ public class GameField {
                 finishX = (towerSize / 2);
                 finishY = (towerSize / 2);
             }
-            // Правая карта
-//            if (towerSize % 2 == 0) {
-//                startX = -(towerSize / 2);
-//                startY = -((towerSize / 2) - 1);
-//                finishX = ((towerSize / 2) - 1);
-//                finishY = (towerSize / 2);
-//            } else {
-//                startX = -(towerSize / 2);
-//                startY = -(towerSize / 2);
-//                finishX = (towerSize / 2);
-//                finishY = (towerSize / 2);
-//            }
         }
         GridPoint2 startDrawCell = new GridPoint2(startX, startY);
         GridPoint2 finishDrawCell = new GridPoint2(finishX, finishY);
         for (int x = startX; x <= finishX; x++) {
             for (int y = startY; y <= finishY; y++) {
-                Cell mainCell = getCell(buildX + x, buildY + y);
-                if(mainCell == null || !mainCell.isEmpty()) {
+                Cell cell = getCell(buildX + x, buildY + y);
+                if(cell == null || !cell.isEmpty()) {
                     if (drawFull) {
                         canBuild = false;
                     }
@@ -1390,7 +1338,7 @@ public class GameField {
         }
         cameraController.getCorrectGraphicTowerCoord(towerPos, towerSize, map);
         cameraController.spriteBatch.draw(textureRegion, towerPos.x, towerPos.y, cameraController.sizeCellX * towerSize, (cameraController.sizeCellY * 2) * towerSize);
-        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection/4);
+//        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, templateForTower.radiusDetection/4);
         if (greenCheckmark != null && redCross != null) {
             Vector2 markPos = new Vector2();
             for (int x = startDrawCell.x; x <= finishDrawCell.x; x++) {
@@ -1412,60 +1360,17 @@ public class GameField {
         towerPos = null; // delete towerPos;
     }
 
-
-    public void updateHeroDestinationPoint() {
-        Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- ");
-//    Unit* hero = unitsManager.hero;
-        for (Unit hero : unitsManager.hero) {
-            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero:" + hero);
-            if (hero != null && !hero.route.isEmpty()) {
-                updateHeroDestinationPoint(hero.route.getFirst().getX(), hero.route.getFirst().getY());
-            } else {
-//                updatePathFinderWalls();
-            }
-        }
-    }
-
-    public void updateHeroDestinationPoint(int x, int y) {
-        updatePathFinderWalls();
-//    Unit* hero = unitsManager.hero;
-        for (Unit hero : unitsManager.hero) {
-            Node old = hero.oldPosition;
-            Node pos = hero.newPosition;
-            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- old:" + old);
-            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- pos:" + pos);
-            if (pos != null) {
-                hero.route = pathFinder.route(hero.newPosition.getX(), hero.newPosition.getY(), x, y);
-                Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero.route:" + hero.route);
-                if (hero.route != null && !hero.route.isEmpty()) {
-                    hero.route.removeFirst();
-                }
-            }
-        }
-    }
-
-    public void updatePathFinderWalls() {
-        Gdx.app.log("GameField::updatePathFinderWalls()", "-start- pathFinder.walls.size():" + pathFinder.nodeMatrix.length);
-//        pathFinder.clearCollisions();
-        pathFinder.loadCharMatrix(getCharMatrix());
-        Gdx.app.log("GameField::updatePathFinderWalls()", "-end- pathFinder.walls.size():" + pathFinder.nodeMatrix.length);
-    }
-
-//    public void setExitPoint(int x, int y) {
-//        waveManager.setExitPoint(new GridPoint2(x, y));
-//        rerouteForAllUnits(new GridPoint2(x, y));
-//    }
-
-    public void spawnUnitFromUser(TemplateForUnit templateForUnit) {
+    public Unit spawnUnitFromUser(TemplateForUnit templateForUnit) {
         Gdx.app.log("GameField::spawnUnitFromUser()", "-- templateForUnit:" + templateForUnit);
         if (gamerGold >= templateForUnit.cost) {
             gamerGold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
                 Cell spawnCell = getCell(wave.spawnPoint.x, wave.spawnPoint.y);
                 Cell destExitCell = getCell(wave.exitPoint.x, wave.exitPoint.y);
-                createUnit(spawnCell, destExitCell, templateForUnit, 1, destExitCell); // create Player1 Unit
+                return createUnit(spawnCell, destExitCell, templateForUnit, 1, destExitCell); // create Player1 Unit
             }
         }
+        return null;
     }
 
     private void spawnUnits(float delta) {
@@ -1475,17 +1380,18 @@ public class GameField {
         }
     }
 
-    private void spawnUnit(WaveManager.TemplateNameAndPoints templateNameAndPoints) {
+    private Unit spawnUnit(WaveManager.TemplateNameAndPoints templateNameAndPoints) {
         if (templateNameAndPoints != null) {
             TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateNameAndPoints.templateName);
             if (templateForUnit != null) {
                 Cell spawnCell = getCell(templateNameAndPoints.spawnPoint.x, templateNameAndPoints.spawnPoint.y);
                 Cell destExitCell = getCell(templateNameAndPoints.exitPoint.x, templateNameAndPoints.exitPoint.y);
-                createUnit(spawnCell, destExitCell, templateForUnit, 0, destExitCell); // create Computer0 Unit
+                return createUnit(spawnCell, destExitCell, templateForUnit, 0, destExitCell); // create Computer0 Unit
             } else {
                 Gdx.app.error("GameField::spawnUnit()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
             }
         }
+        return null;
     }
 
     private Unit spawnHeroInSpawnPoint() {
@@ -1514,27 +1420,13 @@ public class GameField {
         return null;
     }
 
-    Unit spawnCompUnitToRandomExit(int x, int y) {
+    public Unit spawnCompUnitToRandomExit(int x, int y) {
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- x:" + x + " y:" + y);
         int randomX = (int)(Math.random()*map.width);
         int randomY = (int)(Math.random()*map.height);
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
         return createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), 0, null);
     }
-
-//    public Unit createUnit(int x, int y, int x2, int y2, int player) {
-//        if (player == 0) {
-//            return createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getRandomTemplateForUnitFromFirstFaction(), player, null);
-//        } else if (player == 1) {
-//            return createUnit(getCell(x, y), getCell(x2, y2), factionsManager.getTemplateForUnitByName("unit3_footman"), player, gameSettings.cellExitHero);
-////        updateHeroDestinationPoint(exitPointX, exitPointY);
-//        }
-//        return null;
-//    }
-
-//    public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, int player) {
-//        return createUnit(spawnCell, destCell, templateForUnit, player, null);
-//    }
 
     private Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, int player, Cell exitCell) {
 //        Gdx.app.log("GameField::createUnit()", "-- spawnCell:" + spawnCell);
@@ -1553,7 +1445,6 @@ public class GameField {
                 unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
                 Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
-//                Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
             } else {
                 Gdx.app.log("GameField::createUnit()", "-- Not found route for createUnit!");
 //                if(towersManager.towers.size > 0) {
@@ -1571,6 +1462,30 @@ public class GameField {
         }
     }
 
+    public UnderConstruction createdRandomUnderConstruction() {
+        return createdUnderConstruction(factionsManager.getRandomTemplateForTowerFromAllFaction());
+    }
+
+    public UnderConstruction createdUnderConstruction(TemplateForTower templateForTower) {
+        if (underConstruction != null) {
+            underConstruction.dispose();
+        }
+        return underConstruction = new UnderConstruction(templateForTower);
+    }
+
+    public boolean cancelUnderConstruction() {
+        if (underConstruction != null) {
+            underConstruction.dispose();
+            underConstruction = null;
+            return true;
+        }
+        return false;
+    }
+
+    public UnderConstruction getUnderConstruction() {
+        return underConstruction;
+    }
+
     public void buildTowersWithUnderConstruction(int x, int y) {
         if (underConstruction != null) {
             underConstruction.setEndCoors(x, y);
@@ -1580,17 +1495,23 @@ public class GameField {
                 createTowerWithGoldCheck(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, 1);
             }
             underConstruction.clearStartCoors();
-            rerouteForAllUnits();
+            rerouteAllUnits();
         }
     }
 
-    public void towerActions(int x, int y) {
-        if (field[x][y].isEmpty()) {
-            createTowerWithGoldCheck(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
-            rerouteForAllUnits();
-        } else if (field[x][y].getTower() != null) {
-            removeTower(x, y);
+    public boolean towerActions(int x, int y) {
+        Cell cell = getCell(x, y);
+        if (cell != null) {
+            if (cell.isEmpty()) {
+                createTowerWithGoldCheck(x, y, factionsManager.getRandomTemplateForTowerFromAllFaction(), 1);
+                rerouteAllUnits();
+                return true;
+            } else if (cell.getTower() != null) {
+                removeTower(x, y);
+                return true;
+            }
         }
+        return false;
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower, int player) {
@@ -1649,19 +1570,20 @@ public class GameField {
         return null;
     }
 
-    public void removeLastTower() {
-//        if(towersManager.amountTowers() > 0) {
-            Tower tower = towersManager.getTower(towersManager.towers.size - 1);
+    public boolean removeLastTower() {
+        Tower tower = towersManager.getTower(); // towersManager.towers.size - 1);
+        if (tower != null) {
             Cell pos = tower.cell;
-            removeTower(pos.cellX, pos.cellY);
-//        }
+            return ( (removeTower(pos.cellX, pos.cellY)==0)?false:true );
+        }
+        return false;
     }
 
     public boolean removeTowerWithGold(int cellX, int cellY) {
         int towerCost = removeTower(cellX, cellY);
         if (towerCost > 0) {
 //            rerouteForAllUnits();
-            gamerGold += towerCost;
+            gamerGold += towerCost; // *0.5;
             return true;
         }
         return false;
@@ -1703,42 +1625,168 @@ public class GameField {
         return 0;
     }
 
-    public void rerouteForAllUnits() {
-        rerouteForAllUnits(null);
-    }
-
-    public void rerouteForAllUnits(GridPoint2 exitPoint) {
-        if (pathFinder != null) {
-            long start = System.nanoTime();
-            Gdx.app.log("GameField::rerouteForAllUnits()", "-- Start:" + start);
-//            pathFinder.loadCharMatrix(getCharMatrix());
-            for (Unit unit : unitsManager.units) {
-                ArrayDeque<Node> route;
-                if (exitPoint == null) {
-                    route = unit.route;
-                    if(route != null && route.size() > 0) {
-                        Node node = unit.route.getLast();
-                        GridPoint2 localExitPoint = new GridPoint2(node.getX(), node.getY());
-                        route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
-                    }
-                } else {
-                    route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
-                }
-                if (route != null && route.size() > 0) {
-                    route.removeFirst();
-                    unit.route = route;
-                }
-//                    long end2 = System.nanoTime();
-//                    Gdx.app.log("GameField", "rerouteForAllUnits()', "-- Thread End:" + (end2-start2));
-//                }
-//            }.init(unit, outExitPoint)).start();
+    public void updateHeroDestinationPoint() {
+        Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- ");
+//    Unit* hero = unitsManager.hero;
+        for (Unit hero : unitsManager.hero) {
+            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero:" + hero);
+            if (hero != null && !hero.route.isEmpty()) {
+                updateHeroDestinationPoint(hero.route.getFirst().getX(), hero.route.getFirst().getY());
+            } else {
+//                updatePathFinderWalls();
             }
-            long end = System.nanoTime();
-            Gdx.app.log("GameField::rerouteForAllUnits()", "-- End:" + end + " Delta time:" + (end-start));
-        } else {
-            Gdx.app.log("GameField::rerouteForAllUnits(" + exitPoint + ")", "-- pathFinder:" + pathFinder);
         }
     }
+
+    public void updateHeroDestinationPoint(int x, int y) {
+        updatePathFinderWalls();
+//    Unit* hero = unitsManager.hero;
+        for (Unit hero : unitsManager.hero) {
+            Node old = hero.oldPosition;
+            Node pos = hero.newPosition;
+            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- old:" + old);
+            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- pos:" + pos);
+            if (pos != null) {
+                hero.route = pathFinder.route(hero.newPosition.getX(), hero.newPosition.getY(), x, y);
+                Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero.route:" + hero.route);
+                if (hero.route != null && !hero.route.isEmpty()) {
+                    hero.route.removeFirst();
+                }
+            }
+        }
+    }
+
+    public void updatePathFinderWalls() {
+        Gdx.app.log("GameField::updatePathFinderWalls()", "-start- pathFinder.walls.size():" + pathFinder.nodeMatrix.length);
+//        pathFinder.clearCollisions();
+        pathFinder.loadCharMatrix(getCharMatrix());
+        Gdx.app.log("GameField::updatePathFinderWalls()", "-end- pathFinder.walls.size():" + pathFinder.nodeMatrix.length);
+    }
+
+    public char[][] getCharMatrix() {
+        if (field != null) {
+            char[][] charMatrix = new char[map.height][map.width];
+            for (int y = 0; y < map.height; y++) {
+                for (int x = 0; x < map.width; x++) {
+                    if (field[x][y].isTerrain() || field[x][y].getTower() != null) {
+                        if (field[x][y].getTower() != null && field[x][y].getTower().templateForTower.towerAttackType == TowerAttackType.Pit) {
+                            charMatrix[y][x] = '.';
+                        } else {
+                            charMatrix[y][x] = 'T';
+                        }
+                    } else {
+                        charMatrix[y][x] = '.';
+                    }
+//                    System.out.print(charMatrix[y][x]);
+                }
+//                System.out.print("\n");
+            }
+            return charMatrix;
+        }
+        return null;
+    }
+
+//void GameField::updateHeroDestinationPoint() {
+//    qDebug() << "GameField::updateHeroDestinationPoint(); -- ";
+////    Unit* hero = unitsManager->hero;
+//    foreach (Unit* hero, unitsManager->hero) {
+//        qDebug() << "GameField::updateHeroDestinationPoint(); -- hero:" << hero;
+//        if (hero != NULL && !hero->route.empty()) {
+//            updateHeroDestinationPoint(hero->route.front().x, hero->route.front().y);
+//        } else {
+//            updatePathFinderWalls();
+//        }
+//    }
+//}
+
+    public void rerouteHero() {
+        rerouteHero(-1, -1);
+    }
+
+    public void rerouteHero(int x, int y) {
+        if (x == -1 && y == -1) {
+            for (Unit unit : unitsManager.hero) {
+                ArrayDeque<Node> route = unit.route;
+                if (route != null && !route.isEmpty()) {
+                    Node node = route.getLast();
+                    rerouteUnitPath(unit, node.getX(), node.getY());
+                }
+            }
+        } else {
+            for (Unit unit : unitsManager.hero) {
+                rerouteUnitPath(unit, x, y);
+            }
+        }
+    }
+
+    public void rerouteAllUnits() {
+        rerouteAllUnits(-1, -1);
+    }
+
+    public void rerouteAllUnits(int x, int y) {
+        if (x == -1 && y == -1) {
+            for (Unit unit : unitsManager.units) {
+                ArrayDeque<Node> route = unit.route;
+                if (route != null && !route.isEmpty()) {
+                    Node node = route.getLast();
+                    rerouteUnitPath(unit, node.getX(), node.getY());
+                }
+            }
+        } else {
+            for (Unit unit : unitsManager.units) {
+                rerouteUnitPath(unit, x, y);
+            }
+        }
+    }
+
+    private void rerouteUnitPath(Unit unit, int x, int y) {
+        ArrayDeque<Node> route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), x, y);
+        if (route != null && !route.isEmpty()) {
+//            if (route.front().equals({x, y})) {
+                route.removeFirst();
+                unit.route = route;
+//            } else {
+//                unit->route.clear();
+//            }
+        }
+    }
+
+//    public void rerouteForAllUnits() {
+//        rerouteForAllUnits(null);
+//    }
+//
+//    public void rerouteForAllUnits(GridPoint2 exitPoint) {
+//        if (pathFinder != null) {
+//            long start = System.nanoTime();
+//            Gdx.app.log("GameField::rerouteForAllUnits()", "-- Start:" + start);
+////            pathFinder.loadCharMatrix(getCharMatrix());
+//            for (Unit unit : unitsManager.units) {
+//                ArrayDeque<Node> route;
+//                if (exitPoint == null) {
+//                    route = unit.route;
+//                    if(route != null && route.size() > 0) {
+//                        Node node = unit.route.getLast();
+//                        GridPoint2 localExitPoint = new GridPoint2(node.getX(), node.getY());
+//                        route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
+//                    }
+//                } else {
+//                    route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
+//                }
+//                if (route != null && !route.isEmpty()) {
+//                    route.removeFirst();
+//                    unit.route = route;
+//                }
+////                    long end2 = System.nanoTime();
+////                    Gdx.app.log("GameField", "rerouteForAllUnits()', "-- Thread End:" + (end2-start2));
+////                }
+////            }.init(unit, outExitPoint)).start();
+//            }
+//            long end = System.nanoTime();
+//            Gdx.app.log("GameField::rerouteForAllUnits()", "-- End:" + end + " Delta time:" + (end-start));
+//        } else {
+//            Gdx.app.log("GameField::rerouteForAllUnits(" + exitPoint + ")", "-- pathFinder:" + pathFinder);
+//        }
+//    }
 
     private void stepAllUnits(float delta, CameraController cameraController) {
 //        Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.units:" + unitsManager.units.size);
@@ -1795,7 +1843,6 @@ public class GameField {
     private void shotAllTowers(float delta, CameraController cameraController) {
         updateTowersGraphicCoordinates(cameraController);
         for (Tower tower : towersManager.towers) {
-//            Gdx.app.log("GameField::shotAllTowers()", "-- tower.toString():" + tower.toString());
             TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
                 checkPitTower(tower);
@@ -1807,22 +1854,19 @@ public class GameField {
                         if (unit != null && unit.isAlive() && unit.player != tower.player) {
                             if ( (unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
                                     (!unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) {
-//                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle1:" + unit.circle1);
-//                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle2:" + unit.circle2);
-//                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle3:" + unit.circle3);
-//                                Gdx.app.log("GameField::shotAllTowers()", "-- unit.circle4:" + unit.circle4);
 //                                Gdx.app.log("GameField::shotAllTowers()", "-- tower.radiusDetectionCircle:" + tower.radiusDetectionCircle);
-                                if (Intersector.overlaps(unit.circle1, tower.radiusDetectionCircle)) {
+                                if (tower.radiusDetectionCircle != null) {
+                                    if (tower.radiusDetectionCircle.overlaps(unit.circle1)) { // circle1 2 3 4?
 //                                    Gdx.app.log("GameField::shotAllTowers()", "-- overlaps");
-                                    if (tower.shoot(unit, cameraController)) {
-                                        if(tower.templateForTower.towerShellType != TowerShellType.MassAddEffect) {
-                                            break;
+                                        if (tower.shoot(unit, cameraController)) {
+                                            if (tower.templateForTower.towerShellType != TowerShellType.MassAddEffect) {
+                                                break;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-//                        Gdx.app.log("GameField::shotAllTowers()", "-- unit.toString():" + unit.toString());
                     }
                 }
             } else if (towerAttackType == TowerAttackType.FireBall) {
@@ -1847,7 +1891,6 @@ public class GameField {
             }
             return true;
         }
-//        Gdx.app.log("GameField::checkPitTower()", "-- towerAttackType.pit -- unit:" + unit);
         return false;
     }
 
@@ -1875,130 +1918,10 @@ public class GameField {
         return attack;
     }
 
-//    boolean fireBallTowerAttack(float deltaTime, Tower fireBallTower) {
-//            if (fireBallTower.recharge(deltaTime)) {
-//    //            fireBallTower.createBullets(towersManager.difficultyLevel);
-//            }
-//            for (int b = 0; b < fireBallTower.bullets.size; b++) {
-//                Bullet tmpBullet = fireBallTower.bullets.get(b);
-//                int currX = tmpBullet.currCellX;
-//                int currY = tmpBullet.currCellY;
-//                if (currX < 0 || currX >= map.width || currY < 0 || currY >= map.height) {
-//                    fireBallTower.bullets.erase(fireBallTower.bullets.begin()+b);
-//                    delete tmpBullet;
-//                    b--;
-//                } else {
-//                    if (getCell(currX, currY).getHero() != NULL) {
-//                        unitsManager.attackUnit(currX, currY, 9999);//, getCell(currX, currY).getHero()); // Magic number 9999
-//                    }
-//                }
-//                if(tmpBullet.animationCurrIter < tmpBullet.animationMaxIter) {
-//                    tmpBullet.pixmap = tmpBullet.activePixmaps[tmpBullet.animationCurrIter++];
-//                } else {
-//                    int exitX = currX, exitY = currY;
-//                    if (tmpBullet.direction == Direction::type::UP) {
-//                        exitX = currX-1;
-//                        exitY = currY-1;
-//                    } else if (tmpBullet.direction == Direction::UP_RIGHT) {
-//                        exitX = currX;
-//                        exitY = currY-1;
-//                    } else if (tmpBullet.direction == Direction::RIGHT) {
-//                        exitX = currX+1;
-//                        exitY = currY-1;
-//                    } else if (tmpBullet.direction == Direction::UP_LEFT) {
-//                        exitX = currX-1;
-//                        exitY = currY;
-//                    } else if (tmpBullet.direction == Direction::DOWN_RIGHT) {
-//                        exitX = currX+1;
-//                        exitY = currY;
-//                    } else if (tmpBullet.direction == Direction::LEFT) {
-//                        exitX = currX-1;
-//                        exitY = currY+1;
-//                    } else if (tmpBullet.direction == Direction::DOWN_LEFT) {
-//                        exitX = currX;
-//                        exitY = currY+1;
-//                    } else if (tmpBullet.direction == Direction::DOWN) {
-//                        exitX = currX+1;
-//                        exitY = currY+1;
-//                    }
-//                    if(exitX != currX || exitY != currY) {
-//                        tmpBullet.lastCellX = currX;
-//                        tmpBullet.lastCellY = currY;
-//                        tmpBullet.currCellX = exitX;
-//                        tmpBullet.currCellY = exitY;
-//                        if(isometric) {
-//                            if(exitX < currX && exitY < currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_up.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_up;
-//                                tmpBullet.direction = Direction::UP;
-//                            } else if(exitX == currX && exitY < currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_up_right.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_up_right;
-//                                tmpBullet.direction = Direction::UP_RIGHT;
-//                            } else if(exitX > currX && exitY < currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_right.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_right;
-//                                tmpBullet.direction = Direction::RIGHT;
-//                            } else if(exitX < currX && exitY == currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_up_left.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_up_left;
-//                                tmpBullet.direction = Direction::UP_LEFT;
-//                            } else if(exitX > currX && exitY == currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_down_right.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_down_right;
-//                                tmpBullet.direction = Direction::DOWN_RIGHT;
-//                            } else if(exitX < currX && exitY > currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_left.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_left;
-//                                tmpBullet.direction = Direction::LEFT;
-//                            } else if(exitX == currX && exitY > currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_down_left.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_down_left;
-//                                tmpBullet.direction = Direction::DOWN_LEFT;
-//                            } else if(exitX > currX && exitY > currY) {
-//                                tmpBullet.animationMaxIter = tmpBullet.defTower.bullet_fly_down.size();
-//                                tmpBullet.activePixmaps = tmpBullet.defTower.bullet_fly_down;
-//                                tmpBullet.direction = Direction::DOWN;
-//                            }
-//                        }
-//                        if (tmpBullet.activePixmaps.empty() && !tmpBullet.defTower.bullet.empty()) {
-//                            tmpBullet.animationMaxIter = tmpBullet.defTower.bullet.size();
-//                            tmpBullet.activePixmaps = tmpBullet.defTower.bullet;
-//                        }
-//                        tmpBullet.pixmap = tmpBullet.activePixmaps[0];
-//                        tmpBullet.animationCurrIter = 0;
-//                    }
-//                }
-//            }
-//        }
-//        return true;
-//    }
-
-    private void moveAllShells(float delta) {
+    private void moveAllShells(float delta, CameraController cameraController) {
         for (Tower tower : towersManager.towers) {
-            tower.moveAllShells(delta);
+            tower.moveAllShells(delta, cameraController);
         }
-    }
-
-//    public Array<TemplateForTower> getFirstTemplateForTowers() {
-//        factionsManager.ge
-//    }
-
-    // GAME INTERFACE ZONE1
-//    public GridPoint2 whichCell(GridPoint2 grafCoordinate) {
-//        return whichCell.whichCell(grafCoordinate);
-//    }
-
-//    public WhichCell getWhichCell() {
-//        return whichCell;
-//    }
-
-    public void setGamePause(boolean gamePaused) {
-        this.gamePaused = gamePaused;
-    }
-
-    public boolean getGamePaused() {
-        return gamePaused;
     }
 
     public int getNumberOfUnits() {
@@ -2047,66 +1970,85 @@ public class GameField {
         return "In progress";
     }
 
-    public int getGamerGold() {
-        return gamerGold;
-    }
-
-    public Array<TemplateForTower> getAllFirstTowersFromFirstFaction() {
-        return factionsManager.getAllFirstTowersFromFirstFaction();
-    }
-
-    public Array<TemplateForTower> getAllTemplateForTowers() {
-        return factionsManager.getAllTemplateForTowers();
-    }
-
-    public Array<TemplateForUnit> getAllTemplateForUnits() {
-        return factionsManager.getAllTemplateForUnits();
-    }
-
-    public UnderConstruction createdRandomUnderConstruction() {
-        return createdUnderConstruction(factionsManager.getRandomTemplateForTowerFromAllFaction());
-    }
-
-    public UnderConstruction createdUnderConstruction(TemplateForTower templateForTower) {
-        if (underConstruction != null) {
-            underConstruction.dispose();
+    public void turnRight() {
+        if(map.width == map.height) {
+            Cell[][] newCells = new Cell[map.width][map.height];
+            for(int y = 0; y < map.height; y++) {
+                for(int x = 0; x < map.width; x++) {
+                    newCells[map.width-y-1][x] = field[x][y];
+                    newCells[map.width-y-1][x].setGraphicCoordinates(map.width-y-1, x, map.tileWidth/2, map.tileHeight/2);
+                }
+            }
+//        delete field;
+            field = newCells;
+        } else {
+            Gdx.app.log("GameField::turnRight()", "-- Not work || Work, but mb not Good!");
+            int oldWidth = map.width;
+            int oldHeight = map.height;
+            map.width = map.height;
+            map.height = oldWidth;
+            Cell[][] newCells = new Cell[map.width][map.height];
+            for(int y = 0; y < oldHeight; y++) {
+                for(int x = 0; x < oldWidth; x++) {
+                    newCells[map.width-y-1][x] = field[x][y];
+                    newCells[map.width-y-1][x].setGraphicCoordinates(map.width-y-1, x, map.tileWidth/2, map.tileHeight/2);
+                }
+            }
+//        delete field;
+            field = newCells;
         }
-        return underConstruction = new UnderConstruction(templateForTower);
     }
 
-    public boolean cancelUnderConstruction() {
-        if (underConstruction != null) {
-            underConstruction.dispose();
-            underConstruction = null;
-            return true;
+    public void turnLeft() {
+        if(map.width == map.height) {
+            Cell[][] newCells = new Cell[map.width][map.height];
+            for(int y = 0; y < map.height; y++) {
+                for(int x = 0; x < map.width; x++) {
+                    newCells[y][map.height-x-1] = field[x][y];
+                    newCells[y][map.height-x-1].setGraphicCoordinates(y, map.height-x-1, map.tileWidth/2, map.tileHeight/2);
+                }
+            }
+//        delete field;
+            field = newCells;
+        } else {
+            Gdx.app.log("GameField::turnLeft()", "-- Not work || Work, but mb not Good!");
+            int oldWidth = map.width;
+            int oldHeight = map.height;
+            map.width = map.height;
+            map.height = oldWidth;
+            Cell[][] newCells = new Cell[map.width][map.height];
+            for(int y = 0; y < oldHeight; y++) {
+                for(int x = 0; x < oldWidth; x++) {
+                    newCells[y][map.height-x-1] = field[x][y];
+                    newCells[y][map.height-x-1].setGraphicCoordinates(y, map.height-x-1, map.tileWidth/2, map.tileHeight/2);
+                }
+            }
+//        delete field;
+            field = newCells;
         }
-        return false;
     }
 
-    public UnderConstruction getUnderConstruction() {
-        return underConstruction;
-    }
-
-    public Cell getCell(int x, int y) {
-        if (x >= 0 && x < map.width) {
-            if (y >= 0 && y < map.height) {
-                return field[x][y];
+    public void flipX() {
+        Cell[][] newCells = new Cell[map.width][map.height];
+        for (int y = 0; y < map.height; y++) {
+            for (int x = 0; x < map.width; x++) {
+                newCells[map.width-x-1][y] = field[x][y];
+                newCells[map.width-x-1][y].setGraphicCoordinates(map.width-x-1, y, map.tileWidth/2, map.tileHeight/2);
             }
         }
-        return null;
+//        delete field;
+        field = newCells;
     }
 
-    public void updateCellsGraphicCoordinates(float halfSizeCellX, float halfSizeCellY) {
-        for (int cellX = 0; cellX < map.width; cellX++) {
-            for (int cellY = 0; cellY < map.height; cellY++) {
-                field[cellX][cellY].setGraphicCoordinates(cellX, cellY, halfSizeCellX, halfSizeCellY);
+    public void flipY() {
+        Cell[][] newCells = new Cell[map.width][map.height];
+        for(int y = 0; y < map.height; y++) {
+            for(int x = 0; x < map.width; x++) {
+                newCells[x][map.height-y-1] = field[x][y];
+                newCells[x][map.height-y-1].setGraphicCoordinates(x, map.height-y-1, map.tileWidth/2, map.tileHeight/2);
             }
         }
-    }
-
-    public void updateTowersGraphicCoordinates(CameraController cameraController) {
-        for (Tower tower : towersManager.towers) {
-            tower.updateCenterGraphicCoordinates(cameraController);
-        }
+//        delete field;
+        field = newCells;
     }
 }

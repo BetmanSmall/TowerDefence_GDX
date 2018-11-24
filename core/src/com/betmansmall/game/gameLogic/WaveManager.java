@@ -25,8 +25,8 @@ public class WaveManager {
     }
 
     public Array<Wave> waves;
-    public GridPoint2 lastExitPoint;
     public Array<Wave> wavesForUser;
+    public GridPoint2 lastExitPoint;
     public float waitForNextSpawnUnit;
 
     WaveManager() {
@@ -104,11 +104,9 @@ public class WaveManager {
 
 //    public int getNumberOfUnits() // need implement
 
-    public void validationPoints(Cell[][] field) {
+    public void validationPoints(Cell[][] field, int sizeFieldX, int sizeFieldY) {
         Gdx.app.log("WaveManager::validationPoints(" + field + ")", "--");
         if(field != null) {
-            int sizeFieldX = field.length;
-            int sizeFieldY = field[0].length;
             int wavesSize = waves.size;
             Gdx.app.log("WaveManager::validationPoints()", "-- sizeField:(" + sizeFieldX + ", " + sizeFieldY + ") waves:(" + wavesSize + ":" + waves.size + ")");
             for (int w = 0; w < waves.size; w++) {

@@ -13,7 +13,6 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Vector2;
 
-
 /**
  * Created by betmansmall on 29.03.2016.
  */
@@ -26,7 +25,6 @@ public class Bullet {
     public TemplateForTower templateForTower;
 
     public TextureRegion textureRegion;
-//    public ObjectMap<String, AnimatedTile> ammunitionPictures;
 
     public Vector2 currentPoint;
     public Circle currCircle;
@@ -55,16 +53,12 @@ public class Bullet {
         this.currCircle = new Circle(currentPoint, ammoSize);
         this.endPoint = new Vector2(destPoint);
         this.endCircle = new Circle(destPoint, 3f);
+        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + " currCircle:" + currCircle);
+        Gdx.app.log("Bullet::Bullet()", "-- endPoint:" + endPoint + " endCircle:" + endCircle);
 
-        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", currCircle:" + currCircle);
-        Gdx.app.log("Bullet::Bullet()", "-- endPoint:" + endPoint + ", endCircle:" + endCircle);
-
-        velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
+        velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y);
+        velocity.nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
         Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
-
-//        Vector2 dir = endPoint.sub(currentPoint);
-//        dir.nor();
-//        this.direction = Direction.IDLE;
 
         if (velocity.x > 0) {
             if (velocity.y > 0) {
@@ -110,6 +104,7 @@ public class Bullet {
         this.currCircle = new Circle(currentPoint, ammoSize);
         this.endPoint = new Vector2(unit.currentPoint.x + unit.displacement.x, unit.currentPoint.y + unit.displacement.y);
         this.endCircle = new Circle(0, 0, 3f);
+
         if(templateForTower.towerShellType == TowerShellType.MultipleTarget || templateForTower.towerShellType == TowerShellType.FirstTarget) {
             this.endCircle.setPosition(endPoint);
         } else if(templateForTower.towerShellType == TowerShellType.AutoTarget) {
@@ -128,23 +123,30 @@ public class Bullet {
     public void dispose() {
         unit = null;
         templateForTower = null;
-//        ammunitionPictures = null;
+        textureRegion = null;
+
+        currentPoint = null;
+        currCircle = null;
+        endPoint = null;
+        endCircle = null;
+        velocity = null;
+
+        animation = null;
     }
 
     void setAnimation(String action) {
-        try {
-            AnimatedTile animatedTiledMapTile = templateForTower.animations.get(action + direction);
+//        Gdx.app.log("Bullet::setAnimation()", "-- action+direction:" + action+direction );
+        AnimatedTile animatedTiledMapTile = templateForTower.animations.get(action + direction);
+        if (animatedTiledMapTile != null) {
             StaticTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
             TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
             for (int k = 0; k < staticTiledMapTiles.length; k++) {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
             }
             animation = new Animation(ammoSpeed / staticTiledMapTiles.length, textureRegions);
-            Gdx.app.log("Unit::setAnimation()", "-- animation:" + animation);
-            Gdx.app.log("Unit::setAnimation()", "-- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
-            Gdx.app.log("Unit::setAnimation()", "-- animation:" + animation);
-        } catch (Exception exp) {
-            Gdx.app.log("Bullet::setAnimation(" + action + direction + ")", "-- templateForTowerName: " + templateForTower.name + " Exp: " + exp);
+//            Gdx.app.log("Bullet::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
+        } else {
+            Gdx.app.log("Bullet::setAnimation(" + action + direction + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
         }
     }
 
@@ -156,7 +158,7 @@ public class Bullet {
      * 0 - Пуля передвинулась и достигла крипа.<br>
      * 1 - Пуля передвинулась, но не достигла крипа.<br>
      */
-    public int flightOfShell(float delta) {
+    public int flightOfShell(float delta, CameraController cameraController) {
 //        Gdx.app.log("Bullet::flightOfShell()", "-- delta:" + delta);
 //        Gdx.app.log("Bullet::flightOfShell()", "-- currentPoint:" + currentPoint);
 //        Gdx.app.log("Bullet::flightOfShell()", "-- endCircle:" + endCircle);
@@ -179,15 +181,15 @@ public class Bullet {
 //            Gdx.app.log("Bullet::flightOfShell()", "-- textureRegion:" + textureRegion);
         }
         if (templateForTower.towerShellType == TowerShellType.FirstTarget) {
-            return (tryToHitUnits() == false) ? 1 : 0;
+            return (tryToHitUnits(cameraController) == false) ? 1 : 0;
         } else if(templateForTower.towerShellType == TowerShellType.MultipleTarget || templateForTower.towerShellType == TowerShellType.FirstTarget) {
             if (templateForTower.towerShellType == TowerShellType.MultipleTarget) {
-                if(Intersector.overlaps(currCircle, endCircle)) {
-                    tryToHitUnits();
+                if(currCircle.overlaps(endCircle)) {
+                    tryToHitUnits(cameraController);
                     return 0;
                 }
             } else if(templateForTower.towerShellType == TowerShellType.FirstTarget) {
-                if(tryToHitUnits()) {
+                if(tryToHitUnits(cameraController)) {
                     return 0;
                 }
             }
@@ -195,13 +197,14 @@ public class Bullet {
         } else if(templateForTower.towerShellType == TowerShellType.AutoTarget) {
             if(unit.isAlive()) {
                 this.endCircle.setPosition(unit.currentPoint);
-                velocity = new Vector2(endCircle.x - currentPoint.x, endCircle.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endCircle.x, endCircle.y), ammoSpeed));
+                velocity = new Vector2(endCircle.x - currentPoint.x, endCircle.y - currentPoint.y);
+                velocity.nor().scl(Math.min(currentPoint.dst(endCircle.x, endCircle.y), ammoSpeed));
                 currentPoint.add(velocity.x * delta * ammoSpeed, velocity.y * delta * ammoSpeed);
                 currCircle.setPosition(currentPoint);
                 // endPoint2 == endCircle == unit.currentPoint ~= unit.circle1
                 if (Intersector.overlaps(currCircle, unit.circle1)) {
                     if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
-                        GameField.gamerGold += unit.templateForUnit.bounty;
+                        cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
                     }
                     return 0;
                 }
@@ -211,13 +214,13 @@ public class Bullet {
         return -1;
     }
 
-    private boolean tryToHitUnits() {
+    private boolean tryToHitUnits(CameraController cameraController) {
         boolean hit = false;
-        for (Unit unit : GameField.unitsManager.units) { // not good | why not? || or use CameraController??
-            if (Intersector.overlaps(currCircle, unit.circle1)) {
+        for (Unit unit : cameraController.gameField.unitsManager.units) {
+            if (currCircle.overlaps(unit.circle1)) {
                 hit = true;
                 if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
-                    GameField.gamerGold += unit.templateForUnit.bounty;
+                    cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
                 }
             }
         }

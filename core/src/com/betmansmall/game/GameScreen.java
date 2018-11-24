@@ -342,17 +342,14 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
     private GameInterface gameInterface;
     private CameraController cameraController;
 
-    public GameScreen(String mapName, FactionsManager factionsManager, GameSettings gameSettings) {
-        Gdx.app.log("GameScreen::GameScreen()", "-- mapName:" + mapName);
-        Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
-        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings:" + gameSettings);
+    public GameScreen(String mapPath, FactionsManager factionsManager, GameSettings gameSettings) {
 //        shapeRenderer = new ShapeRenderer();
 //        spriteBatch = new SpriteBatch();
         bitmapFont = new BitmapFont();
 
-        gameField = new GameField(mapName, factionsManager, gameSettings);
+        gameField = new GameField(mapPath, factionsManager, gameSettings);
         gameInterface = new GameInterface(gameField, bitmapFont);
-        gameInterface.mapNameLabel.setText("MapName:" + mapName);
+        gameInterface.mapNameLabel.setText("MapName:" + mapPath);
         cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 //        borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
 //        borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
@@ -365,6 +362,13 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
         inputMultiplexer.addProcessor(cameraController);
         inputMultiplexer.addProcessor(gameInterface.stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        Gdx.app.log("GameScreen::GameScreen()", "-- mapPath:" + mapPath);
+        Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
+        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings:" + gameSettings);
+        Gdx.app.log("GameScreen::GameScreen()", "-- field:" + gameField);
+        Gdx.app.log("GameScreen::GameScreen()", "-- gameField.map:" + gameField.map);
+        Gdx.app.log("GameScreen::GameScreen()", "-END- -END-");
     }
 
     @Override

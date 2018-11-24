@@ -103,17 +103,18 @@ public class Unit {
     }
 
     private void setAnimation(String action) {
-        try {
-            AnimatedTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
+//        Gdx.app.log("Unit::setAnimation()", "-- action+direction:" + action+direction );
+        AnimatedTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
+        if (animatedTiledMapTile != null) {
             StaticTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
             TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
             for (int k = 0; k < staticTiledMapTiles.length; k++) {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
             }
             animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
-//        Gdx.app.log("Unit::setAnimation()", "-- ActionAndDirection:" + action+direction + " textureRegions:" + textureRegions[0]);
-        } catch (Exception exp) {
-            Gdx.app.log("Unit::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " Exp: " + exp);
+//            Gdx.app.log("Unit::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
+        } else {
+            Gdx.app.log("Unit::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " animatedTiledMapTile: " + animatedTiledMapTile);
         }
     }
 
@@ -204,7 +205,7 @@ public class Unit {
 //        stepsInTime += (speed*delta);
         stepsInTime += delta; // wtf? check Bullet::flightOfShell()
         if (stepsInTime >= speed) {
-            if(route != null && !route.isEmpty()) {
+            if (route != null && !route.isEmpty()) {
                 stepsInTime = 0f;
                 oldPosition = newPosition;
                 newPosition = route.pollFirst();
@@ -226,7 +227,7 @@ public class Unit {
         Vector2 fVc = new Vector2(); // fVc = floatVectorCoordinates
         Direction oldDirection = direction;
         int isDrawableUnits = cameraController.isDrawableUnits;
-        if(isDrawableUnits == 4 || isDrawableUnits == 5) {
+        if (isDrawableUnits == 4 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord4)
             float fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
             float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY));
@@ -276,8 +277,8 @@ public class Unit {
         }
         if(isDrawableUnits == 2 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord2)
-            float fVx = (halfSizeCellX * newY) + (newX * halfSizeCellX) + halfSizeCellX;
-            float fVy = (halfSizeCellY * newY) - (newX * halfSizeCellY);
+            float fVx = ( (halfSizeCellX * newY) + (newX * halfSizeCellX)) + halfSizeCellX;
+            float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY));
             fVc.set(fVx, fVy);
             if (newX < oldX && newY > oldY) {
                 correct_fVc(fVc, Direction.UP, sizeCellX);
@@ -325,14 +326,13 @@ public class Unit {
 
         backStepPoint.set(currentPoint);
         currentPoint.set(fVc);
-        fVc = null;
+        fVc = null; // delete fVc;
 
-        velocity = new Vector2(backStepPoint.x - currentPoint.x,
-                backStepPoint.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(backStepPoint.x,
-                backStepPoint.y), speed));
+        velocity = new Vector2(backStepPoint.x - currentPoint.x, backStepPoint.y - currentPoint.y);
+        velocity.nor().scl(Math.min(currentPoint.dst(backStepPoint.x, backStepPoint.y), speed));
         displacement = new Vector2(velocity.x * delta, velocity.y * delta);
 
-//            Gdx.app.log("Unit::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
+//        Gdx.app.log("Unit::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
         if(!direction.equals(oldDirection)) {
             setAnimation("walk_");
         }

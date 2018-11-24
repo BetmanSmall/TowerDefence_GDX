@@ -20,8 +20,8 @@ public class TemplateForTower extends Template {
     public String   factionName;
     public String   name;
 
-    public Float    radiusDetection;
-    public Float    radiusFlyShell;
+    public Float    radiusDetection = null;
+    public Float    radiusFlyShell = null;
     public Integer  damage;
     public Integer  size;
     public Integer  cost;
@@ -40,7 +40,7 @@ public class TemplateForTower extends Template {
 
     public TemplateForTower(FileHandle templateFile) throws Exception {
         try {
-            this.radiusDetection = 0.0f;
+//            this.radiusDetection = 0.0f;
 //            this.reloadTime = 3000;
             animations = new ObjectMap<String, AnimatedTile>();
             loadBasicTemplate(templateFile);
@@ -177,7 +177,7 @@ public class TemplateForTower extends Template {
         if (!properties.containsKey("towerShellType") && towerAttackType != TowerAttackType.Pit) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellType");
         } else {
-            towerShellType = towerShellType.getType(properties.get("towerShellType"));
+            towerShellType = TowerShellType.getType(properties.get("towerShellType"));
         }
         if (!properties.containsKey("towerShellEffect")) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellEffect");

@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -27,12 +26,12 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public GameField gameField;
     public GameInterface gameInterface;
 
-    public OrthographicCamera camera;
-//    public float viewportWidth = 0;
-//    public float viewportHeight = 0;
-    public int mapWidth, mapHeight;
 //    public float cameraX = 800;
 //    public float cameraY = 0;
+    public OrthographicCamera camera;
+    public int mapWidth, mapHeight;
+//    public float viewportWidth = 0;
+//    public float viewportHeight = 0;
 
     public int isDrawableGrid = 1;
     public int isDrawableUnits = 1;
@@ -46,7 +45,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
 //    public boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
 //    public float initialScale = 2f;
-//    boolean lastCircleTouched = false;
+//    public boolean lastCircleTouched = false;
 //    public float velX;
 //    public float velY;
 
@@ -68,9 +67,11 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         this.shapeRenderer = new ShapeRenderer();
         this.spriteBatch = new SpriteBatch();
         this.bitmapFont = new BitmapFont();
+
         this.gameField = gameField;
         this.gameInterface = gameInterface;
         this.camera = camera;
+
         this.mapWidth = gameField.map.width;
         this.mapHeight = gameField.map.height;
         this.sizeCellX = gameField.map.tileWidth;
@@ -83,24 +84,34 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         shapeRenderer.dispose();
         spriteBatch.dispose();
         bitmapFont.dispose();
+
+        gameField = null;
+        gameInterface = null;
+        camera = null;
     }
 
     @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        Gdx.app.log("CameraController::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-//            flinging = false;
-//            initialScale = camera.zoom;
-        return false;
-    }
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Gdx.app.log("MyGestureDetector::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+//        flinging = false;
+//        initialScale = camera.zoom;
 
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
-        if (gameInterface.tap(x, y, count, button)) {
-            return false;
+        if (!gameInterface.interfaceTouched) {
+            UnderConstruction underConstruction = gameField.getUnderConstruction();
+            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+            if (underConstruction != null) {
+                if (button == 0) {
+                    if (whichCell(touch, isDrawableTowers)) {
+                        underConstruction.setStartCoors((int) touch.x, (int) touch.y);
+                    }
+                } else if (button == 1) {
+                    gameField.cancelUnderConstruction();
+//                    gameField.removeTower((int) touch.x, (int) touch.y);
+                }
+            }
         }
         UnderConstruction underConstruction = gameField.getUnderConstruction();
-        Vector3 touch = new Vector3(x, y, 0.0f);
+        Vector3 touch = new Vector3(screenX, screenY, 0.0f);
         if (underConstruction == null) {
             if (gameField.gameSettings.gameType == GameType.LittleGame) {
                 if (button == 0) {
@@ -155,8 +166,20 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     @Override
-    public boolean longPress(float x, float y) {
-        Gdx.app.log("CameraController::longPress()", "-- x:" + x + " y:" + y);
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        Gdx.app.log("MyGestureDetector::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+        if (!gameInterface.interfaceTouched) {
+            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+            if (gameField.getUnderConstruction() != null) {
+                if (button == 0) {
+                    if (whichCell(touch, isDrawableTowers)) {
+                        gameField.buildTowersWithUnderConstruction((int) touch.x, (int) touch.y);
+                    }
+                }
+            }
+
+        }
+        gameInterface.interfaceTouched = false;
         return false;
     }
 
@@ -173,17 +196,27 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        if (gameField != null && gameField.getUnderConstruction() != null) {
+            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+            Gdx.app.log("GameScreen::mouseMoved()", "-window- screenX:" + screenX + " screenY:" + screenY);
+            if (whichCell(touch, isDrawableTowers)) {
+                gameField.getUnderConstruction().setEndCoors((int)touch.x, (int)touch.y);
+                Gdx.app.log("GameScreen::mouseMoved()", "-cell- cellCoordinate.x:" + touch.x + " cellCoordinate.y:" + touch.y);
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
 //        Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-//        Vector3 touch = new Vector3(x, y, 0.0f);
-//        camera.unproject(touch);
-//            Gdx.app.log("CameraController::pan(1)", "-- x:" + camera.cell.x + " y:" + camera.cell.y);
-//            Gdx.app.log("CameraController::pan(2)", "-- x:" + touch.x + " y:" + touch.y);
         if (gameInterface.pan(x, y, deltaX, deltaY)) {
 //            lastCircleTouched = true;
             return true;
         }
 //        lastCircleTouched = false;
+
         if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             float newCameraX = camera.position.x + (-deltaX * camera.zoom);
             float newCameraY = camera.position.y + (deltaY * camera.zoom);
@@ -215,34 +248,42 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         return false;
     }
 
-//    boolean pan(float x, float y) {
-////    Gdx.app.log("CameraController::pan()", "-- paning:" + paning;
-////    Gdx.app.log("CameraController::pan()", "-- cameraX:" + cameraX + " cameraY:" + cameraY;
-//        if (paning) {
-//            float deltaX = x - prevMouseX;
-//            float deltaY = y - prevMouseY;
-////        Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY;
-//            float newCameraX = cameraX + (deltaX * (1/zoom) );
-//            float newCameraY = cameraY + (deltaY * (1/zoom) );
-////        if (borderLeftX != null && borderRightX != null && borderUpY != null && borderDownY != null) {
-////            if (borderLeftX < newCameraX && newCameraX < borderRightX &&
-////                    borderUpY > newCameraY && newCameraY > borderDownY) {
-////            this.prevMouseX = x;
-////            this.prevMouseY = y;
-//            this.cameraX = newCameraX;
-//            this.cameraY = newCameraY;
-////        } else {
-////        }
-////        Gdx.app.log("CameraController::pan()", "-- newCameraX:" + newCameraX + " newCameraY:" + newCameraY;
-//        }
-//    }
-
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         Gdx.app.log("CameraController::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         if(gameInterface.panStop(x, y, pointer, button)) {
 //            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+//        Gdx.app.log("MyGestureDetector::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
+        if (gameField != null && gameField.getUnderConstruction() != null) {
+            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+            if (whichCell(touch, isDrawableTowers)) {
+                gameField.getUnderConstruction().setEndCoors((int)touch.x, (int)touch.y);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        Gdx.app.log("MyGestureDetector::scrolled()", "-- amount:" + amount);
+        if (gameInterface.scrolled(amount)) {
+            return false;
+        }
+        if (amount > 0) {
+            if (camera.zoom <= zoomMax)
+                camera.zoom += 0.1f;
+        } else if (amount < 0) {
+            if (camera.zoom >= zoomMin)
+                camera.zoom -= 0.1f;
+        }
+        camera.update();
+        Gdx.app.log("CameraController::scrolled()", "-- camera.zoom:" + camera.zoom);
         return false;
     }
 
@@ -259,15 +300,54 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        Gdx.app.log("CameraController::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+//        if (gameInterface.tap(x, y, count, button)) {
+//            return false;
+//        }
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        Gdx.app.log("CameraController::longPress()", "-- x:" + x + " y:" + y);
+        return false;
+    }
+
+    @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         Gdx.app.log("CameraController::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        Gdx.app.log("MyGestureDetector::keyDown()", "-- keycode:" + keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+//        Gdx.app.log("MyGestureDetector::keyUp()", "-- keycode:" + keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+//        Gdx.app.log("MyGestureDetector::keyTyped()", "-- character:" + character);
         return false;
     }
 
     public void update(float deltaTime) {
 //    Gdx.app.log("CameraController::update()", "-- deltaTime:" + deltaTime);
         try {
-            if (gameField.getUnderConstruction() == null) {
+//            if (gameField.getUnderConstruction() == null) {
 //                if (flinging) {
 //                    velX *= 0.98f;
 //                    velY *= 0.98f;
@@ -290,155 +370,12 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 ////                    }
 ////                    Gdx.app.log("CameraController::update()", "-- newCameraX:" + newCameraX + " newCameraY:" + newCameraY);
 //                }
-            }
+//            }
             camera.update();
         } catch (Exception exp) {
             Gdx.app.error("CameraController::update()", "-- Exception:" + exp);
         }
     }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        Gdx.app.log("MyGestureDetector::keyDown()", "-- keycode:" + keycode);
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-//        Gdx.app.log("MyGestureDetector::keyUp()", "-- keycode:" + keycode);
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-//        Gdx.app.log("MyGestureDetector::keyTyped()", "-- character:" + character);
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("MyGestureDetector::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-//        flinging = false;
-//        initialScale = camera.zoom;
-
-        if (!gameInterface.interfaceTouched) {
-            UnderConstruction underConstruction = gameField.getUnderConstruction();
-            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-            if (underConstruction != null) {
-                if (button == 0) {
-                    if (whichCell(touch, isDrawableTowers)) {
-                        underConstruction.setStartCoors((int) touch.x, (int) touch.y);
-                    }
-                } else if (button == 1) {
-                    gameField.cancelUnderConstruction();
-//                    gameField.removeTower((int) touch.x, (int) touch.y);
-                }
-            }
-        }
-        return false;
-    }
-
-//    boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//        Gdx.app.log("CameraController::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-//        this.prevMouseX = screenX;
-//        this.prevMouseY = screenY;
-//        this.paning = true;
-//        this.flinging = false;
-//        Gdx.app.log("CameraController::touchDown()", "-- cameraX:" + cameraX + " cameraY:" + cameraY);
-//    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("MyGestureDetector::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-        if (!gameInterface.interfaceTouched) {
-            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-            if (gameField.getUnderConstruction() != null) {
-                if (button == 0) {
-                    if (whichCell(touch, isDrawableTowers)) {
-                        gameField.buildTowersWithUnderConstruction((int) touch.x, (int) touch.y);
-                    }
-                }
-            }
-
-        }
-        gameInterface.interfaceTouched = false;
-        return false;
-    }
-
-//    boolean touchUp(int screenX, int screenY, int pointer, int button) {
-//        Gdx.app.log("CameraController::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-////    this.cameraX = screenX;
-////    this.cameraY = screenY;
-//        if (paning) {
-//            this.paning = false;
-////        fling((float)(screenX)-(prevMouseX), (float)(screenY)-(prevMouseY), button);
-//        }
-//        Gdx.app.log("CameraController::touchUp()", "-- cameraX:" + cameraX + " cameraY:" + cameraY);
-//    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-//        Gdx.app.log("MyGestureDetector::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
-        if (gameField != null && gameField.getUnderConstruction() != null) {
-            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-            if (whichCell(touch, isDrawableTowers)) {
-                gameField.getUnderConstruction().setEndCoors((int)touch.x, (int)touch.y);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        if (gameField != null && gameField.getUnderConstruction() != null) {
-            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-            Gdx.app.log("GameScreen::mouseMoved()", "-window- screenX:" + screenX + " screenY:" + screenY);
-            if (whichCell(touch, isDrawableTowers)) {
-                gameField.getUnderConstruction().setEndCoors((int)touch.x, (int)touch.y);
-                Gdx.app.log("GameScreen::mouseMoved()", "-cell- cellCoordinate.x:" + touch.x + " cellCoordinate.y:" + touch.y);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        Gdx.app.log("MyGestureDetector::scrolled()", "-- amount:" + amount);
-        if (gameInterface.scrolled(amount)) {
-            return false;
-        }
-        if (amount == 1) {
-            if (camera.zoom <= zoomMax)
-                camera.zoom += 0.1f;
-        } else if (amount == -1) {
-            if (camera.zoom >= zoomMin)
-                camera.zoom -= 0.1f;
-        }
-        camera.update();
-        return false;
-    }
-
-//    boolean scrolled(int amount) {
-//        Gdx.app.log("CameraController::scrolled()", "-- amount:" + amount);
-//        if (amount > 0) {
-//            if (zoom <= zoomMax) {
-//                zoom += 0.1;
-//            }
-//        } else if (amount < 0) {
-//            if (zoom >= zoomMin) {
-//                zoom -= 0.1;
-//            }
-//        }
-////    sizeCellX = defSizeCellX*zoom;
-////    sizeCellY = defSizeCellY*zoom;
-////    halfSizeCellX = sizeCellX/2;
-////    halfSizeCellY = sizeCellY/2;
-//        Gdx.app.log("CameraController::scrolled()", "-- zoom:" + zoom);
-//        Gdx.app.log("CameraController::scrolled()", "-- sizeCellX:" + sizeCellX);
-//        Gdx.app.log("CameraController::scrolled()", "-- sizeCellY:" + sizeCellY);
-//        Gdx.app.log("CameraController::scrolled()", "-- halfSizeCellX:" + halfSizeCellX);
-//        Gdx.app.log("CameraController::scrolled()", "-- halfSizeCellY:" + halfSizeCellY);
-//    }
 
 //    void unproject(int &screenX, int &screenY) {
 ////    Gdx.app.log("CameraController::unproject()", "-- screenX:" + screenX + " screenY:" + screenY + " cameraX:" + cameraX + " cameraY:" + cameraY);
@@ -446,25 +383,6 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 //        screenY -= (cameraY*zoom);
 ////    Gdx.app.log("CameraController::unproject()", "-- screenX:" + screenX + " screenY:" + screenY + " cameraX:" + cameraX + " cameraY:" + cameraY);
 //    }
-
-//QPoint unproject(QPoint screenCoords) {
-//    Gdx.app.log("CameraController::unproject()", "-- screenCoords:" + screenCoords);
-//    return unproject(screenCoords, 0, 0, this.viewportWidth, this.viewportHeight);
-//}
-
-//QPoint unproject(QPoint screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
-//    Gdx.app.log("CameraController::update()", "-- viewportX:" + viewportX + " viewportY:" + viewportY);
-//    Gdx.app.log("CameraController::update()", "-- viewportWidth:" + viewportWidth + " viewportHeight:" + viewportHeight);
-//    float x = screenCoords.x, y = screenCoords.y;
-//    x = x - viewportX;
-//    y = Gdx.graphics.getHeight() - y - 1;
-//    y = y - viewportY;
-//    screenCoords.x = (2 * x) / viewportWidth - 1;
-//    screenCoords.y = (2 * y) / viewportHeight - 1;
-//    screenCoords.z = 2 * screenCoords.z - 1;
-//    screenCoords.prj(invProjectionView);
-//    return screenCoords;
-//}
 
 //boolean whichCell(int &mouseX, int &mouseY) {
 //    int mainCoorMapX = cameraX;

@@ -7,9 +7,9 @@ import com.badlogic.gdx.Gdx;
  */
 
 public enum GameType {
-    TowerDefence("TowerDefence"),
     LittleGame("LittleGame"),
-    ShortTowerDefence("ShortTowerDefence");
+    TowerDefence("TowerDefence"),
+    OrthogonalityTowerDefence("OrthogonalityTowerDefence");
 
     private final String text;
 

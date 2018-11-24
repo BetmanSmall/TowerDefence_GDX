@@ -16,7 +16,6 @@ import com.badlogic.gdx.math.Vector2; //AlexGor
  * Created by Андрей on 24.01.2016.
  */
 public class Tower {
-//    public GridPoint2 cell;
     public Cell cell;
     public float elapsedReloadTime;
     public TemplateForTower templateForTower;
@@ -44,22 +43,26 @@ public class Tower {
 
     public void dispose() {
         Gdx.app.log("Tower::dispose()", "--");
+        bullets.clear();
+        centerGraphicCoord = null;
+        radiusDetectionCircle = null;
+        if (radiusFlyShellCircle != null) {
+            radiusFlyShellCircle = null;
+        }
     }
 
     void updateCenterGraphicCoordinates(CameraController cameraController) {
-//        if (centerGraphicCoord == null) {
-            if (cameraController.isDrawableTowers == 1 || cameraController.isDrawableTowers == 5) {
-                centerGraphicCoord.set(cell.graphicCoordinates1);
-            } else if (cameraController.isDrawableTowers == 2) {
-                centerGraphicCoord.set(cell.graphicCoordinates2);
-            } else if (cameraController.isDrawableTowers == 3) {
-                centerGraphicCoord.set(cell.graphicCoordinates3);
-            } else if (cameraController.isDrawableTowers == 4) {
-                centerGraphicCoord.set(cell.graphicCoordinates4);
-            } else {
-                centerGraphicCoord.setZero();
-            }
-//        }
+        if (cameraController.isDrawableTowers == 1 || cameraController.isDrawableTowers == 5) {
+            centerGraphicCoord.set(cell.graphicCoordinates1);
+        } else if (cameraController.isDrawableTowers == 2) {
+            centerGraphicCoord.set(cell.graphicCoordinates2);
+        } else if (cameraController.isDrawableTowers == 3) {
+            centerGraphicCoord.set(cell.graphicCoordinates3);
+        } else if (cameraController.isDrawableTowers == 4) {
+            centerGraphicCoord.set(cell.graphicCoordinates4);
+        } else {
+            centerGraphicCoord.setZero();
+        }
         this.radiusDetectionCircle.setPosition(centerGraphicCoord);
         if (templateForTower.towerShellType == TowerShellType.FirstTarget) {
             if (templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
@@ -135,21 +138,21 @@ public class Tower {
         return false;
     }
 
-    public void moveAllShells(float delta) {
+    public void moveAllShells(float delta, CameraController cameraController) {
         for(Bullet bullet : bullets) {
             if(radiusFlyShellCircle == null) {
-                moveShell(delta, bullet);
-            } else if(Intersector.overlaps(bullet.currCircle, radiusFlyShellCircle)) {
-                moveShell(delta, bullet);
+                moveShell(delta, bullet, cameraController);
+            } else if(radiusFlyShellCircle.overlaps(bullet.currCircle)) {
+                moveShell(delta, bullet, cameraController);
             } else {
-                bullet.dispose();
                 bullets.removeValue(bullet, false);
+//                bullet.dispose();
             }
         }
     }
 
-    private void moveShell(float delta, Bullet bullet) {
-        switch (bullet.flightOfShell(delta)) {
+    private void moveShell(float delta, Bullet bullet, CameraController cameraController) {
+        switch (bullet.flightOfShell(delta, cameraController)) {
             case 1:
                 break;
             case 0:
