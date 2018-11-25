@@ -42,27 +42,27 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public int isDrawableRoutes = 1;
     public int drawOrder = 8;
 
-//    public boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
-//    public float initialScale = 2f;
+    public boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
+    public float initialScale = 2f;
+    public float velX;
+    public float velY;
 //    public boolean lastCircleTouched = false;
-//    public float velX;
-//    public float velY;
 
     public float sizeCellX, sizeCellY;
     public float halfSizeCellX, halfSizeCellY;
-    public float zoomMax = 50.0f;
-    public float zoomMin = 0.2f;
+    public float zoomMax = 5.0f;
+    public float zoomMin = 0.1f;
     public float zoom = 1;
-    Float borderLeftX, borderRightX;
-    Float borderUpY, borderDownY;
+    public float borderLeftX = 0.0f, borderRightX = 0.0f;
+    public float borderUpY = 0.0f, borderDownY = 0.0f;
 
-    public boolean panLeftMouseButton = false;
-    public boolean panMidMouseButton = false;
+    public boolean panLeftMouseButton = true;
+    public boolean panMidMouseButton = true;
     public boolean panRightMouseButton = true;
     public boolean paning = false;
-    public int prevScreenX, prevScreenY;
-//    public int prevMouseCellX, prevMouseCellY;
-//    public int prevGlobalMouseX, prevGlobalMouseY;
+    public int touchDownX, touchDownY;
+    public int prevMouseX, prevMouseY;
+//    public int prevCellX, prevCellY;
 
     public CameraController(GameField gameField, GameInterface gameInterface, OrthographicCamera camera) {
         this.shapeRenderer = new ShapeRenderer();
@@ -79,6 +79,12 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         this.sizeCellY = gameField.map.tileHeight;
         this.halfSizeCellX = sizeCellX/2;
         this.halfSizeCellY = sizeCellY/2;
+
+        this.borderLeftX  = (0 - (halfSizeCellX * mapHeight));
+        this.borderRightX = (0 + (halfSizeCellX * mapWidth));
+        this.borderUpY    = (0);
+        this.borderDownY  = (0 - (sizeCellY * (mapWidth>mapHeight ? mapWidth : mapHeight)));
+//        Gdx.input.setCursorCatched(true);
     }
 
     public void dispose() {
@@ -103,17 +109,24 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("CameraController::touchDown()", "-- prevScreenX:" + screenX + " prevScreenY:" + screenY + " pointer:" + pointer + " button:" + button);
-        this.prevScreenX = screenX;
-        this.prevScreenY = screenY;
+        Gdx.app.log("CameraController::touchDown()", "-- prevMouseX:" + screenX + " prevMouseY:" + screenY + " pointer:" + pointer + " button:" + button);
+        this.touchDownX = screenX;
+        this.touchDownY = screenY;
+        this.prevMouseX = screenX;
+        this.prevMouseY = screenY;
+//        this.prevCellX = screenX;
+//        this.prevCellY = screenY;
+//        whichCell(prevCellX, prevCellY, 5);
         if ( ( (panLeftMouseButton && button == 0) ||
                 (panRightMouseButton && button == 1) ||
                 (panMidMouseButton && button == 2) ) ) {
+//            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+//            Gdx.graphics.setCursor(Cursor.SystemCursor.Arrow);
 //            setCursor(Qt::ClosedHandCursor);
             paning = true;
         }
-//        flinging = false;
-//        initialScale = camera.zoom;
+        flinging = false;
+        initialScale = camera.zoom;
         if (!gameInterface.interfaceTouched) {
             UnderConstruction underConstruction = gameField.getUnderConstruction();
             if (underConstruction != null) {
@@ -130,15 +143,16 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("CameraController::touchUp()", "-- prevScreenX:" + screenX + " prevScreenY:" + screenY + " pointer:" + pointer + " button:" + button);
+        Gdx.app.log("CameraController::touchUp()", "-- prevMouseX:" + screenX + " prevMouseY:" + screenY + " pointer:" + pointer + " button:" + button);
         if (paning) {
             if ( ( (panLeftMouseButton && button == 0) ||
                     (panRightMouseButton && button == 1) ||
                     (panMidMouseButton && button == 2) ) ) {
+//                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
 //                setCursor(Qt::ArrowCursor);
                 paning = false;
             }
-//            fling((float)(prevScreenX)-(prevScreenX), (float)(prevScreenY)-(prevScreenY), button);
+//            fling((float)(prevMouseX)-(prevMouseX), (float)(prevMouseY)-(prevMouseY), button);
         }
         if (!gameInterface.interfaceTouched) {
             Vector3 touch = new Vector3(screenX, screenY, 0.0f);
@@ -152,7 +166,10 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 //                    gameField.removeTower((int) touch.x, (int) touch.y);
                 }
             } else {
-                if (prevScreenX == screenX && prevScreenY == screenY) {
+//            int tmpCellX = screenX;
+//            int tmpCellY = screenY;
+//            whichCell(tmpCellX, tmpCellY, 5);
+                if ( (touchDownX == screenX && touchDownY == screenY) /*|| (prevCellX == tmpCellX && prevCellY == tmpCellY)*/ ) {
                     if (gameField.gameSettings.gameType == GameType.LittleGame) {
                         if (button == 0) {
                             if (whichCell(touch, isDrawableUnits)) {
@@ -210,23 +227,23 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("CameraController::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
-//        if (!lastCircleTouched) {
-//            flinging = true;
-//            velX = camera.zoom * velocityX * 0.5f;
-//            velY = camera.zoom * velocityY * 0.5f;
-//        }
-//        Gdx.app.log("CameraController::fling()", "-- velX:" + velX + " velY:" + velY);
+        if (!gameInterface.interfaceTouched) {
+            flinging = true;
+            velX = camera.zoom * velocityX * 0.5f;
+            velY = camera.zoom * velocityY * 0.5f;
+        }
+        Gdx.app.log("CameraController::fling()", "-- velX:" + velX + " velY:" + velY);
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         Gdx.app.log("CameraController::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY);
-        float deltaX = this.prevScreenX - screenX;
-        float deltaY = this.prevScreenY - screenY;
+        float deltaX = this.prevMouseX - screenX;
+        float deltaY = this.prevMouseY - screenY;
         pan(screenX, screenY, deltaX, deltaY);
-        this.prevScreenX = screenX;
-        this.prevScreenY = screenY;
+        this.prevMouseX = screenX;
+        this.prevMouseY = screenY;
         if (gameField != null && gameField.getUnderConstruction() != null) {
             Vector3 touch = new Vector3(screenX, screenY, 0.0f);
             if (whichCell(touch, isDrawableTowers)) {
@@ -260,8 +277,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
             if (paning) {
                 float newCameraX = camera.position.x - (deltaX * camera.zoom);
                 float newCameraY = camera.position.y + (deltaY * camera.zoom);
-                if (borderLeftX != null && borderRightX != null && borderUpY != null && borderDownY != null) {
-                    Gdx.app.log("CameraController::pan()", "-- borderLeftX:" + borderLeftX + " borderRightX:" + borderRightX + " borderUpY:" + borderUpY + " borderDownY:" + borderDownY);
+                if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
                     if (borderLeftX < newCameraX && newCameraX < borderRightX &&
                             borderUpY > newCameraY && newCameraY > borderDownY) {
                         camera.position.set(newCameraX, newCameraY, 0.0f);
@@ -271,18 +287,19 @@ public class CameraController implements GestureDetector.GestureListener, InputP
                 }
             }
         }
+//        Gdx.app.log("CameraController::pan()", "-- camera.viewportWidth:" + camera.viewportWidth + " camera.viewportHeight:" + camera.viewportHeight);
         float space = 50f;
         float shiftCamera = 5f;
         if (x < space) {
             camera.position.add(-shiftCamera, 0.0f, 0.0f);
         }
-        if (x > Gdx.graphics.getWidth() - space) {
+        if (x > camera.viewportWidth - space) {
             camera.position.add(shiftCamera, 0.0f, 0.0f);
         }
         if (y < space) {
             camera.position.add(0.0f, shiftCamera, 0.0f);
         }
-        if (y > Gdx.graphics.getHeight() - space) {
+        if (y > camera.viewportHeight - space) {
             camera.position.add(0.0f, -shiftCamera, 0.0f);
         }
         return false;
@@ -318,11 +335,28 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     @Override
     public boolean zoom(float initialDistance, float distance) {
         Gdx.app.log("CameraController::zoom()", "-- initialDistance:" + initialDistance + " distance:" + distance);
-//        Gdx.app.log("CameraController::zoom()", "-- initialScale:" + initialScale);
+        Gdx.app.log("CameraController::zoom()", "-- initialScale:" + initialScale);
         float ratio = initialDistance / distance;
-        float newZoom = /*initialScale **/ ratio;
+        float newZoom = initialScale * ratio;
         if (newZoom < zoomMax && newZoom > zoomMin) {
             camera.zoom = newZoom;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        Gdx.app.log("CameraController::longPress()", "-- x:" + x + " y:" + y);
+        Vector3 touch = new Vector3(x, y, 0.0f);
+        whichCell(touch, isDrawableTowers);
+        if ( ((int) (Math.random() * 2) == 0) ) {
+            gameField.towerActions((int) touch.x, (int) touch.y);
+        } else {
+            if ( ((int) (Math.random() * 5) == 0) ) {
+                gameField.spawnHero((int) touch.x, (int) touch.y);
+            } else {
+                gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
+            }
         }
         return false;
     }
@@ -331,12 +365,6 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
 //        Gdx.app.log("CameraController::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        return false;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-//        Gdx.app.log("CameraController::longPress()", "-- x:" + x + " y:" + y);
         return false;
     }
     @Override
@@ -364,41 +392,44 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public void update(float deltaTime) {
 //    Gdx.app.log("CameraController::update()", "-- deltaTime:" + deltaTime);
         try {
-//            if (gameField.getUnderConstruction() == null) {
-//                if (flinging) {
-//                    velX *= 0.98f;
-//                    velY *= 0.98f;
-//                    float newCameraX = camera.position.x + (velX * deltaTime);
-//                    float newCameraY = camera.position.y + (velY * deltaTime);
-////                    if (borderLeftX != null && borderRightX != null && borderUpY != null && borderDownY != null) {
-////                        if (borderLeftX < newCameraX && newCameraX < borderRightX &&
-////                                borderUpY > newCameraY && newCameraY > borderDownY) {
-////                            this.cameraX = newCameraX;
-////                            this.cameraY = newCameraY;
-////                        }
-////                    } else {
-//                        this.camera.position.x = newCameraX;
-//                        this.camera.position.y = newCameraY;
-////                    }
-//                    if (Math.abs(velX) < 0.01) velX = 0.0f;
-//                    if (Math.abs(velY) < 0.01) velY = 0.0f;
-////                    if (velX == 0.0 && velY == 0.0) {
-////                        flinging = false;
-////                    }
-////                    Gdx.app.log("CameraController::update()", "-- newCameraX:" + newCameraX + " newCameraY:" + newCameraY);
-//                }
-//            }
+            if (gameField.getUnderConstruction() == null) {
+                if (flinging) {
+                    velX *= 0.98f;
+                    velY *= 0.98f;
+//                    float newCameraX = camera.position.x - velX;
+//                    float newCameraY = camera.position.y + velY;
+                    float newCameraX = camera.position.x - (velX * deltaTime);
+                    float newCameraY = camera.position.y + (velY * deltaTime);
+                    if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
+                        if (borderLeftX < newCameraX && newCameraX < borderRightX &&
+                                borderUpY > newCameraY && newCameraY > borderDownY) {
+                            this.camera.position.x = newCameraX;
+                            this.camera.position.y = newCameraY;
+                        }
+                    } else {
+                        this.camera.position.x = newCameraX;
+                        this.camera.position.y = newCameraY;
+                    }
+                    if (Math.abs(velX) < 0.01) velX = 0.0f;
+                    if (Math.abs(velY) < 0.01) velY = 0.0f;
+                    if (velX == 0.0 && velY == 0.0) {
+                        flinging = false;
+                    }
+//                    Gdx.app.log("CameraController::update()", "-- velX:" + velX + " velY:" + velY);
+//                    Gdx.app.log("CameraController::update()", "-- newCameraX:" + newCameraX + " newCameraY:" + newCameraY);
+                }
+            }
             camera.update();
         } catch (Exception exp) {
             Gdx.app.error("CameraController::update()", "-- Exception:" + exp);
         }
     }
 
-//    void unproject(int &prevScreenX, int &prevScreenY) {
-////    Gdx.app.log("CameraController::unproject()", "-- prevScreenX:" + prevScreenX + " prevScreenY:" + prevScreenY + " cameraX:" + cameraX + " cameraY:" + cameraY);
-//        prevScreenX -= (cameraX*zoom);
-//        prevScreenY -= (cameraY*zoom);
-////    Gdx.app.log("CameraController::unproject()", "-- prevScreenX:" + prevScreenX + " prevScreenY:" + prevScreenY + " cameraX:" + cameraX + " cameraY:" + cameraY);
+//    void unproject(int &prevMouseX, int &prevMouseY) {
+////    Gdx.app.log("CameraController::unproject()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " cameraX:" + cameraX + " cameraY:" + cameraY);
+//        prevMouseX -= (cameraX*zoom);
+//        prevMouseY -= (cameraY*zoom);
+////    Gdx.app.log("CameraController::unproject()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " cameraX:" + cameraX + " cameraY:" + cameraY);
 //    }
 
     boolean whichCell(Vector3 mouse, int map) {
@@ -514,8 +545,8 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         sb.append(",sizeCellX:" + sizeCellX);
         sb.append(",sizeCellY:" + sizeCellY);
         sb.append(",zoom:" + zoom);
-        sb.append(",zoomMax:" + zoomMax);
-        sb.append(",zoomMin:" + zoomMin);
+//        sb.append(",zoomMax:" + zoomMax);
+//        sb.append(",zoomMin:" + zoomMin);
 //        sb.append(",borderLeftX:" + borderLeftX);
 //        sb.append(",borderRightX:" + borderRightX);
 //        sb.append(",borderUpY:" + borderUpY);

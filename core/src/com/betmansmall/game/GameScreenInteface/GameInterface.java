@@ -201,7 +201,7 @@ public class GameInterface {
     }
 
     public boolean touchDown(float screenX, float screenY, int pointer, int button) {
-        Gdx.app.log("GameInterface::touchDown()", "-- prevScreenX:" + screenX + " prevScreenY:" + screenY + " pointer:" + pointer + " button:" + button);
+        Gdx.app.log("GameInterface::touchDown()", "-- prevMouseX:" + screenX + " prevMouseY:" + screenY + " pointer:" + pointer + " button:" + button);
         if (startAndPauseButton.isPressed()) {
             Gdx.app.log("GameInterface::touchDown()", "-- startAndPauseButton.isPressed()");
             gameField.gamePaused = !gameField.gamePaused;

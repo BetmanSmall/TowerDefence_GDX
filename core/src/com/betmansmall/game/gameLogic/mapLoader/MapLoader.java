@@ -212,7 +212,6 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         if(waves != null) {
             String type = waves.getAttribute("type", null);
             String source = waves.getAttribute("source", null);
-//            System.out.println("type=" + type + " source:" + source);
             if (source != null) {
                 FileHandle tsx = getRelativeFileHandle(tmxFile, source);
                 try {

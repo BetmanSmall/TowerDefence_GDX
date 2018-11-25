@@ -220,18 +220,18 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
 //        }
 
 //        @Override
-//        public boolean touchDown(int prevScreenX, int prevScreenY, int pointer, int button) {
-//            Gdx.app.log("MyGestureDetector::touchDown()", "-- prevScreenX:" + prevScreenX + " prevScreenY:" + prevScreenY + " pointer:" + pointer + " button:" + button);
+//        public boolean touchDown(int prevMouseX, int prevMouseY, int pointer, int button) {
+//            Gdx.app.log("MyGestureDetector::touchDown()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " pointer:" + pointer + " button:" + button);
 //            flinging = false;
 //            initialScale = camera.zoom;
 ////            Gdx.app.log("CameraController::touchDown()", "-- x:" + x + " y:" + y + " count:" + pointer + " button:" + button);
 ////          CHECK IF THE PAUSE BUTTON IS TOUCHED //CHECK IF THE TOWER BUTTON IS TOUCHED
-////            if (gameInterface.touchDown(prevScreenX, prevScreenY, pointer, button)) {
+////            if (gameInterface.touchDown(prevMouseX, prevMouseY, pointer, button)) {
 ////                return false;
 ////            }
 //
 //            if (!gameInterface.interfaceTouched) {
-//                Vector3 touch = new Vector3(prevScreenX, prevScreenY, 0.0f);
+//                Vector3 touch = new Vector3(prevMouseX, prevMouseY, 0.0f);
 //                camera.unproject(touch);
 //                if (gameField.getUnderConstruction() != null) {
 //                    if (button == 1) {
@@ -269,11 +269,11 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
 //        }
 
 //        @Override
-//        public boolean touchUp(int prevScreenX, int prevScreenY, int pointer, int button) {
-//            Gdx.app.log("MyGestureDetector::touchUp()", "-- prevScreenX:" + prevScreenX + " prevScreenY:" + prevScreenY + " pointer:" + pointer + " button:" + button);
+//        public boolean touchUp(int prevMouseX, int prevMouseY, int pointer, int button) {
+//            Gdx.app.log("MyGestureDetector::touchUp()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " pointer:" + pointer + " button:" + button);
 //            if (!gameInterface.interfaceTouched) {
 //                if (gameField != null && gameField.getUnderConstruction() != null && button == 0) {
-//                    Vector3 touch = new Vector3(prevScreenX, prevScreenY, 0.0f);
+//                    Vector3 touch = new Vector3(prevMouseX, prevMouseY, 0.0f);
 //                    camera.unproject(touch);
 //                    GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
 //                    if (cellCoordinate != null) {
@@ -286,10 +286,10 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
 //        }
 
 //        @Override
-//        public boolean touchDragged(int prevScreenX, int prevScreenY, int pointer) {
-//            Gdx.app.log("MyGestureDetector::touchDragged()", "-- prevScreenX:" + prevScreenX + " prevScreenY:" + prevScreenY + " pointer:" + pointer);
+//        public boolean touchDragged(int prevMouseX, int prevMouseY, int pointer) {
+//            Gdx.app.log("MyGestureDetector::touchDragged()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " pointer:" + pointer);
 //            if (gameField != null && gameField.getUnderConstruction() != null) {
-//                Vector3 touch = new Vector3(prevScreenX, prevScreenY, 0.0f);
+//                Vector3 touch = new Vector3(prevMouseX, prevMouseY, 0.0f);
 //                camera.unproject(touch);
 //                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
 //                if (cellCoordinate != null) {
@@ -300,11 +300,11 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
 //        }
 
 //        @Override
-//        public boolean mouseMoved(int prevScreenX, int prevScreenY) {
-////            Gdx.app.log("MyGestureDetector::mouseMoved()", "-- prevScreenX:" + prevScreenX + " prevScreenY:" + prevScreenY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
+//        public boolean mouseMoved(int prevMouseX, int prevMouseY) {
+////            Gdx.app.log("MyGestureDetector::mouseMoved()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " deviceSettings.getDevice():" + deviceSettings.getDevice());
 //            if (gameField != null && gameField.getUnderConstruction() != null/* && deviceSettings.getDevice().equals("desktop")*/) { // !LOL! deviceSettings is SHIT
-//                Vector3 touch = new Vector3(prevScreenX, prevScreenY, 0.0f);
-//                Gdx.app.log("GameScreen::mouseMoved()", "-window- prevScreenX:" + prevScreenX + " prevScreenY:" + prevScreenY);
+//                Vector3 touch = new Vector3(prevMouseX, prevMouseY, 0.0f);
+//                Gdx.app.log("GameScreen::mouseMoved()", "-window- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY);
 //                camera.unproject(touch);
 ////                Gdx.app.log("GameScreen::mouseMoved()", "-graphics- touch.x:" + touch.x + " touch.y:" + touch.y);
 //                GridPoint2 cellCoordinate = gameField.getWhichCell().whichCell(touch, gameField.isDrawableTowers);
@@ -351,10 +351,6 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
         gameInterface = new GameInterface(gameField, bitmapFont);
         gameInterface.mapNameLabel.setText("MapName:" + mapPath);
         cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-//        borderLeftX  = new Float(0 - (gameField.getSizeCellX()/2 * gameField.getSizeFieldY()));
-//        borderRightX = new Float(0 + (gameField.getSizeCellX()/2 * gameField.getSizeFieldX()));
-//        borderUpY    = new Float(0);
-//        borderDownY  = new Float(0 - (gameField.getSizeCellY() * (gameField.getSizeFieldX()>gameField.getSizeFieldY() ? gameField.getSizeFieldX() : gameField.getSizeFieldY())));
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();//new MyGestureDetector(cameraController));// я хз че делать=(
 //        inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
