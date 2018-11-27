@@ -1910,10 +1910,10 @@ public class GameField {
 
     private boolean shotMeleeTower(Tower tower) {
         boolean attack = false;
+        Cell towerCell = tower.cell;
         int radius = Math.round(tower.templateForTower.radiusDetection);
         for (int tmpX = -radius; tmpX <= radius; tmpX++) {
             for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                Cell towerCell = tower.cell;
                 Cell cell = getCell(tmpX + towerCell.cellX, tmpY + towerCell.cellY);
                 if (cell != null && cell.getUnit() != null) {
                     attack = true;

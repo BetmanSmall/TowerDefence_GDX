@@ -116,7 +116,8 @@ public class Bullet {
 
         Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", endCircle:" + endCircle);
         Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
-        velocity = new Vector2(endCircle.x - currentPoint.x, endCircle.y - currentPoint.y).nor().scl(Math.min(currentPoint.dst(endCircle.x, endCircle.y), ammoSpeed));
+        velocity = new Vector2(endCircle.x - currentPoint.x, endCircle.y - currentPoint.y);
+        velocity.nor().scl(Math.min(currentPoint.dst(endCircle.x, endCircle.y), ammoSpeed));
         Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
     }
 
