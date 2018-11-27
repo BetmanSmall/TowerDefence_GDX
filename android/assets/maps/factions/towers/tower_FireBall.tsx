@@ -3,7 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="tower_FireBall"/>
-  <property name="radiusDetection" value="4"/>
+  <property name="radiusDetection" value="3"/>
   <property name="radiusFlyShell" value="500"/>
   <property name="damage" value="40"/>
   <property name="size" value="1"/>

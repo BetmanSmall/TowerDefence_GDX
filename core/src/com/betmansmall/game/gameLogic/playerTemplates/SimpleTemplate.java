@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 public class SimpleTemplate extends Template {
     public SimpleTemplate(FileHandle templateFile) throws Exception {
-        Gdx.app.log("SimpleTemplate::SimpleTemplate()", "-- templateFile:" + templateFile);
         loadBasicTemplate(templateFile);
         basicValidate();
     }

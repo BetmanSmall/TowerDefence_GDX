@@ -37,28 +37,28 @@ public class Bullet {
     float flyingTime;
 
     public Bullet(Vector2 currentPoint, TemplateForTower templateForTower, Vector2 destPoint, CameraController cameraController) {
-        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint);
-        Gdx.app.log("Bullet::Bullet()", "-- templateForTower:" + templateForTower);
-        Gdx.app.log("Bullet::Bullet()", "-- destPoint:" + destPoint);
-        Gdx.app.log("Bullet::Bullet()", "-- cameraController:" + cameraController);
+//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint);
+//        Gdx.app.log("Bullet::Bullet()", "-- templateForTower:" + templateForTower);
+//        Gdx.app.log("Bullet::Bullet()", "-- destPoint:" + destPoint);
+//        Gdx.app.log("Bullet::Bullet()", "-- cameraController:" + cameraController);
         this.ammoExpSize = templateForTower.ammoSize;
         this.ammoSize = templateForTower.ammoSize;
         this.ammoSpeed = templateForTower.ammoSpeed;
         this.templateForTower = templateForTower;
-        Gdx.app.log("Bullet::Bullet()", "-- ammoExpSize:" + ammoExpSize);
-        Gdx.app.log("Bullet::Bullet()", "-- ammoSize:" + ammoSize);
-        Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
+//        Gdx.app.log("Bullet::Bullet()", "-- ammoExpSize:" + ammoExpSize);
+//        Gdx.app.log("Bullet::Bullet()", "-- ammoSize:" + ammoSize);
+//        Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
 
         this.currentPoint = new Vector2(currentPoint);
         this.currCircle = new Circle(currentPoint, ammoSize);
         this.endPoint = new Vector2(destPoint);
         this.endCircle = new Circle(destPoint, 3f);
-        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + " currCircle:" + currCircle);
-        Gdx.app.log("Bullet::Bullet()", "-- endPoint:" + endPoint + " endCircle:" + endCircle);
+//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + " currCircle:" + currCircle);
+//        Gdx.app.log("Bullet::Bullet()", "-- endPoint:" + endPoint + " endCircle:" + endCircle);
 
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y);
         velocity.nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
-        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
+//        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
 
         if (velocity.x > 0) {
             if (velocity.y > 0) {
@@ -203,7 +203,7 @@ public class Bullet {
                 currentPoint.add(velocity.x * delta * ammoSpeed, velocity.y * delta * ammoSpeed);
                 currCircle.setPosition(currentPoint);
                 // endPoint2 == endCircle == unit.currentPoint ~= unit.circle1
-                if (Intersector.overlaps(currCircle, unit.circle1)) {
+                if (currCircle.overlaps(unit.circle1)) {
                     if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
                         cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
                     }

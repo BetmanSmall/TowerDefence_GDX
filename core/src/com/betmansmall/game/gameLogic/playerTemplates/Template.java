@@ -34,9 +34,9 @@ public class Template {
         animatedTiles = new ObjectMap<Integer, AnimatedTile>();
     }
 
-//~Template() {
-//    Gdx.app.log("~Template(); -- ";
-//}
+    public void dispose() {
+        Gdx.app.log("Template::dispose()", "-- ");
+    }
 
     public void loadBasicTemplate(FileHandle templateFile) throws Exception {
     Gdx.app.log("Template::loadBasicTemplate()", "-- templateFile:" + templateFile);
@@ -56,6 +56,8 @@ public class Template {
             String source = imageElement.getAttribute("source", null);
             FileHandle textureFile = MapLoader.getRelativeFileHandle(templateFile, source);
             Texture texture = new Texture(textureFile);
+            Gdx.app.log("Template::loadBasicTemplate()", "-- textureFile:" + textureFile);
+            Gdx.app.log("Template::loadBasicTemplate()", "-- texture:" + texture);
 
             int stopWidth = texture.getWidth() - tilewidth;
             int stopHeight = texture.getHeight() - tileheight;
