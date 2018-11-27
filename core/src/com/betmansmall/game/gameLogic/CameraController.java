@@ -62,7 +62,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public boolean paning = false;
     public int touchDownX, touchDownY;
     public int prevMouseX, prevMouseY;
-//    public int prevCellX, prevCellY;
+    public int prevCellX, prevCellY;
 
     public CameraController(GameField gameField, GameInterface gameInterface, OrthographicCamera camera) {
         this.shapeRenderer = new ShapeRenderer();
@@ -114,9 +114,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         this.touchDownY = screenY;
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
-//        this.prevCellX = screenX;
-//        this.prevCellY = screenY;
-//        whichCell(prevCellX, prevCellY, 5);
+        whichPrevCell(screenX, screenY, 5);
         if ( ( (panLeftMouseButton && button == 0) ||
                 (panRightMouseButton && button == 1) ||
                 (panMidMouseButton && button == 2) ) ) {
@@ -239,6 +237,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         Gdx.app.log("CameraController::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY);
+        whichPrevCell(screenX, screenY, 5);
         float deltaX = this.prevMouseX - screenX;
         float deltaY = this.prevMouseY - screenY;
         pan(screenX, screenY, deltaX, deltaY);
@@ -431,6 +430,17 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 //        prevMouseY -= (cameraY*zoom);
 ////    Gdx.app.log("CameraController::unproject()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " cameraX:" + cameraX + " cameraY:" + cameraY);
 //    }
+
+    Vector3 whichPrevCell(final int screenX, final int screenY, int map) {
+        Vector3 mouse = new Vector3(screenX, screenY, 0);
+        if (whichCell(mouse, map)) {
+            prevCellX = (int)mouse.x;
+            prevCellY = (int)mouse.y;
+            return mouse;
+        }
+        mouse = null;
+        return null;
+    }
 
     boolean whichCell(Vector3 mouse, int map) {
     Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);

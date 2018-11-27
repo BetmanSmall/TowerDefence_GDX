@@ -277,6 +277,8 @@ public class GameField {
 //        drawFullField(cameraController);
         cameraController.spriteBatch.setProjectionMatrix(cameraController.camera.combined);
         cameraController.spriteBatch.begin();
+        cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         if(cameraController.isDrawableBackground > 0) {
             drawBackGrounds(cameraController);
         }
@@ -287,6 +289,7 @@ public class GameField {
         if (cameraController.isDrawableForeground > 0) {
             drawForeGrounds(cameraController);
         }
+        cameraController.shapeRenderer.end();
         cameraController.spriteBatch.end();
 
         cameraController.shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
@@ -789,16 +792,16 @@ public class GameField {
 
     private void drawUnit(CameraController cameraController, Unit unit) { //TODO Need to refactor this
 //        Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- Start!");
-        for (TowerShellEffect shellAttackType : unit.shellEffectTypes) {
-            if(shellAttackType.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
-                cameraController.spriteBatch.setColor(0.0f, 0.0f, 1.0f, 0.9f);
-                // Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- FreezeEffect!");
-            }
-            if(shellAttackType.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
-                cameraController.spriteBatch.setColor(1.0f, 0.0f, 0.0f, 0.9f);
-                // Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- FireEffect!");
-            }
-        }
+//        for (TowerShellEffect shellAttackType : unit.shellEffectTypes) {
+//            if(shellAttackType.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
+//                cameraController.spriteBatch.setColor(0.0f, 0.0f, 1.0f, 0.9f);
+//                // Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- FreezeEffect!");
+//            }
+//            if(shellAttackType.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
+//                cameraController.spriteBatch.setColor(1.0f, 0.0f, 0.0f, 0.9f);
+//                // Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- FireEffect!");
+//            }
+//        }
         TextureRegion currentFrame;
         if (unit.isAlive()) {
             currentFrame = unit.getCurrentFrame();
@@ -810,27 +813,13 @@ public class GameField {
         float sizeCellY = cameraController.sizeCellY;
         float fVx = 0f, fVy = 0f;
         if(!gameSettings.isometric) {
-            fVx = unit.newPosition.getX() * cameraController.sizeCellX;//+1;
-            fVy = unit.newPosition.getY() * cameraController.sizeCellX;// - sizeCellX/2;//+1;
-            float localSizeCell = cameraController.sizeCellX;//-1;
-            float localSpaceCell = cameraController.sizeCellX / 3;
-            fVx = unit.newPosition.getX() * cameraController.sizeCellX - localSpaceCell;
-            fVy = unit.newPosition.getY() * cameraController.sizeCellX - localSpaceCell;
-//        if(lastX < x)
-//            pxlsX -= (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
-//        if(lastX > x)
-//            pxlsX += (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
-//        if(lastY < y)
-//            pxlsY -= (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
-//        if(lastY > y)
-//            pxlsY += (sizeCellX/animationMaxIter)*(animationMaxIter-animationCurrIter);
+//            fVx = unit.newPosition.getX() * sizeCellX;//+1;
+//            fVy = unit.newPosition.getY() * sizeCellX;// - sizeCellX/2;//+1;
+            float localSizeCell = sizeCellX;//-1;
+            float localSpaceCell = sizeCellX / 3;
+            fVx = unit.newPosition.getX() * sizeCellX - localSpaceCell;
+            fVy = unit.newPosition.getY() * sizeCellX - localSpaceCell;
             cameraController.spriteBatch.draw(currentFrame, fVx, fVy, localSizeCell + localSpaceCell * 2, localSizeCell + localSpaceCell * 2);
-//            int maxHP = 100;
-//            int hp = unit.hp;
-//            float hpWidth = localSizeCell - 5;
-//            hpWidth = hpWidth / maxHP * hp;
-//            cameraController.painter.drawRect(pxlsX + localSpaceCell + 2, pxlsY, localSizeCell - 4, 10);
-//            cameraController.painter.fillRect(pxlsX + localSpaceCell + 3, pxlsY + 1, hpWidth, 9, QColor(Qt::green));
         } else {
             float deltaX = cameraController.halfSizeCellX;
             float deltaY = cameraController.sizeCellY;
@@ -901,24 +890,27 @@ public class GameField {
             cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
 
             float allTime = 0f;
-            for (TowerShellEffect towerShellEffect : unit.shellEffectTypes)
+            for (TowerShellEffect towerShellEffect : unit.shellEffectTypes) {
                 allTime += towerShellEffect.time;
+            }
 
-            float effectWidth = effectBarWidth / allTime;
-            float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
-            float efY = fVy + currentFrameHeight - hpBarTopIndent + effectBarHeightSpace;
-            float effectBlockWidth = effectBarWidth / unit.shellEffectTypes.size;
-            for (int effectIndex = 0; effectIndex < unit.shellEffectTypes.size; effectIndex++) {
-                TowerShellEffect towerShellEffect = unit.shellEffectTypes.get(effectIndex);
-                if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
-                    cameraController.shapeRenderer.setColor(Color.RED);
-                } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
-                    cameraController.shapeRenderer.setColor(Color.ROYAL);
-                }
-                float efWidth = effectBlockWidth - effectWidth * towerShellEffect.elapsedTime;
-                cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
-                efX += effectBlockWidth;
+            if (allTime != 0.0) {
+                float effectWidth = effectBarWidth / allTime;
+                float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
+                float efY = fVy + currentFrameHeight - hpBarTopIndent + effectBarHeightSpace;
+                float effectBlockWidth = effectBarWidth / unit.shellEffectTypes.size;
+                for (int effectIndex = 0; effectIndex < unit.shellEffectTypes.size; effectIndex++) {
+                    TowerShellEffect towerShellEffect = unit.shellEffectTypes.get(effectIndex);
+                    if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
+                        cameraController.shapeRenderer.setColor(Color.RED);
+                    } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
+                        cameraController.shapeRenderer.setColor(Color.ROYAL);
+                    }
+                    float efWidth = effectBlockWidth - effectWidth * towerShellEffect.elapsedTime;
+                    cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
+                    efX += effectBlockWidth;
 //                Gdx.app.log("GameField::drawUnit()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
+                }
             }
         }
     }
@@ -946,6 +938,10 @@ public class GameField {
             cameraController.spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, (sizeCellY * 2) * towerSize);
 //            cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius/2);
 //            cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
+        }
+        cameraController.shapeRenderer.setColor(Color.WHITE);
+        if (cameraController.prevCellX == cell.cellX && cameraController.prevCellY == cell.cellY) {
+            cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
         towerPos = null; // delete towerPos;
     }
@@ -1088,23 +1084,22 @@ public class GameField {
                 cameraController.shapeRenderer.circle(unit.circle4.x, unit.circle4.y, unit.circle4.radius);
         }
 
-        cameraController.shapeRenderer.setColor(new Color(153f, 255f, 51f, 1f));
+//        cameraController.shapeRenderer.setColor(new Color(153f, 255f, 51f, 0.012f));
+//        cameraController.shapeRenderer.setColor(new Color(128f, 128f, 128f, 0));
+        cameraController.shapeRenderer.setColor(Color.WHITE);
 //        Vector2 towerPos = new Vector2();
         for (Tower tower : towersManager.towers) { // Draw white towers radius! -- radiusDetectionCircle
             if (tower.radiusDetectionCircle != null) {
                 if (cameraController.isDrawableGridNav == 5) {
                     if (cameraController.isDrawableTowers == 5) {
                         for (int m = 1; m < cameraController.isDrawableTowers; m++) {
-//                            towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, m)); // Need recoding this func!
                             cameraController.shapeRenderer.circle(tower.centerGraphicCoord.x, tower.centerGraphicCoord.y, tower.radiusDetectionCircle.radius);
                         }
                     } else if (cameraController.isDrawableTowers != 0) {
-//                        towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, cameraController.isDrawableTowers));
                         cameraController.shapeRenderer.circle(tower.centerGraphicCoord.x, tower.centerGraphicCoord.y, tower.radiusDetectionCircle.radius);
                     }
                 } else /*if(cameraController.isDrawableGridNav != 0)*/ {
                     if (cameraController.isDrawableGridNav == cameraController.isDrawableTowers) {
-//                        towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, cameraController.isDrawableTowers));
                         cameraController.shapeRenderer.circle(tower.centerGraphicCoord.x, tower.centerGraphicCoord.y, tower.radiusDetectionCircle.radius);
                     }
                 }
@@ -1117,16 +1112,13 @@ public class GameField {
                 if(cameraController.isDrawableGridNav == 5) {
                     if(cameraController.isDrawableTowers == 5) {
                         for (int m = 1; m <= cameraController.isDrawableTowers; m++) {
-//                            towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, m)); // Need recoding this func!
                             cameraController.shapeRenderer.circle(tower.centerGraphicCoord.x, tower.centerGraphicCoord.y, tower.radiusFlyShellCircle.radius);
                         }
                     } else {
-//                        towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, cameraController.isDrawableTowers));
                         cameraController.shapeRenderer.circle(tower.centerGraphicCoord.x, tower.centerGraphicCoord.y, tower.radiusFlyShellCircle.radius);
                     }
                 } else {
                     if(cameraController.isDrawableGridNav == cameraController.isDrawableTowers) {
-//                        towerPos.set(cameraController.getCenterGraphicCoord(tower.cell.x, tower.cell.y, cameraController.isDrawableTowers));
                         cameraController.shapeRenderer.circle(tower.centerGraphicCoord.x, tower.centerGraphicCoord.y, tower.radiusFlyShellCircle.radius);
                     }
                 }
