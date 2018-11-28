@@ -59,41 +59,14 @@ public class Bullet {
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y);
         velocity.nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
 //        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
-
-        if (velocity.x > 0) {
-            if (velocity.y > 0) {
-                direction = Direction.UP_RIGHT;
-            } else if (velocity.y == 0) {
-                direction = Direction.RIGHT;
-            } else if (velocity.y < 0) {
-                direction = Direction.DOWN_RIGHT;
-            }
-        } else if (velocity.x == 0) {
-            if (velocity.y > 0) {
-                direction = Direction.UP;
-            } else if (velocity.y == 0) {
-//                direction = Direction.IDLE;
-                Gdx.app.log("Bullet::Bullet()", "-bad- velocity:" + velocity);
-            } else if (velocity.y < 0) {
-                direction = Direction.DOWN;
-            }
-        } else if (velocity.x < 0) {
-            if (velocity.y > 0) {
-                direction = Direction.UP_LEFT;
-            } else if (velocity.y == 0) {
-                direction = Direction.LEFT;
-            } else if (velocity.y < 0) {
-                direction = Direction.DOWN_LEFT;
-            }
-        }
         setAnimation("ammo_");
     }
 
     public Bullet(Vector2 currentPoint, TemplateForTower templateForTower, Unit unit, CameraController cameraController) {
-        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint);
-        Gdx.app.log("Bullet::Bullet()", "-- templateForTower:" + templateForTower);
-        Gdx.app.log("Bullet::Bullet()", "-- unit:" + unit);
-        Gdx.app.log("Bullet::Bullet()", "-- cameraController:" + cameraController);
+//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint);
+//        Gdx.app.log("Bullet::Bullet()", "-- templateForTower:" + templateForTower);
+//        Gdx.app.log("Bullet::Bullet()", "-- unit:" + unit);
+//        Gdx.app.log("Bullet::Bullet()", "-- cameraController:" + cameraController);
         this.ammoExpSize = templateForTower.ammoSize;
         this.ammoSize = templateForTower.ammoSize;
         this.ammoSpeed = templateForTower.ammoSpeed;
@@ -114,11 +87,12 @@ public class Bullet {
         Tile tiledMapTile = templateForTower.animations.get("ammo_" + Direction.UP);
         this.textureRegion = tiledMapTile != null ? tiledMapTile.getTextureRegion() : templateForTower.idleTile.getTextureRegion();
 
-        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", endCircle:" + endCircle);
-        Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
+//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", endCircle:" + endCircle);
+//        Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
         velocity = new Vector2(endCircle.x - currentPoint.x, endCircle.y - currentPoint.y);
         velocity.nor().scl(Math.min(currentPoint.dst(endCircle.x, endCircle.y), ammoSpeed));
-        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
+//        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
+//        setAnimation("ammo_");
     }
 
     public void dispose() {
@@ -136,6 +110,32 @@ public class Bullet {
     }
 
     void setAnimation(String action) {
+        if (velocity.x > 0) {
+            if (velocity.y > 0) {
+                direction = Direction.UP_RIGHT;
+            } else if (velocity.y == 0) {
+                direction = Direction.RIGHT;
+            } else if (velocity.y < 0) {
+                direction = Direction.DOWN_RIGHT;
+            }
+        } else if (velocity.x == 0) {
+            if (velocity.y > 0) {
+                direction = Direction.UP;
+            } else if (velocity.y == 0) {
+//                direction = Direction.IDLE;
+                Gdx.app.log("Bullet::setAnimation()", "-bad- velocity:" + velocity);
+            } else if (velocity.y < 0) {
+                direction = Direction.DOWN;
+            }
+        } else if (velocity.x < 0) {
+            if (velocity.y > 0) {
+                direction = Direction.UP_LEFT;
+            } else if (velocity.y == 0) {
+                direction = Direction.LEFT;
+            } else if (velocity.y < 0) {
+                direction = Direction.DOWN_LEFT;
+            }
+        }
 //        Gdx.app.log("Bullet::setAnimation()", "-- action+direction:" + action+direction );
         AnimatedTile animatedTiledMapTile = templateForTower.animations.get(action + direction);
         if (animatedTiledMapTile != null) {
