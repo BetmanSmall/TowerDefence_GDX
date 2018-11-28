@@ -177,7 +177,7 @@ public class FactionsManager {
                 if (factionName != null) {
                     Faction faction = new Faction(factionName);
                     Array<Element> templateForUnitElements = root.getChildrenByName("templateForUnit");
-                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForUnitElements.size" + templateForUnitElements.size);
+                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForUnitElements.size:" + templateForUnitElements.size);
                     for (Element templateForUnitElement : templateForUnitElements) {
                         String source = templateForUnitElement.getAttribute("source", null);
                         if (source != null) {
@@ -189,7 +189,7 @@ public class FactionsManager {
                         }
                     }
                     Array<Element> templateForTowerElements = root.getChildrenByName("templateForTower");
-                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForTowerElements.size" + templateForTowerElements.size);
+                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForTowerElements.size:" + templateForTowerElements.size);
                     for (Element templateForTowerElement : templateForTowerElements) {
                         String source = templateForTowerElement.getAttribute("source", null);
                         if (source != null) {

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="tower_pit" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="tower9" tilewidth="64" tileheight="64" tilecount="6" columns="2">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Pit1"/>
-  <property name="radiusDetection" value="0"/>
-  <property name="damage" value="1000000"/>
+  <property name="name" value="Tower Bomb MultipleTarget"/>
+  <property name="radiusDetection" value="200"/>
+  <!-- <property name="radiusFlyShell" value="150"/> -->
+  <property name="damage" value="50"/>
   <property name="size" value="1"/>
-  <property name="cost" value="200"/>
-  <property name="ammoSize" value="0"/>
-  <property name="ammoSpeed" value="0"/>
-  <property name="reloadTime" value="0"/>
-  <property name="towerAttackType" value="Pit"/>
-  <!-- <property name="TowerShellType" value="None"/> -->
+  <property name="cost" value="130"/>
+  <property name="ammoSize" value="30"/>
+  <property name="ammoSpeed" value="15"/>
+  <property name="reloadTime" value="2"/>
+  <property name="towerAttackType" value="Range"/>
+  <property name="towerShellType" value="MultipleTarget"/>
   <!-- <property name="towerShellEffect" value="None"/> -->
-  <property name="capacity" value="2"/>
  </properties>
- <image source="../../textures/pit.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

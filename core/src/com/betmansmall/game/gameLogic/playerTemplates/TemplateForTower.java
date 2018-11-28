@@ -46,7 +46,7 @@ public class TemplateForTower extends Template {
             loadBasicTemplate(templateFile);
             specificLoad();
             validate();
-            this.size = 1;
+//            this.size = 1;
         } catch (Exception exp) {
             Gdx.app.log("TemplateForTower::TemplateForTower()", "-- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
             throw new Exception("TemplateForTower::TemplateForTower() -- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
@@ -209,7 +209,7 @@ public class TemplateForTower extends Template {
         }
         if(this.radiusFlyShell == null && this.towerShellType != towerShellType.FirstTarget) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusFlyShell");
-            this.radiusFlyShell = 0f;
+//            this.radiusFlyShell = 0f;
         }
 
         if(idleTile == null)

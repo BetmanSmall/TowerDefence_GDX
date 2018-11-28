@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faction name="Orcs_Faction">
+<faction name="Faction2">
 	<templateForUnit source="units/unit1_grunt.tsx"/>
 	<templateForUnit source="units/unit2_troll_axethrower.tsx"/>
 	<templateForUnit source="units/unit4_catapult.tsx"/>

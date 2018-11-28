@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faction name="Humans_Faction">
+<faction name="Faction1">
 	<templateForUnit source="units/unit3_footman.tsx"/>
-	<templateForTower source="towers/tower_FireBall.tsx"/>
-	<templateForTower source="towers/tower1_scout.tsx"/>
-	<templateForTower source="towers/tower11_scoutContreFly.tsx"/>
-	<templateForTower source="towers/towerBomb.tsx"/>
-	<templateForTower source="towers/tower2_melee.tsx"/>
-	<templateForTower source="towers/tower2_wall.tsx"/>
-	<templateForTower source="towers/tower_pit.tsx"/>
-	<templateForTower source="towers/towerFire1.tsx"/>
-	<templateForTower source="towers/towerFreeze1.tsx"/>
-	<templateForTower source="towers/towerFreeze2.tsx"/>
-	<templateForTower source="towers/towerFreeze3.tsx"/>
-	<templateForTower source="towers/towerFreeze4.tsx"/>
-	<templateForTower source="towers/towerFreeze5.tsx"/>
-	<templateForTower source="towers/towerFreeze6.tsx"/>
+	
+	<templateForTower source="towers/tower0.tsx"/>
+	<templateForTower source="towers/tower1.tsx"/>
+	<templateForTower source="towers/tower2.tsx"/>
+	<templateForTower source="towers/tower3.tsx"/>
+	<templateForTower source="towers/tower4.tsx"/>
+	<templateForTower source="towers/tower5.tsx"/>
+	<templateForTower source="towers/tower6.tsx"/>
+	<templateForTower source="towers/tower7.tsx"/>
+	<templateForTower source="towers/tower8.tsx"/>
+	<templateForTower source="towers/tower9.tsx"/>
+	<templateForTower source="towers/tower10.tsx"/>
+	<templateForTower source="towers/tower11.tsx"/>
+	<templateForTower source="towers/tower12.tsx"/>
+	<templateForTower source="towers/tower13.tsx"/>
+	<templateForTower source="towers/tower14.tsx"/>
+	<templateForTower source="towers/tower15.tsx"/>
+	<templateForTower source="towers/tower16.tsx"/>
+	
+	<!-- <templateForTower source="towers/towerFreeze5.tsx"/> -->
+	<!-- <templateForTower source="towers/towerFreeze6.tsx"/> -->
+	
+	<!-- <templateForTower source="towers/tower_test1x1.tsx"/> -->
+	<!-- <templateForTower source="towers/tower_test2x2.tsx"/> -->
+	<!-- <templateForTower source="towers/tower_test3x3.tsx"/> -->
+	<!-- <templateForTower source="towers/tower_test4x4.tsx"/> -->
+	<!-- <templateForTower source="towers/tower_test5x5.tsx"/> -->
+	<!-- <templateForTower source="towers/tower_test6x6.tsx"/> -->
+	<!-- <templateForTower source="towers/tower_test7x7.tsx"/> -->
 </faction>

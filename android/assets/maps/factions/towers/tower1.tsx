@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="towerFreeze3" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="tower1" tilewidth="64" tileheight="64" tilecount="6" columns="2">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Freeze Tower 3"/>
-  <property name="radiusDetection" value="200"/>
-  <property name="radiusFlyShell" value="0"/>
-  <property name="damage" value="0"/>
-  <property name="size" value="3"/>
+  <property name="name" value="Pit1"/>
+  <property name="radiusDetection" value="0"/>
+  <property name="damage" value="-1"/>
+  <property name="size" value="1"/>
   <property name="cost" value="200"/>
-  <property name="ammoSize" value="100"/>
-  <property name="ammoSpeed" value="15"/>
+  <property name="ammoSize" value="0"/>
+  <property name="ammoSpeed" value="0"/>
   <property name="reloadTime" value="0"/>
-  <property name="towerAttackType" value="Range"/>
-  <property name="towerShellType" value="MassAddEffect"/>
-  <property name="towerShellEffect" value="FreezeEffect"/>
-  <property name="shellEffectType_time" value="0.1"/>
-  <!-- <property name="shellEffectType_damage" value="5"/> -->
-  <property name="shellEffectType_speed" value="0.6"/>
+  <property name="towerAttackType" value="Pit"/>
+  <!-- <property name="TowerShellType" value="None"/> -->
+  <!-- <property name="towerShellEffect" value="None"/> -->
+  <property name="capacity" value="1"/>
  </properties>
- <image source="../../textures/warcraft2/tilesets/winter/human/buildings/scout_tower_freeze.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/pit.png" trans="ff00ff" width="128" height="192"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>

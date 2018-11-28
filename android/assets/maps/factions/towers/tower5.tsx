@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="tower3_cannon" tilewidth="64" tileheight="64" tilecount="6" columns="2">
+<tileset name="tower5" tilewidth="64" tileheight="64" tilecount="1" columns="1">
  <properties>
   <property name="factionName" value="Faction1"/>
-  <property name="name" value="Scout3"/>
-  <property name="radiusDetection" value="100"/>
-  <property name="damage" value="200"/>
-  <property name="size" value="3"/>
-  <property name="cost" value="10"/>
-  <property name="ammoSize" value="80"/>
-  <property name="ammoSpeed" value="80"/>
-  <property name="reloadTime" value="1.3"/>
-  <property name="type" value="tower"/>
-  <property name="ammoDistance" value="5"/>
+  <property name="name" value="Wall"/>
+  <property name="radiusDetection" value="1"/>
+  <property name="damage" value="0"/>
+  <property name="size" value="1"/>
+  <property name="cost" value="0"/>
+  <property name="ammoSize" value="1"/>
+  <property name="ammoSpeed" value="1"/>
+  <property name="reloadTime" value="0"/> 
+  <property name="towerAttackType" value="Melee"/>
+  <!-- <property name="towerShellType" value="SingleTarget"/> -->
+  <!-- <property name="TowerShellType" value="MultipleTarget"/> -->
+  <!-- <property name="towerShellEffect" value="None"/> -->
  </properties>
- <image source="../../textures/warcraft2/tilesets/summer/orc/buildings/cannon_tower_test.png" trans="ff00ff" width="128" height="192"/>
+ <image source="../../textures/tower_wall.png" trans="ff00ff" width="64" height="64"/>
  <terraintypes>
   <terrain name="idleTile" tile="0"/>
   <terrain name="ammo_UP" tile="1"/>
