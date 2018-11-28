@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -133,6 +134,8 @@ public class CameraController implements GestureDetector.GestureListener, InputP
                     if (whichCell(touch, isDrawableTowers)) {
                         underConstruction.setStartCoors((int) touch.x, (int) touch.y);
                     }
+//                } else if (button == 1) {
+//                    gameField.cancelUnderConstruction();
                 }
             }
         }
@@ -235,12 +238,12 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        Gdx.app.log("CameraController::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY);
+    public boolean mouseMoved(int screenX, int screenY/*, int buttons*/) {
+//        Gdx.app.log("CameraController::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY/* + " buttons:" + buttons*/);
         whichPrevCell(screenX, screenY, 5);
         float deltaX = this.prevMouseX - screenX;
         float deltaY = this.prevMouseY - screenY;
-        pan(screenX, screenY, deltaX, deltaY);
+        pan(screenX, screenY, deltaX, deltaY/*, buttons*/);
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
         if (gameField != null && gameField.getUnderConstruction() != null) {
@@ -265,14 +268,15 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y);
-        Gdx.app.log("CameraController::pan()", "-- deltaX:" + deltaX + " deltaY:" + deltaY);
+    public boolean pan(float x, float y, float deltaX, float deltaY/*, int buttons*/) {
+//        Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y);
+//        Gdx.app.log("CameraController::pan()", "-- deltaX:" + deltaX + " deltaY:" + deltaY);
+//        Gdx.app.log("CameraController::pan()", "-- buttons:" + buttons);
         if (paning && gameInterface.pan(x, y, deltaX, deltaY)) {
             return true;
         }
 
-        if (gameField.getUnderConstruction() == null) {
+        if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
             if (paning) {
                 float newCameraX = camera.position.x - (deltaX * camera.zoom);
                 float newCameraY = camera.position.y + (deltaY * camera.zoom);
