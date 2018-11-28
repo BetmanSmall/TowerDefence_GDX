@@ -346,11 +346,31 @@ public class GameField {
         cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
         if (!gameSettings.isometric) {
-            for (int x = 0; x < map.width+1; x++) {
-                cameraController.shapeRenderer.line(x*cameraController.sizeCellX, 0, x*cameraController.sizeCellX, cameraController.sizeCellX*map.height);
+            float sizeCellX = cameraController.sizeCellX;
+//            float sizeCellY = cameraController.sizeCellY;
+            if (cameraController.isDrawableGrid == 1 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x < map.width+1; x++)
+                    cameraController.shapeRenderer.line(x*sizeCellX, 0, x*sizeCellX, sizeCellX*map.height);
+                for (int y = 0; y < map.height+1; y++)
+                    cameraController.shapeRenderer.line(0, y*sizeCellX, sizeCellX*map.width, y*sizeCellX);
             }
-            for (int y = 0; y < map.height+1; y++) {
-                cameraController.shapeRenderer.line(0, y*cameraController.sizeCellX, cameraController.sizeCellX*map.width, y*cameraController.sizeCellX);
+            if (cameraController.isDrawableGrid == 2 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x < map.width+1; x++)
+                    cameraController.shapeRenderer.line(-(x*sizeCellX), 0, -(x*sizeCellX), sizeCellX*map.height);
+                for (int y = 0; y < map.height+1; y++)
+                    cameraController.shapeRenderer.line(0, y*sizeCellX, -(sizeCellX*map.width), y*sizeCellX);
+            }
+            if (cameraController.isDrawableGrid == 3 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x < map.width+1; x++)
+                    cameraController.shapeRenderer.line(-(x*sizeCellX), 0, -(x*sizeCellX), -(sizeCellX*map.height));
+                for (int y = 0; y < map.height+1; y++)
+                    cameraController.shapeRenderer.line(0, -(y*sizeCellX), -(sizeCellX*map.width), -(y*sizeCellX));
+            }
+            if (cameraController.isDrawableGrid == 4 || cameraController.isDrawableGrid == 5) {
+                for (int x = 0; x < map.width+1; x++)
+                    cameraController.shapeRenderer.line(x*sizeCellX, 0, x*sizeCellX, -(sizeCellX*map.height));
+                for (int y = 0; y < map.height+1; y++)
+                    cameraController.shapeRenderer.line(0, -(y*sizeCellX), sizeCellX*map.width, -(y*sizeCellX));
             }
         } else {
             float halfSizeCellX = cameraController.halfSizeCellX;

@@ -129,13 +129,13 @@ public class MainMenuScreen implements Screen {
 
 //        towerDefence.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
-        FileHandle mapsDir = Gdx.files.internal("maps");
+//        FileHandle mapsDir = Gdx.files.internal("maps");
 //        if(mapsDir.list().length == 0) {
-        towerDefence.gameLevelMaps.add("maps/randomMap.tmx");
-            towerDefence.gameLevelMaps.add("maps/island.tmx");
             towerDefence.gameLevelMaps.add("maps/desert.tmx");
             towerDefence.gameLevelMaps.add("maps/summer.tmx");
             towerDefence.gameLevelMaps.add("maps/winter.tmx");
+            towerDefence.gameLevelMaps.add("maps/randomMap.tmx");
+            towerDefence.gameLevelMaps.add("maps/island.tmx");
             towerDefence.gameLevelMaps.add("maps/arena0.tmx");
             towerDefence.gameLevelMaps.add("maps/arena1.tmx");
             towerDefence.gameLevelMaps.add("maps/arena2.tmx");

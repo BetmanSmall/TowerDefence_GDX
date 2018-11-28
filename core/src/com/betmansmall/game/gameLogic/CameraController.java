@@ -81,10 +81,10 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         this.halfSizeCellX = sizeCellX/2;
         this.halfSizeCellY = sizeCellY/2;
 
-        this.borderLeftX  = (0 - (halfSizeCellX * mapHeight));
-        this.borderRightX = (0 + (halfSizeCellX * mapWidth));
-        this.borderUpY    = (0);
-        this.borderDownY  = (0 - (sizeCellY * (mapWidth>mapHeight ? mapWidth : mapHeight)));
+//        this.borderLeftX  = (0 - (halfSizeCellX * mapHeight));
+//        this.borderRightX = (0 + (halfSizeCellX * mapWidth));
+//        this.borderUpY    = (0);
+//        this.borderDownY  = (0 - (sizeCellY * (mapWidth>mapHeight ? mapWidth : mapHeight)));
 //        Gdx.input.setCursorCatched(true);
     }
 
