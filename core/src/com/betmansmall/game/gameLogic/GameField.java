@@ -334,7 +334,7 @@ public class GameField {
 //        int isometricSpaceY = -(cameraController->sizeCellY/2);
 //        for (int y = 0; y <= sizeY; y++) {
 //            for (int x = 0; x <= sizeX; x++) {
-//                cameraController->painter->drawPixmap(isometricSpaceX - cameraController->sizeCellX/2 + x*cameraController->sizeCellX, isometricSpaceY - cameraController->sizeCellY, cameraController->sizeCellX, cameraController->sizeCellY*2, pixmap);
+//                cameraController->painter->drawPixmap(isometricSpaceX - cameraController->sizeCellX/2 + x*cameraController->sizeCellX, isometricSpaceY - cameraController->sizeCellY, sizeCellX, sizeCellY, pixmap);
 //            }
 //            isometricSpaceY += cameraController->sizeCellY/2;
 //            isometricSpaceX = isometricSpaceX != 0 ? 0 : cameraController->sizeCellX/2;
@@ -484,23 +484,29 @@ public class GameField {
     }
 
     private void drawBackGroundCell(CameraController cameraController, int cellX, int cellY) {
+        float sizeCellX = cameraController.sizeCellX;
+        float sizeCellY = cameraController.sizeCellY*2;
         float deltaX = cameraController.halfSizeCellX;
         float deltaY = cameraController.halfSizeCellY;
+        if (!gameSettings.isometric) {
+            sizeCellY = cameraController.sizeCellY;
+//            deltaY = cameraController.sizeCellY;
+        }
         Cell cell = field[cellX][cellY];
         Array<TiledMapTile> tiledMapTiles = cell.backgroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if (cameraController.isDrawableBackground == 1 || cameraController.isDrawableBackground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-deltaX, cell.graphicCoordinates1.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-deltaX, cell.graphicCoordinates1.y-deltaY, sizeCellX, sizeCellY);
             }
             if (cameraController.isDrawableBackground == 2 || cameraController.isDrawableBackground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-deltaX, cell.graphicCoordinates2.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-deltaX, cell.graphicCoordinates2.y-deltaY, sizeCellX, sizeCellY);
             }
             if (cameraController.isDrawableBackground == 3 || cameraController.isDrawableBackground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-deltaX, cell.graphicCoordinates3.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-deltaX, cell.graphicCoordinates3.y-deltaY, sizeCellX, sizeCellY);
             }
             if (cameraController.isDrawableBackground == 4 || cameraController.isDrawableBackground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-deltaX, cell.graphicCoordinates4.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-deltaX, cell.graphicCoordinates4.y-deltaY, sizeCellX, sizeCellY);
             }
         }
     }
@@ -580,23 +586,29 @@ public class GameField {
     }
 
     private void drawGroundCellWithUnitsAndTower(CameraController cameraController, int cellX, int cellY) {
+        float sizeCellX = cameraController.sizeCellX;
+        float sizeCellY = cameraController.sizeCellY*2;
         float deltaX = cameraController.halfSizeCellX;
         float deltaY = cameraController.halfSizeCellY;
+        if (!gameSettings.isometric) {
+            sizeCellY = cameraController.sizeCellY;
+//            deltaY = cameraController.sizeCellY;
+        }
         Cell cell = field[cellX][cellY];
         Array<TiledMapTile> tiledMapTiles = cell.groundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if(cameraController.isDrawableGround == 1 || cameraController.isDrawableGround == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-deltaX, cell.graphicCoordinates1.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-deltaX, cell.graphicCoordinates1.y-deltaY, sizeCellX, sizeCellY);
             }
             if(cameraController.isDrawableGround == 2 || cameraController.isDrawableGround == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-deltaX, cell.graphicCoordinates2.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-deltaX, cell.graphicCoordinates2.y-deltaY, sizeCellX, sizeCellY);
             }
             if(cameraController.isDrawableGround == 3 || cameraController.isDrawableGround == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-deltaX, cell.graphicCoordinates3.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-deltaX, cell.graphicCoordinates3.y-deltaY, sizeCellX, sizeCellY);
             }
             if(cameraController.isDrawableGround == 4 || cameraController.isDrawableGround == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-deltaX, cell.graphicCoordinates4.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-deltaX, cell.graphicCoordinates4.y-deltaY, sizeCellX, sizeCellY);
             }
         }
         Array<Unit> units = field[cellX][cellY].getUnits();
@@ -688,23 +700,29 @@ public class GameField {
     }
 
     private void drawForeGroundCell(CameraController cameraController, int cellX, int cellY) {
+        float sizeCellX = cameraController.sizeCellX;
+        float sizeCellY = cameraController.sizeCellY*2;
         float deltaX = cameraController.halfSizeCellX;
         float deltaY = cameraController.halfSizeCellY;
+        if (!gameSettings.isometric) {
+            sizeCellY = cameraController.sizeCellY;
+//            deltaY = cameraController.sizeCellY;
+        }
         Cell cell = field[cellX][cellY];
         Array<TiledMapTile> tiledMapTiles = cell.foregroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
             TextureRegion textureRegion = tiledMapTile.getTextureRegion();
             if (cameraController.isDrawableForeground == 1 || cameraController.isDrawableForeground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-deltaX, cell.graphicCoordinates1.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates1.x-deltaX, cell.graphicCoordinates1.y-deltaY, sizeCellX, sizeCellY);
             }
             if (cameraController.isDrawableForeground == 2 || cameraController.isDrawableForeground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-deltaX, cell.graphicCoordinates2.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates2.x-deltaX, cell.graphicCoordinates2.y-deltaY, sizeCellX, sizeCellY);
             }
             if (cameraController.isDrawableForeground == 3 || cameraController.isDrawableForeground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-deltaX, cell.graphicCoordinates3.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates3.x-deltaX, cell.graphicCoordinates3.y-deltaY, sizeCellX, sizeCellY);
             }
             if (cameraController.isDrawableForeground == 4 || cameraController.isDrawableForeground == 5) {
-                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-deltaX, cell.graphicCoordinates4.y-deltaY);//, sizeCellX, sizeCellY*2); TODO NEED FIX!
+                cameraController.spriteBatch.draw(textureRegion, cell.graphicCoordinates4.x-deltaX, cell.graphicCoordinates4.y-deltaY, sizeCellX, sizeCellY);
             }
         }
     }
@@ -1349,26 +1367,13 @@ public class GameField {
                 return createUnit(cell, cell, factionsManager.getTemplateForUnitByName("unit3_footman"), 1, gameSettings.cellExitHero); // player1 = hero
             }
         } else {
-//            Unit hero = spawnHeroInSpawnPoint();
-//            while (hero == null) {
-                int randomX = (int)(Math.random()*map.width);
-                int randomY = (int)(Math.random()*map.height);
-//                if (gameSettings.cellSpawnHero == null) {
-//                    gameSettings.cellSpawnHero = getCell(randomX, randomY);
-//                } else {
-//                    if (gameSettings.cellExitHero == null) {
-                        gameSettings.cellExitHero = getCell(randomX, randomY);
-//                    }
-//                }
-                Unit hero = spawnHero(cellX, cellY);
-                if (hero == null) {
-//                    if (gameSettings.cellSpawnHero != null) {
-//                        gameSettings.cellSpawnHero = null;
-//                    } else if (gameSettings.cellSpawnHero != null) {
-                        gameSettings.cellSpawnHero = null;
-//                    }
-                }
-//            }
+            int randomX = (int)(Math.random()*map.width);
+            int randomY = (int)(Math.random()*map.height);
+            gameSettings.cellExitHero = getCell(randomX, randomY);
+            Unit hero = spawnHero(cellX, cellY);
+            if (hero == null) {
+                gameSettings.cellExitHero = null;
+            }
         }
         return null;
     }

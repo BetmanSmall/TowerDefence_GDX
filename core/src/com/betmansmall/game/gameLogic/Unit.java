@@ -206,17 +206,17 @@ public class Unit {
         fVc.set(fVx, fVy);
     }
 
-    // --- MANUAL ---
-//        if (newX < oldX && newY > oldY) {
-//        } else if (newX == oldX && newY > oldY) {
-//        } else if (newX > oldX && newY > oldY) {
-//        } else if (newX > oldX && newY == oldY) {
-//        } else if (newX > oldX && newY < oldY) {
-//        } else if (newX == oldX && newY < oldY) {
-//        } else if (newX < oldX && newY < oldY) {
-//        } else if (newX < oldX && newY == oldY) {
-//        }
-    // --- MANUAL ---
+// --- MANUAL ---
+//    if (newX < oldX && newY > oldY) {
+//    } else if (newX == oldX && newY > oldY) {
+//    } else if (newX > oldX && newY > oldY) {
+//    } else if (newX > oldX && newY == oldY) {
+//    } else if (newX > oldX && newY < oldY) {
+//    } else if (newX == oldX && newY < oldY) {
+//    } else if (newX < oldX && newY < oldY) {
+//    } else if (newX < oldX && newY == oldY) {
+//    }
+// --- MANUAL ---
 
     // что бы ефекты не стакались на крипах
     public Node move(float delta, CameraController cameraController) {
@@ -229,9 +229,9 @@ public class Unit {
                 stepsInTime = 0f;
                 oldPosition = newPosition;
                 newPosition = route.pollFirst();
-                if (newPosition == null) {
-                    newPosition = oldPosition;
-                }
+//                if (newPosition == null) {
+//                    newPosition = oldPosition;
+//                }
             } else {
                 direction = Direction.UP;
                 setAnimation("idle_");
@@ -249,8 +249,8 @@ public class Unit {
         int isDrawableUnits = cameraController.isDrawableUnits;
         if (isDrawableUnits == 4 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord4)
-            float fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
-            float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY));
+            float fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX) ) - halfSizeCellX;
+            float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY) );
             if (!cameraController.gameField.gameSettings.isometric) {
                 fVx = (-(newX * sizeCellX) ) - halfSizeCellX;
                 fVy = ( (newY * sizeCellY) ) + halfSizeCellY;
@@ -297,8 +297,8 @@ public class Unit {
         }
         if(isDrawableUnits == 3 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord3)
-            float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
-            float fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY;
+            float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX) );
+            float fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY) ) + halfSizeCellY;
             if (!cameraController.gameField.gameSettings.isometric) {
                 fVx = ( (newX * sizeCellX) ) + halfSizeCellX;
                 fVy = ( (newY * sizeCellY) ) + halfSizeCellY;
@@ -345,8 +345,8 @@ public class Unit {
         }
         if(isDrawableUnits == 2 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord2)
-            float fVx = ( (halfSizeCellX * newY) + (newX * halfSizeCellX)) + halfSizeCellX;
-            float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY));
+            float fVx = ( (halfSizeCellX * newY) + (newX * halfSizeCellX) ) + halfSizeCellX;
+            float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY) );
             if (!cameraController.gameField.gameSettings.isometric) {
                 fVx = ( (newX * sizeCellX) ) + halfSizeCellX;
                 fVy = (-(newY * sizeCellY) ) - halfSizeCellY;
@@ -393,8 +393,8 @@ public class Unit {
         }
         if(isDrawableUnits == 1 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord1)
-            float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
-            float fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY)) - halfSizeCellY;
+            float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX) );
+            float fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY) ) - halfSizeCellY;
             if (!cameraController.gameField.gameSettings.isometric) {
                 fVx = (-(newX * sizeCellX)) - halfSizeCellX;
                 fVy = (-(newY * sizeCellY)) - halfSizeCellY;
@@ -491,46 +491,12 @@ public class Unit {
         return false;
     }
 
-//    public Node getOldPosition() {
-//        return oldPosition;
-//    }
-//    public Node getNewPosition() {
-//        return newPosition;
-//    }
-
-//    public void setHp(int hp) {
-//        this.hp = hp;
-//    }
-//    public int getHp() {
-//        return (int)hp;
-//    }
     public boolean isAlive() {
         if(animation == null) { // TODO Не верно, нужно исправить.
             return false;
         }
         return hp > 0 ? true : false;
     }
-
-//    public void setSpeed(float speed) {
-//        this.speed = speed;
-//    }
-//    public float getSpeed() {
-//        return speed;
-//    }
-
-//    public void setStepsInTime(float stepsInTime) {
-//        this.stepsInTime = stepsInTime;
-//    }
-//    public float getStepsInTime() {
-//        return stepsInTime;
-//    }
-
-//    public void setRoute(ArrayDeque<Node> route) {
-//        this.route = route;
-//    }
-//    public ArrayDeque<Node> getRoute() {
-//        return route;
-//    }
 
     public TextureRegion getCurrentFrame() {
         return animation.getKeyFrame(stepsInTime, true);
@@ -541,6 +507,10 @@ public class Unit {
     }
 
     public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("Unit[");
 //        sb.append("route:" + route + ",");
