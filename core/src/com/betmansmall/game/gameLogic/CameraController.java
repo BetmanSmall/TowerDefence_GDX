@@ -447,15 +447,19 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     boolean whichCell(Vector3 mouse, int map) {
-    Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);
+        Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);
         camera.unproject(mouse);
-    Gdx.app.log("CameraController::whichCell()", "-grph- mouseX:" + mouse.x + " mouseY:" + mouse.y);
-        float gameX = ( (mouse.x / (halfSizeCellX)) + (mouse.y / (halfSizeCellY)) ) / 2;
-        float gameY = ( (mouse.y / (halfSizeCellY)) - (mouse.x / (halfSizeCellX)) ) / 2;
-    Gdx.app.log("CameraController::whichCell()", "-graphics- mouseX:" + mouse.x + " mouseY:" + mouse.y + " map:" + map + " -new- gameX:" + gameX + " gameY:" + gameY);
+        Gdx.app.log("CameraController::whichCell()", "-grph- mouseX:" + mouse.x + " mouseY:" + mouse.y);
+        float gameX = ((mouse.x / (halfSizeCellX)) + (mouse.y / (halfSizeCellY))) / 2;
+        float gameY = ((mouse.y / (halfSizeCellY)) - (mouse.x / (halfSizeCellX))) / 2;
+        if (!gameField.gameSettings.isometric) {
+            gameX = (mouse.x / sizeCellX);
+            gameY = (mouse.y / sizeCellY);
+        }
+        Gdx.app.log("CameraController::whichCell()", "-graphics- mouseX:" + mouse.x + " mouseY:" + mouse.y + " map:" + map + " -new- gameX:" + gameX + " gameY:" + gameY);
         int cellX = Math.abs((int) gameX);
         int cellY = Math.abs((int) gameY);
-        if(gameY < 0) {
+        if(gameField.gameSettings.isometric && gameY < 0) {
             int tmpX = cellX;
             cellX = cellY;
             cellY = tmpX;
@@ -463,7 +467,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         // если это убирать то нужно будет править Cell::setGraphicCoordinates() для 3 и 4 карты-java // c++ ?? or ??
         mouse.x = cellX;
         mouse.y = cellY;
-    Gdx.app.log("CameraController::whichCell()", "-cell- cellX:" + cellX + " cellY:" + cellY);
+        Gdx.app.log("CameraController::whichCell()", "-cell- cellX:" + cellX + " cellY:" + cellY);
         if (cellX < mapWidth && cellY < mapHeight) {
             if (map == 5) {
                 return true;
@@ -482,44 +486,39 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
     public boolean getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
         if(map == 1) {
-            towerPos.x += (-(halfSizeCellX * towerSize) );
-            towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
+            if (!gameField.gameSettings.isometric) {
+                towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
+            } else {
+                towerPos.x += (-(halfSizeCellX * towerSize) );
+            }
+            towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
         } else if(map == 2) {
             towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
-            towerPos.y += (-(halfSizeCellY * towerSize));
+            if (!gameField.gameSettings.isometric) {
+                towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
+            } else {
+                towerPos.y += (-(halfSizeCellY * towerSize));
+            }
         } else if(map == 3) {
-            towerPos.x += (-(halfSizeCellX * towerSize) );
-            towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)));
+            if (!gameField.gameSettings.isometric) {
+                towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
+            } else {
+                towerPos.x += (-(halfSizeCellX * towerSize) );
+            }
+            towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
         } else if(map == 4) {
             towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-            towerPos.y += (-(halfSizeCellY * towerSize));
+            if (!gameField.gameSettings.isometric) {
+                towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
+            } else {
+                towerPos.y += (-(halfSizeCellY * towerSize));
+            }
         } else {
             Gdx.app.log("GameField::getCorrectGraphicTowerCoord(" + towerPos + ", " + towerSize + ", " + map + ")", "-- Bad map[1-4] value:" + map);
             return false;
         }
         return true;
     }
-
-//    boolean getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
-////    Gdx.app.log("CameraController::getCorrectGraphicTowerCoord()", "-- towerSize:" + towerSize + " qweqwe:" + (towerSize - ((towerSize % 2 != 0) ? 0 : 1));
-//        if(map == 1) {
-//            towerPos.x -= ( (halfSizeCellX * towerSize) );
-//            towerPos.y -= ( (halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-//        } else if(map == 2) {
-//            towerPos.x -= ( (halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
-//            towerPos.y -= ( (halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-//        } else if(map == 3) {
-//            towerPos.x -= ( (halfSizeCellX * towerSize) );
-//            towerPos.y -= ( (halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-//        } else if(map == 4) {
-//            towerPos.x -= ( (halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-//            towerPos.y -= ( (halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-//        } else {
-//            Gdx.app.log("CameraController::getCorrectGraphicTowerCoord(" + towerPos + ", " + towerSize + ", " + map + ")", "-- Bad map[1-4] value:" + map);
-//            return false;
-//        }
-//        return true;
-//    }
 
 //    public boolean getCenterGraphicCoord(int cellX, int cellY, int map, Vector2 vectorPos) {
 //        if (vectorPos != null) {

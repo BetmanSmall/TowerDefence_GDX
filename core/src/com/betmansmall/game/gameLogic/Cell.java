@@ -79,23 +79,41 @@ public class Cell {
 //        delete graphicCoordinates1,graphicCoordinates2,graphicCoordinates3, graphicCoordinates4;
     }
 
-    public void setGraphicCoordinates(int cellX, int cellY, float halfSizeCellX, float halfSizeCellY) {
+    public void setGraphicCoordinates(int cellX, int cellY, float sizeCellX, float sizeCellY, boolean isometric) {
 //        Gdx.app.log("Cell::setGraphicCoordinates(" + cellX + "," + cellY + "," + halfSizeCellX + ", " + halfSizeCellY + ")", "-- ");
         this.cellX = cellX;
         this.cellY = cellY;
+        float halfSizeCellX = sizeCellX/2;
+        float halfSizeCellY = sizeCellY/2;
+        if (isometric) {
 //        if(map == 1) { // Нижняя карта-java // Верхняя карта-с++
-        graphicCoordinates1.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
-        graphicCoordinates1.y = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) - halfSizeCellY;
+            graphicCoordinates1.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
+            graphicCoordinates1.y = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY)) - halfSizeCellY;
 //        } else if(map == 2) { // Правая карта
-        graphicCoordinates2.x = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) + halfSizeCellX;
-        graphicCoordinates2.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
+            graphicCoordinates2.x = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX)) + halfSizeCellX;
+            graphicCoordinates2.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY));
 //        } else if(map == 3) { // Верхняя карта-c++ // Нижняя карта-java
-        graphicCoordinates3.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
-        graphicCoordinates3.y = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY) ) + halfSizeCellY;
+            graphicCoordinates3.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX));
+            graphicCoordinates3.y = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY)) + halfSizeCellY;
 //        } else if(map == 4) {// Левая карта
-        graphicCoordinates4.x = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX) ) - halfSizeCellX;
-        graphicCoordinates4.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
+            graphicCoordinates4.x = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX)) - halfSizeCellX;
+            graphicCoordinates4.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY));
 //        }
+        } else {
+//        if(map == 1) { // НижняяЛевая карта-java // Верхняя карта-с++
+            graphicCoordinates1.x = (-(cellX * sizeCellX) ) - halfSizeCellX;
+            graphicCoordinates1.y = (-(cellY * sizeCellY) ) - halfSizeCellY;
+//        } else if(map == 2) { // НижняяПравая карта
+            graphicCoordinates2.x = ( (cellX * sizeCellX) ) + halfSizeCellX;
+            graphicCoordinates2.y = (-(cellY * sizeCellY) ) - halfSizeCellY;
+//        } else if(map == 3) { // ВерхняяПравая карта-c++ // Нижняя карта-java
+            graphicCoordinates3.x = ( (cellX * sizeCellX) ) + halfSizeCellX;
+            graphicCoordinates3.y = ( (cellY * sizeCellY) ) + halfSizeCellY;
+//        } else if(map == 4) {// ВерхняяЛевая карта
+            graphicCoordinates4.x = (-(cellX * sizeCellX) ) - halfSizeCellX;
+            graphicCoordinates4.y = ( (cellY * sizeCellY) ) + halfSizeCellY;
+//        }
+        }
     }
 
     public Vector2 getGraphicCoordinates(int map) {

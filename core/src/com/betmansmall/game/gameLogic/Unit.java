@@ -158,36 +158,56 @@ public class Unit {
         }
     }
 
-    void correct_fVc(Vector2 fVc, Direction direction, float sizeCellX) {
+    void correct_fVc(Vector2 fVc, Direction direction, float sizeCellX, float sizeCellY, boolean isometric) {
         this.direction = direction;
         float fVx = fVc.x;
         float fVy = fVc.y;
         if (direction == Direction.UP) {
-            fVy -= ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+            fVy -= ( (sizeCellY) / speed ) * (speed - stepsInTime);
         } else if (direction == Direction.UP_RIGHT) {
-            fVx -= ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
-            fVy -= ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+            if (isometric) {
+                fVx -= ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
+                fVy -= ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
+            } else {
+                fVx -= ( (sizeCellX) / speed) * (speed - stepsInTime);
+                fVy -= ( (sizeCellY) / speed) * (speed - stepsInTime);
+            }
         } else if (direction == Direction.RIGHT) {
             fVx -= ( sizeCellX / speed ) * (speed - stepsInTime);
         } else if (direction == Direction.DOWN_RIGHT) {
-            fVx -= ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
-            fVy += ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+            if (isometric) {
+                fVx -= ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
+                fVy += ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
+            } else {
+                fVx -= ( (sizeCellX) / speed) * (speed - stepsInTime);
+                fVy += ( (sizeCellY) / speed) * (speed - stepsInTime);
+            }
         } else if (direction == Direction.DOWN) {
-            fVy += ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
+            fVy += ( (sizeCellY) / speed ) * (speed - stepsInTime);
         } else if (direction == Direction.DOWN_LEFT) {
-            fVx += ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
-            fVy += ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+            if (isometric) {
+                fVx += ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
+                fVy += ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
+            } else {
+                fVx += ( (sizeCellX) / speed) * (speed - stepsInTime);
+                fVy += ( (sizeCellY) / speed) * (speed - stepsInTime);
+            }
         } else if (direction == Direction.LEFT) {
             fVx += ( sizeCellX / speed ) * (speed - stepsInTime);
         } else if (direction == Direction.UP_LEFT) {
-            fVx += ( (sizeCellX / 2) / speed ) * (speed - stepsInTime);
-            fVy -= ( (sizeCellX / 4) / speed ) * (speed - stepsInTime);
+            if (isometric) {
+                fVx += ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
+                fVy -= ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
+            } else {
+                fVx += ( (sizeCellX) / speed) * (speed - stepsInTime);
+                fVy -= ( (sizeCellY) / speed) * (speed - stepsInTime);
+            }
         }
         fVc.set(fVx, fVy);
     }
 
     // --- MANUAL ---
-//        if(newX < oldX && newY > oldY) {
+//        if (newX < oldX && newY > oldY) {
 //        } else if (newX == oldX && newY > oldY) {
 //        } else if (newX > oldX && newY > oldY) {
 //        } else if (newX > oldX && newY == oldY) {
@@ -231,23 +251,47 @@ public class Unit {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord4)
             float fVx = (-(halfSizeCellX * newY) - (newX * halfSizeCellX)) - halfSizeCellX;
             float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY));
+            if (!cameraController.gameField.gameSettings.isometric) {
+                fVx = (-(newX * sizeCellX) ) - halfSizeCellX;
+                fVy = ( (newY * sizeCellY) ) + halfSizeCellY;
+            }
             fVc.set(fVx, fVy);
-            if (newX < oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.UP, sizeCellX);
-            } else if (newX < oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
-            } else if (newX < oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.RIGHT, sizeCellX);
-            } else if (newX == oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
-            } else if (newX > oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.DOWN, sizeCellX);
-            } else if (newX > oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
-            } else if (newX > oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.LEFT, sizeCellX);
-            } else if (newX == oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
+            if (cameraController.gameField.gameSettings.isometric) {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
+            } else {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
             }
             circle4.setPosition(fVc);
         }
@@ -255,23 +299,47 @@ public class Unit {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord3)
             float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
             float fVy = ( (halfSizeCellY * newY) + (newX * halfSizeCellY)) + halfSizeCellY;
+            if (!cameraController.gameField.gameSettings.isometric) {
+                fVx = ( (newX * sizeCellX) ) + halfSizeCellX;
+                fVy = ( (newY * sizeCellY) ) + halfSizeCellY;
+            }
             fVc.set(fVx, fVy);
-            if (newX < oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.UP, sizeCellX);
-            } else if (newX > oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
-            } else if (newX > oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.RIGHT, sizeCellX);
-            } else if (newX == oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
-            } else if (newX < oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.DOWN, sizeCellX);
-            } else if (newX < oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
-            } else if (newX < oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.LEFT, sizeCellX);
-            } else if (newX == oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
+            if (cameraController.gameField.gameSettings.isometric) {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
+            } else {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
             }
             circle3.setPosition(fVc);
         }
@@ -279,23 +347,47 @@ public class Unit {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord2)
             float fVx = ( (halfSizeCellX * newY) + (newX * halfSizeCellX)) + halfSizeCellX;
             float fVy = ( (halfSizeCellY * newY) - (newX * halfSizeCellY));
+            if (!cameraController.gameField.gameSettings.isometric) {
+                fVx = ( (newX * sizeCellX) ) + halfSizeCellX;
+                fVy = (-(newY * sizeCellY) ) - halfSizeCellY;
+            }
             fVc.set(fVx, fVy);
-            if (newX < oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.UP, sizeCellX);
-            } else if (newX == oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
-            } else if (newX > oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.RIGHT, sizeCellX);
-            } else if (newX > oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
-            } else if (newX > oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.DOWN, sizeCellX);
-            } else if (newX == oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
-            } else if (newX < oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.LEFT, sizeCellX);
-            } else if (newX < oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
+            if (cameraController.gameField.gameSettings.isometric) {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
+            } else {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
             }
             circle2.setPosition(fVc);
         }
@@ -303,23 +395,47 @@ public class Unit {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord1)
             float fVx = (-(halfSizeCellX * newY) + (newX * halfSizeCellX));
             float fVy = (-(halfSizeCellY * newY) - (newX * halfSizeCellY)) - halfSizeCellY;
+            if (!cameraController.gameField.gameSettings.isometric) {
+                fVx = (-(newX * sizeCellX)) - halfSizeCellX;
+                fVy = (-(newY * sizeCellY)) - halfSizeCellY;
+            }
             fVc.set(fVx, fVy);
-            if (newX < oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.UP, sizeCellX);
-            } else if (newX == oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX);
-            } else if (newX > oldX && newY < oldY) {
-                correct_fVc(fVc, Direction.RIGHT, sizeCellX);
-            } else if (newX > oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX);
-            } else if (newX > oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.DOWN, sizeCellX);
-            } else if (newX == oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX);
-            } else if (newX < oldX && newY > oldY) {
-                correct_fVc(fVc, Direction.LEFT, sizeCellX);
-            } else if (newX < oldX && newY == oldY) {
-                correct_fVc(fVc, Direction.UP_LEFT, sizeCellX);
+            if (cameraController.gameField.gameSettings.isometric) {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
+            } else {
+                if (newX < oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY > oldY) {
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX > oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX == oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY < oldY) {
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                } else if (newX < oldX && newY == oldY) {
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                }
             }
             circle1.setPosition(fVc);
         }
