@@ -9,7 +9,7 @@
   <property name="cost" value="50"/>
   <property name="ammoSize" value="1"/>
   <property name="ammoSpeed" value="1"/>
-  <property name="reloadTime" value="2"/>
+  <property name="reloadTime" value="1"/>
   <property name="towerAttackType" value="Melee"/>
   <property name="towerShellType" value="SingleTarget"/>
   <!-- <property name="towerShellEffect" value="None"/> -->

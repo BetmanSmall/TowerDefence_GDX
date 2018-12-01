@@ -257,7 +257,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Gdx.app.log("CameraController::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY);
+//        Gdx.app.log("CameraController::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY);
         if (gameField != null && gameField.getUnderConstruction() != null) {
             Vector3 touch = new Vector3(screenX, screenY, 0.0f);
             if (whichCell(touch, isDrawableTowers)) {
@@ -447,16 +447,16 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     boolean whichCell(Vector3 mouse, int map) {
-        Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);
+//        Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);
         camera.unproject(mouse);
-        Gdx.app.log("CameraController::whichCell()", "-grph- mouseX:" + mouse.x + " mouseY:" + mouse.y);
+//        Gdx.app.log("CameraController::whichCell()", "-grph- mouseX:" + mouse.x + " mouseY:" + mouse.y);
         float gameX = ((mouse.x / (halfSizeCellX)) + (mouse.y / (halfSizeCellY))) / 2;
         float gameY = ((mouse.y / (halfSizeCellY)) - (mouse.x / (halfSizeCellX))) / 2;
         if (!gameField.gameSettings.isometric) {
             gameX = (mouse.x / sizeCellX);
             gameY = (mouse.y / sizeCellY);
         }
-        Gdx.app.log("CameraController::whichCell()", "-graphics- mouseX:" + mouse.x + " mouseY:" + mouse.y + " map:" + map + " -new- gameX:" + gameX + " gameY:" + gameY);
+//        Gdx.app.log("CameraController::whichCell()", "-graphics- mouseX:" + mouse.x + " mouseY:" + mouse.y + " map:" + map + " -new- gameX:" + gameX + " gameY:" + gameY);
         int cellX = Math.abs((int) gameX);
         int cellY = Math.abs((int) gameY);
         if(gameField.gameSettings.isometric && gameY < 0) {
@@ -467,7 +467,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         // если это убирать то нужно будет править Cell::setGraphicCoordinates() для 3 и 4 карты-java // c++ ?? or ??
         mouse.x = cellX;
         mouse.y = cellY;
-        Gdx.app.log("CameraController::whichCell()", "-cell- cellX:" + cellX + " cellY:" + cellY);
+//        Gdx.app.log("CameraController::whichCell()", "-cell- cellX:" + cellX + " cellY:" + cellY);
         if (cellX < mapWidth && cellY < mapHeight) {
             if (map == 5) {
                 return true;
@@ -519,36 +519,6 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         }
         return true;
     }
-
-//    public boolean getCenterGraphicCoord(int cellX, int cellY, int map, Vector2 vectorPos) {
-//        if (vectorPos != null) {
-////        float pxlsX = 0f, pxlsY = 0f;
-////        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellX));
-////        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : ( (templateForTower.size == 1) ? 0 : (templateForTower.size-1)*halfSizeCellY));
-//////        float offsetX = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellX) : (templateForTower.size-1)*halfSizeCellX);
-//////        float offsetY = ((templateForTower.size%2 == 0) ? (templateForTower.size*halfSizeCellY) : (templateForTower.size-1)*halfSizeCellY);
-//            if (map == 1) {
-//                vectorPos.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
-//                vectorPos.y = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) - halfSizeCellY;
-//            } else if (map == 2) {
-//                vectorPos.x = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) + halfSizeCellX;
-//                vectorPos.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
-//            } else if (map == 3) {
-//                vectorPos.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
-//                vectorPos.y = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY) ) + halfSizeCellY;
-//            } else if (map == 4) {
-//                vectorPos.x = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX) ) - halfSizeCellX;
-//                vectorPos.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
-//            } else {
-//                Gdx.app.log("CameraController::getCenterGraphicCoord(" + cellX + ", " + cellY + ", " + vectorPos + ")", "-- Bad map[1-4] value:" + map);
-//                return false;
-//            }
-//            return true;
-//        }
-//        Gdx.app.log("CameraController::getCenterGraphicCoord(" + cellX + ", " + cellY + ", " + vectorPos + ")", "-- Bad vectorPos:" + vectorPos);
-//        return false;
-////        return new Vector2(pxlsX - halfSizeCellX, pxlsY + halfSizeCellY*templateForTower.size);
-//    } // -------------------------------------------------------------- TODD It is analog GameField::getGraphicCoordinates() func!
 
     public String toString() {
         StringBuilder sb = new StringBuilder();

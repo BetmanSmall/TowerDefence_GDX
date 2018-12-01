@@ -4,17 +4,17 @@
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Freeze Tower 1"/>
   <property name="radiusDetection" value="300"/>
-  <property name="radiusFlyShell" value="100"/>
+  <!-- <property name="radiusFlyShell" value="100"/> -->
   <property name="damage" value="30"/>
   <property name="size" value="1"/>
-  <property name="cost" value="450"/>
-  <property name="ammoSize" value="43"/>
-  <property name="ammoSpeed" value="15"/>
-  <property name="reloadTime" value="0.7"/>
+  <property name="cost" value="250"/>
+  <property name="ammoSize" value="5"/>
+  <property name="ammoSpeed" value="20"/>
+  <property name="reloadTime" value="0.8"/>
   <property name="towerAttackType" value="Range"/>
   <property name="towerShellType" value="AutoTarget"/>
   <property name="towerShellEffect" value="FreezeEffect"/>
-  <property name="shellEffectType_time" value="1"/>
+  <property name="shellEffectType_time" value="0.1"/>
   <!-- <property name="shellEffectType_damage" value="5"/> -->
   <property name="shellEffectType_speed" value="0.3"/>
  </properties>

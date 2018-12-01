@@ -8,7 +8,7 @@
   <property name="damage" value="0"/>
   <property name="size" value="1"/>
   <property name="cost" value="150"/>
-  <property name="ammoSize" value="100"/>
+  <property name="ammoSize" value="10"/>
   <property name="ammoSpeed" value="15"/>
   <property name="reloadTime" value="0.2"/>
   <property name="towerAttackType" value="Range"/>

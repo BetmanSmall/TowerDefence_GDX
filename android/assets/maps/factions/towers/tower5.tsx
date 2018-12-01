@@ -12,7 +12,6 @@
   <property name="reloadTime" value="0"/> 
   <property name="towerAttackType" value="Melee"/>
   <!-- <property name="towerShellType" value="SingleTarget"/> -->
-  <!-- <property name="TowerShellType" value="MultipleTarget"/> -->
   <!-- <property name="towerShellEffect" value="None"/> -->
  </properties>
  <image source="../../textures/tower_wall.png" trans="ff00ff" width="64" height="64"/>

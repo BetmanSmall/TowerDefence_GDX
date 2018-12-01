@@ -4,13 +4,13 @@
   <property name="factionName" value="Faction1"/>
   <property name="name" value="ScoutContreFly"/>
   <property name="radiusDetection" value="300"/>
-  <property name="radiusFlyShell" value="220"/>
+  <!-- <property name="radiusFlyShell" value="220"/> -->
   <property name="damage" value="20"/>
   <property name="size" value="1"/>
-  <property name="cost" value="120"/>
+  <property name="cost" value="130"/>
   <property name="ammoSize" value="5"/>
-  <property name="ammoSpeed" value="20"/>
-  <property name="reloadTime" value="0.5"/>
+  <property name="ammoSpeed" value="25"/>
+  <property name="reloadTime" value="0.4"/>
   <property name="towerAttackType" value="RangeFly"/>
   <property name="towerShellType" value="AutoTarget"/>
   <!-- <property name="towerShellEffect" value="None"/> -->

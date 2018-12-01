@@ -8,8 +8,8 @@
   <property name="damage" value="50"/>
   <property name="size" value="1"/>
   <property name="cost" value="130"/>
-  <property name="ammoSize" value="30"/>
-  <property name="ammoSpeed" value="15"/>
+  <property name="ammoSize" value="25"/>
+  <property name="ammoSpeed" value="17"/>
   <property name="reloadTime" value="2"/>
   <property name="towerAttackType" value="Range"/>
   <property name="towerShellType" value="MultipleTarget"/>

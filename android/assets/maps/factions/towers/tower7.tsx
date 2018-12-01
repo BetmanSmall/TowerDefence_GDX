@@ -5,12 +5,12 @@
   <property name="name" value="Scout1"/>
   <property name="radiusDetection" value="300"/>
   <!-- <property name="radiusFlyShell" value="220"/> -->
-  <property name="damage" value="30"/>
+  <property name="damage" value="20"/>
   <property name="size" value="1"/>
-  <property name="cost" value="150"/>
-  <property name="ammoSize" value="7"/>
-  <property name="ammoSpeed" value="22"/>
-  <property name="reloadTime" value="0.6"/>
+  <property name="cost" value="130"/>
+  <property name="ammoSize" value="5"/>
+  <property name="ammoSpeed" value="25"/>
+  <property name="reloadTime" value="0.4"/>
   <property name="towerAttackType" value="Range"/>
   <property name="towerShellType" value="AutoTarget"/>
   <!-- <property name="towerShellEffect" value="None"/> -->
