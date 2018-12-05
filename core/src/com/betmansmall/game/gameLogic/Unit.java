@@ -499,11 +499,11 @@ public class Unit {
     }
 
     public TextureRegion getCurrentFrame() {
-        return animation.getKeyFrame(stepsInTime, true);
+        return (TextureRegion)animation.getKeyFrame(stepsInTime, true);
     }
 
     public TextureRegion getCurrentDeathFrame() {
-        return animation.getKeyFrame(deathElapsedTime, true);
+        return (TextureRegion)animation.getKeyFrame(deathElapsedTime, true);
     }
 
     public String toString() {

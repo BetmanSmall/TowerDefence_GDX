@@ -375,6 +375,11 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 //        Gdx.app.log("CameraController::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
         return false;
     }
+
+    @Override
+    public void pinchStop() {
+    }
+
     @Override
     public boolean keyDown(int keycode) {
 //        Gdx.app.log("CameraController::keyDown()", "-- keycode:" + keycode);

@@ -545,17 +545,17 @@ public class GameScreen /*extends GestureDetector*/ implements Screen/*, Gesture
             gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
             Gdx.app.log("GameScreen::inputHandler()", "-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
         }
-    }
+}
 
     @Override
     public void render(float delta) {
 //      Gdx.app.log("GameScreen::render()", "-- delta:" + delta + " FPS:" + Gdx.graphics.getFramesPerSecond());
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        inputHandler(delta);
 
         String gameState = gameField.getGameState(); // Need change to enum GameState
         if (gameState.equals("In progress")) {
-            inputHandler(delta);
             cameraController.update(delta);
             gameField.render(delta, cameraController);
             gameInterface.render(delta);

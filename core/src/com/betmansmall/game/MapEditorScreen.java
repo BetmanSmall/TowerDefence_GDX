@@ -152,4 +152,9 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
         Gdx.app.log("MapEditorScreen::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
         return false;
     }
+
+    @Override
+    public void pinchStop() {
+
+    }
 }

@@ -177,7 +177,7 @@ public class Bullet {
             if (flyingTime >= ammoSpeed) {
                 flyingTime = 0f;
             }
-            textureRegion = animation.getKeyFrame(flyingTime, true);
+            textureRegion = (TextureRegion)animation.getKeyFrame(flyingTime, true);
 //            Gdx.app.log("Bullet::flightOfShell()", "-- flyingTime:" + flyingTime);
 //            Gdx.app.log("Bullet::flightOfShell()", "-- textureRegion:" + textureRegion);
         }

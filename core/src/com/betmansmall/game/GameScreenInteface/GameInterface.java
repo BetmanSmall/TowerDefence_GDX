@@ -125,10 +125,10 @@ public class GameInterface {
 
         towersSelector = new TowersSelector(gameField, bitmapFont, tableFront);
 
-        winTexture = new Texture(Gdx.files.internal("img/victory.jpg"));
-        loseTexture = new Texture(Gdx.files.internal("img/defeat.jpg"));
+        winTexture = new Texture(Gdx.files.internal("concepts/littlegame-concept-2-1.jpg"));
+        loseTexture = new Texture(Gdx.files.internal("concepts/2018-12-03_19-43-03.png"));
         currentTextureTime = 0f;
-        maxTextureTime = 1f;
+        maxTextureTime = 5f;
     }
 
     public void addActionToHistory(String action) {

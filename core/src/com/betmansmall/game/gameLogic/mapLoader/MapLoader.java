@@ -254,7 +254,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
      * Loads the tilesets
      *
      * @param root the root XML element
-     * @return a list of filenames for images containing tiles
+     * @return a list of filenames for helpImages containing tiles
      * @throws IOException
      */
     protected Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException {
@@ -295,10 +295,10 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
     }
 
     /**
-     * Loads the images in image layers
+     * Loads the helpImages in image layers
      *
      * @param root the root XML element
-     * @return a list of filenames for images inside image layers
+     * @return a list of filenames for helpImages inside image layers
      * @throws IOException
      */
     protected Array<FileHandle> loadImages(Element root, FileHandle tmxFile) throws IOException {

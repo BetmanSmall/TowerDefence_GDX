@@ -9,123 +9,131 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
+import javafx.scene.control.Tab;
 
 public class MainMenuScreen implements Screen {
     private TowerDefence towerDefence;
 
-    private Image menuButton1;
-    private Image menuButton2;
-    private Image menuButton3;
-    private Texture textureMB1;
-    private Texture textureMB2;
-    private Texture textureMB3;
+    private Stage stage;
 
-    private Stage mmStage;
-    private Image background;
-    private Image returnButton;
-    private Image homeButton;
-    private Image welcomeScreen;
-    private Image infoScreen;
-
-    public Array<Image> images;
+    private TextButton helpButton;
+    private TextButton playButton;
+    private TextButton secondButton;
+    private TextButton exitButton;
+    private TextButton backButton;
+    private TextButton homeButton;
 
     private int menuLvl;
-    private float timer;
-    private float screenXScale, screenYScale;
 
     public String mapName;
 
-    public MainMenuScreen(TowerDefence towerDefence) {
+    public MainMenuScreen(final TowerDefence towerDefence) {
         this.towerDefence = towerDefence;
-        textureMB1 = new Texture(Gdx.files.internal("menubutons/play.png"));
-        textureMB2 = new Texture(Gdx.files.internal("menubutons/options.png"));
-        textureMB3 = new Texture(Gdx.files.internal("menubutons/exit.png"));
-        welcomeScreen = new Image((new Texture(Gdx.files.internal("img/welcomescreen.png"))));
-        background = new Image(new Texture(Gdx.files.internal("menubutons/background1.png")));
-        menuButton1 = new Image(textureMB1);
-        menuButton1.addListener(new ClickListener() {
+
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+//        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+//        Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
+//        textButtonStyle.font = skin.getFont("default-font");
+//        textButtonStyle.up = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("helpImages/button.png"))));
+//        textButtonStyle.down = skin.getDrawable("default-round-down");
+//        textButtonStyle.up = Color.RED;
+//        textButtonStyle.downFontColor = Color.RED;
+//        skin.newDrawable("default-round-down");
+
+        stage = new Stage(new ScreenViewport());
+        stage.addActor(towerDefence.backgroundImages.get(0));
+        stage.setDebugAll(true);
+
+        Table rootTable = new Table(skin);
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
+
+        Table leftTable = new Table(skin);
+        backButton = new TextButton("BACK", skin);
+        backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::Button1", "Clicked!");
-                clickAnalyzer((short) 1);
-            }
-        });
-        menuButton2 = new Image(textureMB2);
-        menuButton2.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::Button2", "Clicked!");
-                clickAnalyzer((short) 2);
-            }
-        });
-        menuButton3 = new Image(textureMB3);
-        menuButton3.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::Button3", "Clicked!");
-                clickAnalyzer((short) 3);
-            }
-        });
-        returnButton = new Image(new Texture(Gdx.files.internal("menubutons/backbutton.png")));
-        returnButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::ReturnButton", "Clicked!");
+                Gdx.app.log("MainMenuScreen::backButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
                 if (menuLvl > 0) {
                     menuLvl -= 1;
                     switchMenuButtons();
                 }
             }
         });
-        returnButton.setVisible(false);
+        leftTable.add(backButton).expand().fillX();
 
-        homeButton = new Image(new Texture(Gdx.files.internal("menubutons/home.png")));
+        homeButton = new TextButton("HOME", skin);
         homeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::HomeButton ", "Clicked!");
+                Gdx.app.log("MainMenuScreen::homeButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
                 menuLvl = 0;
                 switchMenuButtons();
             }
         });
-        infoScreen = new Image(new Texture(Gdx.files.internal("menubutons/infoscreen.png")));
+        leftTable.add(homeButton).expand().fillX();
+        rootTable.add(leftTable).expand().fillX().bottom();
 
-        mmStage = new Stage(new ScreenViewport());
-        mmStage.addActor(background);
-        mmStage.addActor(infoScreen);
-        mmStage.addActor(homeButton);
-        mmStage.addActor(menuButton1);
-        mmStage.addActor(menuButton2);
-        mmStage.addActor(menuButton3);
-        mmStage.addActor(returnButton);
-//        mmStage.addActor(welcomeScreen);
+        Table rightTable = new Table(skin);
+        helpButton = new TextButton("HELP", skin);
+        helpButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                towerDefence.addScreen(towerDefence.helpMenuScreen);
+            }
+        });
+        rightTable.add(helpButton).fill().row();
 
-//        FileHandle imagesDir = Gdx.files.internal("C:\\Users\\betma\\YandexDisk\\Скриншоты\\TowerDefence");
-//
-//        FileHandle[] fileHandles = imagesDir.list();
-//        Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- fileHandles:", "" + fileHandles.toString());
-//        int rand = MathUtils.random(fileHandles.length);
-//        Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- imagesDir.length():", "" + imagesDir.length());
-//        Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- rand:", "" + rand);
-////        }
-////        for (FileHandle fileHandle : imagesDir.list()) {
-//        for (int fH = 0; fH < fileHandles.length; fH++) {
-//            Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- fileHandle.toString():", "" + fileHandles.toString());
-//            FileHandle fileHandle = imagesDir.child(fileHandles.toString());
-//            Gdx.app.log("MainMenuScreen::MainMenuScreen(); -- fileHandle.toString():", "" + fileHandle.toString());
-////            Image image = new Image(new Texture(Gdx.files.internal(fileHandles.)));
-////            image.setBounds(30, 30, image.getWidth()/3, image.getHeight()/3);
-////            mmStage.addActor(image);
-////            images.add(image);
-//        }
+        playButton = new TextButton("PLAY", skin);
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                clickAnalyzer((short) 1);
+            }
+        });
+        rightTable.add(playButton).fill().row();
+
+        secondButton = new TextButton("SECOND", skin);
+        secondButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::secondButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                clickAnalyzer((short) 2);
+            }
+        });
+        rightTable.add(secondButton).fill().row();
+
+        exitButton = new TextButton("EXIT", skin);
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::exitButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                clickAnalyzer((short) 3);
+            }
+        });
+//        exitButton.setFillParent(true);
+        rightTable.add(exitButton).fillX().expand();
+//        leftTable.defaults().fill();
+        rootTable.add(rightTable).bottom().expand().fillX();
 
 //        towerDefence.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
@@ -153,20 +161,85 @@ public class MainMenuScreen implements Screen {
         Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.size:" + towerDefence.gameLevelMaps.size);
     }
 
-    private void create(int width, int height) {
-//        screenXScale = (width / 1980); // ?? 1920 ?? FULL HD ??
-//        screenYScale = (height / 1080);
-//        Gdx.app.log("Tag", "Scales: " + screenXScale + ", " + screenYScale);
-//        Gdx.app.log("Tag", "Resolution: " + width + ", " + height);
+    @Override
+    public void show() {
+        Gdx.app.log("MainMenuScreen::show()", "-- Called!");
+        Gdx.input.setInputProcessor(stage);
+    }
 
-        //Creating background
-        welcomeScreen.setSize(width, height);
-        welcomeScreen.setPosition(0f, 0f);
-        background.setSize(width, height);
-        background.setPosition(0f, 0f);
+    @Override
+    public void render(float delta) {
+//      Gdx.app.log("MainMenuScreen::render()", "-- delta:" + delta + " FPS:" + Gdx.graphics.getFramesPerSecond());
+        Gdx.gl20.glClearColor(0, 0, 0, 1);
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        inputHandler(delta);
 
-        infoScreen.setSize(width/2, height/1.7f);
-        infoScreen.setPosition(0, height - height/1.7f);
+        if (stage != null) {
+            stage.act(delta);
+            stage.draw();
+//            if (menuLvl > 0) {
+//                backButton.setVisible(true);
+//                homeButton.setVisible(true);
+//            } else {
+//                backButton.setVisible(false);
+//                homeButton.setVisible(false);
+//            }
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        Gdx.app.log("MainMenuScreen::resize(" + width + ", " + height + ")", "--");
+        stage.getViewport().update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+        Gdx.app.log("MainMenuScreen::pause()", "--");
+    }
+
+    @Override
+    public void resume() {
+        Gdx.app.log("MainMenuScreen::resume()", "--");
+    }
+
+    @Override
+    public void hide() {
+        Gdx.app.log("MainMenuScreen::hide()", "--");
+    }
+
+    @Override
+    public void dispose() {
+        Gdx.app.log("MainMenuScreen::dispose()", "--");
+        if (stage != null) {
+            stage.dispose();
+            stage = null;
+        }
+    }
+
+    private void inputHandler(float delta) {
+//        Gdx.app.log("MainMenuScreen::inputHandler(" + delta + ");");
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            Gdx.app.log("MainMenuScreen`::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            menuLvl--;
+            if(menuLvl == -1) {
+                towerDefence.dispose();
+            }
+            switchMenuButtons();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
+            clickAnalyzer((short)1);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_2 || Input.Keys.NUM_2);");
+            clickAnalyzer((short)2);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_3 || Input.Keys.NUM_3);");
+            clickAnalyzer((short)3);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
+            towerDefence.nextGameLevel();
+        }
     }
 
     private void clickAnalyzer(short buttonNumber) {
@@ -178,8 +251,7 @@ public class MainMenuScreen implements Screen {
                         switchMenuButtons();
                         break;
                     case 2:
-                        //TODO: Options menu Descogle
-                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Options function not implemented");
+                        towerDefence.addScreen(towerDefence.optionMenuScreen);
                         break;
                     case 3:
                         //Exit button
@@ -216,7 +288,7 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena3.tmx";
+                        mapName = "maps/arena0.tmx";
                         break;
                     case 2:
                         //Choose map2
@@ -257,166 +329,27 @@ public class MainMenuScreen implements Screen {
         Gdx.app.log("MainMenuScreen::switchMenuButtons()", "-- menuLvl:" + menuLvl);
         switch (menuLvl) {
             case 0:         //main menu
-                textureMB1 = new Texture(Gdx.files.internal("menubutons/play.png"));
-                textureMB2 = new Texture(Gdx.files.internal("menubutons/options.png"));
-                textureMB3 = new Texture(Gdx.files.internal("menubutons/exit.png"));
+                playButton.setText("PLAY");
+                secondButton.setText("OPTIONS");
+                exitButton.setText("EXIT");
                 break;
             case 1:         //"Play" menu
-                textureMB1 = new Texture(Gdx.files.internal("menubutons/campaign.png"));
-                textureMB2 = new Texture(Gdx.files.internal("menubutons/single_map.png"));
-                textureMB3 = new Texture(Gdx.files.internal("menubutons/editor.png"));
+                playButton.setText("CAMPAIGN");
+                secondButton.setText("SINGLE MAP");
+                exitButton.setText("mapEditor");
                 break;
             case 2:         //"Choose map" menu
-                textureMB1 = new Texture(Gdx.files.internal("menubutons/forest_lake.png"));
-                textureMB2 = new Texture(Gdx.files.internal("menubutons/map2.png"));
-                textureMB3 = new Texture(Gdx.files.internal("menubutons/map3.png"));
+                playButton.setText("map1");
+                secondButton.setText("map2");
+                exitButton.setText("map3");
                 break;
             case 3:         //"Difficulty" menu
-                textureMB1 = new Texture(Gdx.files.internal("menubutons/easy.png"));
-                textureMB2 = new Texture(Gdx.files.internal("menubutons/normal.png"));
-                textureMB3 = new Texture(Gdx.files.internal("menubutons/hard.png"));
+                playButton.setText("EASY");
+                secondButton.setText("NORMAL");
+                exitButton.setText("HARD");
                 break;
             default:
                 break;
-        }
-        buttonsUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
-
-    private void buttonsUpdate(int width, int height) {
-        //Menu buttons
-        float buttonsWidth = width/5; // 9
-        float buttonsHeight = height/10; // 16
-        Image menuButton1 = new Image(textureMB1);
-        Image menuButton2 = new Image(textureMB2);
-        Image menuButton3 = new Image(textureMB3);
-        menuButton1.setSize(buttonsWidth, buttonsHeight);
-        menuButton2.setSize(buttonsWidth, buttonsHeight);
-        menuButton3.setSize(buttonsWidth, buttonsHeight);
-        menuButton1.setPosition(width - buttonsWidth, buttonsHeight * 2 + (buttonsHeight/3)*3);
-        menuButton2.setPosition(width - buttonsWidth, buttonsHeight * 1 + (buttonsHeight/3)*2);
-        menuButton3.setPosition(width - buttonsWidth, buttonsHeight * 0 + (buttonsHeight/3)*1);
-        menuButton1.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::ClickListener::clicked(" + event + "," + x + "," + y + ")", " -- menuButton1 pressed");
-                clickAnalyzer((short) 1);
-            }
-        });
-        menuButton2.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::ClickListener::clicked(" + event + "," + x + "," + y + ")", " -- menuButton2 pressed");
-                clickAnalyzer((short) 2);
-            }
-        });
-        menuButton3.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::ClickListener::clicked(" + event + "," + x + "," + y + ")", " -- menuButton3 pressed");
-                clickAnalyzer((short) 3);
-            }
-        });
-
-        //Adding the return button
-        returnButton.setSize(buttonsWidth, buttonsHeight);
-        returnButton.setPosition(0f, 0f);
-        homeButton.setSize(buttonsWidth, buttonsHeight*3);
-        homeButton.setPosition(buttonsWidth, 0);
-
-        mmStage.addActor(menuButton1);
-        mmStage.addActor(menuButton2);
-        mmStage.addActor(menuButton3);
-        Gdx.app.log("MainMenuScreen::buttonsUpdate()", "-- mmStage:" + mmStage.getActors().size);
-    }
-
-    @Override
-    public void show() {
-        Gdx.app.log("MainMenuScreen::show()", "-- Called!");
-        create(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        buttonsUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Gdx.input.setInputProcessor(mmStage);
-    }
-
-    private void inputHandler(float delta) {
-//        Gdx.app.log("MainMenuScreen::inputHandler(" + delta + ");");
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            menuLvl--;
-            if(menuLvl == -1) {
-                towerDefence.dispose();
-            }
-            switchMenuButtons();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
-            clickAnalyzer((short)1);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_2 || Input.Keys.NUM_2);");
-            clickAnalyzer((short)2);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_3 || Input.Keys.NUM_3);");
-            clickAnalyzer((short)3);
-        }
-    }
-
-    @Override
-    public void render(float delta) {
-//        Gdx.app.log("MainMenuScreen::render()", "FPS: " + (1/delta) + "");
-//        Gdx.app.log("MainMenuScreen::render()", "-- delta:" + delta);
-        inputHandler(delta);
-        if (mmStage != null) {
-            Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            mmStage.act(delta);
-            mmStage.draw();
-            if (menuLvl > 0) {
-                returnButton.setVisible(true);
-                homeButton.setVisible(true);
-            } else {
-                returnButton.setVisible(false);
-                homeButton.setVisible(false);
-            }
-            if (timer > 3) {
-                welcomeScreen.remove();
-            }
-            timer = timer + delta;
-        }
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        Gdx.app.log("MainMenuScreen::resize(" + width + ", " + height + ")", "--");
-//        create(width, height);
-//        buttonsUpdate(width, height);
-//        mmStage.getViewport().update(width, height, true);
-//        mmStage.setViewport(mmStage.getViewport());
-    }
-
-    @Override
-    public void pause() {
-        Gdx.app.log("MainMenuScreen::pause()", "--");
-    }
-
-    @Override
-    public void resume() {
-        Gdx.app.log("MainMenuScreen::resume()", "--");
-    }
-
-    @Override
-    public void hide() {
-        Gdx.app.log("MainMenuScreen::hide()", "--");
-        //Should not be here!
-        //dispose();
-    }
-
-    @Override
-    public void dispose() {
-        Gdx.app.log("MainMenuScreen::dispose()", "--");
-        textureMB1.dispose();
-        textureMB2.dispose();
-        textureMB3.dispose();
-
-        if (mmStage != null) {
-            mmStage.dispose();
-            mmStage = null;
         }
     }
 }
