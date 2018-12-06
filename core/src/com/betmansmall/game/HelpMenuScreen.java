@@ -2,57 +2,89 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.game.screens.SlidingGroup;
 
 /**
  * Created by betma on 05.12.2018.
  */
 
-public class HelpMenuScreen implements Screen {
+public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
     private TowerDefence towerDefence;
 
     private Stage stage;
+    private Table rootTable;
+    private HorizontalGroup helpImagesHorGroup;
+    private SlidingGroup slidingGroup;
     private Array<Image> helpImages;
+    private boolean pan = false;
 
     public HelpMenuScreen(final TowerDefence towerDefence) {
         this.towerDefence = towerDefence;
+
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         stage = new Stage(new ScreenViewport());
         stage.addActor(towerDefence.backgroundImages.get(1));
         stage.setDebugAll(true);
 
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
+        rootTable = new Table();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
 
-        FileHandle imagesDir = Gdx.files.internal("helpImages");
-        FileHandle[] fileHandles = imagesDir.list();
-        helpImages = new Array<Image>();
-        for (FileHandle fileHandle : fileHandles) {
-            if (fileHandle.extension().equals("png")) {
-                Image image = new Image(new Texture(fileHandle));
-//                image.setFillParent(true);
-                helpImages.add(image);
+        // Инициализируем наш контейнер
+        slidingGroup = new SlidingGroup();
+
+        rootTable.add(slidingGroup).center().expand().fill().row();
+        // ---- ----- - -- - - - -
+
+//        helpImagesHorGroup = new HorizontalGroup();
+//        FileHandle imagesDir = Gdx.files.internal("helpImages");
+//        FileHandle[] fileHandles = imagesDir.list();
+//        helpImages = new Array<Image>();
+//        for (FileHandle fileHandle : fileHandles) {
+//            if (fileHandle.extension().equals("png")) {
+//                Image image = new Image(new Texture(fileHandle));
+////                image.setFillParent(true);
+//                helpImages.add(image);
+//                helpImagesHorGroup.addActor(image);
+//            }
+//        }
+//        rootTable.add(helpImagesHorGroup).row();
+
+        TextButton backButton = new TextButton("BACK", skin);
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                towerDefence.removeTopScreen();
             }
-        }
-        table.add(helpImages.random()).expand();
-
-//        HorizontalGroup horizontalGroup = new HorizontalGroup();
-
+        });
+        rootTable.add(backButton).bottom().fillX();
     }
 
     @Override
     public void show() {
         Gdx.app.log("HelpMenuScreen::show()", "--");
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+//        inputMultiplexer.addProcessor(new GestureDetector(this));
+//        inputMultiplexer.addProcessor(slidingGroup.getStage());
+        inputMultiplexer.addProcessor(new GestureDetector(slidingGroup));
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -113,5 +145,98 @@ public class HelpMenuScreen implements Screen {
 //            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
 //            towerDefence.nextGameLevel();
         }
+    }
+
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Gdx.app.log("HelpMenuScreen::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+//        float groupX = helpImagesHorGroup.getX();
+//        float groupY = helpImagesHorGroup.getY();
+//        float groupWidth = helpImagesHorGroup.getWidth();
+//        float groupHeight = helpImagesHorGroup.getHeight();
+//        float groupPrefWidth = helpImagesHorGroup.getPrefWidth();
+//        float groupPrefHeight = helpImagesHorGroup.getPrefHeight();
+//        float tableWidth = rootTable.getWidth();
+//        float tableHeight = rootTable.getHeight();
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
+////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+//        if (Math.abs(deltaX) > Math.abs(deltaY) && !pan) {
+//            if (x >= (tableWidth-groupWidth/**2f*/) && deltaX > 0) {
+//                helpImagesHorGroup.moveBy(deltaX, 0);
+//                if(helpImagesHorGroup.getX() > tableWidth) {
+//                    helpImagesHorGroup.setX(tableWidth);
+//                }
+//                pan = false;
+//                return true;
+//            } else if (x >= (tableWidth-groupWidth) && deltaX < 0) {
+//                helpImagesHorGroup.moveBy(deltaX, 0);
+//                if(helpImagesHorGroup.getX() < tableWidth) {
+//                    helpImagesHorGroup.setX(tableWidth-groupWidth);
+//                }
+//                pan = true;
+//                return true;
+//            }
+//        } else if (x >= (tableWidth-groupWidth) || pan) {
+////            pan = true;
+//            if (deltaX < 0) {
+//                helpImagesHorGroup.moveBy(0, -deltaY);
+//            } else if (deltaX > 0) {
+//                helpImagesHorGroup.moveBy(0, -deltaY);
+//            }
+//            if (helpImagesHorGroup.getY() > 0) {
+//                helpImagesHorGroup.setY(0);
+//            } else if(helpImagesHorGroup.getY()+ helpImagesHorGroup.getHeight() < tableHeight) {
+//                helpImagesHorGroup.setY( (0-(helpImagesHorGroup.getHeight()-tableHeight)) );
+//            }
+//            return true;
+//        }
+        return false;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        Gdx.app.log("HelpMenuScreen::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        pan = false;
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
+    }
+
+    @Override
+    public void pinchStop() {
+
     }
 }

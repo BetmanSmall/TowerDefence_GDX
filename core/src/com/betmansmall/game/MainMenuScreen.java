@@ -20,8 +20,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import javafx.scene.control.Tab;
-
 public class MainMenuScreen implements Screen {
     private TowerDefence towerDefence;
 
@@ -226,6 +224,9 @@ public class MainMenuScreen implements Screen {
                 towerDefence.dispose();
             }
             switchMenuButtons();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
+            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_0 || Input.Keys.NUM_0);");
+            towerDefence.addScreen(towerDefence.helpMenuScreen);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
             clickAnalyzer((short)1);
