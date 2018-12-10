@@ -10,23 +10,28 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+
+import javafx.scene.control.Tab;
 
 /**
  * Created by betma on 06.12.2018.
  */
 
-public class SlidingGroup extends Table implements GestureDetector.GestureListener {
-    private Texture bg, naviPassive, naviActive;
+public class SlidingTable extends Table implements GestureDetector.GestureListener {
+    private Texture naviPassive, naviActive;
 
     // Контейнер для секций
-//    private Group sections;
     private float sectionWidth;
-//    private float sectionHeight;
+    private float sectionHeight;
 
     // Смещение контейнера sections
     private float amountX = 0;
@@ -44,81 +49,58 @@ public class SlidingGroup extends Table implements GestureDetector.GestureListen
 //    private Rectangle cullingArea = new Rectangle();
 //    private Actor touchFocusedChild;
 //    private ActorGestureListener actorGestureListener;
-private Array<Image> helpImages;
+    private Array<Image> helpImages;
 
     private int LINE_MENU_ITEM_COUNT = 6;
 
-    public SlidingGroup() {
-        Gdx.app.log("SlidingGroup::SlidingGroup()", "-- amountX:" + amountX);
-//        super();
-        bg          = new Texture(Gdx.files.internal("buttons/bg.png"));
-        naviPassive = new Texture(Gdx.files.internal("buttons/naviPassive.png"));
-        naviActive  = new Texture(Gdx.files.internal("buttons/naviActive.png"));
+    public SlidingTable() {
+        Gdx.app.log("SlidingTable::SlidingTable()", "-- ");
 
-//        helpImagesHorGroup = new HorizontalGroup();
+        helpImages = new Array<Image>();
         FileHandle imagesDir = Gdx.files.internal("helpImages");
         FileHandle[] fileHandles = imagesDir.list();
-        helpImages = new Array<Image>();
         for (FileHandle fileHandle : fileHandles) {
             if (fileHandle.extension().equals("png")) {
                 Image image = new Image(new Texture(fileHandle));
-                image.setFillParent(true);
-//                image.set
-//                image.setAlign(Align.center);
+//                image.setFillParent(true);
                 helpImages.add(image);
-//                helpImagesHorGroup.addActor(image);
             }
         }
-//        rootTable.add(helpImagesHorGroup).row();
 
-//        sections = new Group();
-//        this.addActor( sections );
+        naviPassive = new Texture(Gdx.files.internal("buttons/naviPassive.png"));
+        naviActive  = new Texture(Gdx.files.internal("buttons/naviActive.png"));
 
-        sectionWidth  = Gdx.app.getGraphics().getWidth();
+//        sectionWidth  = Gdx.app.getGraphics().getWidth();
 //        sectionHeight = Gdx.app.getGraphics().getHeight();
-
-//        actorGestureListener = new ActorGestureListener() {
-//        };
-
-//        this.addListener(actorGestureListener);
 
         // Считаем ширину иконки уровня исходя из желаемого количества иконок по ширине экрана
         // Ширина = Ширина экрана / желаемое количество - (отступ слева + отступ справа)
-        float itemWidth = Gdx.app.getGraphics().getWidth() / LINE_MENU_ITEM_COUNT - 40;
+        float itemWidth = sectionWidth / LINE_MENU_ITEM_COUNT - 40;
 
         // Создаем 4 секции с иконками выбора уровня
         // В каждой секции будет 2 строки иконок по 6 в каждой
         // Расставляем иконки по сетке с помощью виджета Table
-        for(int section=0; section<helpImages.size; section++) {
-            Table table = new Table();
-            table.addActor(helpImages.get(section));
-//            table.add(helpImages.get(section)).center().expandX();
-            for(int i=0; i<2; i++) {
-                table.row();
-                for(int j = 0; j < 6; j++ ) {
-                    // (20,20,60,20) - отступы сверху, слева, снизу, справа
-                    table.add( new MenuItem( itemWidth, itemWidth ) ).pad(20,20,60,20);
-                }
-            }
+        for(int section = 0; section < helpImages.size; section++) {
+            Image image = helpImages.get(section);
+            Table sectionTable = new Table();
+            sectionTable.add(image).center().expand();
+//            Table table = new Table();
+//            for(int i=0; i<2; i++) {
+//                table.row();
+//                for(int j = 0; j < 6; j++ ) {
+//                    // (20,20,60,20) - отступы сверху, слева, снизу, справа
+//                    table.add( new MenuItem( itemWidth, itemWidth ) ).pad(20,20,60,20).expand();
+//                }
+//            }
+//            sectionTable.addActor(table);
             // Добавляем секцию в наш контейнер
-//            table.setFillParent(true);
-            add(table);
+            addActor(sectionTable);
         }
     }
 
     @Override
-    public boolean tap(float x, float y, int count, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-        return false;
-    }
-
-    @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("SlidingGroup::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+        Gdx.app.log("SlidingTable::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
         if ( amountX < -overscrollDistance ) {
             return false;
         }
@@ -134,8 +116,40 @@ private Array<Image> helpImages;
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
-        Gdx.app.log("SlidingGroup::panStop()", "-- x:" + x + " y:" + y);
+        Gdx.app.log("SlidingTable::panStop()", "-- x:" + x + " y:" + y);
         isPanning = false;
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        Gdx.app.log("SlidingTable::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
+        if ( Math.abs(velocityX) > flingSpeed ) {
+            if ( velocityX > 0 ) {
+                setStopSection(currentSection - 2);
+            } else {
+                setStopSection(currentSection);
+            }
+        }
+//        cancelTouchFocusedChild();
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+//        if ( event.getTarget().getClass() == LevelIcon.class ) {
+//            touchFocusedChild = event.getTarget();
+//        }
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
         return false;
     }
 
@@ -154,40 +168,12 @@ private Array<Image> helpImages;
 
     }
 
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
-        Gdx.app.log("SlidingGroup::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
-        if ( Math.abs(velocityX) > flingSpeed ) {
-            if ( velocityX > 0 ) {
-                setStopSection(currentSection - 2);
-            } else {
-                setStopSection(currentSection);
-            }
-        }
-//        cancelTouchFocusedChild();
-        return false;
+    public int getSectionsCount() {
+        return getChildren().size;
     }
-
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-//                if ( event.getTarget().getClass() == LevelIcon.class ) {
-//        touchFocusedChild = event.getTarget();
-//                }
-        return false;
-    }
-
-//    public void addWidget(Actor widget) {
-//        widget.setX( this.sections.getChildren().size * sectionWidth);
-//        widget.setY( 0 );
-//        widget.setWidth( sectionWidth );
-//        widget.setHeight( Gdx.graphics.getHeight() );
-//        sections.addActor( widget );
-//    }
 
     // Вычисление текущей секции на основании смещения контейнера sections
     public int calculateCurrentSection() {
-//        Gdx.app.log("SlidingGroup::calculateCurrentSection()", "-- amountX:" + amountX);
-//        Gdx.app.log("SlidingGroup::calculateCurrentSection()", "-- sectionWidth:" + sectionWidth);
         // Текущая секция = (Текущее смещение / длинну секции) + 1, т.к наши секции нумеруются с 1
         int section = Math.round( amountX / sectionWidth ) + 1;
         //Проверяем адекватность полученного значения, вхождение в интервал [1, количество секций]
@@ -196,13 +182,8 @@ private Array<Image> helpImages;
         return section;
     }
 
-    public int getSectionsCount() {
-        return getChildren().size;
-    }
 
     public void setStopSection(int stoplineSection) {
-        Gdx.app.log("SlidingGroup::setStopSection()", "-- stoplineSection:" + stoplineSection);
-//        Gdx.app.log("SlidingGroup::setStopSection()", "-- getSectionsCount():" + getSectionsCount());
         if ( stoplineSection < 0 ) {
             stoplineSection = 0;
         }
@@ -223,8 +204,6 @@ private Array<Image> helpImages;
     }
 
     private void move(float delta) {
-//        Gdx.app.log("SlidingGroup::move()", "-- amountX:" + amountX);
-//        Gdx.app.log("SlidingGroup::move()", "-- stopSection:" + stopSection);
         // Определяем направление смещения
         if ( amountX < stopSection) {
             // Двигаемся вправо
@@ -272,15 +251,6 @@ private Array<Image> helpImages;
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
 
-//        Gdx.app.log("::draw()", "-- section.getX()" + sections.getX());
-//        Gdx.app.log("::draw()", "-- section.getY()" + sections.getY());
-//        Gdx.app.log("::draw()", "-- section.getWidth()" + sections.getWidth());
-//        Gdx.app.log("::draw()", "-- section.getHeight()" + sections.getHeight());
-//
-////        // Рисуем фон
-//        batch.draw(bg, sections.getX(), sections.getY(), sectionWidth, this.getHeight() );
-
-        // Рисуем указатель текущей секции
         for (int i=1; i<= getSectionsCount(); i++) {
             if ( i == calculateCurrentSection() ) {
                 batch.draw( naviActive, Gdx.app.getGraphics().getWidth()/2 - getSectionsCount()*20/2 + i*20 , 50);
@@ -291,7 +261,6 @@ private Array<Image> helpImages;
     }
 
 //    void cancelTouchFocusedChild () {
-////        Gdx
 //        if (touchFocusedChild == null) {
 //            return;
 //        }
@@ -303,7 +272,35 @@ private Array<Image> helpImages;
 //        touchFocusedChild = null;
 //    }
 
-    public void setSpeed( float _speed ) {
-        speed = _speed;
+//    public void addWidget(Actor widget) {
+//        widget.setX( this.sections.getChildren().size * sectionWidth);
+//        widget.setY( 0 );
+//        widget.setWidth( sectionWidth );
+//        widget.setHeight( Gdx.graphics.getHeight() );
+//        sections.addActor( widget );
+//    }
+
+//    @Override
+    public void resize(float width, float height) {
+        sectionWidth = width;
+        sectionHeight = height;
+        Array<Actor> array = getChildren();
+        for (int a = 0; a < array.size; a++) {
+            Actor actor = array.get(a);
+            actor.setWidth(sectionWidth);
+            actor.setHeight(sectionHeight);
+            actor.setX(a * sectionWidth);
+            if (actor instanceof Table) {
+                Table table = (Table)actor;
+                Array<Actor> children = table.getChildren();
+                for (Actor child : children) {
+                    if (child instanceof Table) {
+                        child.setWidth(sectionWidth);
+                        child.setHeight(sectionHeight);
+                    }
+                }
+            }
+        }
+        setStopSection(calculateCurrentSection() - 1);
     }
 }

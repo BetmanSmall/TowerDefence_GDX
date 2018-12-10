@@ -9,15 +9,12 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.betmansmall.game.screens.SlidingGroup;
+import com.betmansmall.game.screens.SlidingTable;
 
 /**
  * Created by betma on 05.12.2018.
@@ -28,10 +25,9 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
 
     private Stage stage;
     private Table rootTable;
-    private HorizontalGroup helpImagesHorGroup;
-    private SlidingGroup slidingGroup;
-    private Array<Image> helpImages;
-    private boolean pan = false;
+
+    private SlidingTable slidingTable;
+    private TextButton backButton;
 
     public HelpMenuScreen(final TowerDefence towerDefence) {
         this.towerDefence = towerDefence;
@@ -47,26 +43,10 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
         stage.addActor(rootTable);
 
         // Инициализируем наш контейнер
-        slidingGroup = new SlidingGroup();
+        slidingTable = new SlidingTable();
+        rootTable.add(slidingTable).center().expand().fill().row();
 
-        rootTable.add(slidingGroup).center().expand().fill().row();
-        // ---- ----- - -- - - - -
-
-//        helpImagesHorGroup = new HorizontalGroup();
-//        FileHandle imagesDir = Gdx.files.internal("helpImages");
-//        FileHandle[] fileHandles = imagesDir.list();
-//        helpImages = new Array<Image>();
-//        for (FileHandle fileHandle : fileHandles) {
-//            if (fileHandle.extension().equals("png")) {
-//                Image image = new Image(new Texture(fileHandle));
-////                image.setFillParent(true);
-//                helpImages.add(image);
-//                helpImagesHorGroup.addActor(image);
-//            }
-//        }
-//        rootTable.add(helpImagesHorGroup).row();
-
-        TextButton backButton = new TextButton("BACK", skin);
+        backButton = new TextButton("BACK", skin);
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -81,8 +61,8 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
         Gdx.app.log("HelpMenuScreen::show()", "--");
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
 //        inputMultiplexer.addProcessor(new GestureDetector(this));
-//        inputMultiplexer.addProcessor(slidingGroup.getStage());
-        inputMultiplexer.addProcessor(new GestureDetector(slidingGroup));
+//        inputMultiplexer.addProcessor(slidingTable.getStage());
+        inputMultiplexer.addProcessor(new GestureDetector(slidingTable));
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -104,6 +84,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
     public void resize(int width, int height) {
         Gdx.app.log("HelpMenuScreen::resize(" + width + ", " + height + ")", "--");
         stage.getViewport().update(width, height, true);
+        slidingTable.resize(width, (height-backButton.getHeight()));
     }
 
     @Override
@@ -221,7 +202,6 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         Gdx.app.log("HelpMenuScreen::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        pan = false;
         return false;
     }
 
