@@ -1,6 +1,7 @@
 package com.betmansmall.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.input.GestureDetector;
@@ -9,8 +10,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by betma on 06.12.2018.
@@ -40,6 +44,7 @@ public class SlidingGroup extends Table implements GestureDetector.GestureListen
 //    private Rectangle cullingArea = new Rectangle();
 //    private Actor touchFocusedChild;
 //    private ActorGestureListener actorGestureListener;
+private Array<Image> helpImages;
 
     private int LINE_MENU_ITEM_COUNT = 6;
 
@@ -49,6 +54,22 @@ public class SlidingGroup extends Table implements GestureDetector.GestureListen
         bg          = new Texture(Gdx.files.internal("buttons/bg.png"));
         naviPassive = new Texture(Gdx.files.internal("buttons/naviPassive.png"));
         naviActive  = new Texture(Gdx.files.internal("buttons/naviActive.png"));
+
+//        helpImagesHorGroup = new HorizontalGroup();
+        FileHandle imagesDir = Gdx.files.internal("helpImages");
+        FileHandle[] fileHandles = imagesDir.list();
+        helpImages = new Array<Image>();
+        for (FileHandle fileHandle : fileHandles) {
+            if (fileHandle.extension().equals("png")) {
+                Image image = new Image(new Texture(fileHandle));
+                image.setFillParent(true);
+//                image.set
+//                image.setAlign(Align.center);
+                helpImages.add(image);
+//                helpImagesHorGroup.addActor(image);
+            }
+        }
+//        rootTable.add(helpImagesHorGroup).row();
 
 //        sections = new Group();
 //        this.addActor( sections );
@@ -68,8 +89,10 @@ public class SlidingGroup extends Table implements GestureDetector.GestureListen
         // Создаем 4 секции с иконками выбора уровня
         // В каждой секции будет 2 строки иконок по 6 в каждой
         // Расставляем иконки по сетке с помощью виджета Table
-        for(int section=0; section<4; section++) {
+        for(int section=0; section<helpImages.size; section++) {
             Table table = new Table();
+            table.addActor(helpImages.get(section));
+//            table.add(helpImages.get(section)).center().expandX();
             for(int i=0; i<2; i++) {
                 table.row();
                 for(int j = 0; j < 6; j++ ) {
