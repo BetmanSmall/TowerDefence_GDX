@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameLogic.mapLoader;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -15,6 +16,7 @@ public class Map extends com.badlogic.gdx.maps.Map {
     private Array<? extends Disposable> ownedResources;
     public int width, height;
     public int tileWidth, tileHeight;
+    public Array<TiledMapTile> terraintypes;
 
     /** @return collection of tilesets for this map. */
     public TiledMapTileSets getTileSets () {

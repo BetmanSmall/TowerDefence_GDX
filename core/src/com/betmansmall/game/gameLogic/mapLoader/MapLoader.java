@@ -452,10 +452,9 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                     tileset.putTile(tile.getId(), tile);
                 }
             }
-            Array<Element> tileElements = element.getChildrenByName("tile");
 
             Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
-
+            Array<Element> tileElements = element.getChildrenByName("tile");
             for (Element tileElement : tileElements) {
                 int localtid = tileElement.getIntAttribute("id", 0);
                 TiledMapTile tile = tileset.getTile(firstgid + localtid);
@@ -488,6 +487,16 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                     if (properties != null) {
                         loadProperties(tile.getProperties(), properties);
                     }
+                }
+            }
+            Element terraintypes = element.getChildByName("terraintypes");
+            if (terraintypes != null) {
+                Array<Element> terrainElements = terraintypes.getChildrenByName("terrain");
+                for (Element terrainElement : terrainElements) {
+                    String terrainName = terrainElement.getAttribute("name");
+                    int tileId = terrainElement.getIntAttribute("tile");
+                    TiledMapTile tile = tileset.getTile(tileId);
+                    map.terraintypes.add(tile);
                 }
             }
 
