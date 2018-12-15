@@ -18,8 +18,6 @@ import com.badlogic.gdx.maps.tiled.BaseTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
@@ -404,7 +402,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                 }
             }
 
-            TiledMapTileSet tileset = new TiledMapTileSet();
+            TileSet tileset = new TileSet();
             tileset.setName(name);
             tileset.getProperties().put("firstgid", firstgid);
             if (image != null) {
@@ -496,7 +494,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                     String terrainName = terrainElement.getAttribute("name");
                     int tileId = terrainElement.getIntAttribute("tile");
                     TiledMapTile tile = tileset.getTile(tileId);
-                    map.terraintypes.add(tile);
+                    tileset.add(tile);
                 }
             }
 
@@ -537,7 +535,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             loadBasicLayerInfo(layer, element);
 
             int[] ids = getTileIds(element, width, height);
-            TiledMapTileSets tilesets = map.getTileSets();
+            TileSets tilesets = map.getTileSets();
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     int id = ids[y * width + x];
@@ -545,7 +543,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                     boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
                     boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
 
-                    TiledMapTile tile = tilesets.getTile(id & ~MASK_CLEAR);
+                    Tile tile = tilesets.getTile(id & ~MASK_CLEAR);
                     if (tile != null) {
                         TiledMapTileLayer.Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
                         cell.setTile(tile);
