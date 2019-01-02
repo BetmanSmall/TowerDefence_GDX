@@ -1,19 +1,15 @@
 package com.betmansmall.game.gameLogic.mapLoader;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.maps.MapProperties;
 
-/**
- * Created by betma on 07.11.2018.
- */
-
-public class StaticTile implements Tile {
+public class StaticTiledMapTile implements TiledMapTile {
 
     private int id;
 
-    private Tile.BlendMode blendMode = Tile.BlendMode.ALPHA;
+    private BlendMode blendMode = BlendMode.ALPHA;
 
-    private ObjectMap<String, String> properties;
+    private MapProperties properties;
 
     private TextureRegion textureRegion;
 
@@ -32,19 +28,19 @@ public class StaticTile implements Tile {
     }
 
     @Override
-    public Tile.BlendMode getBlendMode () {
+    public BlendMode getBlendMode () {
         return blendMode;
     }
 
     @Override
-    public void setBlendMode (Tile.BlendMode blendMode) {
+    public void setBlendMode (BlendMode blendMode) {
         this.blendMode = blendMode;
     }
 
     @Override
-    public ObjectMap<String, String> getProperties () {
+    public MapProperties getProperties () {
         if (properties == null) {
-            properties = new ObjectMap<String, String>();
+            properties = new MapProperties();
         }
         return properties;
     }
@@ -82,18 +78,18 @@ public class StaticTile implements Tile {
     /** Creates a static tile with the given region
      *
      * @param textureRegion the {@link TextureRegion} to use. */
-    public StaticTile(TextureRegion textureRegion) {
+    public StaticTiledMapTile(TextureRegion textureRegion) {
         this.textureRegion = textureRegion;
     }
 
     /** Copy constructor
      *
-     * @param copy the StaticTile to copy. */
-//    public StaticTile(StaticTile copy) {
-//        if (copy.properties != null) {
-//            getProperties().putAll(copy.properties);
-//        }
-//        this.textureRegion = copy.textureRegion;
-//        this.id = copy.id;
-//    }
+     * @param copy the StaticTiledMapTile to copy. */
+    public StaticTiledMapTile(StaticTiledMapTile copy) {
+        if (copy.properties != null) {
+            getProperties().putAll(copy.properties);
+        }
+        this.textureRegion = copy.textureRegion;
+        this.id = copy.id;
+    }
 }

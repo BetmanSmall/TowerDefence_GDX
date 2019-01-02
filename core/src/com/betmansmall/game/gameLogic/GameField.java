@@ -5,17 +5,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.GameType;
-import com.betmansmall.game.gameLogic.mapLoader.Map;
+import com.betmansmall.game.gameLogic.mapLoader.MapLayer;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
+import com.betmansmall.game.gameLogic.mapLoader.TiledMap;
+import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.TiledMapTileLayer;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
@@ -37,7 +37,7 @@ public class GameField {
     public TowersManager towersManager;
     public static UnitsManager unitsManager; // For Bullet
     public GameSettings gameSettings;
-    public Map map;
+    public TiledMap map;
     private Cell[][] field;
     private PathFinder pathFinder;
 
@@ -323,11 +323,11 @@ public class GameField {
 
 //void GameField::drawFullField(CameraController* cameraController) {
 ////    qDebug() << "GameField::drawFullField(); -- map:" << map;
-////    qDebug() << "GameField::drawFullField(); -- map->tileSets:size" << map->tileSets.size();
-////    qDebug() << "GameField::drawFullField(); -- map->tileSets.getTile(85):" << map->tileSets.getTile(85);
-////    qDebug() << "GameField::drawFullField(); -- map->tileSets.getTile(85)->getPixmap():" << map->tileSets.getTile(85)->getPixmap();
+////    qDebug() << "GameField::drawFullField(); -- map->tiledMapTileSets:size" << map->tiledMapTileSets.size();
+////    qDebug() << "GameField::drawFullField(); -- map->tiledMapTileSets.getTiledMapTile(85):" << map->tiledMapTileSets.getTiledMapTile(85);
+////    qDebug() << "GameField::drawFullField(); -- map->tiledMapTileSets.getTiledMapTile(85)->getPixmap():" << map->tiledMapTileSets.getTiledMapTile(85)->getPixmap();
 //    if(gameSettings->isometric) {
-//        QPixmap pixmap = map->tileSets.getTile(85)->getPixmap(); // draw water2
+//        QPixmap pixmap = map->tiledMapTileSets.getTiledMapTile(85)->getPixmap(); // draw water2
 //        int sizeX = 30;//width()/sizeCellX)+1;
 //        int sizeY = 30;//(height()/sizeCellY)*2+2;
 //        int isometricSpaceX = 0;

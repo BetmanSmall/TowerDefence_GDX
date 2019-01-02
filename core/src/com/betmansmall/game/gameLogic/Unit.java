@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTile;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTile;
+import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
@@ -104,9 +104,9 @@ public class Unit {
 
     private void setAnimation(String action) {
 //        Gdx.app.log("Unit::setAnimation()", "-- action+direction:" + action+direction );
-        AnimatedTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
+        AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
         if (animatedTiledMapTile != null) {
-            StaticTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+            StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
             TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
             for (int k = 0; k < staticTiledMapTiles.length; k++) {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();

@@ -56,7 +56,7 @@ public class TowerDefence extends Game {
         }
 
         try {
-//            factionsManager = new FactionsManager();
+            factionsManager = new FactionsManager();
             mainMenuScreen = new MainMenuScreen(this);
             optionMenuScreen = new OptionMenuScreen(this);
             helpMenuScreen = new HelpMenuScreen(this);

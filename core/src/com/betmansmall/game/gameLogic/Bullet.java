@@ -4,10 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Intersector;
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTile;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTile;
-import com.betmansmall.game.gameLogic.mapLoader.Tile;
+import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -84,7 +83,7 @@ public class Bullet {
             this.endCircle.setPosition(unit.currentPoint);
         }
 //        setAnimation("ammo_");
-        Tile tiledMapTile = templateForTower.animations.get("ammo_" + Direction.UP);
+        TiledMapTile tiledMapTile = templateForTower.animations.get("ammo_" + Direction.UP);
         this.textureRegion = tiledMapTile != null ? tiledMapTile.getTextureRegion() : templateForTower.idleTile.getTextureRegion();
 
 //        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", endCircle:" + endCircle);
@@ -137,9 +136,9 @@ public class Bullet {
             }
         }
 //        Gdx.app.log("Bullet::setAnimation()", "-- action+direction:" + action+direction );
-        AnimatedTile animatedTiledMapTile = templateForTower.animations.get(action + direction);
+        AnimatedTiledMapTile animatedTiledMapTile = templateForTower.animations.get(action + direction);
         if (animatedTiledMapTile != null) {
-            StaticTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+            StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
             TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
             for (int k = 0; k < staticTiledMapTiles.length; k++) {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();

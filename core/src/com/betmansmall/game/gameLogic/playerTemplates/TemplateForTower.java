@@ -8,9 +8,9 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTile;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTile;
-import com.betmansmall.game.gameLogic.mapLoader.Tile;
+import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
 
 /**
  * Created by betmansmall on 22.02.2016.
@@ -34,15 +34,15 @@ public class TemplateForTower extends Template {
     public TowerShellEffect towerShellEffect;
     public Integer capacity;
 
-//    public AnimatedTile idleTile;
-    public Tile idleTile;
-    public ObjectMap<String, AnimatedTile> animations;
+//    public AnimatedTiledMapTile idleTile;
+    public TiledMapTile idleTile;
+    public ObjectMap<String, AnimatedTiledMapTile> animations;
 
     public TemplateForTower(FileHandle templateFile) throws Exception {
         try {
 //            this.radiusDetection = 0.0f;
 //            this.reloadTime = 3000;
-            animations = new ObjectMap<String, AnimatedTile>();
+            animations = new ObjectMap<String, AnimatedTiledMapTile>();
             loadBasicTemplate(templateFile);
             specificLoad();
             validate();
@@ -55,7 +55,7 @@ public class TemplateForTower extends Template {
 
     void loadFireBall(SimpleTemplate fireBall) {
         if (fireBall != null) {
-            for (AnimatedTile animatedTile : fireBall.animatedTiles.values()) {
+            for (AnimatedTiledMapTile animatedTile : fireBall.animatedTiles.values()) {
                 String tileName = animatedTile.getProperties().get("tileName", null);
                 if (tileName != null) {
                     if(tileName.contains("fireball_")) {
@@ -67,19 +67,21 @@ public class TemplateForTower extends Template {
     }
 
     void specificLoad() {
-        for (Tile tile : tiles.values()) {
-            String tileName = tile.getProperties().get("tileName", null);
+        for (TiledMapTile tiledMapTile : tiles.values()) {
+            String tileName = tiledMapTile.getProperties().get("tileName", null);
             if (tileName != null) {
                 if(tileName.equals("idleTile")) {
-                    idleTile = tile;
+                    idleTile = tiledMapTile;
 //                } else if(tileName.contains("ammo_")) {
-//                    setAmmoTiles(tileName, tile);
+//                    setAmmoTiles(tileName, tiledMapTile);
+//                } else {
+//                    Gdx.app.log("TemplateForTower::specificLoad()", "-- Not found idleTile");
                 }
             }
         }
     }
 
-    private void setAmmoTiles(String tileName, AnimatedTile tile) {
+    private void setAmmoTiles(String tileName, AnimatedTiledMapTile tile) {
         if(tile != null) {
             if(tileName.equals("ammo_" + Direction.UP)) {
                 animations.put("ammo_" + Direction.UP, tile);
@@ -98,22 +100,22 @@ public class TemplateForTower extends Template {
         }
     }
 
-    private AnimatedTile flipAnimatedTiledMapTile(AnimatedTile animatedTiledMapTile) {
-        Array<StaticTile> frames = new Array<StaticTile>(animatedTiledMapTile.getFrameTiles());
+    private AnimatedTiledMapTile flipAnimatedTiledMapTile(AnimatedTiledMapTile animatedTiledMapTile) {
+        Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(animatedTiledMapTile.getFrameTiles());
         for (int k = 0; k < frames.size; k++) {
             TextureRegion textureRegion = new TextureRegion(frames.get(k).getTextureRegion());
             textureRegion.flip(true, false);
-            StaticTile frame = new StaticTile(textureRegion);
+            StaticTiledMapTile frame = new StaticTiledMapTile(textureRegion);
             frames.set(k, frame);
         }
         IntArray intervals = new IntArray(animatedTiledMapTile.getAnimationIntervals());
-        return new AnimatedTile(intervals, frames);
+        return new AnimatedTiledMapTile(intervals, frames);
     }
 
-//    private Tile flipTile(Tile Tile) {
-//        TextureRegion textureRegion = new TextureRegion(Tile.getTextureRegion());
+//    private TiledMapTile flipTile(TiledMapTile TiledMapTile) {
+//        TextureRegion textureRegion = new TextureRegion(TiledMapTile.getTextureRegion());
 //        textureRegion.flip(true, false);
-//        return new StaticTile(textureRegion);
+//        return new StaticTiledMapTile(textureRegion);
 //    }
 
     private void validate() {

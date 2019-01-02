@@ -1,19 +1,26 @@
 package com.betmansmall.game.gameLogic.mapLoader;
 
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Map {
-    public String mapPath;
-    public TileSets tileSets;
-    public MapLayers mapLayers;
-    public ObjectMap<String, Object> mapProperties;
-//    private Array<? extends Disposable> ownedResources;
-    public int width, height;
-    public int tileWidth, tileHeight;
+public class Map implements Disposable {
+    private MapLayers mapLayers;
+    private MapProperties mapProperties;
 
-    /** Creates an empty TiledMap. */
-    public Map (String mapPath) {
-        this.mapPath = mapPath;
-        tileSets = new TileSets();
+    public Map () {
+        this.mapLayers = new MapLayers();
+        this.mapProperties = new MapProperties();
+    }
+
+    @Override
+    public void dispose() {
+    }
+
+    public MapLayers getLayers() {
+        return mapLayers;
+    }
+
+    public MapProperties getProperties() {
+        return mapProperties;
     }
 }

@@ -4,17 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTile;
+import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
 import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTile;
-import com.betmansmall.game.gameLogic.mapLoader.Tile;
+import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
+
+import java.util.Iterator;
 
 /**
  * Created by betma on 06.11.2018.
@@ -23,15 +24,15 @@ import com.betmansmall.game.gameLogic.mapLoader.Tile;
 public class Template {
     public String templateName;
     public ObjectMap<String, String> properties;
-    public ObjectMap<Integer, Tile> tiles;
-    public ObjectMap<Integer, AnimatedTile> animatedTiles;
+    public ObjectMap<Integer, TiledMapTile> tiles;
+    public ObjectMap<Integer, AnimatedTiledMapTile> animatedTiles;
 
     public Template() {
         Gdx.app.log("Template::Template()", "-- ");
         templateName = "NULL";
         properties = new ObjectMap<String, String>();
-        tiles = new ObjectMap<Integer, Tile>();
-        animatedTiles = new ObjectMap<Integer, AnimatedTile>();
+        tiles = new ObjectMap<Integer, TiledMapTile>();
+        animatedTiles = new ObjectMap<Integer, AnimatedTiledMapTile>();
     }
 
     public void dispose() {
@@ -66,30 +67,30 @@ public class Template {
             for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
                 for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
                     TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
-                    Tile tile = new StaticTile(tileRegion);
-                    tile.setId(id);
-                    tiles.put(id++, tile);
+                    TiledMapTile tiledMapTile = new StaticTiledMapTile(tileRegion);
+                    tiledMapTile.setId(id);
+                    tiles.put(id++, tiledMapTile);
                 }
             }
             Array<XmlReader.Element> tileElements = templateORtileset.getChildrenByName("tile");
             for (XmlReader.Element tileElement : tileElements) {
                 int localtid = tileElement.getIntAttribute("id", 0);
-                Tile tile = tiles.get(firstgid + localtid);
-                if (tile != null) {
-                    MapLoader.loadPropertiesStatic(tile.getProperties(), tileElement.getChildByName("properties"));
+                TiledMapTile tiledMapTile = tiles.get(firstgid + localtid);
+                if (tiledMapTile != null) {
+                    MapLoader.loadPropertiesStatic(tiledMapTile.getProperties(), tileElement.getChildByName("properties"));
                     XmlReader.Element animationElement = tileElement.getChildByName("animation");
                     if (animationElement != null) {
-                        Array<StaticTile> staticTiles = new Array<StaticTile>();
+                        Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
                         IntArray intervals = new IntArray();
                         for (XmlReader.Element frameElement : animationElement.getChildrenByName("frame")) {
-                            staticTiles.add((StaticTile) tiles.get(firstgid + frameElement.getIntAttribute("tileid")));
+                            staticTiles.add((StaticTiledMapTile) tiles.get(firstgid + frameElement.getIntAttribute("tileid")));
                             intervals.add(frameElement.getIntAttribute("duration"));
                         }
-                        AnimatedTile animatedTile = new AnimatedTile(intervals, staticTiles);
-                        animatedTile.setId(tile.getId());
-                        animatedTile.getProperties().putAll(tile.getProperties());
+                        AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
+                        animatedTile.setId(tiledMapTile.getId());
+                        animatedTile.getProperties().putAll(tiledMapTile.getProperties());
                         animatedTiles.put(animatedTile.getId(), animatedTile);
-//                        tile = animatedTile;
+//                        tiledMapTile = animatedTile;
                     }
                 }
             }
@@ -114,7 +115,10 @@ public class Template {
     public String toStringProperties() {
         StringBuilder sb = new StringBuilder();
         sb.append("Properties:[");
+//        Iterator<String> keys = properties.getKeys();
+//        while (keys.hasNext()) {
         for (String key : properties.keys()) {
+//            String key = keys.next();
             sb.append(key + ":" + properties.get(key) + ",");
         }
         sb.replace(sb.length-2, sb.length-1, "");

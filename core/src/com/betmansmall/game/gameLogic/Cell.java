@@ -2,10 +2,10 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
 
 /**
  * Created by BetmanSmall on 11.03.2016.
