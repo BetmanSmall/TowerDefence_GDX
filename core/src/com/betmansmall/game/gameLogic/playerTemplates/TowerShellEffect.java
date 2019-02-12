@@ -69,7 +69,7 @@ public class TowerShellEffect {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("TowerShellEffect[");
-        sb.append(",shellEffectEnum:" + shellEffectEnum);
+        sb.append("shellEffectEnum:" + shellEffectEnum);
         sb.append(",time:" + time);
         sb.append(",elapsedTime:" + elapsedTime);
         sb.append(",damage:" + damage);

@@ -1,6 +1,8 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
@@ -11,11 +13,14 @@ public class UnitsManager {
     public Array<Unit> units;
 
     public UnitsManager() {
+        Gdx.app.log("UnitsManager::UnitsManager()", "-- ");
         hero = new Array<Unit>();
         units = new Array<Unit>();
     }
 
     public void dispose() {
+        Gdx.app.log("UnitsManager::dispose()", "-- ");
+//        hero.clear(); // because hero include in units array
         units.clear();
     }
 
@@ -51,5 +56,28 @@ public class UnitsManager {
         if (hero.contains(unit, false)) {
             hero.removeValue(unit, false);
         }
+    }
+
+    public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UnitsManager[");
+        sb.append("hero.size:" + hero.size);
+        if (full) {
+            for (Unit unit : hero) {
+                sb.append("," + unit);
+            }
+        }
+        sb.append(",units.size:" + units.size);
+        if (full) {
+            for (Unit unit : units) {
+                sb.append("," + unit);
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

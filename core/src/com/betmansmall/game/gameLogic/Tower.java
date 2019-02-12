@@ -172,13 +172,13 @@ public class Tower {
         sb.append("Tower[");
         sb.append("cell:" + cell);
         if (full) {
-            sb.append("elapsedReloadTime:" + elapsedReloadTime);
-            sb.append("templateForTower:" + templateForTower);
-            sb.append("player:" + player);
-            sb.append("capacity:" + capacity);
-            sb.append("bullets.size:" + bullets.size);
-            sb.append("radiusDetectionCircle:" + radiusDetectionCircle);
-            sb.append("radiusFlyShellCircle:" + radiusFlyShellCircle);
+            sb.append(",elapsedReloadTime:" + elapsedReloadTime);
+            sb.append(",templateForTower:" + templateForTower);
+            sb.append(",player:" + player);
+            sb.append(",capacity:" + capacity);
+            sb.append(",bullets.size:" + bullets.size);
+            sb.append(",radiusDetectionCircle:" + radiusDetectionCircle);
+            sb.append(",radiusFlyShellCircle:" + radiusFlyShellCircle);
         }
         sb.append("]");
         return sb.toString();

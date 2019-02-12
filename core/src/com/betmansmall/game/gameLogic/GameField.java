@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.GameType;
 import com.betmansmall.game.gameLogic.mapLoader.MapLayer;
@@ -79,6 +80,10 @@ public class GameField {
         pathFinder.loadCharMatrix(getCharMatrix());
         Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
 
+        gamerGold = 100000;
+        gameSpeed = 1.0f;
+        gamePaused = false;
+
         Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
             int randomEnemyCount = gameSettings.enemyCount;
@@ -138,7 +143,9 @@ public class GameField {
             waveManager.checkRoutes(pathFinder);
             MapProperties mapProperties = map.getProperties();
             Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
-            gamerGold = Integer.valueOf(mapProperties.get("gamerGold", "10000", String.class)); // HARD GAME | one gold = one unit for computer!!!
+            if (mapProperties.containsKey("gamerGold")) {
+                gamerGold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
+            }
             gameSettings.maxOfMissedUnitsForComputer0 = mapProperties.get("maxOfMissedUnitsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
             gameSettings.missedUnitsForComputer0 = 0;
             if (gameSettings.maxOfMissedUnitsForPlayer1 == 0) {
@@ -151,10 +158,6 @@ public class GameField {
         } else {
             Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
-
-        gamerGold = 100000;
-        gameSpeed = 1.0f;
-        gamePaused = false;
     }
 
     public void dispose() {
@@ -173,7 +176,7 @@ public class GameField {
                 gameSettings.isometric = true;
             }
         }
-//        Gdx.app.log("GameField::createField()", "-1- field:" + field);
+        Gdx.app.log("GameField::createField()", "-START- field:" + field);
         if (field == null) {
             field = new Cell[map.width][map.height];
             for (int y = 0; y < map.height; y++) {
@@ -233,7 +236,7 @@ public class GameField {
                 }
             }
         }
-        Gdx.app.log("GameField::createField()", "-2- field:" + field);
+        Gdx.app.log("GameField::createField()", "-END- field:" + (field != null) );
     }
 
     public boolean landscapeGenerator(String mapPath) {
@@ -1754,9 +1757,15 @@ public class GameField {
                 Node newPosition = unit.move(delta, cameraController);
                 if (newPosition != null) {
                     if (!newPosition.equals(oldPosition)) {
-                        field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
-                        field[newPosition.getX()][newPosition.getY()].setUnit(unit);
-//                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
+                        Cell oldCell = getCell(oldPosition.getX(), oldPosition.getY());
+                        Cell newCell = getCell(newPosition.getX(), newPosition.getY());
+                        if (oldCell != null && newCell != null) {
+                            field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
+                            field[newPosition.getX()][newPosition.getY()].setUnit(unit);
+//                            Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
+                        } else {
+                            Gdx.app.error("GameField::stepAllUnits()", "-- Unit bad! Cells:old:" + oldCell + " new:" + newCell);
+                        }
                     }
                 } else {
                     Cell cell = getCell(oldPosition.getX(), oldPosition.getY());
@@ -2008,5 +2017,31 @@ public class GameField {
         }
 //        delete field;
         field = newCells;
+    }
+
+    public String toString() {
+        return toString(true);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GameField[");
+        sb.append("gamerGold:" + gamerGold);
+        sb.append(",gamePaused:" + gamePaused);
+        sb.append(",gameSpeed:" + gameSpeed);
+        sb.append(",timeOfGame:" + timeOfGame);
+        if (full) {
+            sb.append(",underConstruction:" + underConstruction);
+            sb.append(",pathFinder:" + pathFinder);
+            sb.append(",field:" + field.length);
+            sb.append(",map:" + map);
+            sb.append(",gameSettings:" + gameSettings);
+            sb.append(",unitsManager:" + unitsManager);
+            sb.append(",towersManager:" + towersManager);
+            sb.append(",waveManager:" + waveManager);
+            sb.append(",factionsManager:" + factionsManager);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

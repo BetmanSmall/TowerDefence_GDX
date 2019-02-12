@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /**
  * Created by betmansmall on 22.02.2016.
@@ -27,5 +28,29 @@ public class Faction {
 
     public Array<TemplateForTower> getTemplateForTowers() {
         return templateForTowers;
+    }
+
+    public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Faction[");
+        sb.append("name:" + name);
+        sb.append(",templateForUnits.size:" + templateForUnits.size);
+        if (full) {
+            for (TemplateForUnit templateForUnit : templateForUnits) {
+                sb.append("," + templateForUnit);
+            }
+        }
+        sb.append(",templateForTowers.size:" + templateForTowers.size);
+        if (full) {
+            for (TemplateForTower templateForTower : templateForTowers) {
+                sb.append("," + templateForTower);
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

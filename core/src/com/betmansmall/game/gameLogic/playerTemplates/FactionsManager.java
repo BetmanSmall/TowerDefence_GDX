@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
@@ -225,5 +226,28 @@ public class FactionsManager {
             }
         }
         return result;
+    }
+
+    public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("FactionsManager[");
+        sb.append("factions.size:" + factions.size);
+        for (Faction faction : factions) {
+            sb.append("," + faction);
+        }
+        if (full) {
+            sb.append(",fireball_0:" + fireball_0);
+            sb.append(",explosion:" + explosion);
+            sb.append(",defHealthPoints:" + defHealthPoints);
+            sb.append(",defBounty:" + defBounty);
+            sb.append(",defCost:" + defCost);
+            sb.append(",defSpeed:" + defSpeed);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

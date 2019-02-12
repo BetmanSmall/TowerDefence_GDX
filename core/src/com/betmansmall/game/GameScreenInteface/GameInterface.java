@@ -271,4 +271,16 @@ public class GameInterface {
         }
         return false;
     }
+
+    public String toString() {
+        return toString(true);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GameInterface[");
+        sb.append("tableBack:" + tableBack);
+        sb.append("]");
+        return sb.toString();
+    }
 }

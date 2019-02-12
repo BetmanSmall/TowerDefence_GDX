@@ -20,10 +20,10 @@ public class SimpleTemplate extends Template {
 
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SimpleTemplate:[");
-        if(full) {
-            sb.append(toStringProperties());
-            sb.append(toStringBasicParam());
+        sb.append("SimpleTemplate[");
+        sb.append(toStringBasicParam());
+        if (full) {
+            sb.append("," + toStringProperties());
         }
         sb.append("]");
         return sb.toString();

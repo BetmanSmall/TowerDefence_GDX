@@ -114,21 +114,25 @@ public class Template {
 
     public String toStringProperties() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Properties:[");
+        sb.append("Properties[");
+        if (properties.size != 0) {
 //        Iterator<String> keys = properties.getKeys();
 //        while (keys.hasNext()) {
-        for (String key : properties.keys()) {
+            for (String key : properties.keys()) {
 //            String key = keys.next();
-            sb.append(key + ":" + properties.get(key) + ",");
+                sb.append(key + ":" + properties.get(key) + ",");
+            }
+            sb.replace(sb.length - 2, sb.length - 1, "");
+        } else {
+            sb.append("empty");
         }
-        sb.replace(sb.length-2, sb.length-1, "");
         sb.append("]");
         return sb.toString();
     }
 
     public String toStringBasicParam() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Template:[");
+        sb.append("Template[");
         sb.append("templateName:" + templateName);
         sb.append(",tiles.size:" + tiles.size);
         sb.append(",animatedTiles.size:" + animatedTiles.size);

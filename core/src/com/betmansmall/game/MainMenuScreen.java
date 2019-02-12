@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MainMenuScreen implements Screen {
@@ -140,14 +141,15 @@ public class MainMenuScreen implements Screen {
 //            towerDefence.gameLevelMaps.add("maps/desert.tmx");
 //            towerDefence.gameLevelMaps.add("maps/summer.tmx");
 //            towerDefence.gameLevelMaps.add("maps/winter.tmx");
+            towerDefence.gameLevelMaps.add("maps/arena0.tmx");
             towerDefence.gameLevelMaps.add("maps/randomMap.tmx");
             towerDefence.gameLevelMaps.add("maps/island.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena0.tmx");
             towerDefence.gameLevelMaps.add("maps/arena1.tmx");
             towerDefence.gameLevelMaps.add("maps/arena2.tmx");
 //            towerDefence.gameLevelMaps.add("maps/old/arena3.tmx");
             towerDefence.gameLevelMaps.add("maps/arena4.tmx");
             towerDefence.gameLevelMaps.add("maps/arena4_1.tmx");
+            towerDefence.gameLevelMaps.add("maps/sample.tmx");
 //        } else {
 //            for(FileHandle fileHandle : mapsDir.list()) {
 //                if(fileHandle.extension().equals("tmx")) {
@@ -218,7 +220,7 @@ public class MainMenuScreen implements Screen {
     private void inputHandler(float delta) {
 //        Gdx.app.log("MainMenuScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("MainMenuScreen`::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             menuLvl--;
             if(menuLvl == -1) {
                 towerDefence.dispose();
@@ -278,8 +280,9 @@ public class MainMenuScreen implements Screen {
 //                        if (ret == JFileChooser.APPROVE_OPTION) {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            towerDefence.setScreen(new MapEditorScreen(towerDefence, fileName));
+//                        } else {
+                            towerDefence.addScreen(new MapEditorScreen(towerDefence, "maps/aaagen.tmx"));
 //                        }
-                        towerDefence.addScreen(new MapEditorScreen(towerDefence, "maps/arena2.tmx"));
                         break;
                 }
                 break;
@@ -352,5 +355,21 @@ public class MainMenuScreen implements Screen {
             default:
                 break;
         }
+    }
+
+    public String toString() {
+        return toString(true);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("MainMenuScreen[");
+        sb.append("mapName:" + mapName);
+        sb.append(",menuLvl:" + menuLvl);
+        if (full) {
+            sb.append(",stage:" + stage);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

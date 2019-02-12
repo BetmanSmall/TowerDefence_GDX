@@ -193,10 +193,10 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             String name = element.getName();
             if (name.equals("layer")) {
                 loadTileLayer(map, element);
-//            } else if (name.equals("objectgroup")) {
-//                loadObjectGroup(map, element);
-//            } else if (name.equals("imagelayer")) {
-//                loadImageLayer(map, element, tmxFile, imageResolver);
+            } else if (name.equals("objectgroup")) {
+                loadObjectGroup(map, element);
+            } else if (name.equals("imagelayer")) {
+                loadImageLayer(map, element, tmxFile, imageResolver);
             }
         }
         Element waves = root.getChildByName("waves");
@@ -473,6 +473,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
 //                    String terrainName = terrainElement.getAttribute("name");
 //                    int tileId = terrainElement.getIntAttribute("tiledMapTile");
 //                    TiledMapTile tiledMapTile = tileset.getTile(tileId);
+//                    tileset.putTile(tileId, tiledMapTile);
 //                    tileset.add(tiledMapTile);
 //                }
 //            }

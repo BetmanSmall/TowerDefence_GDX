@@ -56,11 +56,11 @@ public class Wave {
         StringBuilder sb = new StringBuilder();
         sb.append("Wave[");
         sb.append("spawnPoint:" + spawnPoint);
-        sb.append("," + "exitPoint:" + exitPoint);
-        sb.append("," + "elapsedTime:" + elapsedTime);
-        sb.append("," + "intervalForSpawn:" + intervalForSpawn);
-        sb.append("," + "actions:" + actions);
-        sb.append("," + "route:" + route);
+        sb.append(",exitPoint:" + exitPoint);
+        sb.append(",elapsedTime:" + elapsedTime);
+        sb.append(",intervalForSpawn:" + intervalForSpawn);
+        sb.append(",actions:" + actions);
+        sb.append(",route:" + ( (route != null)?route.size():"null") );
         sb.append("]");
         return sb.toString();
     }

@@ -114,25 +114,39 @@ public class TowerDefence extends Game {
     }
 
     public void removeTopScreen() {
-        Gdx.app.log("TowerDefence::removeTopScreen()", "--");
+        Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack:" + screensStack);
         if (screensStack != null) {
             int count = screensStack.size;
+            Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
             if (count > 0) {
-                Screen screen = screensStack.get(count - 1);
-                if (screen != null) {
-//                    screen.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
-//                    screen.hide();
-                    screensStack.removeIndex(count - 1);
-                    count = screensStack.size;
-                    if(count > 0) {
-                        Screen popToScreen = screensStack.get(count - 1);
-                        if (popToScreen != null) {
-                            this.setScreen(popToScreen);
+                Screen lastScreen = screensStack.get(count - 1);
+                Gdx.app.log("TowerDefence::removeTopScreen()", "-- lastScreen:" + lastScreen);
+//                if (lastScreen instanceof GameScreen) {
+//                    GameScreen gameScreen1 = (GameScreen) lastScreen;
+//                    Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
+//                    if (gameScreen1 != null) {
+//                    lastScreen.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
+//                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1.gameInterface.mapNameLabel:" + gameScreen1.gameInterface.mapNameLabel);
+//                        lastScreen.hide();
+                        screensStack.removeIndex(count - 1);
+//                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1.gameInterface:" + gameScreen1.gameInterface);
+                        count = screensStack.size;
+                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
+                        if (count > 0) {
+                            Screen popToScreen = screensStack.get(count - 1);
+                            Gdx.app.log("TowerDefence::removeTopScreen()", "-- popToScreen:" + popToScreen);
+                            if (popToScreen != null) {
+                                this.setScreen(popToScreen);
+                            }
                         }
-                    }
-                }
+//                    }
+//                }
+            } else {
+                this.setScreen(mainMenuScreen);
             }
         }
+        Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack:" + screensStack);
+        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
     }
 
 //    public void removeAllScreens() {
@@ -156,19 +170,19 @@ public class TowerDefence extends Game {
 //    }
 
     public void nextGameLevel() {
-        Gdx.app.log("TowerDefence::nextGameLevel()", "--");
+        Gdx.app.log("TowerDefence::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
         if(gameLevelMaps.size > 0) {
-            removeTopScreen();
+//            removeTopScreen();
             addScreen(new GameScreen(gameLevelMaps.first(), factionsManager, new GameSettings(gameLevelMaps.first()))); // default level of Difficulty for Campaign
             gameLevelMaps.removeIndex(0);
         } else {
             Gdx.app.log("TowerDefence::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
 //            removeAllScreens();
-//            if(screensStack.size > 1) {
-//                removeTopScreen();
-//            } else {
-//                addScreen(new MainMenuScreen(instance));
-//            }
+            if(screensStack.size > 1) {
+                removeTopScreen();
+            } else {
+                addScreen(new MainMenuScreen(instance));
+            }
         }
     }
 }

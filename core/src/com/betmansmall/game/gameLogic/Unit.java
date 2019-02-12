@@ -513,29 +513,31 @@ public class Unit {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("Unit[");
-//        sb.append("route:" + route + ",");
-        sb.append("oldPosition:" + oldPosition + ",");
-        sb.append("newPosition:" + newPosition + ",");
-        sb.append("exitCell:" + (exitCell!=null) + ",");
-        sb.append("hp:" + hp + ",");
-        sb.append("speed:" + speed + ",");
-        sb.append("stepsInTime:" + stepsInTime + ",");
-        sb.append("deathElapsedTime:" + deathElapsedTime + ",");
+//        sb.append("route:" + route);
+        sb.append("oldPosition:" + oldPosition);
+        sb.append(",newPosition:" + newPosition);
+        sb.append(",exitCell:" + (exitCell!=null) );
+        sb.append(",hp:" + hp);
+        sb.append(",speed:" + speed);
+        if (full) {
+            sb.append(",stepsInTime:" + stepsInTime);
+            sb.append(",deathElapsedTime:" + deathElapsedTime);
 
-        sb.append("player:" + player + ",");
-        sb.append("currentPoint:" + currentPoint + ",");
-        sb.append("backStepPoint:" + backStepPoint + ",");
-        sb.append("circle1:" + circle1 + ",");
-        sb.append("circle2:" + circle2 + ",");
-        sb.append("circle3:" + circle3 + ",");
-        sb.append("circle4:" + circle4 + ",");
-        sb.append("velocity:" + velocity + ",");
-        sb.append("displacement:" + displacement + ",");
+            sb.append(",player:" + player);
+            sb.append(",currentPoint:" + currentPoint);
+            sb.append(",backStepPoint:" + backStepPoint);
+            sb.append(",circle1:" + circle1);
+            sb.append(",circle2:" + circle2);
+            sb.append(",circle3:" + circle3);
+            sb.append(",circle4:" + circle4);
+            sb.append(",velocity:" + velocity);
+            sb.append(",displacement:" + displacement);
 
-        sb.append("templateForUnit:" + templateForUnit + ",");
-        sb.append("direction:" + direction + ",");
-        sb.append("animation:" + animation + ",");
-        sb.append("shellEffectTypes:" + shellEffectTypes + ",");
+            sb.append(",templateForUnit:" + templateForUnit);
+            sb.append(",direction:" + direction);
+            sb.append(",animation:" + animation);
+            sb.append(",shellEffectTypes:" + shellEffectTypes);
+        }
         sb.append("]");
         return sb.toString();
     }

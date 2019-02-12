@@ -1,11 +1,11 @@
 package com.betmansmall.game;
 
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.Cell;
 
 /**
  * Created by betma on 17.11.2018.
  */
-
 public class GameSettings {
     public GameType gameType;
     public float difficultyLevel;
@@ -47,5 +47,30 @@ public class GameSettings {
     public GameSettings(GameType gameType, float difficultyLevel) {
         this.gameType = gameType;
         this.difficultyLevel = difficultyLevel;
+    }
+
+    public String toString() {
+        return toString(true);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GameSettings[");
+        sb.append("gameType:" + gameType);
+        sb.append(",difficultyLevel:" + difficultyLevel);
+        sb.append(",enemyCount:" + enemyCount);
+        sb.append(",towersCount:" + towersCount);
+        if (full) {
+            sb.append(",isometric:" + isometric);
+            sb.append(",cellExitHero:" + cellExitHero);
+            sb.append(",cellSpawnHero:" + cellSpawnHero);
+
+            sb.append(",maxOfMissedUnitsForComputer0:" + maxOfMissedUnitsForComputer0);
+            sb.append(",missedUnitsForComputer0:" + missedUnitsForComputer0);
+            sb.append(",maxOfMissedUnitsForPlayer1:" + maxOfMissedUnitsForPlayer1);
+            sb.append(",missedUnitsForPlayer1:" + missedUnitsForPlayer1);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

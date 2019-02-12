@@ -527,7 +527,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Camera:[");
+        sb.append("Camera[");
         sb.append("cameraX:" + camera.position.x);
         sb.append(",cameraY:" + camera.position.y);
         sb.append(",sizeCellX:" + sizeCellX);

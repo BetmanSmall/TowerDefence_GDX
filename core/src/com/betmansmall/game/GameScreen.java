@@ -14,6 +14,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
@@ -25,11 +26,12 @@ public class GameScreen implements Screen {
 //    private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
 
-    private GameField gameField;
-    private GameInterface gameInterface;
-    private CameraController cameraController;
+    public GameField gameField;
+    public GameInterface gameInterface;
+    public CameraController cameraController;
 
     public GameScreen(String mapPath, FactionsManager factionsManager, GameSettings gameSettings) {
+        Gdx.app.log("GameScreen::GameScreen()", "-START-");
 //        shapeRenderer = new ShapeRenderer();
 //        spriteBatch = new SpriteBatch();
         bitmapFont = new BitmapFont();
@@ -44,7 +46,7 @@ public class GameScreen implements Screen {
         Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings:" + gameSettings);
         Gdx.app.log("GameScreen::GameScreen()", "-- field:" + gameField);
         Gdx.app.log("GameScreen::GameScreen()", "-- gameField.map:" + gameField.map);
-        Gdx.app.log("GameScreen::GameScreen()", "-END- -END-");
+        Gdx.app.log("GameScreen::GameScreen()", "-END-");
     }
 
     @Override
@@ -292,5 +294,21 @@ public class GameScreen implements Screen {
         gameField.dispose();
         gameInterface.dispose();
         cameraController.dispose();
+    }
+
+    public String toString() {
+        return toString(true);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GameScreen[");
+        sb.append("gameField:" + gameField);
+        if (full) {
+            sb.append(",gameInterface:" + gameInterface);
+            sb.append(",cameraController:" + cameraController);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

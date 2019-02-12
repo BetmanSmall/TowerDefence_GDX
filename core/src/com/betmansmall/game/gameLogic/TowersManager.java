@@ -3,6 +3,7 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 /**
@@ -66,5 +67,22 @@ public class TowersManager {
 
     public void removeTower(Cell cell) {
         towers.removeValue(getTower(cell), false);
+    }
+
+    public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TowersManager[");
+        sb.append("towers.size:" + towers.size);
+        if (full) {
+            for (Tower tower: towers) {
+                sb.append("," + tower);
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }
