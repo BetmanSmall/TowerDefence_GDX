@@ -578,8 +578,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             int exitPointY = waveElement.getIntAttribute("exitPointY");
             float spawnInterval = waveElement.getFloat("spawnInterval", 0.0f);
             float startToMove = waveElement.getFloat("startToMove", 0.0f);
-            boolean waitForStart = waveElement.getBoolean("waitForStart", true);
-            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), startToMove, waitForStart);
+            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), startToMove);
             int actionsCount = waveElement.getChildCount();
             for(int a = 0; a < actionsCount; a++) {
                 Element action = waveElement.getChild(a);

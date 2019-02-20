@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<waves allTogether="false"> <!-- allTogether=false - волны буду спавнить крипов после startToMove все вместе не учитывая waitForStart -->
+<waves allTogether="false"> <!-- allTogether=true - волны буду спавнить крипов после startToMove все вместе. allTogether=false - волны буду ждать предыдущию и нажатаю кнопку от пользователя и когда нету крипов на игровом поле -->
     <!-- delay - время между последним крипом из предыдущей пачки крипов и нашима первым + spawnInterval + interval -->
     <!-- а interval - время между крипами одного типа + spawnInterval -->
     <!-- а spawnInterval - дополнительное или же одно единственное время между всеми крипами в этой волне. -->
     <!-- startToMove - ну тут все понятно. столько пройдет времени после нажатия пользователем кнопки пуска крипов -->
-	<!-- waitForStart - волна будет ждать условий для начала когда крипов нету на игровом поле и пользователь нажал кнопку что он готов для следующий волны | default=true -->
     <!-- startToMove -> delay-->
-    <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="0" waitForStart="true">
+    <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="0">
         <unit templateName="unit1_grunt" amount="1"/>
         <unit templateName="unit2_troll_axethrower" amount="1"/>
         <unit templateName="unit3_footman" amount="1"/>
@@ -40,7 +39,7 @@
         <!-- <unit templateName="unit14_mage" amount="1"/> -->
         <!-- <unit templateName="unit15_peasant" amount="1"/> -->
     </wave>
-    <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="15" waitForStart="true">
+    <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="15">
         <unit delay="7" templateName="unit2_troll_axethrower" amount="10"/>
         <unit templateName="unit3_footman" amount="20"/>
         <unit templateName="unit1_grunt" amount="20"/>

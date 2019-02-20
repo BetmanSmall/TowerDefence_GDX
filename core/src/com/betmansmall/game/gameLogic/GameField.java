@@ -84,7 +84,7 @@ public class GameField {
         gamerGold = 100000;
         gameSpeed = 1.0f;
         gamePaused = false;
-        unitsSpawn = true;
+        unitsSpawn = false;
 
         Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
@@ -1337,10 +1337,8 @@ public class GameField {
                 }
             } else {
                 if (waveManager.currentWave == null) {
-                    if (unitsManager.units.size == 0 || ( (waveManager.waves.size > 0) ? (!waveManager.waves.get(0).waitForStart) : (false) ) ) {
-                        if (waveManager.updateCurrentWave()) {
-                            unitsSpawn = !waveManager.currentWave.waitForStart;
-                        } else {
+                    if (unitsManager.units.size == 0) {
+                        if (!waveManager.updateCurrentWave()) {
                             unitsSpawn = false;
                         }
                     } else {
