@@ -533,11 +533,11 @@ public class Unit {
             sb.append(",velocity:" + velocity);
             sb.append(",displacement:" + displacement);
 
-            sb.append(",templateForUnit:" + templateForUnit);
             sb.append(",direction:" + direction);
             sb.append(",animation:" + animation);
             sb.append(",shellEffectTypes:" + shellEffectTypes);
         }
+        sb.append(",templateForUnit:" + templateForUnit);
         sb.append("]");
         return sb.toString();
     }

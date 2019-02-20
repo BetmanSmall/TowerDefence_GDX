@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
 import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
@@ -225,5 +226,32 @@ public class Bullet {
             }
         }
         return hit;
+    }
+
+    public String toString() {
+        return toString(true);
+    }
+
+    public String toString(boolean full) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Bullet[");
+        sb.append("unit:" + unit);
+        if (full) {
+            sb.append(",ammoExpSize:" + ammoExpSize);
+            sb.append(",ammoSize:" + ammoSize);
+            sb.append(",ammoSpeed:" + ammoSpeed);
+            sb.append(",templateForTower:" + templateForTower);
+            sb.append(",textureRegion:" + textureRegion);
+            sb.append(",currentPoint:" + currentPoint);
+            sb.append(",currCircle:" + currCircle);
+            sb.append(",endPoint:" + endPoint);
+            sb.append(",endCircle:" + endCircle);
+            sb.append(",velocity:" + velocity);
+            sb.append(",direction:" + direction);
+            sb.append(",animation:" + animation);
+            sb.append(",flyingTime:" + flyingTime);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

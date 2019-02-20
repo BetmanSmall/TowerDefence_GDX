@@ -25,6 +25,8 @@ public class WaveManager {
         }
     }
 
+    public boolean allTogether;
+    public Wave currentWave;
     public Array<Wave> waves;
     public Array<Wave> wavesForUser;
     public GridPoint2 lastExitPoint;
@@ -32,6 +34,8 @@ public class WaveManager {
 
     WaveManager() {
         Gdx.app.log("WaveManager::WaveManager()", "--");
+//        this.allTogether = true;
+        this.currentWave = null;
         this.waves = new Array<Wave>();
         this.wavesForUser = new Array<Wave>();
 //        this.waitForNextSpawnUnit =
@@ -43,6 +47,38 @@ public class WaveManager {
 
     public void addWave(Wave wave) {
         this.waves.add(wave);
+    }
+
+    public boolean updateCurrentWave() {
+        if (waves.size != 0) {
+            Wave newWave = waves.first();
+            if (newWave != null) {
+                waves.removeIndex(0);
+                currentWave = newWave;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public TemplateNameAndPoints getUnitForSpawn(float delta) {
+        waitForNextSpawnUnit -= delta;
+        if (currentWave != null) {
+            if (!currentWave.actions.isEmpty()) {
+                String templateName = currentWave.getTemplateNameForSpawn(delta);
+                if (templateName != null) {
+                    if (templateName.contains("wait")) {
+                        waitForNextSpawnUnit = Float.parseFloat(templateName.substring(templateName.indexOf("=") + 1, templateName.length()));// GOVNE GODE parseFloat3
+                    } else {
+                        return (new TemplateNameAndPoints(templateName, currentWave.spawnPoint, currentWave.exitPoint));
+                    }
+                }
+            } else {
+//                Gdx.app.log("WaveManager::getUnitForSpawn()", "waves.removeValue(currentWave, true):" + waves.removeValue(currentWave, true));
+                currentWave = null;
+            }
+        }
+        return null;
     }
 
     public Array<TemplateNameAndPoints> getAllUnitsForSpawn(float delta) {
@@ -104,6 +140,9 @@ public class WaveManager {
         int actions = 0;
         for (Wave wave : waves) {
             actions += wave.actions.size();
+        }
+        if (currentWave != null) {
+            actions += currentWave.actions.size();
         }
         return actions;
     }

@@ -569,6 +569,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
 //    }
 
     public void wavesParser(Element waves) {
+        waveManager.allTogether = waves.getBoolean("allTogether", false);
         Array<Element> waveElements = waves.getChildrenByName("wave");
         for (Element waveElement : waveElements) {
             int spawnPointX = waveElement.getIntAttribute("spawnPointX");
@@ -577,7 +578,8 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             int exitPointY = waveElement.getIntAttribute("exitPointY");
             float spawnInterval = waveElement.getFloat("spawnInterval", 0.0f);
             float startToMove = waveElement.getFloat("startToMove", 0.0f);
-            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), startToMove);
+            boolean waitForStart = waveElement.getBoolean("waitForStart", true);
+            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), startToMove, waitForStart);
             int actionsCount = waveElement.getChildCount();
             for(int a = 0; a < actionsCount; a++) {
                 Element action = waveElement.getChild(a);
@@ -617,7 +619,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             int spawnPointY = waveElement.getIntAttribute("spawnPointY");
             int exitPointX = waveElement.getIntAttribute("exitPointX");
             int exitPointY = waveElement.getIntAttribute("exitPointY");
-            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), 0f);
+            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
             waveManager.wavesForUser.add(wave);
         }
     }

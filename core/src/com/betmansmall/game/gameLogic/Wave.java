@@ -16,13 +16,24 @@ public class Wave {
     public ArrayDeque<Node> route;
     private float intervalForSpawn;
     private float elapsedTime;
+    public boolean waitForStart;
 
-    public Wave(GridPoint2 spawnPoint, GridPoint2 exitPoint, float startToMove) {
+    public Wave(GridPoint2 spawnPoint, GridPoint2 exitPoint, float startToMove, boolean waitForStart) {
         this.actions = new ArrayDeque<String>();
         this.spawnPoint = spawnPoint;
         this.exitPoint = exitPoint;
         this.intervalForSpawn = startToMove;
         this.elapsedTime = 0f;
+        this.waitForStart = waitForStart;
+    }
+
+    public Wave(GridPoint2 spawnPoint, GridPoint2 exitPoint) {
+        this.actions = new ArrayDeque<String>();
+        this.spawnPoint = spawnPoint;
+        this.exitPoint = exitPoint;
+        this.intervalForSpawn = 0f;
+        this.elapsedTime = 0f;
+        this.waitForStart = false;
     }
 
     public String getTemplateNameForSpawn(float delta) {

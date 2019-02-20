@@ -42,7 +42,7 @@ public class GameInterface {
     public TextButton startAndPauseButton;
     public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, underConstructionLabel,
             missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextUnitSpawnLabel,
-            unitsManagerSize, towersManagerSize;
+            unitsManagerSize, towersManagerSize, unitsSpawn, gamePaused;
 
     public boolean interfaceTouched;
     public TowersSelector towersSelector;
@@ -113,6 +113,10 @@ public class GameInterface {
         tablo.addActor(unitsManagerSize);
         towersManagerSize = new Label("towersManagerSize:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         tablo.addActor(towersManagerSize);
+        unitsSpawn = new Label("unitsSpawn:", new Label.LabelStyle(bitmapFont, Color.RED));
+        tablo.addActor(unitsSpawn);
+        gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        tablo.addActor(gamePaused);
 
         this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
 ////        table.setDebug(true);
@@ -169,6 +173,9 @@ public class GameInterface {
         missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
         unitsManagerSize.setText("unitsManagerSize:" + gameField.unitsManager.units.size);
         towersManagerSize.setText("towersManagerSize:" + gameField.towersManager.towers.size);
+        unitsSpawn.setText("unitsSpawn:" + gameField.unitsSpawn);
+        gamePaused.setText("gamePaused:" + gameField.gamePaused);
+        startAndPauseButton.setText( (gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE" : (GameField.unitsManager.units.size>0) ? "PAUSE" : "START NEXT WAVE");
         stage.act(delta);
         stage.draw();
     }
@@ -205,7 +212,11 @@ public class GameInterface {
         if (startAndPauseButton.isPressed()) {
             Gdx.app.log("GameInterface::touchDown()", "-- startAndPauseButton.isPressed()");
             gameField.gamePaused = !gameField.gamePaused;
-            startAndPauseButton.setText((!gameField.gamePaused)? "PAUSE" : "PLAY");
+            if (!gameField.unitsSpawn && GameField.unitsManager.units.size == 0) {
+                gameField.unitsSpawn = true;
+                gameField.gamePaused = false;
+            }
+//            startAndPauseButton.setText( (!gameField.gamePaused) ? "PAUSE" : "PLAY");
             interfaceTouched = true;
         }
         if(unitsSelector != null) {

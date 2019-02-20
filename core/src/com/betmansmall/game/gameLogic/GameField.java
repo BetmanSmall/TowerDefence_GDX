@@ -50,6 +50,7 @@ public class GameField {
     public float timeOfGame;
     public float gameSpeed;
     public boolean gamePaused;
+    public boolean unitsSpawn;
     public int gamerGold;
 
     public GameField(String mapPath, FactionsManager factionsManager, GameSettings gameSettings) {
@@ -83,6 +84,7 @@ public class GameField {
         gamerGold = 100000;
         gameSpeed = 1.0f;
         gamePaused = false;
+        unitsSpawn = true;
 
         Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
@@ -129,7 +131,7 @@ public class GameField {
                     Cell exitCell = getCell(exitPoint.x, exitPoint.y);
                     if (spawnCell != null && spawnCell.isEmpty()) {
                         if (exitCell != null && exitCell.isEmpty()) {
-                            Wave wave = new Wave(spawnPoint, exitPoint, 0f);
+                            Wave wave = new Wave(spawnPoint, exitPoint);
                             for (int k = 0; k < 10; k++) {
                                 wave.addAction("interval=" + 1);
                                 wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().templateName);
@@ -1327,9 +1329,30 @@ public class GameField {
     }
 
     private void spawnUnits(float delta) {
-        Array<WaveManager.TemplateNameAndPoints> allUnitsForSpawn = waveManager.getAllUnitsForSpawn(delta);
-        for (WaveManager.TemplateNameAndPoints templateNameAndPoints : allUnitsForSpawn) {
-            spawnUnit(templateNameAndPoints);
+        if (unitsSpawn) {
+            if (waveManager.allTogether) {
+                Array<WaveManager.TemplateNameAndPoints> allUnitsForSpawn = waveManager.getAllUnitsForSpawn(delta);
+                for (WaveManager.TemplateNameAndPoints templateNameAndPoints : allUnitsForSpawn) {
+                    spawnUnit(templateNameAndPoints);
+                }
+            } else {
+                if (waveManager.currentWave == null) {
+                    if (unitsManager.units.size == 0 || ( (waveManager.waves.size > 0) ? (!waveManager.waves.get(0).waitForStart) : (false) ) ) {
+                        if (waveManager.updateCurrentWave()) {
+                            unitsSpawn = !waveManager.currentWave.waitForStart;
+                        } else {
+                            unitsSpawn = false;
+                        }
+                    } else {
+                        unitsSpawn = false;
+                    }
+                } else {
+                    WaveManager.TemplateNameAndPoints templateNameAndPoints = waveManager.getUnitForSpawn(delta);
+                    if (templateNameAndPoints != null) {
+                        spawnUnit(templateNameAndPoints);
+                    }
+                }
+            }
         }
     }
 
