@@ -40,9 +40,12 @@ public class GameInterface {
     private Label actionsHistoryLabel;
 
     public TextButton startAndPauseButton;
-    public Label mapNameLabel, fpsLabel, gamerCursorCoordCell, underConstructionLabel,
-            missedAndMaxForPlayer1, gamerGoldLabel, missedAndMaxForComputer0, nextUnitSpawnLabel,
-            unitsManagerSize, towersManagerSize, unitsSpawn, gamePaused;
+    public Label fpsLabel, deltaTimeLabel, mapPathLabel, gameType, isometricLabel,
+            underConstrEndCoord, underConstructionLabel,
+            gamerGoldLabel, unitsManagerSize, towersManagerSize,
+            missedAndMaxForPlayer1, missedAndMaxForComputer0,
+            nextUnitSpawnLabel,
+            unitsSpawn, gamePaused;
 
     public boolean interfaceTouched;
     public TowersSelector towersSelector;
@@ -93,26 +96,32 @@ public class GameInterface {
         tablo.align(Align.left);
         tableBack.add(tablo).top().expand();
 
-        mapNameLabel = new Label("MapName:arena0tmx", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        tablo.addActor(mapNameLabel);
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tablo.addActor(fpsLabel);
-        gamerCursorCoordCell = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        tablo.addActor(gamerCursorCoordCell);
+        deltaTimeLabel = new Label("deltaTime:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        tablo.addActor(deltaTimeLabel);
+        mapPathLabel = new Label("MapName:arena0tmx", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        tablo.addActor(mapPathLabel);
+        gameType = new Label("gameType:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        tablo.addActor(gameType);
+        isometricLabel = new Label("isometricLabel:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        tablo.addActor(isometricLabel);
+        underConstrEndCoord = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        tablo.addActor(underConstrEndCoord);
         underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tablo.addActor(underConstructionLabel);
-        missedAndMaxForPlayer1 = new Label("UnitsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
-        tablo.addActor(missedAndMaxForPlayer1);
         gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         tablo.addActor(gamerGoldLabel);
-        missedAndMaxForComputer0 = new Label("UnitsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
-        tablo.addActor(missedAndMaxForComputer0);
-        nextUnitSpawnLabel = new Label("NextUnitSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
-        tablo.addActor(nextUnitSpawnLabel);
         unitsManagerSize = new Label("unitsManagerSize:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         tablo.addActor(unitsManagerSize);
         towersManagerSize = new Label("towersManagerSize:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         tablo.addActor(towersManagerSize);
+        missedAndMaxForPlayer1 = new Label("UnitsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        tablo.addActor(missedAndMaxForPlayer1);
+        missedAndMaxForComputer0 = new Label("UnitsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
+        tablo.addActor(missedAndMaxForComputer0);
+        nextUnitSpawnLabel = new Label("NextUnitSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
+        tablo.addActor(nextUnitSpawnLabel);
         unitsSpawn = new Label("unitsSpawn:", new Label.LabelStyle(bitmapFont, Color.RED));
         tablo.addActor(unitsSpawn);
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
@@ -155,26 +164,29 @@ public class GameInterface {
             actionsHistoryLabel.setText(sb.toString());
         }
         fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        deltaTimeLabel.setText("delta:" + String.valueOf(delta));
+        mapPathLabel.setText("gameField.map.mapPath:" + gameField.map.mapPath);
+        gameType.setText("gameField.gameSettings.gameType:" + gameField.gameSettings.gameType);
+        isometricLabel.setText("gameField.gameSettings.isometric:" + gameField.gameSettings.isometric);
         UnderConstruction underConstruction = gameField.getUnderConstruction();
         if(underConstruction != null) {
-            gamerCursorCoordCell.setText("CoordCell:(" + underConstruction.endX + "," + underConstruction.endY + ")");
-            underConstructionLabel.setText("UnderConstrTemplateName:" + underConstruction.templateForTower.name);
+            underConstrEndCoord.setText("underConstructionEndCoord:(" + underConstruction.endX + "," + underConstruction.endY + ")");
+            underConstructionLabel.setText("underConstructionTemplateName:" + underConstruction.templateForTower.name);
             underConstructionLabel.setColor(Color.GREEN);
         } else {
-            gamerCursorCoordCell.setText("CoordCell:(WTF,WTF)");
-            underConstructionLabel.setText("UnderConstrTemplateName:NULL");
+            underConstrEndCoord.setText("underConstructionEndCoord:(WTF,WTF)");
+            underConstructionLabel.setText("underConstructionTemplateName:NULL");
             underConstructionLabel.setColor(Color.RED);
         }
+        gamerGoldLabel.setText("gameField.gamerGold:" + gameField.gamerGold);
+        unitsManagerSize.setText("gameField.unitsManager.units.size:" + gameField.unitsManager.units.size);
+        towersManagerSize.setText("gameField.towersManager.towers.size:" + gameField.towersManager.towers.size);
         missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameField.gameSettings.missedUnitsForPlayer1 + "/" + gameField.gameSettings.maxOfMissedUnitsForPlayer1);
-        gamerGoldLabel.setText("GamerGold:" + gameField.gamerGold);
         missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
-        unitsManagerSize.setText("unitsManagerSize:" + gameField.unitsManager.units.size);
-        towersManagerSize.setText("towersManagerSize:" + gameField.towersManager.towers.size);
         unitsSpawn.setText("unitsSpawn:" + gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameField.gamePaused);
+
         startAndPauseButton.setText( (gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE" : (GameField.unitsManager.units.size>0) ? "PAUSE" : "START NEXT WAVE");
         stage.act(delta);
         stage.draw();

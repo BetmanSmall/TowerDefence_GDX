@@ -126,7 +126,7 @@ public class TowerDefence extends Game {
 //                    Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
 //                    if (gameScreen1 != null) {
 //                    lastScreen.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
-//                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1.gameInterface.mapNameLabel:" + gameScreen1.gameInterface.mapNameLabel);
+//                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1.gameInterface.mapPathLabel:" + gameScreen1.gameInterface.mapPathLabel);
 //                        lastScreen.hide();
                         screensStack.removeIndex(count - 1);
 //                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1.gameInterface:" + gameScreen1.gameInterface);

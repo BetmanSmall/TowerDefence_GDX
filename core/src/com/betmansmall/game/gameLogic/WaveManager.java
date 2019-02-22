@@ -127,14 +127,14 @@ public class WaveManager {
         return points;
     }
 
-    public boolean setExitPoint(GridPoint2 exitPoint) {
-        this.lastExitPoint = exitPoint;
-        if (waves.size != 0) {
-            waves.first().exitPoint = exitPoint;
-            return true;
-        }
-        return false;
-    }
+//    public boolean setExitPoint(GridPoint2 exitPoint) {
+//        this.lastExitPoint = exitPoint;
+//        if (waves.size != 0) {
+//            waves.first().exitPoint = exitPoint;
+//            return true;
+//        }
+//        return false;
+//    }
 
     public int getNumberOfActions() {
         int actions = 0;

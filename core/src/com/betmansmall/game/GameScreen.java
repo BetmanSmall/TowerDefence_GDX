@@ -3,7 +3,6 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,9 +10,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 //import com.badlogic.gdx.input.GestureDetector;
 //import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -38,7 +34,6 @@ public class GameScreen implements Screen {
 
         gameField = new GameField(mapPath, factionsManager, gameSettings);
         gameInterface = new GameInterface(gameField, bitmapFont);
-        gameInterface.mapNameLabel.setText("MapName:" + mapPath);
         cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         Gdx.app.log("GameScreen::GameScreen()", "-- mapPath:" + mapPath);

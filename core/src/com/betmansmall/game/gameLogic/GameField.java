@@ -82,6 +82,7 @@ public class GameField {
         Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
 
         gamerGold = 100000;
+        timeOfGame = 0.0f;
         gameSpeed = 1.0f;
         gamePaused = false;
         unitsSpawn = false;
@@ -160,14 +161,26 @@ public class GameField {
         } else {
             Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
+        Gdx.app.log("GameField::GameField()", "-end-");
     }
 
     public void dispose() {
         Gdx.app.log("GameField::dispose()", "-- Called!");
-//        shapeRenderer.dispose();
-//        spriteBatch.dispose();
-//        bitmapFont.dispose();
+//        factionsManager.dispose();
+        waveManager.dispose();
+        towersManager.dispose();
+        unitsManager.dispose();
         map.dispose();
+        for (Cell[] cellArr : field) {
+            for (Cell cell : cellArr) {
+                cell.dispose();
+                cell = null;
+            }
+        }
+        field = null;
+//        pathFinder.dispose();
+
+        underConstruction.dispose();
         greenCheckmark.dispose();
         redCross.dispose();
     }
@@ -1771,7 +1784,6 @@ public class GameField {
 //    }
 
     private void stepAllUnits(float delta, CameraController cameraController) {
-//        Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.units:" + unitsManager.units.size);
         for (Unit unit : unitsManager.units) {
             Node oldPosition = unit.newPosition;
             if (unit.isAlive()) {
@@ -1790,8 +1802,6 @@ public class GameField {
                     }
                 } else {
                     Cell cell = getCell(oldPosition.getX(), oldPosition.getY());
-//                    Gdx.app.log("GameField::stepAllUnits()", "-- cell:" + cell.toString());
-//                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit finished!");
                     if (unit.player == 1) {
                         gameSettings.missedUnitsForComputer0++;
                     } else if (unit.player == 0) {
@@ -1812,6 +1822,11 @@ public class GameField {
 //                                Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + unit.route);
                             }
                         }
+//                    Cell* cell = getCell(oldPosition.x, oldPosition.y);
+//                    if (cell->isTerrain()) {
+//                        cell->removeTerrain(true);
+//                        updatePathFinderWalls();
+//                    }
                     }
                 }
             } else {

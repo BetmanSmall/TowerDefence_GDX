@@ -201,7 +201,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
         }
         Element waves = root.getChildByName("waves");
         if(waves != null) {
-            String type = waves.getAttribute("type", null);
+//            String type = waves.getAttribute("type", null);
             String source = waves.getAttribute("source", null);
             if (source != null) {
                 FileHandle tsx = getRelativeFileHandle(tmxFile, source);
@@ -211,7 +211,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if(type != null/* && type == "empty"*/) { // LOL not WORK
+//            } else if(type != null/* && type == "empty"*/) { // LOL not WORK
 //                System.out.println("type=" + type); // Хотел сделать пустую волну, не получилася=( мб как нить сделаем.
 //                waveManager.addWave(new Wave(new GridPoint2(0, 0), new GridPoint2(0, 0), 10f));
             } else {
@@ -580,25 +580,25 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             float startToMove = waveElement.getFloat("startToMove", 0.0f);
             Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), startToMove);
             int actionsCount = waveElement.getChildCount();
-            for(int a = 0; a < actionsCount; a++) {
+            for (int a = 0; a < actionsCount; a++) {
                 Element action = waveElement.getChild(a);
-//                String sAction = action.getName();
-//                if(sAction.equals("unit")) {
+                String sAction = action.getName();
+                if (sAction.equals("unit")) { // mb bad?
                     float delay = action.getFloat("delay", 0.0f);
-                    if(delay > 0f) {
+                    if (delay > 0f) {
                         wave.addAction("delay=" + delay);
                     }
                     String unitTemplateName = action.getAttribute("templateName");
 
                     float interval = action.getFloat("interval", 0.0f) + spawnInterval;
                     int amount = action.getInt("amount", 0);
-                    for(int u = 0; u < amount; u++) {
-                        if(interval > 0f) {
+                    for (int u = 0; u < amount; u++) {
+                        if (interval > 0f) {
                             wave.addAction("interval=" + interval);
                         }
                         wave.addAction(unitTemplateName);
                     }
-//                }
+                }
             }
 //            Array<Element> units = waveElement.getChildrenByName("unit");
 //            for (Element unit : units) {
