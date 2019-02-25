@@ -5,12 +5,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -32,13 +38,15 @@ public class GameInterface {
 
     private Skin skin;
     public Stage stage;
-    public Table tableBack, tableFront;
+    public Table tableBack, tableFront, pauseMenuTable;
+    public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
 
     // Console need
     public Array<String> arrayActionsHistory;
     private float deleteActionThrough, actionInHistoryTime;
     private Label actionsHistoryLabel;
 
+    public TextButton pauseMenuButton;
     public TextButton startAndPauseButton;
     public Label fpsLabel, deltaTimeLabel, mapPathLabel, gameType, isometricLabel,
             underConstrEndCoord, underConstructionLabel,
@@ -65,12 +73,38 @@ public class GameInterface {
         this.stage = new Stage(new ScreenViewport());
 //        stage.getViewport().update(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, true);
 //        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-//        stage.setDebugAll(true);
+        stage.setDebugAll(true);
+
+        this.pauseMenuTable = new Table(skin);
+        stage.addActor(pauseMenuTable);
+        pauseMenuTable.setVisible(false);
+        pauseMenuTable.setFillParent(true);
+
+        resumeButton = new TextButton("Resume", skin);
+        pauseMenuTable.add(resumeButton).fill().row();
+        nextLevelButton = new TextButton("NEXT LEVEL", skin);
+        pauseMenuTable.add(nextLevelButton).fill().row();
+        optionButton = new TextButton("OPTION", skin);
+        pauseMenuTable.add(optionButton).fill().row();
+        exitButton = new TextButton("EXIT", skin);
+        pauseMenuTable.add(exitButton).fill().row();
 
         this.tableBack = new Table(skin);
-//        tableBack.setDebug(true);
         stage.addActor(tableBack);
         tableBack.setFillParent(true);
+
+        pauseMenuButton = new TextButton("||", skin);
+        pauseMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface::GameInterface()", "-changed- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
+                pauseMenuTable.setVisible(pauseMenuButton.isChecked());
+                tableFront.setVisible(!pauseMenuButton.isChecked());
+                tableBack.setVisible(!pauseMenuButton.isChecked());
+                interfaceTouched = true;
+            }
+        });
+        tableBack.add(pauseMenuButton).size(pauseMenuButton.getWidth()*2f, pauseMenuButton.getHeight()*1.8f).top().left();
 
         arrayActionsHistory = new Array<String>();
         deleteActionThrough = 0f;
@@ -79,16 +113,7 @@ public class GameInterface {
         actionsHistoryLabel = new Label("", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tableBack.add(actionsHistoryLabel).expand().left();
 
-        startAndPauseButton = new TextButton((!gameField.gamePaused)? "PAUSE" : "PLAY", skin, "default");
-//        startAndPauseButton.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                Gdx.app.log("GameInterface::ClickListener::clicked(" + event + "," + x + "," + y + ")", "-- startAndPauseButton");
-//                gameField.gamePaused = !gameField.gamePaused;
-//                startAndPauseButton.setText((!gameField.gamePaused)? "PAUSE" : "PLAY");
-//                interfaceTouched = true;
-//            }
-//        });
+        startAndPauseButton = new TextButton((!gameField.gamePaused) ? "PAUSE" : "PLAY", skin, "default");
         tableBack.add(startAndPauseButton).size(startAndPauseButton.getWidth()*3f, startAndPauseButton.getHeight()*1.5f).bottom();
 
         VerticalGroup tablo = new VerticalGroup();
@@ -169,7 +194,7 @@ public class GameInterface {
         gameType.setText("gameField.gameSettings.gameType:" + gameField.gameSettings.gameType);
         isometricLabel.setText("gameField.gameSettings.isometric:" + gameField.gameSettings.isometric);
         UnderConstruction underConstruction = gameField.getUnderConstruction();
-        if(underConstruction != null) {
+        if (underConstruction != null) {
             underConstrEndCoord.setText("underConstructionEndCoord:(" + underConstruction.endX + "," + underConstruction.endY + ")");
             underConstructionLabel.setText("underConstructionTemplateName:" + underConstruction.templateForTower.name);
             underConstructionLabel.setColor(Color.GREEN);
@@ -187,7 +212,7 @@ public class GameInterface {
         unitsSpawn.setText("unitsSpawn:" + gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameField.gamePaused);
 
-        startAndPauseButton.setText( (gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE" : (GameField.unitsManager.units.size>0) ? "PAUSE" : "START NEXT WAVE");
+        startAndPauseButton.setText((gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE" : (GameField.unitsManager.units.size > 0) ? "PAUSE" : "START NEXT WAVE");
         stage.act(delta);
         stage.draw();
     }
@@ -231,10 +256,34 @@ public class GameInterface {
 //            startAndPauseButton.setText( (!gameField.gamePaused) ? "PAUSE" : "PLAY");
             interfaceTouched = true;
         }
+//        if (pauseMenuButton.isPressed()) {
+//            Gdx.app.log("GameInterface::touchDown()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
+//            pauseMenuTable.setVisible(pauseMenuButton.isChecked());
+//            tableFront.setVisible(!pauseMenuButton.isChecked());
+//            tableBack.setVisible(!pauseMenuButton.isChecked());
+//            interfaceTouched = true;
+//        }
+        if (resumeButton.isPressed()) {
+            Gdx.app.log("GameInterface::touchDown()", "-- resumeButton.isPressed()");
+            Gdx.app.log("GameInterface::touchDown()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
+            pauseMenuTable.setVisible(false);
+            pauseMenuButton.toggle();
+            Gdx.app.log("GameInterface::touchDown()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
+        }
+        if (nextLevelButton.isPressed()) {
+            Gdx.app.log("GameInterface::touchDown()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
+        }
+        if (optionButton.isPressed()) {
+            Gdx.app.log("GameInterface::touchDown()", "-- optionButton.isChecked():" + optionButton.isChecked());
+            tableBack.setVisible(optionButton.isChecked());
+            tableFront.setVisible(optionButton.isChecked());
+        }
+        if (exitButton.isPressed()) {
+            Gdx.app.log("GameInterface::touchDown()", "-- exitButton.isChecked():" + exitButton.isChecked());
+        }
         if(unitsSelector != null) {
             if(unitsSelector.touchDown(screenX, screenY, pointer, button)) {
                 interfaceTouched = true;
-                Gdx.app.log("GameInterface::touchDown()", "-- return true");
                 return true;
             }
         }
@@ -244,7 +293,6 @@ public class GameInterface {
                 return true;
             }
         }
-        Gdx.app.log("GameInterface::touchDown()", "-- return false");
         return false;
     }
 

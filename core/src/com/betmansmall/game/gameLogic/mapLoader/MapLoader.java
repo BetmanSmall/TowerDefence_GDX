@@ -468,13 +468,14 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             }
 //            Element terraintypes = element.getChildByName("terraintypes");
 //            if (terraintypes != null) {
+//                int terrainNumber = 0;
 //                Array<Element> terrainElements = terraintypes.getChildrenByName("terrain");
 //                for (Element terrainElement : terrainElements) {
 //                    String terrainName = terrainElement.getAttribute("name");
-//                    int tileId = terrainElement.getIntAttribute("tiledMapTile");
+//                    int tileId = terrainElement.getIntAttribute("tile");
 //                    TiledMapTile tiledMapTile = tileset.getTile(tileId);
 //                    tileset.putTile(tileId, tiledMapTile);
-//                    tileset.add(tiledMapTile);
+////                    tileset.add(tiledMapTile);
 //                }
 //            }
 

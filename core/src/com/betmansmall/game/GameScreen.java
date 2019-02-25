@@ -218,8 +218,13 @@ public class GameScreen implements Screen {
             gameInterface.arrayActionsHistory.clear();
             gameInterface.addActionToHistory("-- gameInterface.arrayActionsHistory.clear()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameInterface.arrayActionsHistory.clear()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ESCAPE || Input.Keys.N)");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ESCAPE)");
+            gameInterface.pauseMenuButton.toggle();
+            gameInterface.addActionToHistory("-- gameInterface.pauseMenuButton.toggle()");
+            Gdx.app.log("GameScreen::inputHandler()", "-- gameInterface.pauseMenuButton.toggle()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.N)");
             gameField.cancelUnderConstruction();
             gameInterface.addActionToHistory("-- gameField.cancelUnderConstruction()");
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.cancelUnderConstruction()");
