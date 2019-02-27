@@ -35,6 +35,7 @@ public class GameScreen implements Screen {
         gameField = new GameField(mapPath, factionsManager, gameSettings);
         gameInterface = new GameInterface(gameField, bitmapFont);
         cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        gameInterface.setCameraController(cameraController);
 
         Gdx.app.log("GameScreen::GameScreen()", "-- mapPath:" + mapPath);
         Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
