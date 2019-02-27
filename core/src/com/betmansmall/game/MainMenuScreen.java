@@ -7,13 +7,17 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -32,6 +36,8 @@ public class MainMenuScreen implements Screen {
     private TextButton exitButton;
     private TextButton backButton;
     private TextButton homeButton;
+
+    private Label sizeLabel;
 
     private int menuLvl;
 
@@ -59,6 +65,17 @@ public class MainMenuScreen implements Screen {
         stage.addActor(rootTable);
 
         Table leftTable = new Table(skin);
+        helpButton = new TextButton("HELP", skin);
+        helpButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                towerDefence.addScreen(towerDefence.helpMenuScreen);
+            }
+        });
+        leftTable.add(helpButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
+
         backButton = new TextButton("BACK", skin);
         backButton.addListener(new ClickListener() {
             @Override
@@ -71,7 +88,7 @@ public class MainMenuScreen implements Screen {
                 }
             }
         });
-        leftTable.add(backButton).expand().fillX();
+        leftTable.add(backButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
 
         homeButton = new TextButton("HOME", skin);
         homeButton.addListener(new ClickListener() {
@@ -83,21 +100,17 @@ public class MainMenuScreen implements Screen {
                 switchMenuButtons();
             }
         });
-        leftTable.add(homeButton).expand().fillX();
-        rootTable.add(leftTable).expand().fillX().bottom();
+        leftTable.add(homeButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
+        rootTable.add(leftTable).expandX().fillX().left();
+
+        Table middleTable = new Table(skin);
+        sizeLabel = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
+        sizeLabel.setFontScale(Gdx.graphics.getHeight()*0.01f);
+//        sizeLabel.setFHeight(Gdx.graphics.getHeight()*0.3f);
+        middleTable.add(sizeLabel).center();
+        rootTable.add(middleTable).top();
 
         Table rightTable = new Table(skin);
-        helpButton = new TextButton("HELP", skin);
-        helpButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                towerDefence.addScreen(towerDefence.helpMenuScreen);
-            }
-        });
-        rightTable.add(helpButton).fill().row();
-
         playButton = new TextButton("PLAY", skin);
         playButton.addListener(new ClickListener() {
             @Override
@@ -107,9 +120,9 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 1);
             }
         });
-        rightTable.add(playButton).fill().row();
+        rightTable.add(playButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
 
-        secondButton = new TextButton("SECOND", skin);
+        secondButton = new TextButton("OPTION", skin);
         secondButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -118,7 +131,7 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 2);
             }
         });
-        rightTable.add(secondButton).fill().row();
+        rightTable.add(secondButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
 
         exitButton = new TextButton("EXIT", skin);
         exitButton.addListener(new ClickListener() {
@@ -129,10 +142,8 @@ public class MainMenuScreen implements Screen {
                 clickAnalyzer((short) 3);
             }
         });
-//        exitButton.setFillParent(true);
-        rightTable.add(exitButton).fillX().expand();
-//        leftTable.defaults().fill();
-        rootTable.add(rightTable).bottom().expand().fillX();
+        rightTable.add(exitButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
+        rootTable.add(rightTable).expand().fillX().right();
 
 //        towerDefence.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
@@ -191,6 +202,17 @@ public class MainMenuScreen implements Screen {
     public void resize(int width, int height) {
         Gdx.app.log("MainMenuScreen::resize(" + width + ", " + height + ")", "--");
         stage.getViewport().update(width, height, true);
+        sizeLabel.setText(width + "x" + height);
+
+//        for (Actor actor : stage.getActors()) {
+//            if (actor instanceof Button) {
+//                Button button = (Button)actor;
+//                button.pad(Gdx.graphics.getHeight()*0.9f);
+////                for (Actor actor1 : button.getParent().getChildren()) {
+////                    if (actor instanceof )
+////                }
+//            }
+//        }
     }
 
     @Override

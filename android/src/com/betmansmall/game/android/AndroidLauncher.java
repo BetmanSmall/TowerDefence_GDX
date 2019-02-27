@@ -13,6 +13,11 @@ public class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useAccelerometer = false;
         config.useCompass = false;
+        config.useImmersiveMode = true;
         initialize(new TowerDefence(), config);
+//        resolutions:
+//        AcerZ150 854x480
+//        M13 1920x1080
+//        KING7 2560x1440
     }
 }
