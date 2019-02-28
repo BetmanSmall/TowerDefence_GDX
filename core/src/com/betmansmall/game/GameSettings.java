@@ -7,12 +7,16 @@ import com.betmansmall.game.gameLogic.Cell;
  * Created by betma on 17.11.2018.
  */
 public class GameSettings {
+    public String mapPath;
     public GameType gameType;
     public float difficultyLevel;
     public int enemyCount;
     public int towersCount;
+    public boolean panLeftMouseButton;
+    public boolean panMidMouseButton;
+    public boolean panRightMouseButton;
 
-    public boolean isometric = false;
+    public boolean isometric;
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
@@ -21,32 +25,32 @@ public class GameSettings {
     public int maxOfMissedUnitsForPlayer1;
     public int missedUnitsForPlayer1;
 
-    public GameSettings(String mapPath) {
-        if (mapPath.contains("randomMap")) {
+    public GameSettings() {
+//        this.gameType = GameType.LittleGame;
+        this.difficultyLevel = 1f;
+        this.enemyCount = 20;
+        this.towersCount = 10;
+
+        panLeftMouseButton = true;
+        panMidMouseButton = false;
+        panRightMouseButton = false;
+
+        isometric = false;
+        cellSpawnHero = null;
+        cellExitHero = null;
+    }
+
+    public void setGameTypeByMap(String mapPath) {
+        this.mapPath = mapPath;
+        if (mapPath.contains("arena0")) {
+            gameType = GameType.TowerDefence;
+        } else if (mapPath.contains("randomMap")) {
             gameType = GameType.LittleGame;
-            this.difficultyLevel = 0f;
-            this.enemyCount = 10;
-            this.towersCount = 0;
         } else if (mapPath.contains("island")) {
             gameType = GameType.LittleGame;
-            this.difficultyLevel = 1f;
-            this.enemyCount = 10;
-            this.towersCount = 0;
         } else {
             gameType = GameType.TowerDefence;
-            this.difficultyLevel = 1f;
-            this.enemyCount = 0;
-            this.towersCount = 0;
         }
-    }
-
-    public GameSettings(GameType gameType) {
-        this.gameType = gameType;
-    }
-
-    public GameSettings(GameType gameType, float difficultyLevel) {
-        this.gameType = gameType;
-        this.difficultyLevel = difficultyLevel;
     }
 
     public String toString() {

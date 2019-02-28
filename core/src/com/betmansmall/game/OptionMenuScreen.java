@@ -45,7 +45,7 @@ public class OptionMenuScreen implements Screen {
     private CheckBox panRightMouseButton;
     private TextButton backButton;
 
-    public OptionMenuScreen(final TowerDefence towerDefence) {
+    public OptionMenuScreen(final TowerDefence towerDefence, final GameSettings gameSettings) {
         this.towerDefence = towerDefence;
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
@@ -64,11 +64,10 @@ public class OptionMenuScreen implements Screen {
         panLeftMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                Gdx.app.log("OptionMenuScreen::panLeftMouseButton::changed()", "-- event:" + event);
-//                Gdx.app.log("OptionMenuScreen::panLeftMouseButton::changed()", "-- actor:" + actor);
-                Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
+                Gdx.app.log("OptionMenuScreen::panLeftMouseButton::changed()", "-- panLeftMouseButton.isChecked():" + panLeftMouseButton.isChecked());
             }
         });
+        panLeftMouseButton.setChecked(gameSettings.panLeftMouseButton);
         panLeftMouseButton.getImage().setScaling(Scaling.stretch);
         panLeftMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
         panLeftMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
@@ -79,10 +78,10 @@ public class OptionMenuScreen implements Screen {
         panMidMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::panMidMouseButton::changed()", "-- event:" + event);
-                Gdx.app.log("OptionMenuScreen::panMidMouseButton::changed()", "-- actor:" + actor);
+                Gdx.app.log("OptionMenuScreen::panMidMouseButton::changed()", "-- panMidMouseButton.isChecked():" + panMidMouseButton.isChecked());
             }
         });
+        panMidMouseButton.setChecked(gameSettings.panMidMouseButton);
         panMidMouseButton.getImage().setScaling(Scaling.stretch);
         panMidMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
         panMidMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
@@ -93,89 +92,91 @@ public class OptionMenuScreen implements Screen {
         panRightMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::panRightMouseButton::changed()", "-- event:" + event);
-                Gdx.app.log("OptionMenuScreen::panRightMouseButton::changed()", "-- actor:" + actor);
+                Gdx.app.log("OptionMenuScreen::panRightMouseButton::changed()", "-- panRightMouseButton.isChecked():" + panRightMouseButton.isChecked());
             }
         });
+        panRightMouseButton.setChecked(gameSettings.panRightMouseButton);
         panRightMouseButton.getImage().setScaling(Scaling.stretch);
         panRightMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
         panRightMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
         panRightMouseButton.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(panRightMouseButton).expand().fill().left().colspan(2).row();
 
-        checkBoxSound = new CheckBox("sound On/Off:", skin);
-        checkBoxSound.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- event:" + event);
-                Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- actor:" + actor);
-            }
-        });
-        checkBoxSound.getImage().setScaling(Scaling.stretch);
-        checkBoxSound.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        checkBoxSound.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        checkBoxSound.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(checkBoxSound).right();
+//        checkBoxSound = new CheckBox("sound On/Off:", skin);
+//        checkBoxSound.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- checkBoxSound.isChecked():" + checkBoxSound.isChecked());
+//            }
+//        });
+////        checkBoxSound.setChecked(gameSettings.panLeftMouseButton);
+//        checkBoxSound.getImage().setScaling(Scaling.stretch);
+//        checkBoxSound.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+//        checkBoxSound.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+//        checkBoxSound.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+//        rightTable.add(checkBoxSound).right();
+//
+//        sliderSound = new Slider(0f, 100f, 1f, false, skin);
+//        sliderSound.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- sliderSound.getValue():" + sliderSound.getValue());
+//            }
+//        });
+//        sliderSound.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
+//        sliderSound.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
+//        rightTable.add(sliderSound).expand().fill().row();
 
-        sliderSound = new Slider(0f, 100f, 1f, false, skin);
-        sliderSound.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- event:" + event);
-                Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- actor:" + actor);
-            }
-        });
-        sliderSound.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
-        sliderSound.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
-        rightTable.add(sliderSound).expand().fill().row();
-
-        Label enemyCountLabel = new Label("enemyCount:", skin);
+        final Label enemyCountLabel = new Label("enemyCount:", skin);
         enemyCountLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(enemyCountLabel).right();
 
-        sliderEnemyCount = new Slider(0f, 100f, 1f, false, skin);
+        sliderEnemyCount = new Slider(0f, 32f, 1f, false, skin);
         sliderEnemyCount.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                Gdx.app.log("OptionMenuScreen::sliderEnemyCount::changed()", "-- event:" + event);
-//                Gdx.app.log("OptionMenuScreen::sliderEnemyCount::changed()", "-- actor:" + actor);
                 Gdx.app.log("OptionMenuScreen::sliderEnemyCount::changed()", "-- sliderEnemyCount.getValue():" + sliderEnemyCount.getValue());
+                enemyCountLabel.setText("enemyCount:" + sliderEnemyCount.getValue());
+                gameSettings.enemyCount = (int)sliderEnemyCount.getValue();
             }
         });
+        sliderEnemyCount.setValue(gameSettings.enemyCount);
         sliderEnemyCount.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
         sliderEnemyCount.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
         rightTable.add(sliderEnemyCount).expand().fill().row();
 
-        Label difficultyLevelLabel = new Label("difficultyLevel:", skin);
+        final Label difficultyLevelLabel = new Label("difficultyLevel:", skin);
         difficultyLevelLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(difficultyLevelLabel).right();
 
-        sliderDifficultyLevel = new Slider(0f, 100f, 1f, false, skin);
+        sliderDifficultyLevel = new Slider(0f, 4f, 1f, false, skin);
         sliderDifficultyLevel.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- event:" + event);
-//                Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- actor:" + actor);
                 Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
+                difficultyLevelLabel.setText("difficultyLevel:" + sliderDifficultyLevel.getValue());
+                gameSettings.difficultyLevel = (int)sliderDifficultyLevel.getValue();
             }
         });
+        sliderDifficultyLevel.setValue(gameSettings.difficultyLevel);
         sliderDifficultyLevel.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
         sliderDifficultyLevel.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
         rightTable.add(sliderDifficultyLevel).expand().fill().row();
 
-        Label towerCountLabel = new Label("towerCount:", skin);
+        final Label towerCountLabel = new Label("towerCount:", skin);
         towerCountLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(towerCountLabel).right();
 
-        sliderTowerCount = new Slider(0f, 100f, 1f, false, skin);
+        sliderTowerCount = new Slider(0f, 32f, 1f, false, skin);
         sliderTowerCount.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                Gdx.app.log("OptionMenuScreen::sliderTowerCount::changed()", "-- event:" + event);
-//                Gdx.app.log("OptionMenuScreen::sliderTowerCount::changed()", "-- actor:" + actor);
                 Gdx.app.log("OptionMenuScreen::sliderTowerCount::changed()", "-- sliderTowerCount.getValue():" + sliderTowerCount.getValue());
+                towerCountLabel.setText("towerCount:" + sliderTowerCount.getValue());
+                gameSettings.towersCount = (int)sliderTowerCount.getValue();
             }
         });
+        sliderTowerCount.setValue(gameSettings.towersCount);
         sliderTowerCount.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
         sliderTowerCount.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
         rightTable.add(sliderTowerCount).expand().fill().row();
@@ -184,8 +185,7 @@ public class OptionMenuScreen implements Screen {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::backButton::changed()", "-- event:" + event);
-                Gdx.app.log("OptionMenuScreen::backButton::changed()", "-- actor:" + actor);
+                Gdx.app.log("OptionMenuScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
                 towerDefence.removeTopScreen();
             }
         });

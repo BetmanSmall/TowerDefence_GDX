@@ -74,8 +74,10 @@ public class Cell {
         trees = null;
 
         tower = null;
-        units.clear();
-        units = null;
+        if (units != null) {
+            units.clear();
+            units = null;
+        }
 //        delete graphicCoordinates1,graphicCoordinates2,graphicCoordinates3, graphicCoordinates4;
     }
 

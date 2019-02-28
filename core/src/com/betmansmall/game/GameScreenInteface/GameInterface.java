@@ -119,7 +119,7 @@ public class GameInterface {
                 interfaceTouched = true;
             }
         });
-        tableBack.add(pauseMenuButton).size(pauseMenuButton.getWidth()*2f, pauseMenuButton.getHeight()*1.8f).top().left();
+        tableBack.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f).top().left();
 
         arrayActionsHistory = new Array<String>();
         deleteActionThrough = 0f;
@@ -129,7 +129,7 @@ public class GameInterface {
         tableBack.add(actionsHistoryLabel).expand().left();
 
         startAndPauseButton = new TextButton((!gameField.gamePaused) ? "PAUSE" : "PLAY", skin, "default");
-        tableBack.add(startAndPauseButton).size(startAndPauseButton.getWidth()*3f, startAndPauseButton.getHeight()*1.5f).bottom();
+        tableBack.add(startAndPauseButton).prefWidth(Gdx.graphics.getWidth()*0.3f).prefHeight(Gdx.graphics.getHeight()*0.1f).bottom();
 
         VerticalGroup tablo = new VerticalGroup();
 //        tablo.space(1f);

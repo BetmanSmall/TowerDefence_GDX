@@ -24,6 +24,7 @@ public class TowerDefence extends Game {
     public Screen mainMenuScreen;
     public Screen optionMenuScreen;
     public Screen helpMenuScreen;
+    public GameSettings gameSettings;
 
     public static TowerDefence getInstance() {
         Gdx.app.log("TowerDefence::getInstance()", "--");
@@ -56,9 +57,10 @@ public class TowerDefence extends Game {
         }
 
         try {
+            gameSettings = new GameSettings();
             factionsManager = new FactionsManager();
             mainMenuScreen = new MainMenuScreen(this);
-            optionMenuScreen = new OptionMenuScreen(this);
+            optionMenuScreen = new OptionMenuScreen(this, gameSettings);
             helpMenuScreen = new HelpMenuScreen(this);
 
             addScreen(mainMenuScreen);
@@ -173,7 +175,9 @@ public class TowerDefence extends Game {
         Gdx.app.log("TowerDefence::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
         if(gameLevelMaps.size > 0) {
 //            removeTopScreen();
-            addScreen(new GameScreen(gameLevelMaps.first(), factionsManager, new GameSettings(gameLevelMaps.first()))); // default level of Difficulty for Campaign
+            String mapPath = gameLevelMaps.first();
+            gameSettings.setGameTypeByMap(mapPath);
+            addScreen(new GameScreen(gameLevelMaps.first(), factionsManager, gameSettings));
             gameLevelMaps.removeIndex(0);
         } else {
             Gdx.app.log("TowerDefence::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);

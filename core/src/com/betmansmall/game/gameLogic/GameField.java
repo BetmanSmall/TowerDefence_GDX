@@ -180,7 +180,9 @@ public class GameField {
         field = null;
 //        pathFinder.dispose();
 
-        underConstruction.dispose();
+        if (underConstruction != null) {
+            underConstruction.dispose();
+        }
         greenCheckmark.dispose();
         redCross.dispose();
     }
@@ -1807,7 +1809,9 @@ public class GameField {
                     } else if (unit.player == 0) {
                         if (unit.exitCell == cell) {
                             gameSettings.missedUnitsForPlayer1++;
-                            cell.removeUnit(unit);
+                            if (cell != null) {
+                                cell.removeUnit(unit);
+                            }
                             unitsManager.removeUnit(unit);
                             Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(unit):");
                         } else {
