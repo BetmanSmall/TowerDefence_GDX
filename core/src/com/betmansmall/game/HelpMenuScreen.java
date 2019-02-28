@@ -44,7 +44,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
 
         // Инициализируем наш контейнер
         slidingTable = new SlidingTable();
-        rootTable.add(slidingTable).center().expand().fill().row();
+        rootTable.add(slidingTable).expand().fill().row();
 
         backButton = new TextButton("BACK", skin);
         backButton.addListener(new ChangeListener() {
@@ -53,7 +53,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
                 towerDefence.removeTopScreen();
             }
         });
-        rootTable.add(backButton).bottom().fillX();
+        rootTable.add(backButton).expandX().fillX().prefHeight(Gdx.graphics.getHeight()*0.07f);
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -68,7 +69,11 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
             }
         });
-        rightTable.add(panLeftMouseButton).left().colspan(2).row();
+        panLeftMouseButton.getImage().setScaling(Scaling.stretch);
+        panLeftMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+        panLeftMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        panLeftMouseButton.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+        rightTable.add(panLeftMouseButton).expand().fill().left().colspan(2).row();
 
         panMidMouseButton = new CheckBox("panMidMouseButton", skin);
         panMidMouseButton.addListener(new ChangeListener() {
@@ -78,7 +83,11 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::panMidMouseButton::changed()", "-- actor:" + actor);
             }
         });
-        rightTable.add(panMidMouseButton).left().colspan(2).row();
+        panMidMouseButton.getImage().setScaling(Scaling.stretch);
+        panMidMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+        panMidMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        panMidMouseButton.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+        rightTable.add(panMidMouseButton).expand().fill().left().colspan(2).row();
 
         panRightMouseButton = new CheckBox("panRightMouseButton", skin);
         panRightMouseButton.addListener(new ChangeListener() {
@@ -88,7 +97,11 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::panRightMouseButton::changed()", "-- actor:" + actor);
             }
         });
-        rightTable.add(panRightMouseButton).left().colspan(2).row();
+        panRightMouseButton.getImage().setScaling(Scaling.stretch);
+        panRightMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+        panRightMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        panRightMouseButton.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+        rightTable.add(panRightMouseButton).expand().fill().left().colspan(2).row();
 
         checkBoxSound = new CheckBox("sound On/Off:", skin);
         checkBoxSound.addListener(new ChangeListener() {
@@ -98,6 +111,10 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- actor:" + actor);
             }
         });
+        checkBoxSound.getImage().setScaling(Scaling.stretch);
+        checkBoxSound.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+        checkBoxSound.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        checkBoxSound.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(checkBoxSound).right();
 
         sliderSound = new Slider(0f, 100f, 1f, false, skin);
@@ -108,9 +125,12 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- actor:" + actor);
             }
         });
-        rightTable.add(sliderSound).row();
+        sliderSound.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
+        sliderSound.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
+        rightTable.add(sliderSound).expand().fill().row();
 
         Label enemyCountLabel = new Label("enemyCount:", skin);
+        enemyCountLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(enemyCountLabel).right();
 
         sliderEnemyCount = new Slider(0f, 100f, 1f, false, skin);
@@ -122,9 +142,12 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::sliderEnemyCount::changed()", "-- sliderEnemyCount.getValue():" + sliderEnemyCount.getValue());
             }
         });
-        rightTable.add(sliderEnemyCount).row();
+        sliderEnemyCount.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
+        sliderEnemyCount.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
+        rightTable.add(sliderEnemyCount).expand().fill().row();
 
         Label difficultyLevelLabel = new Label("difficultyLevel:", skin);
+        difficultyLevelLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(difficultyLevelLabel).right();
 
         sliderDifficultyLevel = new Slider(0f, 100f, 1f, false, skin);
@@ -136,9 +159,12 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
             }
         });
-        rightTable.add(sliderDifficultyLevel).row();
+        sliderDifficultyLevel.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
+        sliderDifficultyLevel.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
+        rightTable.add(sliderDifficultyLevel).expand().fill().row();
 
         Label towerCountLabel = new Label("towerCount:", skin);
+        towerCountLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(towerCountLabel).right();
 
         sliderTowerCount = new Slider(0f, 100f, 1f, false, skin);
@@ -150,7 +176,9 @@ public class OptionMenuScreen implements Screen {
                 Gdx.app.log("OptionMenuScreen::sliderTowerCount::changed()", "-- sliderTowerCount.getValue():" + sliderTowerCount.getValue());
             }
         });
-        rightTable.add(sliderTowerCount).row();
+        sliderTowerCount.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
+        sliderTowerCount.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
+        rightTable.add(sliderTowerCount).expand().fill().row();
 
         backButton = new TextButton("BACK", skin);
         backButton.addListener(new ChangeListener() {
@@ -161,10 +189,8 @@ public class OptionMenuScreen implements Screen {
                 towerDefence.removeTopScreen();
             }
         });
-//        backButton.setScaleX(200f);
-//        backButton.setScale(2f);
-        rightTable.add(backButton).colspan(2).fillX();
-        rootTable.add(rightTable).right().bottom().expand();
+        rightTable.add(backButton).expand().fill().colspan(2);//.prefHeight(Gdx.graphics.getHeight()*0.3f);
+        rootTable.add(rightTable).expand().fill().right().bottom();
     }
 
     @Override
