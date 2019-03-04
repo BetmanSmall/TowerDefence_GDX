@@ -96,7 +96,7 @@ public class UnitsSelector {
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-//        Gdx.app.log("UnitsSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+//        Gdx.app.log("UnitsSelector::isPanning(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
         float groupX = verticalGroupWithUnits.getX();
         float groupY = verticalGroupWithUnits.getY();
         float groupWidth = verticalGroupWithUnits.getWidth();
@@ -105,14 +105,14 @@ public class UnitsSelector {
         float groupPrefHeight = verticalGroupWithUnits.getPrefHeight();
         float tableWidth = table.getWidth();
         float tableHeight = table.getHeight();
-        Gdx.app.log("UnitsSelector::pan()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
-        Gdx.app.log("UnitsSelector::pan()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
-        Gdx.app.log("UnitsSelector::pan()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
-        Gdx.app.log("UnitsSelector::pan()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
-        Gdx.app.log("UnitsSelector::pan()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
-        Gdx.app.log("UnitsSelector::pan()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
-        Gdx.app.log("UnitsSelector::pan()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
-        Gdx.app.log("UnitsSelector::pan()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+        Gdx.app.log("UnitsSelector::isPanning()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
+        Gdx.app.log("UnitsSelector::isPanning()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
+        Gdx.app.log("UnitsSelector::isPanning()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
+        Gdx.app.log("UnitsSelector::isPanning()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
+        Gdx.app.log("UnitsSelector::isPanning()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
+        Gdx.app.log("UnitsSelector::isPanning()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
+        Gdx.app.log("UnitsSelector::isPanning()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
+        Gdx.app.log("UnitsSelector::isPanning()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
         if (Math.abs(deltaX) > Math.abs(deltaY) && !pan) {
             if (x <= (groupWidth*2f) && deltaX < 0) {
                 verticalGroupWithUnits.moveBy(deltaX, 0);
@@ -130,7 +130,7 @@ public class UnitsSelector {
                 return true;
             }
         } else if (x <= groupWidth || pan) {
-//            pan = true;
+//            isPanning = true;
             if (deltaX < 0) {
                 verticalGroupWithUnits.moveBy(0, -deltaY);
             } else if (deltaX > 0) {

@@ -18,8 +18,8 @@ import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 
 public class GameScreen implements Screen {
-//    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса и геймФиелда, сюда на уровень геймСкрина.
-//    private SpriteBatch spriteBatch;
+//    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса, сюда на уровень геймСкрина.
+//    private SpriteBatch spriteBatch; // CameraController тоже или нет?
     private BitmapFont bitmapFont;
 
     public GameField gameField;
@@ -46,15 +46,23 @@ public class GameScreen implements Screen {
     }
 
     @Override
+    public void dispose() {
+        Gdx.app.log("GameScreen::dispose()", "--");
+        gameField.dispose();
+        gameInterface.dispose();
+        cameraController.dispose();
+    }
+
+    @Override
     public void show() {
         Gdx.app.log("GameScreen::show()", "--");
         cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
 
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();//new MyGestureDetector(cameraController));// я хз че делать=(
-//        inputMultiplexer.addProcessor(new GestureDetector(cameraController)); // Бля тут бага тоже есть | очень страная бага | поменяй местам, запусти, выбери башню она построется в (0,0)
-        inputMultiplexer.addProcessor(new GestureDetector(cameraController));
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(gameInterface);
+        inputMultiplexer.addProcessor(new GestureDetector(gameInterface));
         inputMultiplexer.addProcessor(cameraController);
-        inputMultiplexer.addProcessor(gameInterface.stage);
+        inputMultiplexer.addProcessor(new GestureDetector(cameraController));
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
@@ -91,7 +99,8 @@ public class GameScreen implements Screen {
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.position:" + cameraController.camera.position);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.SPACE)");
-            gameField.gamePaused = !gameField.gamePaused;
+            gameInterface.startAndPauseButton.toggle();
+//            gameField.gamePaused = !gameField.gamePaused;
             gameInterface.addActionToHistory("-- gameField.gamePaused:" + gameField.gamePaused);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.gamePaused:" + gameField.gamePaused);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
@@ -266,7 +275,7 @@ public class GameScreen implements Screen {
 //        if(Gdx.app.getType() == Application.ApplicationType.Android) {
 //            gameInterface.stage.getViewport().update(width/2, height/2, true);
 //        } else {
-            gameInterface.stage.getViewport().update(width, height, true);
+            gameInterface.getViewport().update(width, height, true);
 //        }
         cameraController.camera.viewportHeight = height;
         cameraController.camera.viewportWidth = width;
@@ -287,14 +296,6 @@ public class GameScreen implements Screen {
     @Override
     public void hide() {
         Gdx.app.log("GameScreen::hide()", "--");
-    }
-
-    @Override
-    public void dispose() {
-        Gdx.app.log("GameScreen::dispose()", "--");
-        gameField.dispose();
-        gameInterface.dispose();
-        cameraController.dispose();
     }
 
     public String toString() {

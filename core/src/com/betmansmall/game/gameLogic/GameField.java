@@ -1491,7 +1491,7 @@ public class GameField {
                 rerouteAllUnits();
                 return true;
             } else if (cell.getTower() != null) {
-                removeTower(x, y);
+                removeTowerWithGold(x, y);
                 return true;
             }
         }
@@ -1581,6 +1581,7 @@ public class GameField {
         if (towerCost > 0) {
 //            rerouteForAllUnits();
             gamerGold += towerCost; // *0.5;
+            Gdx.app.log("GameField::removeTowerWithGold()", "-- Now gamerGold:" + gamerGold);
             return true;
         }
         return false;

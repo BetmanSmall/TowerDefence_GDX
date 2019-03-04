@@ -149,7 +149,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("HelpMenuScreen::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+        Gdx.app.log("HelpMenuScreen::isPanning(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
 //        float groupX = helpImagesHorGroup.getX();
 //        float groupY = helpImagesHorGroup.getY();
 //        float groupWidth = helpImagesHorGroup.getWidth();
@@ -158,32 +158,32 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
 //        float groupPrefHeight = helpImagesHorGroup.getPrefHeight();
 //        float tableWidth = rootTable.getWidth();
 //        float tableHeight = rootTable.getHeight();
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
-//        if (Math.abs(deltaX) > Math.abs(deltaY) && !pan) {
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
+////        Gdx.app.log("HelpMenuScreen::isPanning()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+//        if (Math.abs(deltaX) > Math.abs(deltaY) && !isPanning) {
 //            if (x >= (tableWidth-groupWidth/**2f*/) && deltaX > 0) {
 //                helpImagesHorGroup.moveBy(deltaX, 0);
 //                if(helpImagesHorGroup.getX() > tableWidth) {
 //                    helpImagesHorGroup.setX(tableWidth);
 //                }
-//                pan = false;
+//                isPanning = false;
 //                return true;
 //            } else if (x >= (tableWidth-groupWidth) && deltaX < 0) {
 //                helpImagesHorGroup.moveBy(deltaX, 0);
 //                if(helpImagesHorGroup.getX() < tableWidth) {
 //                    helpImagesHorGroup.setX(tableWidth-groupWidth);
 //                }
-//                pan = true;
+//                isPanning = true;
 //                return true;
 //            }
-//        } else if (x >= (tableWidth-groupWidth) || pan) {
-////            pan = true;
+//        } else if (x >= (tableWidth-groupWidth) || isPanning) {
+////            isPanning = true;
 //            if (deltaX < 0) {
 //                helpImagesHorGroup.moveBy(0, -deltaY);
 //            } else if (deltaX > 0) {

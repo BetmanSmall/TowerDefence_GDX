@@ -100,7 +100,7 @@ public class SlidingTable extends Table implements GestureDetector.GestureListen
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("SlidingTable::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+        Gdx.app.log("SlidingTable::isPanning()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
         if ( amountX < -overscrollDistance ) {
             return false;
         }

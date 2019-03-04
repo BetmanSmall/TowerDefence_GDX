@@ -121,7 +121,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("MapEditorScreen::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+        Gdx.app.log("MapEditorScreen::isPanning()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
 //        if (camera.position.x + -deltaX * camera.zoom < MAX_DESTINATION_X && camera.position.x + -deltaX * camera.zoom > 0)
         camera.position.add(-deltaX * camera.zoom, 0, 0);
 //        if (Math.abs(camera.position.y + deltaY * camera.zoom) < MAX_DESTINATION_Y)
