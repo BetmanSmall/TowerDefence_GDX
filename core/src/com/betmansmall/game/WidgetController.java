@@ -12,8 +12,8 @@ import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 /**
  * Created by BetmanSmall on 13.10.2015.
  */
-public class TowerDefence extends Game {
-    private static volatile TowerDefence instance;
+public class WidgetController extends Game {
+    private static volatile WidgetController instance;
 
     public Array<Image> backgroundImages;
 
@@ -26,14 +26,14 @@ public class TowerDefence extends Game {
     public Screen helpMenuScreen;
     public GameSettings gameSettings;
 
-    public static TowerDefence getInstance() {
-        Gdx.app.log("TowerDefence::getInstance()", "--");
-        TowerDefence localInstance = instance;
+    public static WidgetController getInstance() {
+        Gdx.app.log("WidgetController::getInstance()", "--");
+        WidgetController localInstance = instance;
         if (localInstance == null) {
-            synchronized (TowerDefence.class) {
+            synchronized (WidgetController.class) {
                 localInstance = instance;
                 if (localInstance == null) {
-                    instance = localInstance = new TowerDefence();
+                    instance = localInstance = new WidgetController();
                 }
             }
         }
@@ -42,7 +42,7 @@ public class TowerDefence extends Game {
 
     @Override
     public void create() {
-        Gdx.app.log("TowerDefence::create()", "--");
+        Gdx.app.log("WidgetController::create()", "--");
         instance = this;
 
         FileHandle imagesDir = Gdx.files.internal("backgrounds");
@@ -71,7 +71,7 @@ public class TowerDefence extends Game {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("TowerDefence::resize(" + width + "," + height + ")", "--");
+        Gdx.app.log("WidgetController::resize(" + width + "," + height + ")", "--");
         super.resize(width, height);
     }
 
@@ -82,19 +82,19 @@ public class TowerDefence extends Game {
 
     @Override
     public void pause() {
-        Gdx.app.log("TowerDefence::pause()", "-- Called!");
+        Gdx.app.log("WidgetController::pause()", "-- Called!");
         super.pause();
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("TowerDefence::resume()", "-- Called!");
+        Gdx.app.log("WidgetController::resume()", "-- Called!");
         super.resume();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("TowerDefence::dispose()", "-- Called!");
+        Gdx.app.log("WidgetController::dispose()", "-- Called!");
         super.dispose();
         backgroundImages.clear();
 //        factionsManager.dis
@@ -108,7 +108,7 @@ public class TowerDefence extends Game {
     }
 
     public void addScreen(Screen screen) {
-        Gdx.app.log("TowerDefence::addScreen(" + screen + ")", "-- screensStack:" + screensStack);
+        Gdx.app.log("WidgetController::addScreen(" + screen + ")", "-- screensStack:" + screensStack);
         if (screen != null) {
             screensStack.add(screen);
             this.setScreen(screen);
@@ -116,27 +116,27 @@ public class TowerDefence extends Game {
     }
 
     public void removeTopScreen() {
-        Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack:" + screensStack);
+        Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack:" + screensStack);
         if (screensStack != null) {
             int count = screensStack.size;
-            Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
+            Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
             if (count > 0) {
                 Screen lastScreen = screensStack.get(count - 1);
-                Gdx.app.log("TowerDefence::removeTopScreen()", "-- lastScreen:" + lastScreen);
+                Gdx.app.log("WidgetController::removeTopScreen()", "-- lastScreen:" + lastScreen);
 //                if (lastScreen instanceof GameScreen) {
 //                    GameScreen gameScreen1 = (GameScreen) lastScreen;
-//                    Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
+//                    Gdx.app.log("WidgetController::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
 //                    if (gameScreen1 != null) {
 //                    lastScreen.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
-//                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1.gameInterface.mapPathLabel:" + gameScreen1.gameInterface.mapPathLabel);
+//                        Gdx.app.log("WidgetController::removeTopScreen()", "-- gameScreen1.gameInterface.mapPathLabel:" + gameScreen1.gameInterface.mapPathLabel);
 //                        lastScreen.hide();
                         screensStack.removeIndex(count - 1);
-//                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameScreen1.gameInterface:" + gameScreen1.gameInterface);
+//                        Gdx.app.log("WidgetController::removeTopScreen()", "-- gameScreen1.gameInterface:" + gameScreen1.gameInterface);
                         count = screensStack.size;
-                        Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
+                        Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
                         if (count > 0) {
                             Screen popToScreen = screensStack.get(count - 1);
-                            Gdx.app.log("TowerDefence::removeTopScreen()", "-- popToScreen:" + popToScreen);
+                            Gdx.app.log("WidgetController::removeTopScreen()", "-- popToScreen:" + popToScreen);
                             if (popToScreen != null) {
                                 this.setScreen(popToScreen);
                             }
@@ -147,12 +147,12 @@ public class TowerDefence extends Game {
                 this.setScreen(mainMenuScreen);
             }
         }
-        Gdx.app.log("TowerDefence::removeTopScreen()", "-- screensStack:" + screensStack);
-        Gdx.app.log("TowerDefence::removeTopScreen()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
+        Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack:" + screensStack);
+        Gdx.app.log("WidgetController::removeTopScreen()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
     }
 
 //    public void removeAllScreens() {
-//        Gdx.app.log("TowerDefence::removeAllScreens()", "--");
+//        Gdx.app.log("WidgetController::removeAllScreens()", "--");
 //        if (screensStack != null) {
 //            for(Screen screen : screensStack) {
 //                screen.dispose(); // Дич ебаная. с этими скринами у нас точно какие то проблемы...
@@ -172,7 +172,7 @@ public class TowerDefence extends Game {
 //    }
 
     public void nextGameLevel() {
-        Gdx.app.log("TowerDefence::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
+        Gdx.app.log("WidgetController::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
         if(gameLevelMaps.size > 0) {
 //            removeTopScreen();
             String mapPath = gameLevelMaps.first();
@@ -180,7 +180,7 @@ public class TowerDefence extends Game {
             addScreen(new GameScreen(gameLevelMaps.first(), factionsManager, gameSettings));
             gameLevelMaps.removeIndex(0);
         } else {
-            Gdx.app.log("TowerDefence::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
+            Gdx.app.log("WidgetController::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
 //            removeAllScreens();
             if(screensStack.size > 1) {
                 removeTopScreen();

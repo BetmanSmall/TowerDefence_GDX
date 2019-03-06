@@ -20,8 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
-import javafx.scene.control.Tab;
-
 /**
  * Created by betma on 06.12.2018.
  */

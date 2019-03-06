@@ -3,30 +3,19 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MainMenuScreen implements Screen {
-    private TowerDefence towerDefence;
+    private WidgetController widgetController;
 
     private Stage stage;
 
@@ -43,8 +32,8 @@ public class MainMenuScreen implements Screen {
 
     public String mapName;
 
-    public MainMenuScreen(final TowerDefence towerDefence) {
-        this.towerDefence = towerDefence;
+    public MainMenuScreen(final WidgetController widgetController) {
+        this.widgetController = widgetController;
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 //        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
@@ -57,7 +46,7 @@ public class MainMenuScreen implements Screen {
 //        skin.newDrawable("default-round-down");
 
         stage = new Stage(new ScreenViewport());
-        stage.addActor(towerDefence.backgroundImages.get(0));
+        stage.addActor(widgetController.backgroundImages.get(0));
         stage.setDebugAll(true);
 
         Table rootTable = new Table(skin);
@@ -71,7 +60,7 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
                 super.clicked(event, x, y);
-                towerDefence.addScreen(towerDefence.helpMenuScreen);
+                widgetController.addScreen(widgetController.helpMenuScreen);
             }
         });
         leftTable.add(helpButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
@@ -145,31 +134,31 @@ public class MainMenuScreen implements Screen {
         rightTable.add(exitButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
         rootTable.add(rightTable).expand().fillX().right();
 
-//        towerDefence.gameLevelMaps.add("maps/test.tmx");
+//        widgetController.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
 //        FileHandle mapsDir = Gdx.files.internal("maps");
 //        if(mapsDir.list().length == 0) {
-//            towerDefence.gameLevelMaps.add("maps/desert.tmx");
-//            towerDefence.gameLevelMaps.add("maps/summer.tmx");
-//            towerDefence.gameLevelMaps.add("maps/winter.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena0.tmx");
-            towerDefence.gameLevelMaps.add("maps/randomMap.tmx");
-            towerDefence.gameLevelMaps.add("maps/island.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena1.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena2.tmx");
-//            towerDefence.gameLevelMaps.add("maps/old/arena3.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena4.tmx");
-            towerDefence.gameLevelMaps.add("maps/arena4_1.tmx");
-            towerDefence.gameLevelMaps.add("maps/sample.tmx");
+//            widgetController.gameLevelMaps.add("maps/desert.tmx");
+//            widgetController.gameLevelMaps.add("maps/summer.tmx");
+//            widgetController.gameLevelMaps.add("maps/winter.tmx");
+            widgetController.gameLevelMaps.add("maps/arena0.tmx");
+            widgetController.gameLevelMaps.add("maps/randomMap.tmx");
+            widgetController.gameLevelMaps.add("maps/island.tmx");
+            widgetController.gameLevelMaps.add("maps/arena1.tmx");
+            widgetController.gameLevelMaps.add("maps/arena2.tmx");
+//            widgetController.gameLevelMaps.add("maps/old/arena3.tmx");
+            widgetController.gameLevelMaps.add("maps/arena4.tmx");
+            widgetController.gameLevelMaps.add("maps/arena4_1.tmx");
+            widgetController.gameLevelMaps.add("maps/sample.tmx");
 //        } else {
 //            for(FileHandle fileHandle : mapsDir.list()) {
 //                if(fileHandle.extension().equals("tmx")) {
-//                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.add():" + fileHandle.path());
-//                    towerDefence.gameLevelMaps.add(fileHandle.path());
+//                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- widgetController.gameLevelMaps.add():" + fileHandle.path());
+//                    widgetController.gameLevelMaps.add(fileHandle.path());
 //                }
 //            }
 //        }
-        Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- towerDefence.gameLevelMaps.size:" + towerDefence.gameLevelMaps.size);
+        Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- widgetController.gameLevelMaps.size:" + widgetController.gameLevelMaps.size);
     }
 
     @Override
@@ -245,12 +234,12 @@ public class MainMenuScreen implements Screen {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             menuLvl--;
             if(menuLvl == -1) {
-                towerDefence.dispose();
+                widgetController.dispose();
             }
             switchMenuButtons();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
             Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_0 || Input.Keys.NUM_0);");
-            towerDefence.addScreen(towerDefence.helpMenuScreen);
+            widgetController.addScreen(widgetController.helpMenuScreen);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
             clickAnalyzer((short)1);
@@ -262,8 +251,8 @@ public class MainMenuScreen implements Screen {
             clickAnalyzer((short)3);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
-            towerDefence.nextGameLevel();
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
+            widgetController.nextGameLevel();
         }
     }
 
@@ -276,19 +265,19 @@ public class MainMenuScreen implements Screen {
                         switchMenuButtons();
                         break;
                     case 2:
-                        towerDefence.addScreen(towerDefence.optionMenuScreen);
+                        widgetController.addScreen(widgetController.optionMenuScreen);
                         break;
                     case 3:
                         //Exit button
-                        towerDefence.dispose();
+                        widgetController.dispose();
                         break;
                 }
                 break;
             case 1:                                             //Play menu
                 switch (buttonNumber) {
                     case 1:
-                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
-                        towerDefence.nextGameLevel();
+                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
+                        widgetController.nextGameLevel();
                         break;
                     case 2:
                         menuLvl = 2;
@@ -301,9 +290,9 @@ public class MainMenuScreen implements Screen {
 //                        int ret = fileopen.showDialog(null, "Открыть файл");
 //                        if (ret == JFileChooser.APPROVE_OPTION) {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
-//                            towerDefence.setScreen(new MapEditorScreen(towerDefence, fileName));
+//                            widgetController.setScreen(new MapEditorScreen(widgetController, fileName));
 //                        } else {
-                            towerDefence.addScreen(new MapEditorScreen(towerDefence, "maps/aaagen.tmx"));
+                            widgetController.addScreen(new MapEditorScreen(widgetController, "maps/aaagen.tmx"));
 //                        }
                         break;
                 }
@@ -334,18 +323,18 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        towerDefence.gameSettings.difficultyLevel = 0.5f;
-                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, towerDefence.gameSettings));
+                        widgetController.gameSettings.difficultyLevel = 0.5f;
+                        widgetController.addScreen(new GameScreen(mapName, widgetController.factionsManager, widgetController.gameSettings));
                         break;
                     case 2:
                         //start game with NORMAL
-                        towerDefence.gameSettings.difficultyLevel = 1f;
-                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, towerDefence.gameSettings));
+                        widgetController.gameSettings.difficultyLevel = 1f;
+                        widgetController.addScreen(new GameScreen(mapName, widgetController.factionsManager, widgetController.gameSettings));
                         break;
                     case 3:
                         //start game with HARD
-                        towerDefence.gameSettings.difficultyLevel = 2f;
-                        towerDefence.addScreen(new GameScreen(mapName, towerDefence.factionsManager, towerDefence.gameSettings));
+                        widgetController.gameSettings.difficultyLevel = 2f;
+                        widgetController.addScreen(new GameScreen(mapName, widgetController.factionsManager, widgetController.gameSettings));
                         break;
                 }
                 break;

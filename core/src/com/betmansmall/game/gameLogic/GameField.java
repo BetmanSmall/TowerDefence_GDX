@@ -893,10 +893,12 @@ public class GameField {
 //            cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius/2);
 //            cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
+        Color oldColor = cameraController.shapeRenderer.getColor();
         cameraController.shapeRenderer.setColor(Color.WHITE);
         if (cameraController.prevCellX == cell.cellX && cameraController.prevCellY == cell.cellY) {
             cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
+        cameraController.shapeRenderer.setColor(oldColor);
         towerPos = null; // delete towerPos;
     }
 

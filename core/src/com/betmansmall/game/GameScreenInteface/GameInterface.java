@@ -1,7 +1,6 @@
 package com.betmansmall.game.GameScreenInteface;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,9 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -20,12 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.betmansmall.game.TowerDefence;
+import com.betmansmall.game.WidgetController;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
@@ -522,7 +515,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         currentTextureTime += delta;
         if (currentTextureTime > maxTextureTime) {
 //            this.dispose();
-            TowerDefence.getInstance().nextGameLevel();
+            WidgetController.getInstance().nextGameLevel();
             return; // It'is really need???
         }
         Batch batch = getBatch(); // Need have own batch. mb get from GameScreen
@@ -634,7 +627,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         }
         if (nextLevelButton.isPressed()) {
             Gdx.app.log("GameInterface::touchDown()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
-            TowerDefence.getInstance().nextGameLevel();
+            WidgetController.getInstance().nextGameLevel();
             return true;
         }
         if (optionButton.isPressed()) {
@@ -644,7 +637,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         }
         if (exitButton.isPressed()) {
             Gdx.app.log("GameInterface::touchDown()", "-- exitButton.isChecked():" + exitButton.isChecked());
-            TowerDefence.getInstance().removeTopScreen();
+            WidgetController.getInstance().removeTopScreen();
             return true;
         }
         if(unitsSelector != null) {

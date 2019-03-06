@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Vector2;
  * Created by betma on 09.05.2016.
  */
 public class MapEditorScreen implements Screen, GestureDetector.GestureListener {
-    private TowerDefence towerDefence;
+    private WidgetController widgetController;
     private SpriteBatch spriteBatch;
 
     private static final float MAX_ZOOM = 50f; //max size
@@ -31,9 +31,9 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
     private TiledMap map;
     private IsometricTiledMapRenderer renderer;
 
-    public MapEditorScreen(TowerDefence towerDefence, String fileName) {
-        Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- towerDefence:" + towerDefence + " fileName:" + fileName);
-        this.towerDefence = towerDefence;
+    public MapEditorScreen(WidgetController widgetController, String fileName) {
+        Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- widgetController:" + widgetController + " fileName:" + fileName);
+        this.widgetController = widgetController;
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera();
@@ -62,7 +62,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("MapEditorScreen::render()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            TowerDefence.getInstance().removeTopScreen();
+            WidgetController.getInstance().removeTopScreen();
         }
     }
 

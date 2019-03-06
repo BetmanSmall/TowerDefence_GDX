@@ -3,25 +3,16 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -30,7 +21,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */
 
 public class OptionMenuScreen implements Screen {
-    private TowerDefence towerDefence;
+    private WidgetController widgetController;
 
     private Stage stage;
 
@@ -45,13 +36,13 @@ public class OptionMenuScreen implements Screen {
     private CheckBox panRightMouseButton;
     private TextButton backButton;
 
-    public OptionMenuScreen(final TowerDefence towerDefence, final GameSettings gameSettings) {
-        this.towerDefence = towerDefence;
+    public OptionMenuScreen(final WidgetController widgetController, final GameSettings gameSettings) {
+        this.widgetController = widgetController;
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         stage = new Stage(new ScreenViewport());
-        stage.addActor(towerDefence.backgroundImages.get(2));
+        stage.addActor(widgetController.backgroundImages.get(2));
         stage.setDebugAll(true);
 
         Table rootTable = new Table(skin);
@@ -186,7 +177,7 @@ public class OptionMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("OptionMenuScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
-                towerDefence.removeTopScreen();
+                widgetController.removeTopScreen();
             }
         });
         rightTable.add(backButton).expand().fill().colspan(2);//.prefHeight(Gdx.graphics.getHeight()*0.3f);
@@ -246,7 +237,7 @@ public class OptionMenuScreen implements Screen {
 //        Gdx.app.log("OptionMenuScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("OptionMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            towerDefence.removeTopScreen();
+            widgetController.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("OptionMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
 //            clickAnalyzer((short)1);
@@ -258,8 +249,8 @@ public class OptionMenuScreen implements Screen {
 //            clickAnalyzer((short)3);
 //        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
 //            Gdx.app.log("OptionMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
-//            Gdx.app.log("OptionMenuScreen::inputHandler()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
-//            towerDefence.nextGameLevel();
+//            Gdx.app.log("OptionMenuScreen::inputHandler()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
+//            widgetController.nextGameLevel();
         }
     }
 }

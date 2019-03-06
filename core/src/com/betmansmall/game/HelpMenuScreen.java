@@ -21,7 +21,7 @@ import com.betmansmall.game.screens.SlidingTable;
  */
 
 public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
-    private TowerDefence towerDefence;
+    private WidgetController widgetController;
 
     private Stage stage;
     private Table rootTable;
@@ -29,13 +29,13 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
     private SlidingTable slidingTable;
     private TextButton backButton;
 
-    public HelpMenuScreen(final TowerDefence towerDefence) {
-        this.towerDefence = towerDefence;
+    public HelpMenuScreen(final WidgetController widgetController) {
+        this.widgetController = widgetController;
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         stage = new Stage(new ScreenViewport());
-        stage.addActor(towerDefence.backgroundImages.get(1));
+        stage.addActor(widgetController.backgroundImages.get(1));
         stage.setDebugAll(true);
 
         rootTable = new Table();
@@ -50,7 +50,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                towerDefence.removeTopScreen();
+                widgetController.removeTopScreen();
             }
         });
         rootTable.add(backButton).expandX().fillX().prefHeight(Gdx.graphics.getHeight()*0.07f);
@@ -111,7 +111,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
 //        Gdx.app.log("HelpMenuScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            towerDefence.removeTopScreen();
+            widgetController.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
 //            clickAnalyzer((short)1);
@@ -123,8 +123,8 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
 //            clickAnalyzer((short)3);
 //        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
 //            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
-//            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
-//            towerDefence.nextGameLevel();
+//            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
+//            widgetController.nextGameLevel();
         }
     }
 

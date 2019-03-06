@@ -199,10 +199,10 @@ public class GameScreen implements Screen {
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.drawOrder:" + cameraController.drawOrder);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE)");
-            TowerDefence.getInstance().removeTopScreen();
+            WidgetController.getInstance().removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER)");
-            TowerDefence.getInstance().nextGameLevel();
+            WidgetController.getInstance().nextGameLevel();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.A)");
             gameField.turnLeft();
