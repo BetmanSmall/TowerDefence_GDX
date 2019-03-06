@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
 //        shapeRenderer = new ShapeRenderer();
 //        spriteBatch = new SpriteBatch();
         bitmapFont = new BitmapFont();
+        bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
 
         gameField = new GameField(mapPath, factionsManager, gameSettings);
         gameInterface = new GameInterface(gameField, bitmapFont);

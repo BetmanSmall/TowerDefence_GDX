@@ -43,8 +43,8 @@ public class TowersSelector extends Table /*implements GestureDetector.GestureLi
         this.bitmapFont = bitmapFont;
 //        this.table = table;
 
-        sectionWidth = Gdx.app.getGraphics().getHeight() * 0.2f;
-        sectionHeight = sectionWidth;
+//        sectionWidth = Gdx.app.getGraphics().getHeight() * 0.2f;
+//        sectionHeight = sectionWidth;
 
         templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
         Gdx.app.log("TowersSelector::TowersSelector()", "-- templateForTowers:" + templateForTowers);
@@ -78,7 +78,7 @@ public class TowersSelector extends Table /*implements GestureDetector.GestureLi
 
             Button button = new Button(towerTable, skin);
             button.setUserObject(towerIndex);
-            add(button).expand().fill().minHeight(Gdx.graphics.getHeight()*0.3f).row();
+            add(button).expand().fill().minHeight(Gdx.graphics.getHeight()*0.2f).row();
         }
     }
 

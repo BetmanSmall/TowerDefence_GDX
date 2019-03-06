@@ -70,6 +70,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         this.shapeRenderer = new ShapeRenderer();
         this.spriteBatch = new SpriteBatch();
         this.bitmapFont = new BitmapFont();
+        bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
 
         this.gameField = gameField;
         this.gameInterface = gameInterface;
@@ -141,11 +142,11 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("CameraController::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
 //        if (!gameInterface.interfaceTouched) {
-//            flinging = true;
-//            velX = camera.zoom * velocityX * 0.5f;
-//            velY = camera.zoom * velocityY * 0.5f;
+            flinging = true;
+            velX = camera.zoom * velocityX * 0.5f;
+            velY = camera.zoom * velocityY * 0.5f;
 //        }
-//        Gdx.app.log("CameraController::fling()", "-- velX:" + velX + " velY:" + velY);
+        Gdx.app.log("CameraController::fling()", "-- velX:" + velX + " velY:" + velY);
         return false;
     }
 

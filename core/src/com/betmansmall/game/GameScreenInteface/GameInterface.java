@@ -214,6 +214,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         infoTablo.addActor(unitsSpawn);
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTablo.addActor(gamePaused);
+//        bitmapFont.getData().;
 
         this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         addActor(tableFront);
