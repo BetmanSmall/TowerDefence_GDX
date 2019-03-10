@@ -3,6 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Scout1"/>
+  <property name="healthPoints" value="100"/>
   <property name="radiusDetection" value="300"/>
   <!-- <property name="radiusFlyShell" value="220"/> -->
   <property name="damage" value="20"/>

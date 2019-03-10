@@ -3,6 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Tower Bomb MultipleTarget"/>
+  <property name="healthPoints" value="100"/>
   <property name="radiusDetection" value="200"/>
   <!-- <property name="radiusFlyShell" value="150"/> -->
   <property name="damage" value="50"/>

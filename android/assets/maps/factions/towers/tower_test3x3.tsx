@@ -3,6 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="tower_test3x3"/>
+  <property name="healthPoints" value="100"/>
   <property name="radiusDetection" value="3"/>
   <property name="radiusFlyShell" value="350"/>
   <property name="damage" value="30"/>

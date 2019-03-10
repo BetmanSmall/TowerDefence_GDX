@@ -3,6 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Freeze Tower 4"/>
+  <property name="healthPoints" value="100"/>
   <property name="radiusDetection" value="150"/>
   <property name="radiusFlyShell" value="150"/>
   <property name="damage" value="5"/>

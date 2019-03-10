@@ -3,6 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="Pit0"/>
+  <property name="healthPoints" value="100"/>
   <property name="radiusDetection" value="0"/>
   <property name="damage" value="-1"/>
   <property name="size" value="1"/>

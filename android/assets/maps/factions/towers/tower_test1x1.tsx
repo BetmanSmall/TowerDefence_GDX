@@ -3,6 +3,7 @@
  <properties>
   <property name="factionName" value="Faction1"/>
   <property name="name" value="tower_test1x1"/>
+  <property name="healthPoints" value="100"/>
   <property name="radiusDetection" value="1"/>
   <property name="radiusFlyShell" value="350"/>
   <property name="damage" value="30"/>
@@ -12,7 +13,7 @@
   <property name="ammoSpeed" value="10"/>
   <property name="reloadTime" value="3"/>
   <property name="towerAttackType" value="FireBall"/>
-  <property name="towerShellType" value="FirstTarget"/>
+  <property name="towerShellType" value="FirstTarget"/> 
   <!-- <property name="towerShellEffect" value="FreezeEffect"/> -->
   <!-- <property name="shellEffectType_time" value="2"/> -->
   <!-- <property name="shellEffectType_damage" value="5"/> -->

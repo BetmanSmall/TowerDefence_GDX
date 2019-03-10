@@ -123,17 +123,17 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public boolean longPress(float x, float y) {
         Gdx.app.log("CameraController::longPress()", "-- x:" + x + " y:" + y);
 //        if (!gameInterface.interfaceTouched) {
-//            Vector3 touch = new Vector3(x, y, 0.0f);
-//            whichCell(touch, isDrawableTowers);
-//            if (((int) (Math.random() * 2) == 0)) {
-//                gameField.towerActions((int) touch.x, (int) touch.y);
-//            } else {
-//                if (((int) (Math.random() * 5) == 0)) {
-//                    gameField.spawnHero((int) touch.x, (int) touch.y);
-//                } else {
-//                    gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
-//                }
-//            }
+            Vector3 touch = new Vector3(x, y, 0.0f);
+            whichCell(touch, isDrawableTowers);
+            if (((int) (Math.random() * 2) == 0)) {
+                gameField.towerActions((int) touch.x, (int) touch.y);
+            } else {
+                if (((int) (Math.random() * 5) == 0)) {
+                    gameField.spawnHero((int) touch.x, (int) touch.y);
+                } else {
+                    gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
+                }
+            }
 //        }
         return false;
     }
