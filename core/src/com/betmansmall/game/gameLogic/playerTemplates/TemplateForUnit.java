@@ -23,6 +23,7 @@ public class TemplateForUnit extends Template {
     public Float cost;
     public Float speed;
     public String type;
+    public UnitAttack unitAttack;
 
     public ObjectMap<String, AnimatedTiledMapTile> animations;
 
@@ -69,6 +70,13 @@ public class TemplateForUnit extends Template {
                     animations.put("death_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
                 } else if(actionAndDirection.equals("death_" + Direction.DOWN_RIGHT)) {
                     animations.put("death_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                }
+                if(actionAndDirection.equals("attack_" + Direction.UP_RIGHT)) {
+                    animations.put("attack_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(animatedTile));
+                } else if(actionAndDirection.equals("attack_" + Direction.RIGHT)) {
+                    animations.put("attack_" + Direction.LEFT, flipAnimatedTiledMapTile(animatedTile));
+                } else if(actionAndDirection.equals("attack_" + Direction.DOWN_RIGHT)) {
+                    animations.put("attack_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
                 }
             }
         }
@@ -193,6 +201,26 @@ public class TemplateForUnit extends Template {
         } else {
             type = properties.get("type");
         }
+        if (!properties.containsKey("attackType")) {
+            Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType");
+        } else {
+            unitAttack = new UnitAttack(UnitAttack.AttackType.getType(properties.get("attackType")));
+            if (!properties.containsKey("attackType_damage")) {
+                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_damage");
+            } else {
+                unitAttack.damage = Float.parseFloat(properties.get("attackType_damage"));
+            }
+            if (!properties.containsKey("attackType_range")) {
+                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_range");
+            } else {
+                unitAttack.range = Float.parseFloat(properties.get("attackType_range"));
+            }
+            if (!properties.containsKey("attackType_reload")) {
+                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_reload");
+            } else {
+                unitAttack.reload = Float.parseFloat(properties.get("attackType_reload"));
+            }
+        }
 
         if(animations.size == 0)
             Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: animations");
@@ -219,6 +247,7 @@ public class TemplateForUnit extends Template {
             sb.append(",cost:" + cost);
             sb.append(",speed:" + speed);
             sb.append(",type:" + type);
+            sb.append(",unitAttack:" + unitAttack);
             sb.append(",animations.size:" + animations.size);
         }
         sb.append("]");
