@@ -19,6 +19,7 @@ public class TemplateForTower extends Template {
 //    private Faction faction;
     public String   factionName;
     public String   name;
+    public Float    healthPoints;
 
     public Float    radiusDetection = null;
     public Float    radiusFlyShell = null;
@@ -130,6 +131,11 @@ public class TemplateForTower extends Template {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: name");
         } else {
             name = properties.get("name");
+        }
+        if (!properties.containsKey("healthPoints")) {
+            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: healthPoints");
+        } else {
+            healthPoints = Float.parseFloat(properties.get("healthPoints"));
         }
         if (!properties.containsKey("radiusDetection")) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusDetection");
