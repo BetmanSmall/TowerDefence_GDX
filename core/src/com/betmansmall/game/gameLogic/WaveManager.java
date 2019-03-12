@@ -205,7 +205,7 @@ public class WaveManager {
                 GridPoint2 spawnPoint = wave.spawnPoint;
                 GridPoint2 exitPoint = wave.exitPoint;
                 Gdx.app.log("WaveManager::checkRoutes()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
-                ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
+                ArrayDeque<Node> route = pathFinder.routeWithNode(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
                 if (route == null) {
                     Gdx.app.log("WaveManager::checkRoutes()", "-- Not found route for this points | Remove wave:" + wave);
                     waves.removeValue(wave, true);
@@ -222,7 +222,7 @@ public class WaveManager {
                 GridPoint2 spawnPoint = wave.spawnPoint;
                 GridPoint2 exitPoint = wave.exitPoint;
                 Gdx.app.log("WaveManager::checkRoutes()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
-                ArrayDeque<Node> route = pathFinder.route(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
+                ArrayDeque<Node> route = pathFinder.routeWithNode(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
                 if (route == null) {
                     Gdx.app.log("WaveManager::checkRoutes()", "-- Not found route for this points | Remove wave:" + wave);
                     wavesForUser.removeValue(wave, true);

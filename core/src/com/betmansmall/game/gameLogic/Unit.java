@@ -13,6 +13,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Circle;
+import com.betmansmall.game.gameLogic.playerTemplates.UnitAttack;
 
 import java.util.ArrayDeque;
 
@@ -20,15 +21,16 @@ import java.util.ArrayDeque;
  * Created by betmansmall on 22.09.2015.
  */
 public class Unit {
-    public ArrayDeque<Node> route;
-    public Node oldPosition;
-    public Node newPosition;
+    public ArrayDeque<Cell> route;
+    public Cell oldPosition;
+    public Cell newPosition;
     public Cell exitCell;
     public float hp;
     public float speed;
     public float stepsInTime;
     public float deathElapsedTime;
 
+    public UnitAttack unitAttack;
     public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
     public Vector2 currentPoint;
     public Vector2 backStepPoint;
@@ -45,7 +47,7 @@ public class Unit {
     private Animation animation;
     public Array<TowerShellEffect> shellEffectTypes;
 
-    public Unit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
+    public Unit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
         if(route != null) {
             this.route = route;
             this.oldPosition = route.peekFirst();
@@ -56,6 +58,7 @@ public class Unit {
             this.stepsInTime = 0f;//templateForUnit.speed; // need respawn animation
             this.deathElapsedTime = 0f;
 
+            this.unitAttack = new UnitAttack(templateForUnit.unitAttack); // in template need create simple UnitAttack!
             this.player = player;
             this.currentPoint = new Vector2();
             this.backStepPoint = new Vector2();
@@ -76,13 +79,13 @@ public class Unit {
 
     public void dispose() {
         if (route != null) {
-            route.clear();
+//            route.clear(); // it is not need with Cell but mb need with Node in PathFinder!
             route = null;
         }
 
-        oldPosition.clear();
+//        oldPosition.dispose();
         oldPosition = null;
-        newPosition.clear();
+//        newPosition.dispose();
         newPosition = null;
         exitCell = null;
 
@@ -219,7 +222,7 @@ public class Unit {
 // --- MANUAL ---
 
     // что бы ефекты не стакались на крипах
-    public Node move(float delta, CameraController cameraController) {
+    public Cell move(float delta, CameraController cameraController) {
 //        Gdx.app.log("Unit", "move(); -- Unit status:" + this.toString());
         shellEffectsMove(delta);
 //        stepsInTime += (speed*delta);
@@ -238,8 +241,8 @@ public class Unit {
                 return null;
             }
         }
-        int oldX = oldPosition.getX(), oldY = oldPosition.getY();
-        int newX = newPosition.getX(), newY = newPosition.getY();
+        int oldX = oldPosition.cellX, oldY = oldPosition.cellY;
+        int newX = newPosition.cellX, newY = newPosition.cellY;
         float sizeCellX = cameraController.sizeCellX;
         float sizeCellY = cameraController.sizeCellY;
         float halfSizeCellX = sizeCellX/2;

@@ -24,7 +24,7 @@ public class UnitsManager {
         units.clear();
     }
 
-    public Unit createUnit(ArrayDeque<Node> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
+    public Unit createUnit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
         Unit unit = new Unit(route, templateForUnit, player, exitCell);
         units.add(unit);
         if (player != 0) {
@@ -43,7 +43,7 @@ public class UnitsManager {
 
     public Unit getUnit(Node position) {
         for (int i = 0; i < units.size; i++) {
-            Node unitPosition = units.get(i).newPosition;
+            Cell unitPosition = units.get(i).newPosition;
             if (unitPosition.equals(position)) {
                 return units.get(i);
             }

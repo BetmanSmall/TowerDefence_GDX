@@ -13,7 +13,7 @@ public class Wave {
     public ArrayDeque<String> actions;
     public GridPoint2 spawnPoint;
     public GridPoint2 exitPoint;
-    public ArrayDeque<Node> route;
+    public ArrayDeque<Node> route; // need change Node to Cell
     private float intervalForSpawn;
     private float elapsedTime;
 

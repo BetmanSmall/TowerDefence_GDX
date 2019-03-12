@@ -1,5 +1,8 @@
 package com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder;
 
+import com.betmansmall.game.gameLogic.Cell;
+import com.betmansmall.game.gameLogic.GameField;
+
 import java.io.File;
 import java.util.ArrayDeque;
 
@@ -15,13 +18,27 @@ public class PathFinder {
     private int[] goal;
     private Tools Tools;
     private Cartographer c;
+    public GameField gameField;
 
-    public PathFinder() {
+    public PathFinder(final GameField gameField) {
         Tools = new Tools();
         c = new Cartographer();
+        this.gameField = gameField;
     }
 
-    public ArrayDeque<Node> route(int sX, int sY, int eX, int eY) {
+    public ArrayDeque<Cell> route(int sX, int sY, int eX, int eY) {
+        ArrayDeque<Node> nodeArrayDeque = route(new int[]{sY, sX}, new int[]{eY, eX}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
+        if (nodeArrayDeque != null) {
+            ArrayDeque<Cell> returnArrayDeque = new ArrayDeque<Cell>(nodeArrayDeque.size());
+            for (Node node : nodeArrayDeque) {
+                returnArrayDeque.add(gameField.getCell(node.getX(), node.getY()));
+            }
+            return returnArrayDeque;
+        }
+        return null;
+    }
+
+    public ArrayDeque<Node> routeWithNode(int sX, int sY, int eX, int eY) {
         return route(new int[]{sY, sX}, new int[]{eY, eX}, Options.ASTAR, Options.EUCLIDEAN_HEURISTIC, false);
     }
 

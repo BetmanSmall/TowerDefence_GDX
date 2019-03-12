@@ -25,6 +25,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
+import com.betmansmall.game.gameLogic.playerTemplates.UnitAttack;
 
 import java.util.ArrayDeque;
 import java.util.Iterator;
@@ -77,7 +78,7 @@ public class GameField {
         if (gameSettings.isometric) {
             flipY();
         }
-        pathFinder = new PathFinder();
+        pathFinder = new PathFinder(this);
         pathFinder.loadCharMatrix(getCharMatrix());
         Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
 
@@ -1205,10 +1206,10 @@ public class GameField {
             } else {
                 cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
             }
-            ArrayDeque<Node> unitRoute = unit.route;
+            ArrayDeque<Cell> unitRoute = unit.route;
             if (unitRoute != null && !unitRoute.isEmpty()) {
-                for (Node coor : unitRoute) {
-                    Cell cell = getCell(coor.getX(), coor.getY());
+                for (Cell cell : unitRoute) {
+//                    Cell cell = getCell(coor.getX(), coor.getY());
 //                    Cell cell = field[coor.getX()][coor.getY()];
                     if (cell != null) {
                         if (cameraController.isDrawableRoutes == 1 || cameraController.isDrawableRoutes == 5) {
@@ -1226,8 +1227,8 @@ public class GameField {
                     }
                 }
                 cameraController.shapeRenderer.setColor(0.756f, 0.329f, 0.756f, 1f);
-                Node destinationPoint = unitRoute.getLast();
-                Cell cell = getCell(destinationPoint.getX(), destinationPoint.getY());
+                Cell cell = unitRoute.getLast();
+//                Cell cell = getCell(destinationPoint.getX(), destinationPoint.getY());
                 if (cell != null) {
                     if (cameraController.isDrawableRoutes == 1 || cameraController.isDrawableRoutes == 5) {
                         cameraController.shapeRenderer.circle(cell.graphicCoordinates1.x, cell.graphicCoordinates1.y, gridNavRadius * 0.7f);
@@ -1509,7 +1510,7 @@ public class GameField {
         Unit unit = null;
         if (spawnCell != null && destCell != null && pathFinder != null) {
 //            pathFinder.loadCharMatrix(getCharMatrix());
-            ArrayDeque<Node> route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
+            ArrayDeque<Cell> route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
             if (route != null) {
                 unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
@@ -1776,10 +1777,10 @@ public class GameField {
     public void rerouteHero(int x, int y) {
         if (x == -1 && y == -1) {
             for (Unit unit : unitsManager.hero) {
-                ArrayDeque<Node> route = unit.route;
+                ArrayDeque<Cell> route = unit.route;
                 if (route != null && !route.isEmpty()) {
-                    Node node = route.getLast();
-                    rerouteUnitPath(unit, node.getX(), node.getY());
+                    Cell node = route.getLast();
+                    rerouteUnitPath(unit, node.cellX, node.cellY);
                 }
             }
         } else {
@@ -1796,10 +1797,10 @@ public class GameField {
     public void rerouteAllUnits(int x, int y) {
         if (x == -1 && y == -1) {
             for (Unit unit : unitsManager.units) {
-                ArrayDeque<Node> route = unit.route;
+                ArrayDeque<Cell> route = unit.route;
                 if (route != null && !route.isEmpty()) {
-                    Node node = route.getLast();
-                    rerouteUnitPath(unit, node.getX(), node.getY());
+                    Cell node = route.getLast();
+                    rerouteUnitPath(unit, node.cellX, node.cellY);
                 }
             }
         } else {
@@ -1810,7 +1811,7 @@ public class GameField {
     }
 
     private void rerouteUnitPath(Unit unit, int x, int y) {
-        ArrayDeque<Node> route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), x, y);
+        ArrayDeque<Cell> route = pathFinder.route(unit.newPosition.cellX, unit.newPosition.cellY, x, y);
         if (route != null && !route.isEmpty()) {
 //            if (route.front().equals({x, y})) {
                 route.removeFirst();
@@ -1860,23 +1861,42 @@ public class GameField {
 
     private void stepAllUnits(float delta, CameraController cameraController) {
         for (Unit unit : unitsManager.units) {
-            Node oldPosition = unit.newPosition;
+            Cell oldPosition = unit.newPosition;
             if (unit.isAlive()) {
-                Node newPosition = unit.move(delta, cameraController);
+                if (unit.unitAttack != null) {
+                    if (unit.unitAttack.attackType == UnitAttack.AttackType.Melee) {
+                        Cell unitCell = unit.newPosition;
+                        int radius = Math.round(unit.unitAttack.range);
+                        for (int tmpX = -radius; tmpX <= radius; tmpX++) {
+                            for (int tmpY = -radius; tmpY <= radius; tmpY++) {
+                                Cell cell = getCell(tmpX + unitCell.cellX, tmpY + unitCell.cellY);
+                                if (cell != null && cell.getTower() != null) {
+                                    Tower tower = cell.getTower();
+//                                    unit.direction
+
+                                }
+                            }
+                        }
+                    }
+                }
+                Cell newPosition = unit.move(delta, cameraController);
                 if (newPosition != null) {
                     if (!newPosition.equals(oldPosition)) {
-                        Cell oldCell = getCell(oldPosition.getX(), oldPosition.getY());
-                        Cell newCell = getCell(newPosition.getX(), newPosition.getY());
+//                        Cell oldCell = getCell(oldPosition.cellX, oldPosition.cellY);
+//                        Cell newCell = getCell(newPosition.cellX, newPosition.cellY);
+                        Cell oldCell = oldPosition;
+                        Cell newCell = newPosition;
                         if (oldCell != null && newCell != null) {
-                            field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
-                            field[newPosition.getX()][newPosition.getY()].setUnit(unit);
+                            oldCell.removeUnit(unit);
+                            newCell.setUnit(unit);
 //                            Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
                         } else {
                             Gdx.app.error("GameField::stepAllUnits()", "-- Unit bad! Cells:old:" + oldCell + " new:" + newCell);
                         }
                     }
                 } else {
-                    Cell cell = getCell(oldPosition.getX(), oldPosition.getY());
+//                    Cell cell = getCell(oldPosition.getX(), oldPosition.getY());
+                    Cell cell = oldPosition;
                     if (unit.player == 1) {
                         gameSettings.missedUnitsForComputer0++;
                     } else if (unit.player == 0) {
@@ -1891,7 +1911,7 @@ public class GameField {
                             if (unit.route == null || unit.route.isEmpty()) {
                                 int randomX = (int)(Math.random()*map.width);
                                 int randomY = (int)(Math.random()*map.height);
-                                unit.route = pathFinder.route(oldPosition.getX(), oldPosition.getY(), randomX, randomY);
+                                unit.route = pathFinder.route(oldPosition.cellX, oldPosition.cellY, randomX, randomY);
                                 if (unit.route != null && !unit.route.isEmpty()) {
                                     unit.route.removeFirst();
 //                                    unit.route.removeLast();
@@ -1909,7 +1929,7 @@ public class GameField {
             } else {
 //            if (!unit.isAlive()) {
                 if (!unit.changeDeathFrame(delta)) {
-                    field[oldPosition.getX()][oldPosition.getY()].removeUnit(unit);
+                    oldPosition.removeUnit(unit);
 //                    GameField.gamerGold += unit.templateForUnit.bounty;
                     unit.dispose();
                     unitsManager.removeUnit(unit);
@@ -2018,9 +2038,9 @@ public class GameField {
 //        Gdx.app.log("GameField::getGameState()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
             for (Unit hero : unitsManager.hero) {
-                Node pos = hero.newPosition;
+                Cell pos = hero.newPosition;
                 if (pos != null) {
-                    if (pos.getX() == hero.exitCell.cellX && pos.getY() == hero.exitCell.cellY) {
+                    if (pos.cellX == hero.exitCell.cellX && pos.cellY == hero.exitCell.cellY) {
                         Gdx.app.log("GameField::getGameState()", "-- hero.newPosition:" + hero.newPosition);
                         Gdx.app.log("GameField::getGameState()", "-- hero.exitCell:" + hero.exitCell);
                         return "LittleGame_Win";
