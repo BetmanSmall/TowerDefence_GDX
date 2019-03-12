@@ -37,6 +37,7 @@ public class UnitAttack {
     public AttackType attackType;
     public float damage;
     public float range;
+    public float attackSpeed;
 
     public float speedProjectile;
     public float reload;
@@ -49,12 +50,16 @@ public class UnitAttack {
     }
 
     public UnitAttack(UnitAttack unitAttack) {
-        this.attackType = unitAttack.attackType;
-        this.damage = unitAttack.damage;
-        this.range = unitAttack.range;
-        this.speedProjectile = unitAttack.speedProjectile;
-        this.reload = unitAttack.reload;
-        this.elapsedTime = unitAttack.elapsedTime;
+        if (unitAttack != null) {
+            this.attackType = unitAttack.attackType;
+            this.damage = unitAttack.damage;
+            this.range = unitAttack.range;
+            this.speedProjectile = unitAttack.speedProjectile;
+            this.reload = unitAttack.reload;
+            this.elapsedTime = unitAttack.elapsedTime;
+//        } else {
+//            throw new Exception("UnitAttack::UnitAttack(); -- unitAttack:" + unitAttack);
+        }
     }
 
 //    @Override

@@ -31,6 +31,7 @@ public class Unit {
     public float deathElapsedTime;
 
     public UnitAttack unitAttack;
+    public Tower towerAttack;
     public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
     public Vector2 currentPoint;
     public Vector2 backStepPoint;
@@ -58,7 +59,7 @@ public class Unit {
             this.stepsInTime = 0f;//templateForUnit.speed; // need respawn animation
             this.deathElapsedTime = 0f;
 
-            this.unitAttack = new UnitAttack(templateForUnit.unitAttack); // in template need create simple UnitAttack!
+            this.unitAttack = (templateForUnit.unitAttack != null) ? (new UnitAttack(templateForUnit.unitAttack)) : null; // in template need create simple UnitAttack!
             this.player = player;
             this.currentPoint = new Vector2();
             this.backStepPoint = new Vector2();
@@ -121,7 +122,7 @@ public class Unit {
         }
     }
 
-    void shellEffectsMove(float delta) {
+    public void shellEffectsMove(float delta) {
         for (TowerShellEffect towerShellEffect : shellEffectTypes) {
 //            Gdx.app.log("Unit::shellEffectsMove()", "-- towerShellEffect:" + towerShellEffect);
             if (!towerShellEffect.used) {
@@ -161,49 +162,51 @@ public class Unit {
         }
     }
 
-    void correct_fVc(Vector2 fVc, Direction direction, float sizeCellX, float sizeCellY, boolean isometric) {
+    private void correct_fVc(Vector2 fVc, Direction direction, float sizeCellX, float sizeCellY, boolean isometric) {
         this.direction = direction;
         float fVx = fVc.x;
         float fVy = fVc.y;
-        if (direction == Direction.UP) {
-            fVy -= ( (sizeCellY) / speed ) * (speed - stepsInTime);
-        } else if (direction == Direction.UP_RIGHT) {
-            if (isometric) {
-                fVx -= ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
-                fVy -= ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
-            } else {
-                fVx -= ( (sizeCellX) / speed) * (speed - stepsInTime);
-                fVy -= ( (sizeCellY) / speed) * (speed - stepsInTime);
-            }
-        } else if (direction == Direction.RIGHT) {
-            fVx -= ( sizeCellX / speed ) * (speed - stepsInTime);
-        } else if (direction == Direction.DOWN_RIGHT) {
-            if (isometric) {
-                fVx -= ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
-                fVy += ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
-            } else {
-                fVx -= ( (sizeCellX) / speed) * (speed - stepsInTime);
-                fVy += ( (sizeCellY) / speed) * (speed - stepsInTime);
-            }
-        } else if (direction == Direction.DOWN) {
-            fVy += ( (sizeCellY) / speed ) * (speed - stepsInTime);
-        } else if (direction == Direction.DOWN_LEFT) {
-            if (isometric) {
-                fVx += ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
-                fVy += ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
-            } else {
-                fVx += ( (sizeCellX) / speed) * (speed - stepsInTime);
-                fVy += ( (sizeCellY) / speed) * (speed - stepsInTime);
-            }
-        } else if (direction == Direction.LEFT) {
-            fVx += ( sizeCellX / speed ) * (speed - stepsInTime);
-        } else if (direction == Direction.UP_LEFT) {
-            if (isometric) {
-                fVx += ( (sizeCellX / 2) / speed) * (speed - stepsInTime);
-                fVy -= ( (sizeCellY / 2) / speed) * (speed - stepsInTime);
-            } else {
-                fVx += ( (sizeCellX) / speed) * (speed - stepsInTime);
-                fVy -= ( (sizeCellY) / speed) * (speed - stepsInTime);
+        if (unitAttack == null || unitAttack.elapsedTime <= 0) {
+            if (direction == Direction.UP) {
+                fVy -= ((sizeCellY) / speed) * (speed - stepsInTime);
+            } else if (direction == Direction.UP_RIGHT) {
+                if (isometric) {
+                    fVx -= ((sizeCellX / 2) / speed) * (speed - stepsInTime);
+                    fVy -= ((sizeCellY / 2) / speed) * (speed - stepsInTime);
+                } else {
+                    fVx -= ((sizeCellX) / speed) * (speed - stepsInTime);
+                    fVy -= ((sizeCellY) / speed) * (speed - stepsInTime);
+                }
+            } else if (direction == Direction.RIGHT) {
+                fVx -= (sizeCellX / speed) * (speed - stepsInTime);
+            } else if (direction == Direction.DOWN_RIGHT) {
+                if (isometric) {
+                    fVx -= ((sizeCellX / 2) / speed) * (speed - stepsInTime);
+                    fVy += ((sizeCellY / 2) / speed) * (speed - stepsInTime);
+                } else {
+                    fVx -= ((sizeCellX) / speed) * (speed - stepsInTime);
+                    fVy += ((sizeCellY) / speed) * (speed - stepsInTime);
+                }
+            } else if (direction == Direction.DOWN) {
+                fVy += ((sizeCellY) / speed) * (speed - stepsInTime);
+            } else if (direction == Direction.DOWN_LEFT) {
+                if (isometric) {
+                    fVx += ((sizeCellX / 2) / speed) * (speed - stepsInTime);
+                    fVy += ((sizeCellY / 2) / speed) * (speed - stepsInTime);
+                } else {
+                    fVx += ((sizeCellX) / speed) * (speed - stepsInTime);
+                    fVy += ((sizeCellY) / speed) * (speed - stepsInTime);
+                }
+            } else if (direction == Direction.LEFT) {
+                fVx += (sizeCellX / speed) * (speed - stepsInTime);
+            } else if (direction == Direction.UP_LEFT) {
+                if (isometric) {
+                    fVx += ((sizeCellX / 2) / speed) * (speed - stepsInTime);
+                    fVy -= ((sizeCellY / 2) / speed) * (speed - stepsInTime);
+                } else {
+                    fVx += ((sizeCellX) / speed) * (speed - stepsInTime);
+                    fVy -= ((sizeCellY) / speed) * (speed - stepsInTime);
+                }
             }
         }
         fVc.set(fVx, fVy);
@@ -241,14 +244,29 @@ public class Unit {
                 return null;
             }
         }
+        Direction oldDirection = direction;
         int oldX = oldPosition.cellX, oldY = oldPosition.cellY;
         int newX = newPosition.cellX, newY = newPosition.cellY;
+
+        calculateDirection(oldX, oldY, newX, newY, cameraController);
+
+        velocity = new Vector2(backStepPoint.x - currentPoint.x, backStepPoint.y - currentPoint.y);
+        velocity.nor().scl(Math.min(currentPoint.dst(backStepPoint.x, backStepPoint.y), speed));
+        displacement = new Vector2(velocity.x * delta, velocity.y * delta);
+
+//        Gdx.app.log("Unit::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
+        if(!direction.equals(oldDirection)) {
+            setAnimation("walk_");
+        }
+        return newPosition;
+    }
+
+    private void calculateDirection(int oldX, int oldY, int newX, int newY, CameraController cameraController) {
         float sizeCellX = cameraController.sizeCellX;
         float sizeCellY = cameraController.sizeCellY;
         float halfSizeCellX = sizeCellX/2;
         float halfSizeCellY = sizeCellY/2;
         Vector2 fVc = new Vector2(); // fVc = floatVectorCoordinates
-        Direction oldDirection = direction;
         int isDrawableUnits = cameraController.isDrawableUnits;
         if (isDrawableUnits == 4 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(newX, newY).graphicsCoord4)
@@ -446,16 +464,40 @@ public class Unit {
         backStepPoint.set(currentPoint);
         currentPoint.set(fVc);
         fVc = null; // delete fVc;
+    }
 
-        velocity = new Vector2(backStepPoint.x - currentPoint.x, backStepPoint.y - currentPoint.y);
-        velocity.nor().scl(Math.min(currentPoint.dst(backStepPoint.x, backStepPoint.y), speed));
-        displacement = new Vector2(velocity.x * delta, velocity.y * delta);
-
-//        Gdx.app.log("Unit::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
-        if(!direction.equals(oldDirection)) {
-            setAnimation("walk_");
+    public boolean recharge(float deltaTime) {
+        if (unitAttack.elapsedTime > 0) {
+            stepsInTime += deltaTime;
+            if (stepsInTime >= unitAttack.reload) {
+//                unitAttack.elapsedTime = 0;
+                return true;
+            }
         }
-        return newPosition;
+        return false;
+    }
+
+    public boolean towerAttack(float deltaTime) {
+        if (unitAttack.elapsedTime > 0) {
+            unitAttack.elapsedTime += deltaTime;
+            if (unitAttack.elapsedTime >= unitAttack.attackSpeed) {
+                unitAttack.elapsedTime = 0;
+                towerAttack.hp -= unitAttack.damage;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void towerAttack(float deltaTime, Tower tower, CameraController cameraController) {
+        unitAttack.elapsedTime += deltaTime;
+        towerAttack = tower;
+
+        int oldX = oldPosition.cellX, oldY = oldPosition.cellY;
+        int newX = tower.cell.cellX, newY = tower.cell.cellY;
+
+        calculateDirection(oldX, oldY, newX, newY, cameraController);
+        setAnimation("attack_");
     }
 
     public boolean die(float damage, TowerShellEffect towerShellEffect) {
@@ -507,6 +549,14 @@ public class Unit {
 
     public TextureRegion getCurrentDeathFrame() {
         return (TextureRegion)animation.getKeyFrame(deathElapsedTime, true);
+    }
+
+    public TextureRegion getCurrentAttackFrame() {
+        if (unitAttack != null && unitAttack.elapsedTime > 0) {
+            return (TextureRegion) animation.getKeyFrame(unitAttack.elapsedTime, true);
+        } else {
+            return null;
+        }
     }
 
     public String toString() {

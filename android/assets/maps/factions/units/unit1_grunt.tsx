@@ -11,6 +11,7 @@
   <property name="attackType" value="Melee"/>
   <property name="attackType_damage" value="10"/>
   <property name="attackType_range" value="1"/>
+  <property name="attackType_attackSpeed" value="0.8"/>
   <property name="attackType_reload" value="0.9"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/grunt.png" trans="ff00ff" width="360" height="1368"/>

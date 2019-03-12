@@ -172,12 +172,12 @@ public class GameField {
         towersManager.dispose();
         unitsManager.dispose();
         map.dispose();
-        for (Cell[] cellArr : field) {
-            for (Cell cell : cellArr) {
-                cell.dispose();
-                cell = null;
-            }
-        }
+//        for (Cell[] cellArr : field) { // memory leak
+//            for (Cell cell : cellArr) {
+//                cell.dispose();
+//                cell = null;
+//            }
+//        }
         field = null;
 //        pathFinder.dispose();
 
@@ -761,9 +761,12 @@ public class GameField {
 //                // Gdx.app.log("GameField::drawUnit(" + unit + "," + spriteBatch + ")", "-- FireEffect!");
 //            }
 //        }
-        TextureRegion currentFrame;
+        TextureRegion currentFrame = null;
         if (unit.isAlive()) {
-            currentFrame = unit.getCurrentFrame();
+            currentFrame = unit.getCurrentAttackFrame();
+            if (currentFrame == null) {
+                currentFrame = unit.getCurrentFrame();
+            }
         } else {
             currentFrame = unit.getCurrentDeathFrame();
         }
@@ -1865,17 +1868,23 @@ public class GameField {
             if (unit.isAlive()) {
                 if (unit.unitAttack != null) {
                     if (unit.unitAttack.attackType == UnitAttack.AttackType.Melee) {
-                        Cell unitCell = unit.newPosition;
-                        int radius = Math.round(unit.unitAttack.range);
-                        for (int tmpX = -radius; tmpX <= radius; tmpX++) {
-                            for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                                Cell cell = getCell(tmpX + unitCell.cellX, tmpY + unitCell.cellY);
-                                if (cell != null && cell.getTower() != null) {
-                                    Tower tower = cell.getTower();
-//                                    unit.direction
-
+                        if (unit.recharge(delta)) {
+                            unit.towerAttack(delta);
+                        } else {
+                            Cell unitCell = unit.newPosition;
+                            int radius = Math.round(unit.unitAttack.range);
+                            for (int tmpX = -radius; tmpX <= radius; tmpX++) {
+                                for (int tmpY = -radius; tmpY <= radius; tmpY++) {
+                                    Cell cell = getCell(tmpX + unitCell.cellX, tmpY + unitCell.cellY);
+                                    if (cell != null && cell.getTower() != null) {
+                                        Tower tower = cell.getTower();
+                                        unit.towerAttack(delta, tower, cameraController);
+                                    }
                                 }
                             }
+                        }
+                        if (unit.unitAttack.elapsedTime > 0) {
+                            continue;
                         }
                     }
                 }
@@ -1943,6 +1952,9 @@ public class GameField {
     private void shotAllTowers(float delta, CameraController cameraController) {
         updateTowersGraphicCoordinates(cameraController);
         for (Tower tower : towersManager.towers) {
+            if (tower.hp <= 0) {
+                removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
+            }
             TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
                 checkPitTower(tower);

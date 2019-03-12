@@ -215,6 +215,11 @@ public class TemplateForUnit extends Template {
             } else {
                 unitAttack.range = Float.parseFloat(properties.get("attackType_range"));
             }
+            if (!properties.containsKey("attackType_attackSpeed")) {
+                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_attackSpeed");
+            } else {
+                unitAttack.attackSpeed = Float.parseFloat(properties.get("attackType_attackSpeed"));
+            }
             if (!properties.containsKey("attackType_reload")) {
                 Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_reload");
             } else {
