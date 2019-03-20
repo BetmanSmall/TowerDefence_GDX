@@ -77,7 +77,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //        this.stage = new Stage(new ScreenViewport());
 //        stage.getViewport().update(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, true);
 //        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        setDebugAll(true);
+//        setDebugAll(true);
 
         this.pauseMenuTable = new Table(skin);
         pauseMenuTable.setFillParent(true);

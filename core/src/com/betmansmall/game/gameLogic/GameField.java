@@ -268,7 +268,7 @@ public class GameField {
                 return field[x][y];
             }
         }
-        Gdx.app.log("GameField::getCell()", "-NotGood- x:" + x + " y:" + y + " map.width:" + map.width + " map.height:" + map.height);
+//        Gdx.app.log("GameField::getCell()", "-NotGood- x:" + x + " y:" + y + " map.width:" + map.width + " map.height:" + map.height);
         return null;
     }
 
@@ -1716,12 +1716,12 @@ public class GameField {
 //        updatePathFinderWalls();
 ////    Unit* hero = unitsManager.hero;
 //        for (Unit hero : unitsManager.hero) {
-//            Node old = hero.oldPosition;
-//            Node pos = hero.newPosition;
+//            Node old = hero.currentCell;
+//            Node pos = hero.nextCell;
 //            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- old:" + old);
 //            Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- pos:" + pos);
 //            if (pos != null) {
-//                hero.route = pathFinder.route(hero.newPosition.getX(), hero.newPosition.getY(), x, y);
+//                hero.route = pathFinder.route(hero.nextCell.getX(), hero.nextCell.getY(), x, y);
 //                Gdx.app.log("GameField::updateHeroDestinationPoint()", "-- hero.route:" + hero.route);
 //                if (hero.route != null && !hero.route.isEmpty()) {
 //                    hero.route.removeFirst();
@@ -1814,7 +1814,7 @@ public class GameField {
     }
 
     private void rerouteUnitPath(Unit unit, int x, int y) {
-        ArrayDeque<Cell> route = pathFinder.route(unit.newPosition.cellX, unit.newPosition.cellY, x, y);
+        ArrayDeque<Cell> route = pathFinder.route(unit.nextCell.cellX, unit.nextCell.cellY, x, y);
         if (route != null && !route.isEmpty()) {
 //            if (route.front().equals({x, y})) {
                 route.removeFirst();
@@ -1841,10 +1841,10 @@ public class GameField {
 //                    if(route != null && route.size() > 0) {
 //                        Node node = unit.route.getLast();
 //                        GridPoint2 localExitPoint = new GridPoint2(node.getX(), node.getY());
-//                        route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
+//                        route = pathFinder.route(unit.nextCell.getX(), unit.nextCell.getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
 //                    }
 //                } else {
-//                    route = pathFinder.route(unit.newPosition.getX(), unit.newPosition.getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
+//                    route = pathFinder.route(unit.nextCell.getX(), unit.nextCell.getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
 //                }
 //                if (route != null && !route.isEmpty()) {
 //                    route.removeFirst();
@@ -1864,14 +1864,15 @@ public class GameField {
 
     private void stepAllUnits(float delta, CameraController cameraController) {
         for (Unit unit : unitsManager.units) {
-            Cell oldPosition = unit.newPosition;
+            Cell oldCurrentCell = unit.currentCell;
+            Cell nextCurrentCell = unit.nextCell;
             if (unit.isAlive()) {
                 if (unit.unitAttack != null) {
                     if (unit.unitAttack.attackType == UnitAttack.AttackType.Melee) {
                         if (unit.recharge(delta)) {
                             unit.towerAttack(delta);
                         } else {
-                            Cell unitCell = unit.newPosition;
+                            Cell unitCell = unit.nextCell;
                             int radius = Math.round(unit.unitAttack.range);
                             for (int tmpX = -radius; tmpX <= radius; tmpX++) {
                                 for (int tmpY = -radius; tmpY <= radius; tmpY++) {
@@ -1888,28 +1889,23 @@ public class GameField {
                         }
                     }
                 }
-                Cell newPosition = unit.move(delta, cameraController);
-                if (newPosition != null) {
-                    if (!newPosition.equals(oldPosition)) {
-//                        Cell oldCell = getCell(oldPosition.cellX, oldPosition.cellY);
-//                        Cell newCell = getCell(newPosition.cellX, newPosition.cellY);
-                        Cell oldCell = oldPosition;
-                        Cell newCell = newPosition;
-                        if (oldCell != null && newCell != null) {
-                            oldCell.removeUnit(unit);
-                            newCell.setUnit(unit);
-//                            Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + newPosition.getX() + " Y:" + newPosition.getY());
+                Cell currentCell = unit.move(delta, cameraController);
+                if (currentCell != null) {
+                    if (!currentCell.equals(oldCurrentCell)) { // ?? currentCell == oldCurrentCell ??
+                        if (oldCurrentCell != null && currentCell != null) {
+                            oldCurrentCell.removeUnit(unit);
+                            currentCell.setUnit(unit);
+//                            Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + nextCell.getX() + " Y:" + nextCell.getY());
                         } else {
-                            Gdx.app.error("GameField::stepAllUnits()", "-- Unit bad! Cells:old:" + oldCell + " new:" + newCell);
+                            Gdx.app.error("GameField::stepAllUnits()", "-- Unit bad! Cells:oldCurrentCell:" + oldCurrentCell + " currentCell:" + currentCell + " nextCurrentCell:" + nextCurrentCell);
                         }
                     }
                 } else {
-//                    Cell cell = getCell(oldPosition.getX(), oldPosition.getY());
-                    Cell cell = oldPosition;
+                    Cell cell = oldCurrentCell;
                     if (unit.player == 1) {
                         gameSettings.missedUnitsForComputer0++;
                     } else if (unit.player == 0) {
-                        if (unit.exitCell == cell) {
+                        if (unit.exitCell == nextCurrentCell) { // ?? unit.exitCell.equals(cell) ?? // hueta! change plz Nikita!
                             gameSettings.missedUnitsForPlayer1++;
                             if (cell != null) {
                                 cell.removeUnit(unit);
@@ -1920,7 +1916,7 @@ public class GameField {
                             if (unit.route == null || unit.route.isEmpty()) {
                                 int randomX = (int)(Math.random()*map.width);
                                 int randomY = (int)(Math.random()*map.height);
-                                unit.route = pathFinder.route(oldPosition.cellX, oldPosition.cellY, randomX, randomY);
+                                unit.route = pathFinder.route(nextCurrentCell.cellX, nextCurrentCell.cellY, randomX, randomY); // nextCurrentCell -?- currentCell
                                 if (unit.route != null && !unit.route.isEmpty()) {
                                     unit.route.removeFirst();
 //                                    unit.route.removeLast();
@@ -1928,7 +1924,7 @@ public class GameField {
 //                                Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + unit.route);
                             }
                         }
-//                    Cell* cell = getCell(oldPosition.x, oldPosition.y);
+//                    Cell* cell = getCell(currentCell.x, currentCell.y);
 //                    if (cell->isTerrain()) {
 //                        cell->removeTerrain(true);
 //                        updatePathFinderWalls();
@@ -1938,7 +1934,7 @@ public class GameField {
             } else {
 //            if (!unit.isAlive()) {
                 if (!unit.changeDeathFrame(delta)) {
-                    oldPosition.removeUnit(unit);
+                    oldCurrentCell.removeUnit(unit);
 //                    GameField.gamerGold += unit.templateForUnit.bounty;
                     unit.dispose();
                     unitsManager.removeUnit(unit);
@@ -2050,10 +2046,10 @@ public class GameField {
 //        Gdx.app.log("GameField::getGameState()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
             for (Unit hero : unitsManager.hero) {
-                Cell pos = hero.newPosition;
+                Cell pos = hero.nextCell;
                 if (pos != null) {
                     if (pos.cellX == hero.exitCell.cellX && pos.cellY == hero.exitCell.cellY) {
-                        Gdx.app.log("GameField::getGameState()", "-- hero.newPosition:" + hero.newPosition);
+                        Gdx.app.log("GameField::getGameState()", "-- hero.nextCell:" + hero.nextCell);
                         Gdx.app.log("GameField::getGameState()", "-- hero.exitCell:" + hero.exitCell);
                         return "LittleGame_Win";
                     }

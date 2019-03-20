@@ -5,6 +5,10 @@
     <!-- а spawnInterval - дополнительное или же одно единственное время между всеми крипами в этой волне. -->
     <!-- startToMove - ну тут все понятно. столько пройдет времени после нажатия пользователем кнопки пуска крипов -->
     <!-- startToMove -> delay-->
+    <wave spawnPointX="0" spawnPointY="0" exitPointX="15" exitPointY="30" spawnInterval="2.5" startToMove="0">
+        <unit templateName="unit1_grunt" amount="3"/>
+        <unit templateName="unit2_troll_axethrower" amount="5"/>
+	</wave>
     <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="0.5" startToMove="0">
         <unit templateName="unit1_grunt" amount="1"/>
         <unit templateName="unit2_troll_axethrower" amount="1"/>

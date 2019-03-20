@@ -43,7 +43,7 @@ public class UnitsManager {
 
     public Unit getUnit(Node position) {
         for (int i = 0; i < units.size; i++) {
-            Cell unitPosition = units.get(i).newPosition;
+            Cell unitPosition = units.get(i).nextCell;
             if (unitPosition.equals(position)) {
                 return units.get(i);
             }
