@@ -9,10 +9,12 @@
   <property name="speed" value="0.6"/>
   <property name="type" value="unit"/>
   <property name="attackType" value="Melee"/>
-  <property name="attackType_damage" value="5"/>
-  <property name="attackType_range" value="1"/>
+  <property name="attackType_damage" value="2"/>
+  <property name="attackType_range" value="10"/>
   <property name="attackType_attackSpeed" value="0.5"/>
   <property name="attackType_reload" value="0.9"/>
+  <property name="attackType_stackInOneCell" value="true"/>
+  <!-- <property name="attackType_walkToSide" value="true"/> -->
  </properties>
  <image source="../../textures/warcraft2/orc/units/troll_axethrower.png" trans="ff00ff" width="360" height="1368"/>
  <terraintypes>

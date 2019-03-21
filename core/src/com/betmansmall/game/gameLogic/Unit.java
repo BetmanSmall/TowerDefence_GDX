@@ -59,6 +59,7 @@ public class Unit {
             this.deathElapsedTime = 0f;
 
             this.unitAttack = (templateForUnit.unitAttack != null) ? (new UnitAttack(templateForUnit.unitAttack)) : null; // in template need create simple UnitAttack!
+            this.towerAttack = null;
             this.player = player;
             this.currentPoint = new Vector2();
             this.backStepPoint = new Vector2();
@@ -66,6 +67,8 @@ public class Unit {
             this.circle2 = new Circle(0, 0, 16f);
             this.circle3 = new Circle(0, 0, 16f);
             this.circle4 = new Circle(0, 0, 16f);
+//            this.velocity = null;
+//            this.displacement = null;
 
             this.templateForUnit = templateForUnit;
 
@@ -105,7 +108,7 @@ public class Unit {
         shellEffectTypes.clear();
     }
 
-    private void setAnimation(String action) {
+    private void setAnimation(String action) { // Action transform to Enum
 //        Gdx.app.log("Unit::setAnimation()", "-- action+direction:" + action+direction );
         AnimatedTiledMapTile animatedTiledMapTile = templateForUnit.animations.get(action + direction);
         if (animatedTiledMapTile != null) {
@@ -114,7 +117,15 @@ public class Unit {
             for (int k = 0; k < staticTiledMapTiles.length; k++) {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
             }
-            animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
+            if (action.equals("attack_")) { // check this how AnimationActions.type.Attack
+                animation = new Animation(unitAttack.attackSpeed / staticTiledMapTiles.length, textureRegions);
+            } else if (action.equals("walk_")){
+                animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
+            } else if (action.equals("death_")){
+                animation = new Animation(speed / staticTiledMapTiles.length, textureRegions); // speed change to speedToDIE;
+            } else {
+                animation = new Animation(speed / staticTiledMapTiles.length, textureRegions); // speed change to idleSpeed
+            }
 //            Gdx.app.log("Unit::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
         } else {
             Gdx.app.log("Unit::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " animatedTiledMapTile: " + animatedTiledMapTile);
@@ -165,7 +176,7 @@ public class Unit {
         this.direction = direction;
         float fVx = fVc.x;
         float fVy = fVc.y;
-        if (unitAttack == null || unitAttack.elapsedTime <= 0) {
+        if (unitAttack == null || !unitAttack.attacked) {
             if (direction == Direction.UP) {
                 fVy += ((sizeCellY) / speed) * (stepsInTime);
             } else if (direction == Direction.UP_RIGHT) {
@@ -466,32 +477,74 @@ public class Unit {
         fVc = null; // delete fVc;
     }
 
-    public boolean recharge(float deltaTime) {
-        if (unitAttack.elapsedTime > 0) {
-            stepsInTime += deltaTime;
-            if (stepsInTime >= unitAttack.reload) {
-//                unitAttack.elapsedTime = 0;
-                return true;
+    public Tower tryFoundTower(final CameraController cameraController) {
+        Cell unitCell = currentCell;
+        int radius = Math.round(unitAttack.range);
+        if (unitAttack.attackType == UnitAttack.AttackType.Melee) {
+            for (int tmpX = -radius; tmpX <= radius; tmpX++) {
+                for (int tmpY = -radius; tmpY <= radius; tmpY++) {
+                    Cell cell = cameraController.gameField.getCell(tmpX + unitCell.cellX, tmpY + unitCell.cellY);
+                    if (cell != null && cell.getTower() != null) {
+                        Tower tower = cell.getTower();
+                        towerAttackInit(tower, cameraController);
+                        return tower;
+                    }
+                }
             }
+//        } else { // other UnitAttack.AttackType.Range;
+
+        }
+        return null;
+    }
+
+    public boolean recharge(float deltaTime) {
+//        Gdx.app.log("Unit::recharge()", " -- unitAttack.elapsedTimeRecharge:" + unitAttack.elapsedTimeRecharge);
+//        Gdx.app.log("Unit::recharge()", " -- unitAttack.reload:" + unitAttack.reload);
+        if (towerAttack != null) {
+//            if (!unitAttack.attacked) {
+                unitAttack.elapsedTimeRecharge += deltaTime;
+                if (unitAttack.elapsedTimeRecharge >= unitAttack.reload) {
+//                    unitAttack.elapsedTimeRecharge = 0;
+                    unitAttack.attacked = true;
+                    return true;
+                }
+//            } else {
+//                return true;
+//            }
         }
         return false;
     }
 
     public boolean towerAttack(float deltaTime) {
-        if (unitAttack.elapsedTime > 0) {
-            unitAttack.elapsedTime += deltaTime;
-            if (unitAttack.elapsedTime >= unitAttack.attackSpeed) {
-                unitAttack.elapsedTime = 0;
+//        Gdx.app.log("Unit::towerAttack()", " -- unitAttack.elapsedTimeAttacked:" + unitAttack.elapsedTimeAttacked);
+//        Gdx.app.log("Unit::towerAttack()", " -- unitAttack.attackSpeed:" + unitAttack.attackSpeed);
+//        if (unitAttack.elapsedTime > 0) {
+            unitAttack.elapsedTimeAttacked += deltaTime;
+            if (unitAttack.elapsedTimeAttacked >= unitAttack.attackSpeed) {
+                unitAttack.elapsedTimeRecharge = 0;
+//                unitAttack.elapsedTimeAttacked = 0;
+//                towerAttack.destroy() // need func!
                 towerAttack.hp -= unitAttack.damage;
+                if (towerAttack.hp <= 0) {
+//                    towerAttack.destroyElapsedTime = 0;
+//                    towerAttack.setAnimation("death_");
+                    towerAttack = null;
+                }
+//                if (unitAttack.attackType == UnitAttack.AttackType.Melee) {
+                    unitAttack.attacked = false;
+//                }
                 return true;
             }
-        }
+//        }
         return false;
     }
 
-    public void towerAttack(float deltaTime, Tower tower, CameraController cameraController) {
-        unitAttack.elapsedTime += deltaTime;
+    public void towerAttackInit(Tower tower, CameraController cameraController) {
+//        Gdx.app.log("Unit::towerAttackInit()", " -- unitAttack.elapsedTimeAttacked:" + unitAttack.elapsedTimeAttacked);
+        unitAttack.elapsedTimeRecharge = unitAttack.reload;
+        unitAttack.elapsedTimeAttacked = 0;
         towerAttack = tower;
+        towerAttack.whoAttackMe.add(this);
 
         int oldX = currentCell.cellX, oldY = currentCell.cellY;
         int newX = tower.cell.cellX, newY = tower.cell.cellY;
@@ -555,8 +608,8 @@ public class Unit {
     }
 
     public TextureRegion getCurrentAttackFrame() {
-        if (unitAttack != null && unitAttack.elapsedTime > 0) {
-            return (TextureRegion) animation.getKeyFrame(unitAttack.elapsedTime, true);
+        if (unitAttack != null && unitAttack.attacked) {
+            return (TextureRegion) animation.getKeyFrame(unitAttack.elapsedTimeAttacked, true);
         } else {
             return null;
         }
@@ -579,6 +632,8 @@ public class Unit {
             sb.append(",stepsInTime:" + stepsInTime);
             sb.append(",deathElapsedTime:" + deathElapsedTime);
 
+            sb.append(",unitAttack:" + unitAttack);
+            sb.append(",towerAttack:" + towerAttack);
             sb.append(",player:" + player);
             sb.append(",currentPoint:" + currentPoint);
             sb.append(",backStepPoint:" + backStepPoint);

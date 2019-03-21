@@ -8,6 +8,13 @@
   <property name="cost" value="50"/>
   <property name="speed" value="1.0"/>
   <property name="type" value="unit"/>
+  <property name="attackType" value="RangeStand"/>
+  <property name="attackType_damage" value="5"/>
+  <property name="attackType_range" value="20"/>
+  <property name="attackType_attackSpeed" value="0.6"/>
+  <property name="attackType_reload" value="0.9"/>
+  <property name="attackType_stackInOneCell" value="false"/>
+  <!-- <property name="attackType_walkToSide" value="true"/> -->
  </properties>
  <image source="../../textures/warcraft2/orc/units/catapult.png" width="320" height="640"/>
  <tile id="0">

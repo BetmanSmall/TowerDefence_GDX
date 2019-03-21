@@ -26,7 +26,9 @@ public class Tower {
     public Vector2 centerGraphicCoord;
     public Circle radiusDetectionCircle;
     public Circle radiusFlyShellCircle;
+
     public float hp;
+    public Array<Unit> whoAttackMe;
 
     public Tower(Cell cell, TemplateForTower templateForTower, int player) {
 //        Gdx.app.log("Tower::Tower()", "-- cell:" + cell + " templateForTower:" + templateForTower + " player:" + player);
@@ -40,7 +42,9 @@ public class Tower {
         this.centerGraphicCoord = new Vector2();
         this.radiusDetectionCircle = new Circle(0, 0, templateForTower.radiusDetection);
         this.radiusFlyShellCircle = null;
+
         this.hp = templateForTower.healthPoints;
+        this.whoAttackMe = new Array<Unit>();
     }
 
     public void dispose() {

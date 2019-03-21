@@ -1871,22 +1871,18 @@ public class GameField {
                     if (unit.unitAttack.attackType == UnitAttack.AttackType.Melee) {
                         if (unit.recharge(delta)) {
                             unit.towerAttack(delta);
-                        } else {
-                            Cell unitCell = unit.nextCell;
-                            int radius = Math.round(unit.unitAttack.range);
-                            for (int tmpX = -radius; tmpX <= radius; tmpX++) {
-                                for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                                    Cell cell = getCell(tmpX + unitCell.cellX, tmpY + unitCell.cellY);
-                                    if (cell != null && cell.getTower() != null) {
-                                        Tower tower = cell.getTower();
-                                        unit.towerAttack(delta, tower, cameraController);
-                                    }
-                                }
-                            }
                         }
-                        if (unit.unitAttack.elapsedTime > 0) {
+                        if (!unit.unitAttack.attacked || unit.towerAttack == null) {
+                            if (unit.tryFoundTower(cameraController) != null) {
+                                continue;
+                            }
+                        } else {
                             continue;
                         }
+//                    } else if (unit.unitAttack.attackType == UnitAttack.AttackType.RangeStand) {
+//
+//                    } else if (unit.unitAttack.attackType == UnitAttack.AttackType.RangeWalk) {
+//
                     }
                 }
                 Cell currentCell = unit.move(delta, cameraController);
@@ -1948,7 +1944,7 @@ public class GameField {
     private void shotAllTowers(float delta, CameraController cameraController) {
         updateTowersGraphicCoordinates(cameraController);
         for (Tower tower : towersManager.towers) {
-            if (tower.hp <= 0) {
+            if (tower.hp <= 0) { // need impelement func Tower.destroy();
                 removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
             }
             TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;

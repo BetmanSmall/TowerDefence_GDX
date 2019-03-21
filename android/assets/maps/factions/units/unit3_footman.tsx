@@ -8,6 +8,13 @@
   <property name="cost" value="30"/>
   <property name="speed" value="0.8"/>
   <property name="type" value="unit"/>
+  <property name="attackType" value="Melee"/>
+  <property name="attackType_damage" value="5"/>
+  <property name="attackType_range" value="1"/>
+  <property name="attackType_attackSpeed" value="0.7"/>
+  <property name="attackType_reload" value="0.9"/>
+  <property name="attackType_stackInOneCell" value="false"/>
+  <!-- <property name="attackType_walkToSide" value="false"/> -->
  </properties>
  <image source="../../textures/warcraft2/human/units/footman.png" trans="ff00ff" width="360" height="1368"/>
  <terraintypes>

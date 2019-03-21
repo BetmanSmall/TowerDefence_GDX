@@ -225,6 +225,16 @@ public class TemplateForUnit extends Template {
             } else {
                 unitAttack.reload = Float.parseFloat(properties.get("attackType_reload"));
             }
+            if (!properties.containsKey("attackType_stackInOneCell")) {
+                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_stackInOneCell");
+            } else {
+                unitAttack.stackInOneCell = Boolean.parseBoolean(properties.get("attackType_stackInOneCell"));
+            }
+//            if (!properties.containsKey("attackType_walkToSide")) {
+//                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_walkToSide");
+//            } else {
+//                unitAttack.walkToSide = Boolean.parseBoolean(properties.get("attackType_walkToSide"));
+//            }
         }
 
         if(animations.size == 0)

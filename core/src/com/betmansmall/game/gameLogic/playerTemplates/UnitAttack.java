@@ -9,9 +9,9 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 public class UnitAttack {
     public enum AttackType {
-        Melee("Melee"),
-        RangeStand("RangeStand"), // not use for now
-        RangeWalk("RangeWalk");
+        Melee("Melee"), // attack to die
+        RangeStand("RangeStand"), // attack to die
+        RangeWalk("RangeWalk"); // walk and attack
 
         private final String text;
         AttackType(final String text) {
@@ -41,12 +41,18 @@ public class UnitAttack {
 
     public float speedProjectile;
     public float reload;
+    public boolean stackInOneCell;
+//    public boolean walkToSide;
 
-    public float elapsedTime;
+    public float elapsedTimeRecharge;
+    public float elapsedTimeAttacked;
+    public boolean attacked;
 
     public UnitAttack(AttackType attackType) {
         this.attackType = attackType;
-        this.elapsedTime = 0;
+        this.elapsedTimeRecharge = 0;
+        this.elapsedTimeAttacked = 0;
+        this.attacked = false;
     }
 
     public UnitAttack(UnitAttack unitAttack) {
@@ -54,9 +60,15 @@ public class UnitAttack {
             this.attackType = unitAttack.attackType;
             this.damage = unitAttack.damage;
             this.range = unitAttack.range;
+            this.attackSpeed = unitAttack.attackSpeed;
+
             this.speedProjectile = unitAttack.speedProjectile;
             this.reload = unitAttack.reload;
-            this.elapsedTime = unitAttack.elapsedTime;
+            this.stackInOneCell = unitAttack.stackInOneCell;
+
+            this.elapsedTimeRecharge = unitAttack.elapsedTimeRecharge;
+            this.elapsedTimeAttacked = unitAttack.elapsedTimeAttacked;
+            this.attacked = unitAttack.attacked;
 //        } else {
 //            throw new Exception("UnitAttack::UnitAttack(); -- unitAttack:" + unitAttack);
         }
@@ -83,7 +95,8 @@ public class UnitAttack {
         sb.append(",range:" + range);
         sb.append(",speedProjectile:" + speedProjectile);
         sb.append(",reload:" + reload);
-        sb.append(",elapsedTime:" + elapsedTime);
+        sb.append(",elapsedTimeRecharge:" + elapsedTimeRecharge);
+        sb.append(",elapsedTimeAttacked:" + elapsedTimeAttacked);
         sb.append("]");
         return sb.toString();
     }
