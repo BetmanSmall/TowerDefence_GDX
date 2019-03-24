@@ -67,8 +67,8 @@ public class Unit {
             this.circle2 = new Circle(0, 0, 16f);
             this.circle3 = new Circle(0, 0, 16f);
             this.circle4 = new Circle(0, 0, 16f);
-//            this.velocity = null;
-//            this.displacement = null;
+            this.velocity = new Vector2();
+            this.displacement = new Vector2();
 
             this.templateForUnit = templateForUnit;
 
