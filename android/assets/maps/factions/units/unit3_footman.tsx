@@ -53,23 +53,23 @@
   <terrain name="walk4_DOWN" tile="24"/>
   <terrain name="walk5_DOWN" tile="19"/>
   <terrain name="walk6_DOWN" tile="24"/>
-  <terrain name="attack1_UP" tile="25"/>
+  <terrain name="attack_UP" tile="25"/>
   <terrain name="attack2_UP" tile="30"/>
   <terrain name="attack3_UP" tile="35"/>
   <terrain name="attack4_UP" tile="40"/>
-  <terrain name="attack1_UP_RIGHT" tile="26"/>
+  <terrain name="attack_UP_RIGHT" tile="26"/>
   <terrain name="attack2_UP_RIGHT" tile="31"/>
   <terrain name="attack3_UP_RIGHT" tile="36"/>
   <terrain name="attack4_UP_RIGHT" tile="41"/>
-  <terrain name="attack1_RIGHT" tile="27"/>
+  <terrain name="attack_RIGHT" tile="27"/>
   <terrain name="attack2_RIGHT" tile="32"/>
   <terrain name="attack3_RIGHT" tile="37"/>
   <terrain name="attack4_RIGHT" tile="42"/>
-  <terrain name="attack1_DOWN_RIGHT" tile="28"/>
+  <terrain name="attack_DOWN_RIGHT" tile="28"/>
   <terrain name="attack2_DOWN_RIGHT" tile="33"/>
   <terrain name="attack3_DOWN_RIGHT" tile="38"/>
   <terrain name="attack4_DOWN_RIGHT" tile="43"/>
-  <terrain name="attack1_DOWN" tile="29"/>
+  <terrain name="attack_DOWN" tile="29"/>
   <terrain name="attack2_DOWN" tile="34"/>
   <terrain name="attack3_DOWN" tile="39"/>
   <terrain name="attack4_DOWN" tile="44"/>
@@ -263,28 +263,68 @@
  </tile>
  <tile id="25">
   <properties>
-   <property name="actionAndDirection" value="attack1_UP"/>
+   <property name="actionAndDirection" value="attack_UP"/>
   </properties>
+  <animation>
+   <frame tileid="35" duration="100"/>
+   <frame tileid="25" duration="100"/>
+   <frame tileid="30" duration="100"/>
+   <frame tileid="25" duration="100"/>
+   <frame tileid="35" duration="100"/>
+   <frame tileid="40" duration="100"/>
+  </animation>
  </tile>
  <tile id="26">
   <properties>
-   <property name="actionAndDirection" value="attack1_UP_RIGHT"/>
+   <property name="actionAndDirection" value="attack_UP_RIGHT"/>
   </properties>
+  <animation>
+   <frame tileid="36" duration="100"/>
+   <frame tileid="26" duration="100"/>
+   <frame tileid="31" duration="100"/>
+   <frame tileid="26" duration="100"/>
+   <frame tileid="36" duration="100"/>
+   <frame tileid="41" duration="100"/>
+  </animation>
  </tile>
  <tile id="27">
   <properties>
-   <property name="actionAndDirection" value="attack1_RIGHT"/>
+   <property name="actionAndDirection" value="attack_RIGHT"/>
   </properties>
+  <animation>
+   <frame tileid="37" duration="100"/>
+   <frame tileid="27" duration="100"/>
+   <frame tileid="32" duration="100"/>
+   <frame tileid="27" duration="100"/>
+   <frame tileid="37" duration="100"/>
+   <frame tileid="42" duration="100"/>
+  </animation>
  </tile>
  <tile id="28">
   <properties>
-   <property name="actionAndDirection" value="attack1_DOWN_RIGHT"/>
+   <property name="actionAndDirection" value="attack_DOWN_RIGHT"/>
   </properties>
+  <animation>
+   <frame tileid="38" duration="100"/>
+   <frame tileid="28" duration="100"/>
+   <frame tileid="33" duration="100"/>
+   <frame tileid="28" duration="100"/>
+   <frame tileid="38" duration="100"/>
+   <frame tileid="43" duration="100"/>
+  </animation>
  </tile>
  <tile id="29">
   <properties>
-   <property name="actionAndDirection" value="attack1_DOWN"/>
+   <property name="actionAndDirection" value="attack_DOWN"/>
   </properties>
+  <animation>
+   <frame tileid="39" duration="100"/>
+   <frame tileid="29" duration="100"/>
+   <frame tileid="34" duration="100"/>
+   <frame tileid="29" duration="100"/>
+   <frame tileid="39" duration="100"/>
+   <frame tileid="44" duration="100"/>
+  </animation>
  </tile>
  <tile id="30">
   <properties>

@@ -47,7 +47,9 @@ public class MainMenuScreen implements Screen {
 
         stage = new Stage(new ScreenViewport());
         stage.addActor(widgetController.backgroundImages.get(0));
-        stage.setDebugAll(true);
+//        stage.setDebugAll(true);
+        stage.setDebugUnderMouse(true);
+        stage.setDebugParentUnderMouse(true);
 
         Table rootTable = new Table(skin);
         rootTable.setFillParent(true);

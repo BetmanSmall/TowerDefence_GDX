@@ -9,6 +9,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -42,6 +43,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
     public Slider drawGrid, drawUnits, drawTowers, drawBackground, drawGround, drawForeground, drawGridNav, drawRoutes, drawOrder, drawAll;
+    public CheckBox topBottomLeftRightSelector, verticalSelector;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -56,7 +58,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             gamerGoldLabel, unitsManagerSize, towersManagerSize,
             missedAndMaxForPlayer1, missedAndMaxForComputer0,
             nextUnitSpawnLabel,
-            unitsSpawn, gamePaused;
+            unitsSpawn, gamePaused,
+            towersSelectorCoord;
 
     public boolean interfaceTouched;
     public TowersSelector towersSelector;
@@ -78,6 +81,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //        stage.getViewport().update(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, true);
 //        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 //        setDebugAll(true);
+        setDebugUnderMouse(true);
+//        setDebugTableUnderMouse(true);
+        setDebugParentUnderMouse(true);
 
         this.pauseMenuTable = new Table(skin);
         pauseMenuTable.setFillParent(true);
@@ -214,18 +220,20 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         infoTablo.addActor(unitsSpawn);
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTablo.addActor(gamePaused);
-//        bitmapFont.getData().;
+        towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        infoTablo.addActor(towersSelectorCoord);
 
         this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
-        addActor(tableFront);
         tableFront.setFillParent(true);
+        addActor(tableFront);
         interfaceTouched = false;
-        if (gameField.waveManager.wavesForUser.size > 0) {
-            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableFront);
-        }
 
-        towersSelector = new TowersSelector(gameField, bitmapFont, skin);
-        tableFront.add(towersSelector).expand().right();
+//        if (gameField.waveManager.wavesForUser.size > 0) {
+//            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableFront);
+//        }
+//
+//        towersSelector = new TowersSelector(gameField, bitmapFont, skin);
+//        tableFront.add(towersSelector).expand();
 
         winTexture = new Texture(Gdx.files.internal("concepts/littlegame-concept-2-1.jpg"));
         loseTexture = new Texture(Gdx.files.internal("concepts/2018-12-03_19-43-03.png"));
@@ -442,6 +450,33 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         });
         drawAll.setValue(cameraController.isDrawableGrid);
         optionTable.add(drawAll).fill();
+
+        topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
+        topBottomLeftRightSelector.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface::setCameraController()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
+                gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
+            }
+        });
+        optionTable.add(topBottomLeftRightSelector).fill();
+
+        verticalSelector = new CheckBox("verticalSelector", skin);
+        verticalSelector.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface::setCameraController()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
+                gameField.gameSettings.verticalSelector = verticalSelector.isChecked();
+            }
+        });
+        optionTable.add(verticalSelector).fill();
+
+        if (cameraController.gameField.waveManager.wavesForUser.size > 0) {
+            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableFront);
+        }
+
+        towersSelector = new TowersSelector(gameField, bitmapFont, skin);
+        tableFront.add(towersSelector).expand();
     }
 
     public void addActionToHistory(String action) {
@@ -497,6 +532,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         unitsSpawn.setText("unitsSpawn:" + gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameField.gamePaused);
+        towersSelectorCoord.setText("towersSelectorCoord:" + towersSelector.coordinateX + "," + towersSelector.coordinateY);
 
         startAndPauseButton.setText((gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : (GameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : "START NEXT WAVE");
 //        if (pauseMenuButton.isChecked()) {
@@ -551,6 +587,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("GameInterface::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
+//        if (towersSelector != null) {
+//            towersSelector.fling(velocityX, velocityY, button);
+//        }
         return false;
     }
 
@@ -712,6 +751,20 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             }
         }
         return false;
+    }
+
+    public void resize(int width, int height) {
+        Gdx.app.log("GameInterface::resize()", "-- width:" + width + " height:" + height);
+        infoTablo.setSize(width, height);
+        tableBack.setSize(width, height);
+        tableFront.setSize(width, height);
+        getViewport().update(width, height, true);
+        if (towersSelector != null) {
+            towersSelector.resize(width, height);
+        }
+//        if (unitsSelector!= null) {
+//            unitsSelector.resize(width, height);
+//        }
     }
 
     public String toString() {

@@ -276,8 +276,11 @@ public class GameScreen implements Screen {
 //        if(Gdx.app.getType() == Application.ApplicationType.Android) {
 //            gameInterface.stage.getViewport().update(width/2, height/2, true);
 //        } else {
-            gameInterface.getViewport().update(width, height, true);
+//            gameInterface.getViewport().update(width, height, true);
 //        }
+
+        gameInterface.resize(width, height);
+
         cameraController.camera.viewportHeight = height;
         cameraController.camera.viewportWidth = width;
         cameraController.camera.update();

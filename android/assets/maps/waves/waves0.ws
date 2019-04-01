@@ -7,20 +7,20 @@
     <!-- startToMove -> delay-->
     <wave spawnPointX="15" spawnPointY="0" exitPointX="15" exitPointY="30" spawnInterval="1" startToMove="0">
         <unit templateName="unit1_grunt" amount="1"/>
-        <unit templateName="unit2_troll_axethrower" amount="5"/>
-        <!-- <unit templateName="unit3_footman" amount="4"/> -->
+        <!-- <unit templateName="unit2_troll_axethrower" amount="5"/> -->
+        <unit templateName="unit3_footman" amount="4"/>
         <!-- <unit templateName="unit4_catapult" amount="2"/> -->
 	</wave>
     <wave spawnPointX="15" spawnPointY="0" exitPointX="15" exitPointY="30" spawnInterval="1" startToMove="0">
         <unit templateName="unit1_grunt" amount="1"/>
-        <unit templateName="unit2_troll_axethrower" amount="5"/>
-        <!-- <unit templateName="unit3_footman" amount="4"/> -->
+        <!-- <unit templateName="unit2_troll_axethrower" amount="5"/> -->
+        <unit templateName="unit3_footman" amount="4"/>
         <!-- <unit templateName="unit4_catapult" amount="2"/> -->
 	</wave>
     <wave spawnPointX="15" spawnPointY="0" exitPointX="15" exitPointY="30" spawnInterval="1" startToMove="0">
         <unit templateName="unit1_grunt" amount="1"/>
-        <unit templateName="unit2_troll_axethrower" amount="5"/>
-        <!-- <unit templateName="unit3_footman" amount="4"/> -->
+        <!-- <unit templateName="unit2_troll_axethrower" amount="5"/> -->
+        <unit templateName="unit3_footman" amount="4"/>
         <!-- <unit templateName="unit4_catapult" amount="2"/> -->
 	</wave>
     <wave spawnPointX="15" spawnPointY="31" exitPointX="0" exitPointY="0" spawnInterval="1" startToMove="0">

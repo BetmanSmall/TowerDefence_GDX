@@ -148,7 +148,7 @@ public class GameField {
             MapProperties mapProperties = map.getProperties();
             Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
             if (mapProperties.containsKey("gamerGold")) {
-                gamerGold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
+//                gamerGold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
             }
             gameSettings.maxOfMissedUnitsForComputer0 = mapProperties.get("maxOfMissedUnitsForComputer0", gamerGold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
             gameSettings.missedUnitsForComputer0 = 0;
@@ -1869,15 +1869,19 @@ public class GameField {
             if (unit.isAlive()) {
                 if (unit.unitAttack != null) {
                     if (unit.unitAttack.attackType == UnitAttack.AttackType.Melee) {
-                        if (unit.recharge(delta)) {
-                            unit.towerAttack(delta);
-                        }
-                        if (!unit.unitAttack.attacked || unit.towerAttack == null) {
-                            if (unit.tryFoundTower(cameraController) != null) {
+                        if (!unit.unitAttack.stackInOneCell && unit.currentCell.getUnits().size == 1) {
+
+//                        } else {
+                            if (unit.recharge(delta)) {
+                                unit.towerAttack(delta);
+                            }
+                            if (!unit.unitAttack.attacked || unit.towerAttack == null) {
+                                if (unit.tryFoundTower(cameraController) != null) {
+                                    continue;
+                                }
+                            } else {
                                 continue;
                             }
-                        } else {
-                            continue;
                         }
 //                    } else if (unit.unitAttack.attackType == UnitAttack.AttackType.RangeStand) {
 //
