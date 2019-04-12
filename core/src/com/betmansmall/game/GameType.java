@@ -8,12 +8,12 @@ import com.badlogic.gdx.Gdx;
 
 public enum GameType {
     LittleGame("LittleGame"),
-    TowerDefence("WidgetController"),
+    TowerDefence("TowerDefence"),
     OrthogonalityTowerDefence("OrthogonalityTowerDefence");
 
     private final String text;
 
-    private GameType(final String text) {
+    GameType(final String text) {
         this.text = text;
     }
 

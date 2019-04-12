@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.GameType;
 import com.betmansmall.game.WidgetController;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
@@ -223,12 +224,6 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         infoTablo.addActor(unitsSpawn);
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTablo.addActor(gamePaused);
-        towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
-        infoTablo.addActor(towersSelectorCoord);
-        selectorBorderVertical = new Label("selectorBorderVertical:", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(selectorBorderVertical);
-        selectorBorderHorizontal = new Label("selectorBorderHorizontal:", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(selectorBorderHorizontal);
 
         this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableFront.setFillParent(true);
@@ -492,8 +487,17 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             unitsSelector = new UnitsSelector(gameField, bitmapFont, tableFront);
         }
 
-        towersSelector = new TowersSelector(gameField, bitmapFont, skin);
-        tableFront.add(towersSelector).expand();
+        if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
+            towersSelector = new TowersSelector(gameField, bitmapFont, skin);
+            tableFront.add(towersSelector).expand();
+
+            towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
+            infoTablo.addActor(towersSelectorCoord);
+            selectorBorderVertical = new Label("selectorBorderVertical:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+            infoTablo.addActor(selectorBorderVertical);
+            selectorBorderHorizontal = new Label("selectorBorderHorizontal:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+            infoTablo.addActor(selectorBorderHorizontal);
+        }
     }
 
     public void addActionToHistory(String action) {
@@ -549,9 +553,11 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         unitsSpawn.setText("unitsSpawn:" + gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameField.gamePaused);
-        towersSelectorCoord.setText("towersSelectorCoord:" + towersSelector.coordinateX + "," + towersSelector.coordinateY);
-        selectorBorderVertical.setText("selectorBorderVertical:" + towersSelector.selectorBorderVertical);
-        selectorBorderHorizontal.setText("selectorBorderHorizontal:" + towersSelector.selectorBorderHorizontal);
+        if (towersSelector != null) {
+            towersSelectorCoord.setText("towersSelectorCoord:" + towersSelector.coordinateX + "," + towersSelector.coordinateY);
+            selectorBorderVertical.setText("selectorBorderVertical:" + towersSelector.selectorBorderVertical);
+            selectorBorderHorizontal.setText("selectorBorderHorizontal:" + towersSelector.selectorBorderHorizontal);
+        }
 
         startAndPauseButton.setText((gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : (GameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : "START NEXT WAVE");
 //        if (pauseMenuButton.isChecked()) {
