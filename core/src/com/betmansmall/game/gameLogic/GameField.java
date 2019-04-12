@@ -2174,7 +2174,7 @@ public class GameField {
         if (full) {
             sb.append(",underConstruction:" + underConstruction);
             sb.append(",pathFinder:" + pathFinder);
-            sb.append(",field:" + field.length);
+            sb.append(",field.length:" + ( (field!=null) ? field.length : "null"));
             sb.append(",map:" + map);
             sb.append(",gameSettings:" + gameSettings);
             sb.append(",unitsManager:" + unitsManager);

@@ -32,7 +32,7 @@ public enum TowerShellType {
                 return t;
             }
         }
-        Gdx.app.error("towerShellType::getType()", "-- BadType:" + type);
+        Gdx.app.error("TowerShellType::getType()", "-- BadType:" + type);
         return null;
     }
 }

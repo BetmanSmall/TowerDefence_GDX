@@ -206,7 +206,9 @@ public class OptionMenuScreen implements Screen {
         sliderTowerCount.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
         rightTable.add(sliderTowerCount).expand().fill().row();
 
+//        skin.getFont()
         backButton = new TextButton("BACK", skin);
+//        backButton.setScale(Gdx.graphics.getHeight()*0.01f);
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

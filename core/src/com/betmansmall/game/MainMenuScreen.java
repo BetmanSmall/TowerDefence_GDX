@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -57,6 +58,7 @@ public class MainMenuScreen implements Screen {
 
         Table leftTable = new Table(skin);
         helpButton = new TextButton("HELP", skin);
+//        helpButton.setScale(Gdx.graphics.getHeight()*0.01f);
         helpButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -68,6 +70,7 @@ public class MainMenuScreen implements Screen {
         leftTable.add(helpButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
 
         backButton = new TextButton("BACK", skin);
+//        backButton.setScale(Gdx.graphics.getHeight()*0.1f);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -82,6 +85,7 @@ public class MainMenuScreen implements Screen {
         leftTable.add(backButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
 
         homeButton = new TextButton("HOME", skin);
+//        homeButton.setScale(Gdx.graphics.getHeight()*0.01f);
         homeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -103,6 +107,7 @@ public class MainMenuScreen implements Screen {
 
         Table rightTable = new Table(skin);
         playButton = new TextButton("PLAY", skin);
+//        playButton.setScale(Gdx.graphics.getHeight()*0.01f);
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -114,6 +119,7 @@ public class MainMenuScreen implements Screen {
         rightTable.add(playButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
 
         secondButton = new TextButton("OPTION", skin);
+//        secondButton.setScale(Gdx.graphics.getHeight()*0.01f);
         secondButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -125,6 +131,7 @@ public class MainMenuScreen implements Screen {
         rightTable.add(secondButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
 
         exitButton = new TextButton("EXIT", skin);
+//        exitButton.setScale(Gdx.graphics.getHeight()*0.01f);
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

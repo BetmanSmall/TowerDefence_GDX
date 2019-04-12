@@ -107,8 +107,12 @@ public class UnderConstruction {
 
     public boolean clearStartCoors() {
         this.state = 0;
-        this.coorsX.clear();
-        this.coorsY.clear();
+        if (coorsX != null) {
+            this.coorsX.clear();
+        }
+        if (coorsY != null) {
+            this.coorsY.clear();
+        }
         return true;
     }
 

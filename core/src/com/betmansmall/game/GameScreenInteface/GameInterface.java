@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.WidgetController;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -59,7 +61,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             missedAndMaxForPlayer1, missedAndMaxForComputer0,
             nextUnitSpawnLabel,
             unitsSpawn, gamePaused,
-            towersSelectorCoord;
+            towersSelectorCoord,
+            selectorBorderVertical, selectorBorderHorizontal;
 
     public boolean interfaceTouched;
     public TowersSelector towersSelector;
@@ -81,9 +84,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //        stage.getViewport().update(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, true);
 //        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 //        setDebugAll(true);
-        setDebugUnderMouse(true);
+//        setDebugUnderMouse(true);
 //        setDebugTableUnderMouse(true);
-        setDebugParentUnderMouse(true);
+//        setDebugParentUnderMouse(true);
 
         this.pauseMenuTable = new Table(skin);
         pauseMenuTable.setFillParent(true);
@@ -222,6 +225,10 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         infoTablo.addActor(gamePaused);
         towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTablo.addActor(towersSelectorCoord);
+        selectorBorderVertical = new Label("selectorBorderVertical:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        infoTablo.addActor(selectorBorderVertical);
+        selectorBorderHorizontal = new Label("selectorBorderHorizontal:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        infoTablo.addActor(selectorBorderHorizontal);
 
         this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableFront.setFillParent(true);
@@ -449,9 +456,14 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             }
         });
         drawAll.setValue(cameraController.isDrawableGrid);
-        optionTable.add(drawAll).fill();
+        optionTable.add(drawAll).fill().row();
 
         topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
+        topBottomLeftRightSelector.setChecked(gameField.gameSettings.topBottomLeftRightSelector);
+        topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
+        topBottomLeftRightSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+        topBottomLeftRightSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         topBottomLeftRightSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -459,9 +471,14 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
             }
         });
-        optionTable.add(topBottomLeftRightSelector).fill();
+        optionTable.add(topBottomLeftRightSelector).fill().row();
 
         verticalSelector = new CheckBox("verticalSelector", skin);
+        verticalSelector.setChecked(gameField.gameSettings.verticalSelector);
+        verticalSelector.getImage().setScaling(Scaling.stretch);
+        verticalSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+        verticalSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         verticalSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -533,6 +550,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         unitsSpawn.setText("unitsSpawn:" + gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameField.gamePaused);
         towersSelectorCoord.setText("towersSelectorCoord:" + towersSelector.coordinateX + "," + towersSelector.coordinateY);
+        selectorBorderVertical.setText("selectorBorderVertical:" + towersSelector.selectorBorderVertical);
+        selectorBorderHorizontal.setText("selectorBorderHorizontal:" + towersSelector.selectorBorderHorizontal);
 
         startAndPauseButton.setText((gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : (GameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : "START NEXT WAVE");
 //        if (pauseMenuButton.isChecked()) {
@@ -718,6 +737,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
         boolean returnSuperTouchDragged = super.touchDragged(screenX, screenY, pointer);
+//        Vector3 touch = new Vector3(screenX, screenY, 0f);
+//        Vector3 touVector3 = cameraController.camera.unproject(touch);
         if(unitsSelector != null) {
             if(unitsSelector.pan(screenX, screenY, deltaX, deltaY)) {
                 return true;
