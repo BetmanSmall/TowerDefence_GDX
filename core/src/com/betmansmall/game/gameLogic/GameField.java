@@ -822,50 +822,53 @@ public class GameField {
 
     private void drawUnitBar(CameraController cameraController, Unit unit, float fVx, float fVy) {
         if (unit.isAlive()) {
-            TextureRegion currentFrame = unit.getCurrentFrame();
-            fVx -= cameraController.sizeCellX/2;
-            fVy -= cameraController.sizeCellY;
-            float currentFrameWidth = currentFrame.getRegionWidth();
-            float currentFrameHeight = currentFrame.getRegionHeight();
-            float hpBarSpace = 0.8f;
-            float effectBarWidthSpace = hpBarSpace * 2;
-            float effectBarHeightSpace = hpBarSpace * 2;
-            float hpBarHPWidth = 30f;
-            float effectBarWidth = hpBarHPWidth - effectBarWidthSpace * 2;
-            float hpBarHeight = 7f;
-            float effectBarHeight = hpBarHeight - (effectBarHeightSpace * 2);
-            float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
-            float hpBarTopIndent = hpBarHeight;
-
-            cameraController.shapeRenderer.setColor(Color.BLACK);
-            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
-            cameraController.shapeRenderer.setColor(Color.GREEN);
             float maxHP = unit.templateForUnit.healthPoints;
             float hp = unit.hp;
-            hpBarHPWidth = hpBarHPWidth / maxHP * hp;
-            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+            if (maxHP != hp) {
+                TextureRegion currentFrame = unit.getCurrentFrame();
+                fVx -= cameraController.sizeCellX/2;
+                fVy -= cameraController.sizeCellY;
+                float currentFrameWidth = currentFrame.getRegionWidth();
+                float currentFrameHeight = currentFrame.getRegionHeight();
+                float hpBarSpace = 0.8f;
+                float hpBarHPWidth = 30f;
+                float hpBarHeight = 7f;
+                float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
+                float hpBarTopIndent = hpBarHeight;
 
-            float allTime = 0f;
-            for (TowerShellEffect towerShellEffect : unit.shellEffectTypes) {
-                allTime += towerShellEffect.time;
-            }
+                cameraController.shapeRenderer.setColor(Color.BLACK);
+                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
+                cameraController.shapeRenderer.setColor(Color.GREEN);
 
-            if (allTime != 0.0) {
-                float effectWidth = effectBarWidth / allTime;
-                float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
-                float efY = fVy + currentFrameHeight - hpBarTopIndent + effectBarHeightSpace;
-                float effectBlockWidth = effectBarWidth / unit.shellEffectTypes.size;
-                for (int effectIndex = 0; effectIndex < unit.shellEffectTypes.size; effectIndex++) {
-                    TowerShellEffect towerShellEffect = unit.shellEffectTypes.get(effectIndex);
-                    if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
-                        cameraController.shapeRenderer.setColor(Color.RED);
-                    } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
-                        cameraController.shapeRenderer.setColor(Color.ROYAL);
+                hpBarHPWidth = hpBarHPWidth / maxHP * hp;
+                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+
+                float allTime = 0f;
+                for (TowerShellEffect towerShellEffect : unit.shellEffectTypes) {
+                    allTime += towerShellEffect.time;
+                }
+
+                if (allTime != 0.0) {
+                    float effectBarWidthSpace = hpBarSpace * 2;
+                    float effectBarHeightSpace = hpBarSpace * 2;
+                    float effectBarWidth = hpBarHPWidth - effectBarWidthSpace * 2;
+                    float effectBarHeight = hpBarHeight - (effectBarHeightSpace * 2);
+                    float effectWidth = effectBarWidth / allTime;
+                    float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
+                    float efY = fVy + currentFrameHeight - hpBarTopIndent + effectBarHeightSpace;
+                    float effectBlockWidth = effectBarWidth / unit.shellEffectTypes.size;
+                    for (int effectIndex = 0; effectIndex < unit.shellEffectTypes.size; effectIndex++) {
+                        TowerShellEffect towerShellEffect = unit.shellEffectTypes.get(effectIndex);
+                        if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
+                            cameraController.shapeRenderer.setColor(Color.RED);
+                        } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
+                            cameraController.shapeRenderer.setColor(Color.ROYAL);
+                        }
+                        float efWidth = effectBlockWidth - effectWidth * towerShellEffect.elapsedTime;
+                        cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
+                        efX += effectBlockWidth;
+//                        Gdx.app.log("GameField::drawUnit()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
                     }
-                    float efWidth = effectBlockWidth - effectWidth * towerShellEffect.elapsedTime;
-                    cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
-                    efX += effectBlockWidth;
-//                Gdx.app.log("GameField::drawUnit()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
                 }
             }
         }
@@ -927,52 +930,27 @@ public class GameField {
 
     private void drawTowerBar(CameraController cameraController, Tower tower, float fVx, float fVy) {
 //        if (tower.isAlive()) {
-            TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
-            fVx -= cameraController.sizeCellX/2;
-            fVy -= cameraController.sizeCellY;
-            float currentFrameWidth = currentFrame.getRegionWidth();
-            float currentFrameHeight = currentFrame.getRegionHeight();
-            float hpBarSpace = 0.8f;
-            float effectBarWidthSpace = hpBarSpace * 2;
-            float effectBarHeightSpace = hpBarSpace * 2;
-            float hpBarHPWidth = 30f;
-            float effectBarWidth = hpBarHPWidth - effectBarWidthSpace * 2;
-            float hpBarHeight = 7f;
-            float effectBarHeight = hpBarHeight - (effectBarHeightSpace * 2);
-            float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
-            float hpBarTopIndent = hpBarHeight;
-
-            cameraController.shapeRenderer.setColor(Color.BLACK);
-            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
-            cameraController.shapeRenderer.setColor(Color.GREEN);
             float maxHP = tower.templateForTower.healthPoints;
             float hp = tower.hp;
-            hpBarHPWidth = hpBarHPWidth / maxHP * hp;
-            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+            if (maxHP != hp) {
+                TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
+                fVx -= cameraController.sizeCellX/2;
+                fVy -= cameraController.sizeCellY;
+                float currentFrameWidth = currentFrame.getRegionWidth();
+                float currentFrameHeight = currentFrame.getRegionHeight();
+                float hpBarSpace = 0.8f;
+                float hpBarHPWidth = 30f;
+                float hpBarHeight = 7f;
+                float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
+                float hpBarTopIndent = hpBarHeight;
 
-//            float allTime = 0f;
-//            for (TowerShellEffect towerShellEffect : tower.shellEffectTypes) {
-//                allTime += towerShellEffect.time;
-//            }
-//
-//            if (allTime != 0.0) {
-//                float effectWidth = effectBarWidth / allTime;
-//                float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
-//                float efY = fVy + currentFrameHeight - hpBarTopIndent + effectBarHeightSpace;
-//                float effectBlockWidth = effectBarWidth / tower.shellEffectTypes.size;
-//                for (int effectIndex = 0; effectIndex < tower.shellEffectTypes.size; effectIndex++) {
-//                    TowerShellEffect towerShellEffect = tower.shellEffectTypes.get(effectIndex);
-//                    if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
-//                        cameraController.shapeRenderer.setColor(Color.RED);
-//                    } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
-//                        cameraController.shapeRenderer.setColor(Color.ROYAL);
-//                    }
-//                    float efWidth = effectBlockWidth - effectWidth * towerShellEffect.elapsedTime;
-//                    cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
-//                    efX += effectBlockWidth;
-////                Gdx.app.log("GameField::drawUnit()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
-//                }
-//            }
+                cameraController.shapeRenderer.setColor(Color.BLACK);
+                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
+                cameraController.shapeRenderer.setColor(Color.GREEN);
+
+                hpBarHPWidth = hpBarHPWidth / maxHP * hp;
+                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+            }
 //        }
     }
 

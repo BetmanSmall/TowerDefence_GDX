@@ -425,7 +425,7 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
                     coordinateX = selectorBorderVertical;
                 }
             } else {
-                if (coordinateX+ selectorPrefWidth >= selectorBorderVertical - (selectorPrefWidth /2) ) {
+                if (coordinateX+ selectorPrefWidth >= selectorBorderVertical - (selectorPrefWidth / 2) ) {
                     coordinateX = 0;
                 } else {
                     coordinateX = -selectorPrefWidth;
@@ -435,7 +435,7 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
         } else {
             if (gameField.gameSettings.topBottomLeftRightSelector) {
                 if (coordinateY- selectorPrefHeight >= selectorBorderHorizontal + (selectorPrefHeight / 2) ) {
-                    coordinateY = parentHeight+ selectorPrefHeight; // or selectorPrefHeight???
+                    coordinateY = parentHeight + selectorPrefHeight; // or selectorPrefHeight???
                     gameField.cancelUnderConstruction();
                 } else {
                     coordinateY = parentHeight;
