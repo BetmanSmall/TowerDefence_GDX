@@ -45,16 +45,43 @@ public class WidgetController extends Game {
         Gdx.app.log("WidgetController::create()", "--");
         instance = this;
 
+        backgroundImages = new Array<Image>();
         FileHandle imagesDir = Gdx.files.internal("backgrounds");
         FileHandle[] fileHandles = imagesDir.list();
-        backgroundImages = new Array<Image>();
-        for (FileHandle fileHandle : fileHandles) {
-            if (fileHandle.extension().equals("png")) {
-                Image image = new Image(new Texture(fileHandle));
-                image.setFillParent(true);
-                backgroundImages.add(image);
+        Gdx.app.log("WidgetController::create()", "-- fileHandles.length:" + fileHandles.length);
+        if (fileHandles.length == 0) {
+            int index = 1;
+            FileHandle fileHandle = null;
+            while (true) {
+                Gdx.app.log("WidgetController::create()", "-- try load:" + imagesDir + "/background" + index + ".png");
+                try {
+                    fileHandle = Gdx.files.internal(imagesDir + "/background" + index + ".png");
+                    Gdx.app.error("WidgetController::create()", "-- fileHandle:" + fileHandle);
+                    Gdx.app.error("WidgetController::create()", "-- fileHandle.exists():" + fileHandle.exists());
+                    Gdx.app.error("WidgetController::create()", "-- fileHandle.isDirectory():" + fileHandle.isDirectory());
+                    if (fileHandle.exists() && !fileHandle.isDirectory()) {
+                        Image image = new Image(new Texture(fileHandle));
+                        image.setFillParent(true);
+                        backgroundImages.add(image);
+                    } else {
+                        break;
+                    }
+                    index++;
+                } catch (Exception exp) {
+                    Gdx.app.error("WidgetController::create()", "-- exp:" + exp);
+                    break;
+                }
+            }
+        } else {
+            for (FileHandle fileHandle : fileHandles) {
+                if (fileHandle.extension().equals("png")) {
+                    Image image = new Image(new Texture(fileHandle));
+                    image.setFillParent(true);
+                    backgroundImages.add(image);
+                }
             }
         }
+        Gdx.app.log("WidgetController::create()", "-- backgroundImages.size:" + backgroundImages.size);
 
         try {
             gameSettings = new GameSettings();
