@@ -98,7 +98,7 @@ public class WidgetController extends Game {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("WidgetController::resize(" + width + "," + height + ")", "--");
+        Gdx.app.log("WidgetController::resize(" + width + ", " + height + ")", "--");
         super.resize(width, height);
     }
 

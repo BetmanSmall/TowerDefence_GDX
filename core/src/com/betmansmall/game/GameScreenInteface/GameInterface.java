@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -21,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.game.GameType;
 import com.betmansmall.game.WidgetController;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -74,6 +74,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private int prevMouseX, prevMouseY;
 
     public GameInterface(final GameField gameField, BitmapFont bitmapFont) {
+        super(new ScreenViewport());
         Gdx.app.log("GameInterface::GameInterface(" + gameField + "," + bitmapFont + ")", "-- Called!");
         this.gameField = gameField;
 //        this.shapeRenderer = shapeRenderer;
@@ -782,10 +783,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     public void resize(int width, int height) {
         Gdx.app.log("GameInterface::resize()", "-- width:" + width + " height:" + height);
-        infoTablo.setSize(width, height);
-        tableBack.setSize(width, height);
-        tableFront.setSize(width, height);
+        for (Actor actor : getActors()) {
+            if (actor instanceof Table) {
+                actor.setSize(width, height);
+            }
+        }
         getViewport().update(width, height, true);
+//        cameraController.camera.update(); // I don't know need this or not.
         if (towersSelector != null) {
             towersSelector.resize(width, height);
         }

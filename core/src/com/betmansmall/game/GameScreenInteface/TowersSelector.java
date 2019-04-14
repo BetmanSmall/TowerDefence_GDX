@@ -19,7 +19,7 @@ import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 public class TowersSelector extends Table implements GestureDetector.GestureListener {
-    public float sectionWidth, sectionHeight;
+//    public float sectionWidth, sectionHeight;
     public float parentWidth, parentHeight;
     public float selectorPrefWidth, selectorPrefHeight;
     public float selectorBorderVertical;
@@ -97,11 +97,9 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
 //    @Override
     public void resize(int width, int height) {
         Gdx.app.log("TowersSelector::resize()", "-- width:" + width + " height:" + height);
-//        setWidth(width);
-//        setHeight(height);
-        Group groupParent = getParent();
-        parentWidth = groupParent.getWidth();
-        parentHeight = groupParent.getHeight();
+        Group groupParent = getParent(); // mb it is not good!
+        parentWidth = groupParent.getWidth(); // mb need set simple // parentWidth = width;
+        parentHeight = groupParent.getHeight(); // mb need set simple // parentHeight = height;
         Gdx.app.log("TowersSelector::resize()", "-- parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
         Gdx.app.log("TowersSelector::resize()", "-- getMaxWidth():" + getMaxWidth());
         Gdx.app.log("TowersSelector::resize()", "-- getMaxHeight():" + getMaxHeight());
@@ -115,64 +113,13 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
         Gdx.app.log("TowersSelector::resize()", "-- getRowHeight():" + getRowHeight(0));
         Gdx.app.log("TowersSelector::resize()", "-- getX:" + getX());
         Gdx.app.log("TowersSelector::resize()", "-- getY:" + getY());
-        Gdx.app.log("TowersSelector::resize()", "-- getOriginX:" + getOriginX());
-        Gdx.app.log("TowersSelector::resize()", "-- getOriginY:" + getOriginY());
-        Gdx.app.log("TowersSelector::resize()", "-- getPadX:" + getPadX());
-        Gdx.app.log("TowersSelector::resize()", "-- getPadY:" + getPadY());
-        sectionWidth = height*0.2f;
-        sectionHeight = height*0.2f;
-        Gdx.app.log("TowersSelector::resize()", "-- sectionWidth:" + sectionWidth);
-        Gdx.app.log("TowersSelector::resize()", "-- sectionHeight:" + sectionHeight);
-        if (gameField.gameSettings.verticalSelector) {
-            setWidth(sectionWidth);
-        } else {
-            setHeight(sectionHeight);
-        }
-        float maxWidthSection = sectionWidth;
-        float maxHeightSection = sectionHeight;
-        Array<Actor> array = getChildren();
-        for (int a = 0; a < array.size; a++) {
-            Actor actor = array.get(a);
-            if (actor instanceof Button) {
-                Button button = (Button) actor;
-//                Gdx.app.log("TowersSelector::resize()", "-- button.getName:" + button.getName());
-//                Gdx.app.log("TowersSelector::resize()", "-- button.getMinWidth():" + button.getMinWidth());
-//                Gdx.app.log("TowersSelector::resize()", "-- button.getMinHeight():" + button.getMinHeight());
-//                Gdx.app.log("TowersSelector::resize()", "-- button.getPrefWidth():" + button.getPrefWidth());
-//                Gdx.app.log("TowersSelector::resize()", "-- button.getPrefHeight():" + button.getPrefHeight());
-                float minButtonWidth = button.getMinWidth();
-                float minButtonHeight = button.getMinHeight();
-                if (minButtonWidth > maxWidthSection) {
-                    maxWidthSection = minButtonWidth;
-                }
-                if (minButtonHeight > maxHeightSection) {
-                    maxHeightSection = minButtonHeight;
-                }
-            }
-        }
-        sectionWidth = maxWidthSection;
-        sectionHeight = maxHeightSection;
-        for (int a = 0; a < array.size; a++) {
-            Actor actor = array.get(a);
-            if (actor instanceof Button) {
-                Button button = (Button) actor;
-                button.setWidth(sectionWidth);
-                button.setHeight(sectionHeight);
-            }
-        }
-        Gdx.app.log("TowersSelector::resize()", "-2- sectionWidth:" + sectionWidth);
-        Gdx.app.log("TowersSelector::resize()", "-2- sectionHeight:" + sectionHeight);
+
         selectorPrefWidth = getPrefWidth();
         selectorPrefHeight = getPrefHeight();
         Gdx.app.log("TowersSelector::resize()", "-- selectorPrefWidth:" + selectorPrefWidth);
         Gdx.app.log("TowersSelector::resize()", "-- selectorPrefHeight:" + selectorPrefHeight);
 //        setStopSection(calculateCurrentSection() - 1);
 
-//        selectorBorderVertical = width - selectorPrefWidth;
-//        selectorBorderHorizontal = height - selectorPrefHeight;
-
-//        Gdx.app.log("TowersSelector::resize()", "-- gameField.gameSettings.topBottomLeftRightSelector:" + gameField.gameSettings.topBottomLeftRightSelector);
-//        Gdx.app.log("TowersSelector::resize()", "-- gameField.gameSettings.verticalSelector:" + gameField.gameSettings.verticalSelector);
         // need change row in table cells! row or not row!
         if (gameField.gameSettings.verticalSelector) {
             coordinateY = parentHeight;
@@ -212,23 +159,14 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
         Gdx.app.log("TowersSelector::resize()", "-- selectorBorderHorizontal:" + selectorBorderHorizontal);
         Gdx.app.log("TowersSelector::resize()", "-- coordinateX:" + coordinateX);
         Gdx.app.log("TowersSelector::resize()", "-- coordinateY:" + coordinateY);
-
-//        Gdx.app.log("TowersSelector::resize()", "-- getParent:" + getParent());
     }
 
 //    @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Gdx.app.log("TowersSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
-//        float groupX = getX();
-//        float groupY = getY();
-//        float selectorPrefWidth = getWidth();
-//        float selectorPrefHeight = getHeight();
-//        float selectorPrefWidth = getPrefWidth();
-//        float selectorPrefHeight = getPrefHeight();
         Gdx.app.log("TowersSelector::isPanning()", "-- coordinateX:" + coordinateX + " coordinateY:" + coordinateY);
         Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
         Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight + " parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
-//        y = parentHeight-y;
 
         float deltaXabs = Math.abs(deltaX);
         float deltaYabs = Math.abs(deltaY);
@@ -378,23 +316,6 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
                     }
                 }
             }
-//            isPanning = true;
-//            if ( (gameField.gameSettings.verticalSelector && gameField.gameSettings.topBottomLeftRightSelector && (x>=selectorBorderVertical)) || isPanning) {
-//                coordinateY += deltaY;
-//            } else if ( (gameField.gameSettings.verticalSelector && !gameField.gameSettings.topBottomLeftRightSelector && (x<=selectorBorderVertical)) || isPanning) {
-//                coordinateY += deltaY;
-//            if (getY() > 0) {
-//                setY(0);
-//            } else if(getY()+ getHeight() < parentHeight) {
-//                setY( (0-(getHeight()-parentHeight)) );
-//            }
-//            if (coordinateY > 0) {
-//                coordinateY = 0;
-//            } else if (coordinateY + selectorPrefHeight < parentHeight) {
-//                coordinateY = 0 - selectorPrefHeight - parentHeight;
-//            }
-//                return true;
-//            }
         }
 
 //        Gdx.app.log("SlidingTable::isPanning()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
@@ -414,8 +335,6 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
 //    @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         Gdx.app.log("TowersSelector::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-//        float selectorPrefWidth = getWidth();
-//        float selectorPrefHeight = getHeight();
         if (gameField.gameSettings.verticalSelector) {
             if (gameField.gameSettings.topBottomLeftRightSelector) {
                 if (coordinateX >= selectorBorderVertical + (selectorPrefWidth / 2) ) {
@@ -435,7 +354,7 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
         } else {
             if (gameField.gameSettings.topBottomLeftRightSelector) {
                 if (coordinateY- selectorPrefHeight >= selectorBorderHorizontal + (selectorPrefHeight / 2) ) {
-                    coordinateY = parentHeight + selectorPrefHeight; // or selectorPrefHeight???
+                    coordinateY = parentHeight + selectorPrefHeight; // or sectionHeight???
                     gameField.cancelUnderConstruction();
                 } else {
                     coordinateY = parentHeight;
