@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -18,12 +17,15 @@ import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
-public class TowersSelector extends Table implements GestureDetector.GestureListener {
+public class TowersSelector extends Table { // implements GestureDetector.GestureListener {
 //    public float sectionWidth, sectionHeight;
     public float parentWidth, parentHeight;
     public float selectorPrefWidth, selectorPrefHeight;
     public float selectorBorderVertical;
     public float selectorBorderHorizontal;
+
+    public boolean flinging;
+    public float flingVelocityX, flingVelocityY;
 
     // Смещение контейнера sections
     private boolean open = true;
@@ -43,10 +45,12 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
     public GameField gameField;
     public BitmapFont bitmapFont;
     public Array<TemplateForTower> templateForTowers;
+    public GameInterface gameInterface; // NOT GOOD MB
 
-    public TowersSelector(GameField gameField, BitmapFont bitmapFont, Skin skin) {
+    public TowersSelector(GameField gameField, BitmapFont bitmapFont, Skin skin, GameInterface gameInterface) {
         this.gameField = gameField;
         this.bitmapFont = bitmapFont;
+        this.gameInterface = gameInterface; // NOT GOOD MB
 
         templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
         Gdx.app.log("TowersSelector::TowersSelector()", "-- templateForTowers:" + templateForTowers);
@@ -81,13 +85,19 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
             Button button = new Button(towerTable, skin);
             button.setName(nameTower);
             button.setUserObject(towerIndex);
-            Cell<Button> cellButton = this.add(button);//.expand().fill();
+            Cell<Button> cellButton = this.add(button);//.expand();//.fill();
             if (gameField.gameSettings.verticalSelector) {
                 cellButton.row();//.minHeight(Gdx.graphics.getHeight()*0.2f).row();
             }
         }
 //        this.clearChildren();
         this.setDebug(true);
+//        this.addListener(new EventListener() {
+//            @Override
+//            public boolean handle(Event event) {
+//                return true;
+//            }
+//        });
     }
 
     public void dispose() {
@@ -372,21 +382,50 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
         return false;
     }
 
-    @Override
+//    @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("TowersSelector::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
+        flinging = false;
+        if (gameField.gameSettings.verticalSelector) {
+            if (gameField.gameSettings.topBottomLeftRightSelector) {
+                if (gameInterface.prevMouseX > selectorBorderVertical) {
+                    flinging = true;
+                }
+            } else {
+                if (gameInterface.prevMouseX < selectorBorderVertical) {
+                    flinging = true;
+                }
+            }
+        } else {
+            if (gameField.gameSettings.topBottomLeftRightSelector) {
+                if (gameInterface.prevMouseY > selectorBorderHorizontal) {
+                    flinging = true;
+                }
+            } else {
+                if (gameInterface.prevMouseY < selectorBorderHorizontal) {
+                    flinging = true;
+                }
+            }
+        }
+        if (gameField.gameSettings.smoothFlingSelector && flinging) { // smoothFlingSelector - плавное движение селектора
+            flingVelocityX = velocityX * 0.5f;
+            flingVelocityY = velocityY * 0.5f;
+            return true;
+        } else { // если smoothFlingSelector=false значит нужно рывками сдвигать по секциям. как в help SlidingTable
+            flinging = false; // TODO work need
+        }
 //        if ( < selectorBorderVertical) {
-            if (Math.abs(velocityX) > flingSpeed) {
-                if (velocityX > 0) {
-                    coordinateX = getWidth();
+//            if (Math.abs(velocityX) > flingSpeed) {
+//                if (velocityX > 0) {
+//                    coordinateX = getWidth();
 //                closeSelector();
 //                setStopSection(currentSection - 2);
-                } else {
+//                } else {
 //                    coordinateX = getWidth() - sectionWidth * 2f; // todo need fix why *2f?
 //                openSelector()
 //                setStopSection(currentSection);
-                }
-            }
+//                }
+//            }
 //            if (Math.abs(velocityY) > flingSpeed) {
 //                if (velocityY > 0) {
 //                    setStopSection(currentSection - 2);
@@ -513,6 +552,28 @@ public class TowersSelector extends Table implements GestureDetector.GestureList
     @Override
     public void act(float delta) {
         // Смещаем контейнер с секциями
+        if (flinging) {
+            flingVelocityX *= 0.98f;
+            flingVelocityY *= 0.98f;
+            float newX = coordinateX + (flingVelocityX * delta);
+            float newY = coordinateY + (flingVelocityY * delta);
+            if (gameField.gameSettings.verticalSelector) {
+                if (newY > parentHeight && newY - selectorPrefHeight < 0) {
+                    coordinateY = newY;
+                }
+            } else {
+                if (newX < 0 && newX + selectorPrefWidth > parentWidth) {
+                    coordinateX = newX;
+                }
+            }
+            if (Math.abs(flingVelocityX) < 0.01) flingVelocityX = 0.0f;
+            if (Math.abs(flingVelocityY) < 0.01) flingVelocityY = 0.0f;
+            if (flingVelocityX == 0.0 && flingVelocityY == 0.0) {
+                flinging = false;
+            }
+//                    Gdx.app.log("CameraController::update()", "-- velX:" + velX + " velY:" + velY);
+//                    Gdx.app.log("CameraController::update()", "-- newCameraX:" + newCameraX + " newCameraY:" + newCameraY);
+        }
         setX(coordinateX);
         setY( -(coordinateY-parentHeight) ); // pizdec libgdx draw ui from leftDown but mouse Coord from leftUp
 

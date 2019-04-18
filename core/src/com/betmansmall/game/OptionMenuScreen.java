@@ -27,6 +27,7 @@ public class OptionMenuScreen implements Screen {
 
     private CheckBox topBottomLeftRightSelector;
     private CheckBox verticalSelector;
+    private CheckBox smoothFlingSelector;
     private CheckBox checkBoxSound;
     private Slider sliderSound;
     private Slider sliderEnemyCount;
@@ -84,6 +85,21 @@ public class OptionMenuScreen implements Screen {
         verticalSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
         verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         rightTable.add(verticalSelector).expand().fill().left().colspan(2).row();
+
+        smoothFlingSelector = new CheckBox("smoothFlingSelector", skin);
+        smoothFlingSelector.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("OptionMenuScreen::smoothFlingSelector::changed()", "-- smoothFlingSelector.isChecked():" + smoothFlingSelector.isChecked());
+                gameSettings.smoothFlingSelector = smoothFlingSelector.isChecked();
+            }
+        });
+        smoothFlingSelector.setChecked(gameSettings.smoothFlingSelector);
+        smoothFlingSelector.getImage().setScaling(Scaling.stretch);
+        smoothFlingSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+        smoothFlingSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        smoothFlingSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+        rightTable.add(smoothFlingSelector).expand().fill().left().colspan(2).row();
 
         panLeftMouseButton = new CheckBox("panLeftMouseButton", skin);
         panLeftMouseButton.addListener(new ChangeListener() {

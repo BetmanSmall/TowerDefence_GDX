@@ -60,8 +60,8 @@ public class GameScreen implements Screen {
         cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(gameInterface);
         inputMultiplexer.addProcessor(new GestureDetector(gameInterface));
+        inputMultiplexer.addProcessor(gameInterface);
         inputMultiplexer.addProcessor(cameraController);
         inputMultiplexer.addProcessor(new GestureDetector(cameraController));
         Gdx.input.setInputProcessor(inputMultiplexer);

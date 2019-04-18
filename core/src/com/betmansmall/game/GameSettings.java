@@ -14,6 +14,7 @@ public class GameSettings {
     public int towersCount;
     public boolean topBottomLeftRightSelector; // Top - false, Bottom - true, Left - false, Right - true;
     public boolean verticalSelector;
+    public boolean smoothFlingSelector;
     public boolean panLeftMouseButton;
     public boolean panMidMouseButton;
     public boolean panRightMouseButton;
@@ -35,6 +36,7 @@ public class GameSettings {
 
         topBottomLeftRightSelector = true;
         verticalSelector = true;
+        smoothFlingSelector = true;
         panLeftMouseButton = true;
         panMidMouseButton = false;
         panRightMouseButton = false;
@@ -72,6 +74,7 @@ public class GameSettings {
         if (full) {
             sb.append(",topBottomLeftRightSelector:" + topBottomLeftRightSelector);
             sb.append(",verticalSelector:" + verticalSelector);
+            sb.append(",smoothFlingSelector:" + smoothFlingSelector);
             sb.append(",panLeftMouseButton:" + panLeftMouseButton);
             sb.append(",panMidMouseButton:" + panMidMouseButton);
             sb.append(",panRightMouseButton:" + panRightMouseButton);

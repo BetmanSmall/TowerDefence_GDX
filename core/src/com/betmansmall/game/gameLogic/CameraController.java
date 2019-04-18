@@ -128,7 +128,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
             if (((int) (Math.random() * 2) == 0)) {
                 gameField.towerActions((int) touch.x, (int) touch.y);
             } else {
-                if (((int) (Math.random() * 5) == 0)) {
+                if (((int) (Math.random() * 5) == 0) && gameField.gameSettings.gameType == GameType.LittleGame) {
                     gameField.spawnHero((int) touch.x, (int) touch.y);
                 } else {
                     gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
