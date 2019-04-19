@@ -2114,27 +2114,35 @@ public class GameField {
         }
     }
 
+    /**
+     * Flips cells array by X axis.
+     */
     public void flipX() {
         Cell[][] newCells = new Cell[map.width][map.height];
-        for (int y = 0; y < map.height; y++) {
-            for (int x = 0; x < map.width; x++) {
-                newCells[map.width-x-1][y] = field[x][y];
-                newCells[map.width-x-1][y].setGraphicCoordinates(map.width-x-1, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
+        int x2 = map.width - 1;
+        for (int x = 0; x < map.width; x++) {
+            for (int y = 0; y < map.height; y++) {
+                newCells[x][y] = field[x2][y];
+                newCells[x][y].setGraphicCoordinates(x, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
             }
+            x2--;
         }
-//        delete field;
         field = newCells;
     }
 
+    /**
+     * Flips cells array by Y axis.
+     */
     public void flipY() {
         Cell[][] newCells = new Cell[map.width][map.height];
+        int y2 = map.height - 1;
         for(int y = 0; y < map.height; y++) {
             for(int x = 0; x < map.width; x++) {
-                newCells[x][map.height-y-1] = field[x][y];
-                newCells[x][map.height-y-1].setGraphicCoordinates(x, map.height-y-1, map.tileWidth, map.tileHeight, gameSettings.isometric);
+                newCells[x][y] = field[x][y2];
+                newCells[x][y].setGraphicCoordinates(x, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
             }
+            y2--;
         }
-//        delete field;
         field = newCells;
     }
 
