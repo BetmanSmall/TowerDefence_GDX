@@ -40,6 +40,7 @@ public class GameField {
     public static UnitsManager unitsManager; // For Bullet
     public GameSettings gameSettings;
     public TiledMap map;
+    public boolean turnedMap = false; // костыль. нужно допиливать поворт карты. если этот функционал дествительно нужен.
     private Cell[][] field;
     private PathFinder pathFinder;
 
@@ -930,27 +931,27 @@ public class GameField {
 
     private void drawTowerBar(CameraController cameraController, Tower tower, float fVx, float fVy) {
 //        if (tower.isAlive()) {
-            float maxHP = tower.templateForTower.healthPoints;
-            float hp = tower.hp;
-            if (maxHP != hp) {
-                TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
-                fVx -= cameraController.sizeCellX/2;
-                fVy -= cameraController.sizeCellY;
-                float currentFrameWidth = currentFrame.getRegionWidth();
-                float currentFrameHeight = currentFrame.getRegionHeight();
-                float hpBarSpace = 0.8f;
-                float hpBarHPWidth = 30f;
-                float hpBarHeight = 7f;
-                float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
-                float hpBarTopIndent = hpBarHeight;
+        float maxHP = tower.templateForTower.healthPoints;
+        float hp = tower.hp;
+        if (maxHP != hp) {
+            TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
+            fVx -= cameraController.sizeCellX/2;
+            fVy -= cameraController.sizeCellY;
+            float currentFrameWidth = currentFrame.getRegionWidth();
+            float currentFrameHeight = currentFrame.getRegionHeight();
+            float hpBarSpace = 0.8f;
+            float hpBarHPWidth = 30f;
+            float hpBarHeight = 7f;
+            float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
+            float hpBarTopIndent = hpBarHeight;
 
-                cameraController.shapeRenderer.setColor(Color.BLACK);
-                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
-                cameraController.shapeRenderer.setColor(Color.GREEN);
+            cameraController.shapeRenderer.setColor(Color.BLACK);
+            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
+            cameraController.shapeRenderer.setColor(Color.GREEN);
 
-                hpBarHPWidth = hpBarHPWidth / maxHP * hp;
-                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
-            }
+            hpBarHPWidth = hpBarHPWidth / maxHP * hp;
+            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+        }
 //        }
     }
 
@@ -1012,46 +1013,54 @@ public class GameField {
 
         Array<GridPoint2> spawnPoints = waveManager.getAllSpawnPoint();
         cameraController.shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
-        for (GridPoint2 spawnPoint : spawnPoints) {
-            Cell cell = field[spawnPoint.x][spawnPoint.y];
-            if(cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(1));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
-            }
-            if(cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(2));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
-            }
-            if(cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(3));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
-            }
-            if(cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(4));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+        if (!turnedMap) {
+            for (GridPoint2 spawnPoint : spawnPoints) {
+                Cell cell = field[spawnPoint.x][spawnPoint.y]; // ArrayIndexOutOfBoundsException x==31 because turn x==16 && y==31 // turnedMap kostbIl
+                if (cell != null) { // TODO need in turnAndFlip() convert. and this point and other
+                    if (cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
+                        pos.set(cell.getGraphicCoordinates(1));
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                    }
+                    if (cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
+                        pos.set(cell.getGraphicCoordinates(2));
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                    }
+                    if (cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
+                        pos.set(cell.getGraphicCoordinates(3));
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                    }
+                    if (cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
+                        pos.set(cell.getGraphicCoordinates(4));
+                        cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                    }
+                } else {
+                    Gdx.app.log("GameField::drawGridNav()", "-- cell:" + cell + " spawnPoint.x:" + spawnPoint.x + " spawnPoint.y:" + spawnPoint.y);
+                }
             }
         }
 
         Array<GridPoint2> exitPoints = waveManager.getAllExitPoint();
         cameraController.shapeRenderer.setColor(new Color(255f, 0f, 102f, 255f));
-        for (GridPoint2 exitPoint : exitPoints) {
+        if (!turnedMap) {
+            for (GridPoint2 exitPoint : exitPoints) {
 //            Gdx.app.log("GameField::drawGridNav()", "-- exitCell.cellX:" + exitCell.cellX + " exitCell.y:" + exitCell.y + " cameraController.isDrawableGridNav:" + cameraController.isDrawableGridNav);
-            Cell cell = field[exitPoint.x][exitPoint.y];
-            if(cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(1));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
-            }
-            if(cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(2));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
-            }
-            if(cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(3));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
-            }
-            if(cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
-                pos.set(cell.getGraphicCoordinates(4));
-                cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                Cell cell = field[exitPoint.x][exitPoint.y];
+                if (cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
+                    pos.set(cell.getGraphicCoordinates(1));
+                    cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                }
+                if (cameraController.isDrawableGridNav == 2 || cameraController.isDrawableGridNav == 5) {
+                    pos.set(cell.getGraphicCoordinates(2));
+                    cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                }
+                if (cameraController.isDrawableGridNav == 3 || cameraController.isDrawableGridNav == 5) {
+                    pos.set(cell.getGraphicCoordinates(3));
+                    cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                }
+                if (cameraController.isDrawableGridNav == 4 || cameraController.isDrawableGridNav == 5) {
+                    pos.set(cell.getGraphicCoordinates(4));
+                    cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
+                }
             }
         }
 
@@ -1503,7 +1512,7 @@ public class GameField {
 //                    removeLastTower();
 //                    unit = createUnit(spawnCell, destCell, templateForUnit, player, exitCell);
 //                } else {
-                    return null;
+                return null;
 //                }
             }
             return unit;
@@ -1795,8 +1804,8 @@ public class GameField {
         ArrayDeque<Cell> route = pathFinder.route(unit.nextCell.cellX, unit.nextCell.cellY, x, y);
         if (route != null && !route.isEmpty()) {
 //            if (route.front().equals({x, y})) {
-                route.removeFirst();
-                unit.route = route;
+            route.removeFirst();
+            unit.route = route;
 //            } else {
 //                unit->route.clear();
 //            }
@@ -2067,8 +2076,9 @@ public class GameField {
             }
             y2--;
         }
-        // delete field;
+        // delete field; // TODO need this make or not?
         field = newCells;
+        turnedMap = !turnedMap;
     }
 
     public void turnLeft() {
@@ -2084,6 +2094,7 @@ public class GameField {
         }
         // delete field;
         field = newCells;
+        turnedMap = !turnedMap;
     }
 
     /**
