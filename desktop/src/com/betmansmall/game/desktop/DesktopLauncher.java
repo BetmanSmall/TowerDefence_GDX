@@ -10,8 +10,8 @@ public class DesktopLauncher {
         config.title = "Tower Defence";
         config.x = -3;
         config.y = 0;
-        config.width = 400;
-        config.height = 150;
+        config.width = 1280;
+        config.height = 720;
 //        config.useGL30 = true;
 //        config.fullscreen = true;
 //        config.vSyncEnabled = true;
