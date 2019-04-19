@@ -2057,84 +2057,66 @@ public class GameField {
     }
 
     public void turnRight() {
-        if(map.width == map.height) {
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < map.height; y++) {
-                for(int x = 0; x < map.width; x++) {
-                    newCells[map.width-y-1][x] = field[x][y];
-                    newCells[map.width-y-1][x].setGraphicCoordinates(map.width-y-1, x, map.tileWidth, map.tileHeight, gameSettings.isometric);
-                }
+        map.setSize(map.height, map.width); // flip size
+        Cell[][] newCells = new Cell[field[0].length][field.length]; // flip array size
+        int y2 = map.width - 1;
+        for(int y = 0; y < map.width; y++) {
+            for(int x = 0; x < map.height; x++) {
+                newCells[y2][x] = field[x][y];
+                newCells[y2][x].setGraphicCoordinates(y2, x, map.tileWidth, map.tileHeight, gameSettings.isometric);
             }
-//        delete field;
-            field = newCells;
-        } else {
-            Gdx.app.log("GameField::turnRight()", "-- Not work || Work, but mb not Good!");
-            int oldWidth = map.width;
-            int oldHeight = map.height;
-            map.width = map.height;
-            map.height = oldWidth;
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < oldHeight; y++) {
-                for(int x = 0; x < oldWidth; x++) {
-                    newCells[map.width-y-1][x] = field[x][y];
-                    newCells[map.width-y-1][x].setGraphicCoordinates(map.width-y-1, x, map.tileWidth, map.tileHeight, gameSettings.isometric);
-                }
-            }
-//        delete field;
-            field = newCells;
+            y2--;
         }
-    }
-
-    public void turnLeft() {
-        if(map.width == map.height) {
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < map.height; y++) {
-                for(int x = 0; x < map.width; x++) {
-                    newCells[y][map.height-x-1] = field[x][y];
-                    newCells[y][map.height-x-1].setGraphicCoordinates(y, map.height-x-1, map.tileWidth, map.tileHeight, gameSettings.isometric);
-                }
-            }
-//        delete field;
-            field = newCells;
-        } else {
-            Gdx.app.log("GameField::turnLeft()", "-- Not work || Work, but mb not Good!");
-            int oldWidth = map.width;
-            int oldHeight = map.height;
-            map.width = map.height;
-            map.height = oldWidth;
-            Cell[][] newCells = new Cell[map.width][map.height];
-            for(int y = 0; y < oldHeight; y++) {
-                for(int x = 0; x < oldWidth; x++) {
-                    newCells[y][map.height-x-1] = field[x][y];
-                    newCells[y][map.height-x-1].setGraphicCoordinates(y, map.height-x-1, map.tileWidth, map.tileHeight, gameSettings.isometric);
-                }
-            }
-//        delete field;
-            field = newCells;
-        }
-    }
-
-    public void flipX() {
-        Cell[][] newCells = new Cell[map.width][map.height];
-        for (int y = 0; y < map.height; y++) {
-            for (int x = 0; x < map.width; x++) {
-                newCells[map.width-x-1][y] = field[x][y];
-                newCells[map.width-x-1][y].setGraphicCoordinates(map.width-x-1, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
-            }
-        }
-//        delete field;
+        // delete field;
         field = newCells;
     }
 
+    public void turnLeft() {
+        map.setSize(map.height, map.width); // flip size
+        Cell[][] newCells = new Cell[field[0].length][field.length]; // flip array size
+        int x2 = map.height - 1;
+        for(int x = 0; x < map.height; x++) {
+            for(int y = 0; y < map.width; y++) {
+                newCells[y][x2] = field[x][y];
+                newCells[y][x2].setGraphicCoordinates(y, x2, map.tileWidth, map.tileHeight, gameSettings.isometric);
+            }
+            x2--;
+        }
+        // delete field;
+        field = newCells;
+    }
+
+    /**
+     * Flips cells array by X axis.
+     */
+    public void flipX() {
+        Cell[][] newCells = new Cell[map.width][map.height];
+        int x2 = map.width - 1;
+        for (int x = 0; x < map.width; x++) {
+            for (int y = 0; y < map.height; y++) {
+                newCells[x][y] = field[x2][y];
+                newCells[x][y].setGraphicCoordinates(x, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
+            }
+            x2--;
+        }
+        // delete field;
+        field = newCells;
+    }
+
+    /**
+     * Flips cells array by Y axis.
+     */
     public void flipY() {
         Cell[][] newCells = new Cell[map.width][map.height];
+        int y2 = map.height - 1;
         for(int y = 0; y < map.height; y++) {
             for(int x = 0; x < map.width; x++) {
-                newCells[x][map.height-y-1] = field[x][y];
-                newCells[x][map.height-y-1].setGraphicCoordinates(x, map.height-y-1, map.tileWidth, map.tileHeight, gameSettings.isometric);
+                newCells[x][y] = field[x][y2];
+                newCells[x][y].setGraphicCoordinates(x, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
             }
+            y2--;
         }
-//        delete field;
+        // delete field;
         field = newCells;
     }
 

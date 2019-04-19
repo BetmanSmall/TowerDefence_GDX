@@ -1,14 +1,15 @@
 package com.betmansmall.game.gameLogic.mapLoader;
 
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Map implements Disposable {
-    private MapLayers mapLayers;
+    private Array<MapLayer> mapLayers;
     private MapProperties mapProperties;
 
     public Map () {
-        this.mapLayers = new MapLayers();
+        this.mapLayers = new Array<MapLayer>();
         this.mapProperties = new MapProperties();
     }
 
@@ -16,7 +17,7 @@ public class Map implements Disposable {
     public void dispose() {
     }
 
-    public MapLayers getLayers() {
+    public Array<MapLayer> getLayers() {
         return mapLayers;
     }
 
