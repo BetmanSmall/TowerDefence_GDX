@@ -34,6 +34,11 @@ public class TiledMap extends Map {
 //        return layer;
 //    }
 
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public void setOwnedResources (Array<? extends Disposable> resources) {
         this.ownedResources = resources;
     }
