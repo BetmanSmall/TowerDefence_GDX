@@ -85,7 +85,7 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
             Button button = new Button(towerTable, skin);
             button.setName(nameTower);
             button.setUserObject(towerIndex);
-            Cell<Button> cellButton = this.add(button);//.expand();//.fill();
+            Cell<Button> cellButton = this.add(button).expand().fill();
             if (gameField.gameSettings.verticalSelector) {
                 cellButton.row();//.minHeight(Gdx.graphics.getHeight()*0.2f).row();
             }

@@ -30,7 +30,7 @@ import com.betmansmall.game.gameLogic.UnderConstruction;
 /**
  * Created by Transet/AndeyA on 07.02.2016. (GovnoDoderbI)
  * This class provides elements which placed on game screen.
- * TODO implement more interface options
+ * Changed by nMukhin on 2019
  */
 public class GameInterface extends Stage implements GestureDetector.GestureListener/*, InputProcessor*/ {
     private GameField gameField;
@@ -40,8 +40,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private CameraController cameraController;
 
     private Skin skin;
-//    public Stage stage;
-    public Table tableBack, tableFront, pauseMenuTable, optionTable;
+
+    public Table tableWithButtons, tableWithSelectors, tableConsoleLog, tableInfoTablo, pauseMenuTable, optionTable;
     public VerticalGroup infoTablo;
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
@@ -52,6 +52,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     public Array<String> arrayActionsHistory;
     private float deleteActionThrough, actionInHistoryTime;
     private Label actionsHistoryLabel;
+    // Console need
 
     public TextButton pauseMenuButton;
     public TextButton startAndPauseButton;
@@ -82,26 +83,49 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         this.bitmapFont = bitmapFont;
 
         this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-//        this.stage = new Stage(new ScreenViewport());
-//        stage.getViewport().update(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, true);
-//        stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        this.winTexture = new Texture(Gdx.files.internal("concepts/littlegame-concept-2-1.jpg"));
+        this.loseTexture = new Texture(Gdx.files.internal("concepts/2018-12-03_19-43-03.png"));
+        this.currentTextureTime = 0f;
+        this.maxTextureTime = 5f;
+
+        this.interfaceTouched = false;
+
+        initInterface();
+        addListeners();
+//        setCameraController(cameraController); // need set draw settings to optionTable
+
 //        setDebugAll(true);
 //        setDebugUnderMouse(true);
 //        setDebugTableUnderMouse(true);
 //        setDebugParentUnderMouse(true);
+    }
 
-        this.pauseMenuTable = new Table(skin);
+    @Override
+    public void dispose() {
+        Gdx.app.log("GameInterface::dispose()", "-- Called!");
+//        bitmapFont.dispose();
+//        dispose();
+//        towersSelector.dispose();
+//        unitsSelector.dispose();
+        winTexture.dispose();
+        loseTexture.dispose();
+    }
+
+    public void initInterface() {
+        Gdx.app.log("GameInterface::initInterface()", "--");
+
+        pauseMenuTable = new Table(skin);
         pauseMenuTable.setFillParent(true);
         pauseMenuTable.setVisible(false);
         addActor(pauseMenuTable);
 
-        this.optionTable = new Table(skin);
+        optionTable = new Table(skin);
         optionTable.setVisible(false);
         pauseMenuTable.add(optionTable);
 
-//        setCameraController(cameraController); // need set draw settings to optionTable
-
         Table verticalButtonsTable = new Table();
+        pauseMenuTable.add(verticalButtonsTable);
 
         resumeButton = new TextButton("RESUME", skin);
         verticalButtonsTable.add(resumeButton).fill().prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.2f).row();
@@ -112,88 +136,43 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         exitButton = new TextButton("EXIT", skin);
         verticalButtonsTable.add(exitButton).fill().prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.2f).row();
 
-        pauseMenuTable.add(verticalButtonsTable);
-
-        this.tableBack = new Table(skin);
-        tableBack.setFillParent(true);
-        addActor(tableBack);
-
-        pauseMenuButton = new TextButton("||", skin);
-        pauseMenuButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::GameInterface()", "-changed- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
-                gameField.gamePaused = pauseMenuButton.isChecked();
-                pauseMenuTable.setVisible(gameField.gamePaused);
-                tableFront.setVisible(!pauseMenuButton.isChecked());
-                tableBack.setVisible(!pauseMenuButton.isChecked());
-                interfaceTouched = true;
-            }
-        });
-        tableBack.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f).top().left();
+        tableConsoleLog = new Table(skin);
+        tableConsoleLog.setFillParent(true);
+        addActor(tableConsoleLog);
 
         arrayActionsHistory = new Array<String>();
+        arrayActionsHistory.add("actionsHistoryLabel");
         deleteActionThrough = 0f;
         actionInHistoryTime = 1f;
-        actionsHistoryLabel = new Label("", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        tableBack.add(actionsHistoryLabel).expand().left();
+        actionsHistoryLabel = new Label("actionsHistoryLabel", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        tableConsoleLog.add(actionsHistoryLabel).expand().left();
+
+        tableWithButtons = new Table(skin);
+        tableWithButtons.setFillParent(true);
+        addActor(tableWithButtons);
+
+        pauseMenuButton = new TextButton("||", skin);
+        tableWithButtons.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY().top().row();
+
+        Table horizontalGroup = new Table(skin);
+        tableWithButtons.add(horizontalGroup).expandY().bottom();
 
         gameSpeedMinus = new TextButton("<<", skin);
-        gameSpeedMinus.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:GameInterface()", "-- gameSpeedMinus.isChecked():" + gameSpeedMinus.isChecked());
-                if (gameField.gameSpeed > 0.1f) {
-                    gameField.gameSpeed -= 0.1f;
-                }
-            }
-        });
-        tableBack.add(gameSpeedMinus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f).bottom();
+        horizontalGroup.add(gameSpeedMinus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
-        startAndPauseButton = new TextButton("", skin, "default");
-        startAndPauseButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:GameInterface()", "-- startAndPauseButton.isChecked():" + startAndPauseButton.isChecked());
-//                if (!gameField.gamePaused) {
-//                    if (gameField.gameSpeed < 1f) {
-//                        gameField.gameSpeed = 1f;
-//                    } else if (gameField.gameSpeed < 2f) {
-//                        gameField.gameSpeed = 2f;
-//                    } else if (gameField.gameSpeed < 3f) {
-//                        gameField.gameSpeed = 3f;
-//                    } else if (gameField.gameSpeed < 4f) {
-//                        gameField.gameSpeed = 4f;
-//                    } else if (gameField.gameSpeed < 5f) {
-//                        gameField.gameSpeed = 5f;
-//                    } else {
-//                        gameField.gamePaused = !gameField.gamePaused;
-//                    }
-//                } else {
-                    gameField.gameSpeed = 1f;
-                    gameField.gamePaused = !gameField.gamePaused;
-                    if (!gameField.unitsSpawn && GameField.unitsManager.units.size == 0) {
-                        gameField.unitsSpawn = true;
-                        gameField.gamePaused = false;
-                    }
-//                }
-                interfaceTouched = true;
-            }
-        });
-        tableBack.add(startAndPauseButton).prefWidth(Gdx.graphics.getWidth()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.1f).bottom();
+        startAndPauseButton = new TextButton("startAndPauseButton", skin, "default");
+        horizontalGroup.add(startAndPauseButton).prefWidth(Gdx.graphics.getWidth()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
         gameSpeedPlus = new TextButton(">>", skin);
-        gameSpeedPlus.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:GameInterface()", "-- gameSpeedPlus.isChecked():" + gameSpeedPlus.isChecked());
-                    gameField.gameSpeed += 0.1f;
-            }
-        });
-        tableBack.add(gameSpeedPlus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f).bottom();
+        horizontalGroup.add(gameSpeedPlus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
+
+        tableInfoTablo = new Table(skin);
+        tableInfoTablo.setFillParent(true);
+        addActor(tableInfoTablo);
 
         infoTablo = new VerticalGroup();
-        tableBack.add(infoTablo).top().expand();
+        infoTablo.setVisible(false);
+        tableInfoTablo.add(infoTablo).expand().center();
 
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
         infoTablo.addActor(fpsLabel);
@@ -226,33 +205,97 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTablo.addActor(gamePaused);
 
-        this.tableFront = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
-        tableFront.setFillParent(true);
-        addActor(tableFront);
-        interfaceTouched = false;
-
-//        if (gameField.waveManager.wavesForUser.size > 0) {
-//            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableFront);
-//        }
-//
-//        towersSelector = new TowersSelector(gameField, bitmapFont, skin);
-//        tableFront.add(towersSelector).expand();
-
-        winTexture = new Texture(Gdx.files.internal("concepts/littlegame-concept-2-1.jpg"));
-        loseTexture = new Texture(Gdx.files.internal("concepts/2018-12-03_19-43-03.png"));
-        currentTextureTime = 0f;
-        maxTextureTime = 5f;
+        tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
+        tableWithSelectors.setFillParent(true);
+        addActor(tableWithSelectors);
     }
 
-    @Override
-    public void dispose() {
-        Gdx.app.log("GameInterface::dispose()", "-- Called!");
-//        bitmapFont.dispose();
-//        dispose();
-//        towersSelector.dispose();
-//        unitsSelector.dispose();
-        winTexture.dispose();
-        loseTexture.dispose();
+    public void addListeners() {
+        Gdx.app.log("GameInterface::addListeners()", "--");
+        resumeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- resumeButton.isChecked():" + resumeButton.isChecked());
+                pauseMenuButton.toggle();
+            }
+        });
+        nextLevelButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
+                WidgetController.getInstance().nextGameLevel();
+            }
+        });
+        optionButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- optionButton.isChecked():" + optionButton.isChecked());
+                optionTable.setVisible(optionButton.isChecked());
+            }
+        });
+        exitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- exitButton.isChecked():" + exitButton.isChecked());
+                WidgetController.getInstance().removeTopScreen();
+            }
+        });
+        pauseMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
+                gameField.gamePaused = pauseMenuButton.isChecked();
+                pauseMenuTable.setVisible(gameField.gamePaused);
+                tableWithSelectors.setVisible(!pauseMenuButton.isChecked());
+                tableWithButtons.setVisible(!pauseMenuButton.isChecked());
+                interfaceTouched = true;
+            }
+        });
+        gameSpeedMinus.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedMinus.isChecked():" + gameSpeedMinus.isChecked());
+                if (gameField.gameSpeed > 0.1f) {
+                    gameField.gameSpeed -= 0.1f;
+                }
+            }
+        });
+        startAndPauseButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- startAndPauseButton.isChecked():" + startAndPauseButton.isChecked());
+//                if (!gameField.gamePaused) {
+//                    if (gameField.gameSpeed < 1f) {
+//                        gameField.gameSpeed = 1f;
+//                    } else if (gameField.gameSpeed < 2f) {
+//                        gameField.gameSpeed = 2f;
+//                    } else if (gameField.gameSpeed < 3f) {
+//                        gameField.gameSpeed = 3f;
+//                    } else if (gameField.gameSpeed < 4f) {
+//                        gameField.gameSpeed = 4f;
+//                    } else if (gameField.gameSpeed < 5f) {
+//                        gameField.gameSpeed = 5f;
+//                    } else {
+//                        gameField.gamePaused = !gameField.gamePaused;
+//                    }
+//                } else {
+                gameField.gameSpeed = 1f;
+                gameField.gamePaused = !gameField.gamePaused;
+                if (!gameField.unitsSpawn && GameField.unitsManager.units.size == 0) {
+                    gameField.unitsSpawn = true;
+                    gameField.gamePaused = false;
+                }
+//                }
+                interfaceTouched = true;
+            }
+        });
+        gameSpeedPlus.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedPlus.isChecked():" + gameSpeedPlus.isChecked());
+                gameField.gameSpeed += 0.1f;
+            }
+        });
     }
 
     public void setCameraController(final CameraController cameraController) {
@@ -264,8 +307,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-changed- infoTabloHideButton.isChecked():" + infoTabloHideButton.isChecked());
                 infoTablo.setVisible(infoTabloHideButton.isChecked());
-                tableBack.setVisible(infoTabloHideButton.isChecked());
-                tableFront.setVisible(infoTabloHideButton.isChecked());
+                tableWithButtons.setVisible(infoTabloHideButton.isChecked());
+                tableWithSelectors.setVisible(infoTabloHideButton.isChecked());
                 if (infoTablo.isVisible()) {
                     infoTabloHideButton.setText("Hide Info Tablo");
                 } else {
@@ -426,7 +469,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-changed- resetDrawSettingsButton.isChecked():" + resetDrawSettingsButton.isChecked());
-                resetDrawSettingsButton.setText(resetDrawSettingsButton.isChecked() ? "NOT WORK" : "Reset Draw Settings");
+                if (resetDrawSettingsButton.isChecked()) {
+                    cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
+                } else {
+                    drawAll.setValue(-1); // libgdx... not call changed() if value == value
+                    drawAll.setValue(1);
+                }
+                resetDrawSettingsButton.setText(resetDrawSettingsButton.isChecked() ? "reset camera POS" : "Reset Draw Settings");
             }
         });
         optionTable.add(resetDrawSettingsButton).colspan(2).fill().prefHeight(Gdx.graphics.getHeight()*0.1f).row();
@@ -457,8 +506,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
         topBottomLeftRightSelector.setChecked(gameField.gameSettings.topBottomLeftRightSelector);
         topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
-        topBottomLeftRightSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        topBottomLeftRightSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        topBottomLeftRightSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
         topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         topBottomLeftRightSelector.addListener(new ChangeListener() {
             @Override
@@ -467,13 +515,12 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
             }
         });
-        optionTable.add(topBottomLeftRightSelector).fill().row();
+        optionTable.add(topBottomLeftRightSelector).colspan(2).fill().row();
 
         verticalSelector = new CheckBox("verticalSelector", skin);
         verticalSelector.setChecked(gameField.gameSettings.verticalSelector);
         verticalSelector.getImage().setScaling(Scaling.stretch);
-        verticalSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        verticalSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+        verticalSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
         verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         verticalSelector.addListener(new ChangeListener() {
             @Override
@@ -482,15 +529,15 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 gameField.gameSettings.verticalSelector = verticalSelector.isChecked();
             }
         });
-        optionTable.add(verticalSelector).fill();
+        optionTable.add(verticalSelector).colspan(2).fill();
 
         if (cameraController.gameField.waveManager.wavesForUser.size > 0) {
-            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableFront);
+            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableWithSelectors);
         }
 
         if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
             towersSelector = new TowersSelector(gameField, bitmapFont, skin, this);
-            tableFront.add(towersSelector).expand();
+            tableWithSelectors.add(towersSelector).expand();
 
             towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
             infoTablo.addActor(towersSelectorCoord);
@@ -514,7 +561,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         draw();
     }
 
-    @Override
+//    @Override
     public void act(float delta) {
 //        Gdx.app.log("GameInterface::act()", "-- delta:" + delta);
         super.act(delta);
@@ -568,7 +615,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //        stage.draw();
     }
 
-    @Override
+//    @Override
     public void draw() {
 //        Gdx.app.log("GameInterface::draw()", "--");
         super.draw();
@@ -676,40 +723,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         this.prevMouseY = screenY;
         boolean returnSuperTouchDown = super.touchDown(screenX, screenY, pointer, button);
         Gdx.app.log("GameInterface::touchDown()", "-- returnSuperTouchDown :" + returnSuperTouchDown);
-        if (gameSpeedMinus.isPressed()) { // double press! it is FUN! need fix later
-            Gdx.app.log("GameInterface::touchDown()", "-- gameSpeedMinus.isChecked():" + gameSpeedMinus.isChecked());
-            if (gameField.gameSpeed > 0.1f) {
-                gameField.gameSpeed -= 0.1f;
-                return true;
-            }
-        }
 //        Actor actor = hit(screenX, screenY, true);
 //        Gdx.app.log("GameInterface::touchDown()", "-- actor:" + actor);
-        if (gameSpeedPlus.isPressed()) { // double press! it is FUN! need fix later
-            Gdx.app.log("GameInterface::touchDown()", "-- gameSpeedPlus.isChecked():" + gameSpeedPlus.isChecked());
-            gameField.gameSpeed += 0.1f;
-            return true;
-        }
-        if (resumeButton.isPressed()) {
-            Gdx.app.log("GameInterface::touchDown()", "-- resumeButton.isChecked():" + resumeButton.isChecked());
-            pauseMenuButton.toggle();
-            return true;
-        }
-        if (nextLevelButton.isPressed()) {
-            Gdx.app.log("GameInterface::touchDown()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
-            WidgetController.getInstance().nextGameLevel();
-            return true;
-        }
-        if (optionButton.isPressed()) {
-            Gdx.app.log("GameInterface::touchDown()", "-- optionButton.isChecked():" + optionButton.isChecked());
-            optionTable.setVisible(optionButton.isChecked());
-            return true;
-        }
-        if (exitButton.isPressed()) {
-            Gdx.app.log("GameInterface::touchDown()", "-- exitButton.isChecked():" + exitButton.isChecked());
-            WidgetController.getInstance().removeTopScreen();
-            return true;
-        }
         if(unitsSelector != null) {
             if(unitsSelector.touchDown(screenX, screenY, pointer, button)) {
                 return true;
@@ -809,7 +824,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("GameInterface[");
-        sb.append("tableBack:" + tableBack);
+        sb.append("tableWithButtons:" + tableWithButtons);
         sb.append("]");
         return sb.toString();
     }
