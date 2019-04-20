@@ -122,7 +122,7 @@ public class Unit {
             } else if (action.equals("walk_")){
                 animation = new Animation(speed / staticTiledMapTiles.length, textureRegions);
             } else if (action.equals("death_")){
-                animation = new Animation(speed / staticTiledMapTiles.length, textureRegions); // speed change to speedToDIE;
+                animation = new Animation(templateForUnit.speed / staticTiledMapTiles.length, textureRegions); // speed change to speedToDIE;
             } else {
                 animation = new Animation(speed / staticTiledMapTiles.length, textureRegions); // speed change to idleSpeed
             }
@@ -578,7 +578,7 @@ public class Unit {
 
     public boolean changeDeathFrame(float delta) {
         if(hp <= 0) {
-            if(deathElapsedTime >= speed) {
+            if(deathElapsedTime >= templateForUnit.speed) { // need change to speedToDie
 //                dispose();
                 return false;
             } else {
