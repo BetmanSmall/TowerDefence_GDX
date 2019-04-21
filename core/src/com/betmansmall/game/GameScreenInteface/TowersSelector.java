@@ -627,12 +627,33 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
 
     public boolean scrolled(int amount) {
         Gdx.app.log("TowersSelector::scrolled()", "-- amount:" + amount);
-//        float groupWidth = getWidth();
-//        float tableWidth = tablegetWidth();
-//        if (Gdx.input.getX() >= (tableWidth-groupWidth)) {
-//            moveBy(0, amount*10f);
-//            return true;
-//        }
+//        int x = gameInterface.prevMouseX;
+//        int y = gameInterface.prevMouseY;
+        int x = Gdx.input.getX();
+        int y = Gdx.input.getY();
+        if (gameField.gameSettings.verticalSelector) {
+            if (gameField.gameSettings.topBottomLeftRightSelector) {
+                if (x >= selectorBorderVertical) {
+                    coordinateY += amount*20f;
+                    return true;
+                }
+            } else {
+                if (x < selectorBorderVertical) {
+                    coordinateY += amount*20f;
+                    return true;
+                }
+            }
+        } else if (gameField.gameSettings.topBottomLeftRightSelector) {
+            if (y >= selectorBorderHorizontal) {
+                coordinateX += amount*20f;
+                return true;
+            }
+        } else {
+            if (y < selectorBorderHorizontal) {
+                coordinateX += amount*20f;
+                return true;
+            }
+        }
         return false;
     }
 }

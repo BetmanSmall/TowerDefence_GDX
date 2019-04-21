@@ -68,7 +68,12 @@ public class GameScreen implements Screen {
     }
 
     private void inputHandler(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+                Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.MINUS && ALT_LEFT)");
+                gameInterface.infoTabloTable.setVisible(!gameInterface.infoTabloTable.isVisible());
+            }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.MINUS)");
             if (cameraController.camera.zoom <= cameraController.zoomMax) {
                 cameraController.camera.zoom += 0.1f;

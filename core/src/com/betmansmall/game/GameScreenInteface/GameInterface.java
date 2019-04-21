@@ -42,7 +42,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private Skin skin;
 
     public Table tableWithButtons, tableWithSelectors, tableConsoleLog, tableInfoTablo, pauseMenuTable, optionTable;
-    public VerticalGroup infoTablo;
+    public Table infoTabloTable;
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
     public Slider drawGrid, drawUnits, drawTowers, drawBackground, drawGround, drawForeground, drawGridNav, drawRoutes, drawOrder, drawAll;
@@ -170,40 +170,41 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         tableInfoTablo.setFillParent(true);
         addActor(tableInfoTablo);
 
-        infoTablo = new VerticalGroup();
-        infoTablo.setVisible(false);
-        tableInfoTablo.add(infoTablo).expand().center();
+        infoTabloTable = new Table();
+        infoTabloTable.setVisible(false);
+        tableInfoTablo.add(infoTabloTable).expand().left();
 
         fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(fpsLabel);
+        infoTabloTable.add(fpsLabel).left().row();
         deltaTimeLabel = new Label("deltaTime:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(deltaTimeLabel);
+        infoTabloTable.add(deltaTimeLabel).left().row();
         mapPathLabel = new Label("MapName:arena0tmx", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(mapPathLabel);
+        infoTabloTable.add(mapPathLabel).left().row();
         gameType = new Label("gameType:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-        infoTablo.addActor(gameType);
+        infoTabloTable.add(gameType).left().row();
         isometricLabel = new Label("isometricLabel:", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(isometricLabel);
+        infoTabloTable.add(isometricLabel).left().row();
         underConstrEndCoord = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(underConstrEndCoord);
+        infoTabloTable.add(underConstrEndCoord).left().row();
         underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        infoTablo.addActor(underConstructionLabel);
+        infoTabloTable.add(underConstructionLabel).left().row();
         gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-        infoTablo.addActor(gamerGoldLabel);
+        infoTabloTable.add(gamerGoldLabel).left().row();
         unitsManagerSize = new Label("unitsManagerSize:", new Label.LabelStyle(bitmapFont, Color.GREEN));
-        infoTablo.addActor(unitsManagerSize);
+        infoTabloTable.add(unitsManagerSize).left().row();
         towersManagerSize = new Label("towersManagerSize:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-        infoTablo.addActor(towersManagerSize);
+        infoTabloTable.add(towersManagerSize).left().row();
         missedAndMaxForPlayer1 = new Label("UnitsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
-        infoTablo.addActor(missedAndMaxForPlayer1);
+        infoTabloTable.add(missedAndMaxForPlayer1).left().row();
         missedAndMaxForComputer0 = new Label("UnitsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
-        infoTablo.addActor(missedAndMaxForComputer0);
+        infoTabloTable.add(missedAndMaxForComputer0).left().row();
         nextUnitSpawnLabel = new Label("NextUnitSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
-        infoTablo.addActor(nextUnitSpawnLabel);
+        infoTabloTable.add(nextUnitSpawnLabel).left().row();
         unitsSpawn = new Label("unitsSpawn:", new Label.LabelStyle(bitmapFont, Color.RED));
-        infoTablo.addActor(unitsSpawn);
+        infoTabloTable.add(unitsSpawn).left().row();
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
-        infoTablo.addActor(gamePaused);
+        infoTabloTable.add(gamePaused).left().row();
+
 
         tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableWithSelectors.setFillParent(true);
@@ -306,10 +307,10 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-changed- infoTabloHideButton.isChecked():" + infoTabloHideButton.isChecked());
-                infoTablo.setVisible(infoTabloHideButton.isChecked());
+                infoTabloTable.setVisible(infoTabloHideButton.isChecked());
                 tableWithButtons.setVisible(infoTabloHideButton.isChecked());
                 tableWithSelectors.setVisible(infoTabloHideButton.isChecked());
-                if (infoTablo.isVisible()) {
+                if (infoTabloTable.isVisible()) {
                     infoTabloHideButton.setText("Hide Info Tablo");
                 } else {
                     infoTabloHideButton.setText("Show Info Tablo");
@@ -540,11 +541,11 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             tableWithSelectors.add(towersSelector).expand();
 
             towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
-            infoTablo.addActor(towersSelectorCoord);
+            infoTabloTable.add(towersSelectorCoord).left().row();
             selectorBorderVertical = new Label("selectorBorderVertical:", new Label.LabelStyle(bitmapFont, Color.WHITE));
-            infoTablo.addActor(selectorBorderVertical);
+            infoTabloTable.add(selectorBorderVertical).left().row();
             selectorBorderHorizontal = new Label("selectorBorderHorizontal:", new Label.LabelStyle(bitmapFont, Color.WHITE));
-            infoTablo.addActor(selectorBorderHorizontal);
+            infoTabloTable.add(selectorBorderHorizontal).left().row();
         }
     }
 
@@ -787,11 +788,11 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean scrolled(int amount) {
         Gdx.app.log("GameInterface::scrolled()", "-- amount:" + amount);
-        if(unitsSelector != null) {
-            if (unitsSelector.scrolled(amount)) {
-                return true;
-            }
-        }
+//        if(unitsSelector != null) {
+//            if (unitsSelector.scrolled(amount)) {
+//                return true;
+//            }
+//        }
         if(towersSelector != null) {
             if(towersSelector.scrolled(amount)) {
                 return true;
