@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.util.logging.Logger;
 
 /**
  * Created by BetmanSmall on 13.10.2015.
@@ -27,7 +28,7 @@ public class WidgetController extends Game {
     public GameSettings gameSettings;
 
     public static WidgetController getInstance() {
-        Gdx.app.log("WidgetController::getInstance()", "--");
+        Logger.logDebug("");
         WidgetController localInstance = instance;
         if (localInstance == null) {
             synchronized (WidgetController.class) {
@@ -42,23 +43,24 @@ public class WidgetController extends Game {
 
     @Override
     public void create() {
-        Gdx.app.log("WidgetController::create()", "--");
+        Logger.logDebug("");
+
         instance = this;
 
         backgroundImages = new Array<Image>();
         FileHandle imagesDir = Gdx.files.internal("backgrounds");
         FileHandle[] fileHandles = imagesDir.list();
-        Gdx.app.log("WidgetController::create()", "-- fileHandles.length:" + fileHandles.length);
+        Logger.logDebug("fileHandles.length:" + fileHandles.length);
         if (fileHandles.length == 0) {
             int index = 1;
             FileHandle fileHandle = null;
             while (true) {
-                Gdx.app.log("WidgetController::create()", "-- try load:" + imagesDir + "/background" + index + ".png");
+                Logger.logDebug("try load:" + imagesDir + "/background" + index + ".png");
                 try {
                     fileHandle = Gdx.files.internal(imagesDir + "/background" + index + ".png");
-                    Gdx.app.error("WidgetController::create()", "-- fileHandle:" + fileHandle);
-                    Gdx.app.error("WidgetController::create()", "-- fileHandle.exists():" + fileHandle.exists());
-                    Gdx.app.error("WidgetController::create()", "-- fileHandle.isDirectory():" + fileHandle.isDirectory());
+                    Logger.logDebug("-- fileHandle:" + fileHandle);
+                    Logger.logDebug("-- fileHandle.exists():" + fileHandle.exists());
+                    Logger.logDebug("-- fileHandle.isDirectory():" + fileHandle.isDirectory());
                     if (fileHandle.exists() && !fileHandle.isDirectory()) {
                         Image image = new Image(new Texture(fileHandle));
                         image.setFillParent(true);
@@ -68,7 +70,7 @@ public class WidgetController extends Game {
                     }
                     index++;
                 } catch (Exception exp) {
-                    Gdx.app.error("WidgetController::create()", "-- exp:" + exp);
+                    Logger.logWarn("exp:" + exp);
                     break;
                 }
             }
@@ -81,7 +83,7 @@ public class WidgetController extends Game {
                 }
             }
         }
-        Gdx.app.log("WidgetController::create()", "-- backgroundImages.size:" + backgroundImages.size);
+        Logger.logDebug("backgroundImages.size:" + backgroundImages.size);
 
         try {
             gameSettings = new GameSettings();
@@ -98,7 +100,7 @@ public class WidgetController extends Game {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("WidgetController::resize(" + width + ", " + height + ")", "--");
+        Logger.logDebug("resize(" + width + ", " + height + ")");
         super.resize(width, height);
     }
 
@@ -109,19 +111,19 @@ public class WidgetController extends Game {
 
     @Override
     public void pause() {
-        Gdx.app.log("WidgetController::pause()", "-- Called!");
+        Logger.logDebug("Called!");
         super.pause();
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("WidgetController::resume()", "-- Called!");
+        Logger.logDebug("Called!");
         super.resume();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("WidgetController::dispose()", "-- Called!");
+        Logger.logDebug("Called!");
         super.dispose();
         backgroundImages.clear();
 //        factionsManager.dis
@@ -135,7 +137,7 @@ public class WidgetController extends Game {
     }
 
     public void addScreen(Screen screen) {
-        Gdx.app.log("WidgetController::addScreen(" + screen + ")", "-- screensStack:" + screensStack);
+        Logger.logDebug("adding screen " + screen + ". screensStack:" + screensStack);
         if (screen != null) {
             screensStack.add(screen);
             this.setScreen(screen);
@@ -143,13 +145,13 @@ public class WidgetController extends Game {
     }
 
     public void removeTopScreen() {
-        Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack:" + screensStack);
+        Logger.logDebug("screensStack:" + screensStack);
         if (screensStack != null) {
             int count = screensStack.size;
-            Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
+            Logger.logDebug("screensStack.size:" + screensStack.size);
             if (count > 0) {
                 Screen lastScreen = screensStack.get(count - 1);
-                Gdx.app.log("WidgetController::removeTopScreen()", "-- lastScreen:" + lastScreen);
+                Logger.logDebug("lastScreen:" + lastScreen);
 //                if (lastScreen instanceof GameScreen) {
 //                    GameScreen gameScreen1 = (GameScreen) lastScreen;
 //                    Gdx.app.log("WidgetController::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
@@ -160,10 +162,10 @@ public class WidgetController extends Game {
                         screensStack.removeIndex(count - 1);
 //                        Gdx.app.log("WidgetController::removeTopScreen()", "-- gameScreen1.gameInterface:" + gameScreen1.gameInterface);
                         count = screensStack.size;
-                        Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack.size:" + screensStack.size);
+                        Logger.logDebug("screensStack.size:" + screensStack.size);
                         if (count > 0) {
                             Screen popToScreen = screensStack.get(count - 1);
-                            Gdx.app.log("WidgetController::removeTopScreen()", "-- popToScreen:" + popToScreen);
+                            Logger.logDebug("popToScreen:" + popToScreen);
                             if (popToScreen != null) {
                                 this.setScreen(popToScreen);
                             }
@@ -174,8 +176,8 @@ public class WidgetController extends Game {
                 this.setScreen(mainMenuScreen);
             }
         }
-        Gdx.app.log("WidgetController::removeTopScreen()", "-- screensStack:" + screensStack);
-        Gdx.app.log("WidgetController::removeTopScreen()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
+        Logger.logDebug("screensStack:" + screensStack);
+        Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
     }
 
 //    public void removeAllScreens() {
@@ -199,7 +201,7 @@ public class WidgetController extends Game {
 //    }
 
     public void nextGameLevel() {
-        Gdx.app.log("WidgetController::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
+        Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
         if(gameLevelMaps.size > 0) {
 //            removeTopScreen();
             String mapPath = gameLevelMaps.first();
@@ -207,7 +209,7 @@ public class WidgetController extends Game {
             addScreen(new GameScreen(gameLevelMaps.first(), factionsManager, gameSettings));
             gameLevelMaps.removeIndex(0);
         } else {
-            Gdx.app.log("WidgetController::nextGameLevel()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
+            Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
 //            removeAllScreens();
             if(screensStack.size > 1) {
                 removeTopScreen();
