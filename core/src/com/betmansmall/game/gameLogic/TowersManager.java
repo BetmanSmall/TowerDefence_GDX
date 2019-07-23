@@ -62,7 +62,11 @@ public class TowersManager {
     }
 
     public boolean removeTower(Tower tower) {
-        return towers.removeValue(tower, false);
+        if (towers.removeValue(tower, false)) {
+            tower.dispose();
+            return true;
+        }
+        return false;
     }
 
     public void removeTower(Cell cell) {

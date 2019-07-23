@@ -49,12 +49,19 @@ public class Tower {
 
     public void dispose() {
         Gdx.app.log("Tower::dispose()", "--");
+        cell = null;
+//        elapsedReloadTime = 0;
+        templateForTower = null;
+//        player = 0;
+//        capacity = 0;
         bullets.clear();
         centerGraphicCoord = null;
         radiusDetectionCircle = null;
         if (radiusFlyShellCircle != null) {
             radiusFlyShellCircle = null;
         }
+//        hp = 0;
+        whoAttackMe.clear();
     }
 
     void updateCenterGraphicCoordinates(CameraController cameraController) {

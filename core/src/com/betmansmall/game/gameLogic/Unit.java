@@ -325,7 +325,9 @@ public class Unit {
                     correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            circle4.setPosition(fVc);
+            if (unitAttack == null || towerAttack == null) {
+                circle4.setPosition(fVc);
+            }
         }
         if(isDrawableUnits == 3 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(nextX, nextY).graphicsCoord3)
@@ -373,7 +375,9 @@ public class Unit {
                     correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            circle3.setPosition(fVc);
+            if (unitAttack == null || towerAttack == null) {
+                circle3.setPosition(fVc);
+            }
         }
         if(isDrawableUnits == 2 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(nextX, nextY).graphicsCoord2)
@@ -421,7 +425,9 @@ public class Unit {
                     correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            circle2.setPosition(fVc);
+            if (unitAttack == null || towerAttack == null) {
+                circle2.setPosition(fVc);
+            }
         }
         if(isDrawableUnits == 1 || isDrawableUnits == 5) {
 //                fVc = new Vector2(getCell(nextX, nextY).graphicsCoord1)
@@ -469,11 +475,19 @@ public class Unit {
                     correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            circle1.setPosition(fVc);
+            if (unitAttack == null || towerAttack == null) {
+                circle1.setPosition(fVc);
+            }
         }
 
-        backStepPoint.set(currentPoint);
-        currentPoint.set(fVc);
+        if (unitAttack == null || towerAttack == null) {
+//            circle4.setPosition(fVc);
+//            circle3.setPosition(fVc);
+//            circle2.setPosition(fVc);
+//            circle1.setPosition(fVc);
+            backStepPoint.set(currentPoint);
+            currentPoint.set(fVc);
+        }
         fVc = null; // delete fVc;
     }
 

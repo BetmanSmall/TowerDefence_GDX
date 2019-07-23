@@ -1679,6 +1679,10 @@ public class GameField {
                     }
                 }
             }
+            for (Unit unit : tower.whoAttackMe) { // need change i think
+                unit.towerAttack = null;
+                unit.unitAttack.attacked = false;
+            }
             int towerCost = tower.templateForTower.cost;
             towersManager.removeTower(tower);
             return towerCost;
@@ -1854,9 +1858,10 @@ public class GameField {
             Cell oldCurrentCell = unit.currentCell;
             Cell nextCurrentCell = unit.nextCell;
             if (unit.isAlive()) {
+                unit.shellEffectsMove(delta);
                 if (unit.unitAttack != null) {
                     if (unit.unitAttack.attackType == UnitAttack.AttackType.Melee) {
-                        if (!unit.unitAttack.stackInOneCell && unit.currentCell.getUnits().size == 1) {
+                        if ( (!unit.unitAttack.stackInOneCell && unit.equals(unit.currentCell.getUnit())) || unit.unitAttack.stackInOneCell) {
 
 //                        } else {
                             if (unit.recharge(delta)) {
@@ -1937,6 +1942,7 @@ public class GameField {
         for (Tower tower : towersManager.towers) {
             if (tower.hp <= 0) { // need impelement func Tower.destroy();
                 removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
+                continue;
             }
             TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
             if (towerAttackType == TowerAttackType.Pit) {
