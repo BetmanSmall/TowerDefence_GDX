@@ -15,6 +15,14 @@ import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
  * Created by betma on 09.05.2016.
@@ -22,23 +30,50 @@ import com.badlogic.gdx.math.Vector2;
 public class MapEditorScreen implements Screen, GestureDetector.GestureListener, InputProcessor {
     private WidgetController widgetController;
     private SpriteBatch spriteBatch;
-
     private float zoomMax = 5.0f;
     private float zoomMin = 0.1f;
     private float initialScale = 2f;
-//    private float MAX_DESTINATION_X = 0f;
-//    private float MAX_DESTINATION_Y = 0f;
-//    private BitmapFont bitmapFont = new BitmapFont();
+
+    private TextButton chooiseMapButton;
+    private TextButton exitButton;
+    private Skin skin;
 
     private OrthographicCamera camera;
-
+    private Stage stage;
     private TiledMap map;
     private BatchTiledMapRenderer batchTiledMapRenderer;
 
-    public MapEditorScreen(WidgetController widgetController, String mapPath) {
+    public MapEditorScreen(final WidgetController widgetController, String mapPath) {
         Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- widgetController:" + widgetController + " mapPath:" + mapPath);
         this.widgetController = widgetController;
         this.spriteBatch = new SpriteBatch();
+
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        stage = new Stage(new ScreenViewport());
+
+        Table mapChooiseTable = new Table();
+        mapChooiseTable.setFillParent(true);
+        stage.addActor(mapChooiseTable);
+
+        chooiseMapButton = new TextButton("chooise map",skin);
+        chooiseMapButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                widgetController.addScreen(new MapEditorScreen(widgetController, "maps/aaagen.tmx"));
+            }
+        });
+        mapChooiseTable.add(chooiseMapButton).expandX().align(Align.right).prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
+
+        exitButton = new TextButton("Exit",skin);
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                widgetController.removeTopScreen();
+            }
+        });
+        mapChooiseTable.add(exitButton).expandX().align(Align.right).prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
 
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -62,6 +97,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
     public void show() {
         Gdx.app.log("MapEditorScreen::show()", "-- Start!");
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(new GestureDetector(this));
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -73,14 +109,16 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-        batchTiledMapRenderer.setView(camera);
-        batchTiledMapRenderer.render();
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("MapEditorScreen::render()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             WidgetController.getInstance().removeTopScreen();
         }
+        camera.update();
+        batchTiledMapRenderer.setView(camera);
+        batchTiledMapRenderer.render();
+
+        stage.act();
+        stage.draw();
     }
 
     @Override
