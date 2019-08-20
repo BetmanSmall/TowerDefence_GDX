@@ -14,6 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
+
 public class MainMenuScreen implements Screen {
     private WidgetController widgetController;
 
@@ -293,15 +297,15 @@ public class MainMenuScreen implements Screen {
                         break;
                     case 3:
                         //Editor mode
-//                        JFileChooser fileopen = new JFileChooser();
-//                        fileopen.setCurrentDirectory(new File("."));
-//                        int ret = fileopen.showDialog(null, "Открыть файл");
-//                        if (ret == JFileChooser.APPROVE_OPTION) {
-//                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
-//                            widgetController.setScreen(new MapEditorScreen(widgetController, fileName));
-//                        } else {
+                        JFileChooser fileopen = new JFileChooser();
+                        fileopen.setCurrentDirectory(new File("maps"));
+                        int ret = fileopen.showDialog(null, "Открыть файл");
+                        if (ret == JFileChooser.APPROVE_OPTION) {
+                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
+                            widgetController.setScreen(new MapEditorScreen(widgetController, fileName));
+                        } else {
                             widgetController.addScreen(new MapEditorScreen(widgetController, "maps/aaagen.tmx"));
-//                        }
+                        }
                         break;
                 }
                 break;
