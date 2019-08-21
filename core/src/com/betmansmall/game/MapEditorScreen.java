@@ -66,8 +66,8 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
                     Logger.logDebug("result.file().getPath():" + result.file().getPath());
 
 //                    mapNmaeIsSelected = result.file().getName();
-                    mapNameLabel.setText("Map1:" + result.file().getName());
-                    Logger.logDebug("result.file().getName():" + result.file().getName());
+//                    mapNameLabel.setText("Map1:" + result.file().getName());
+//                    Logger.logDebug("result.file().getName():" + result.file().getName());
                     widgetController.addScreen(new MapEditorScreen(widgetController, result.file().getPath()));
                 }
                 return true;
@@ -86,7 +86,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
         mapChooseTable.setFillParent(true);
         stage.addActor(mapChooseTable);
 
-        mapNameLabel = new Label("Map2: ", skin);
+        mapNameLabel = new Label("Map: " + mapPath, skin);
         mapChooseTable.add(mapNameLabel).align(Align.topRight).expand().row();
         chooiseMapButton = new TextButton("choose map",skin);
         chooiseMapButton.addListener(new ClickListener(){
