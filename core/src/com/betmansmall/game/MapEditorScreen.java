@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +24,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.util.FileChooser;
+
+import java.io.File;
+import java.io.FileFilter;
 
 /**
  * Created by betma on 09.05.2016.
@@ -45,27 +50,49 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
 
     public MapEditorScreen(final WidgetController widgetController, String mapPath) {
         Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- widgetController:" + widgetController + " mapPath:" + mapPath);
+
         this.widgetController = widgetController;
         this.spriteBatch = new SpriteBatch();
 
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         stage = new Stage(new ScreenViewport());
 
-        Table mapChooiseTable = new Table();
-        mapChooiseTable.setFillParent(true);
-        stage.addActor(mapChooiseTable);
+        final FileChooser dialog = FileChooser.createPickDialog("Add track", skin, Gdx.files.internal("maps/"));
+        dialog.setResultListener(new FileChooser.ResultListener() {
+            @Override
+            public boolean result(boolean success, FileHandle result) {
+                if(success){
+                    Gdx.app.log("", "result.file().getPath():" + result.file().getPath());
+                    widgetController.addScreen(new MapEditorScreen(widgetController, result.file().getPath()));
+                }
+                return true;
+            }
+        });
+        dialog.disableDirectoryBrowsing();
+        dialog.setOkButtonText("Add");
+        dialog.setFilter(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                String path = pathname.getPath();
+                return path.matches(".*(?:tmx)");
+            }
+        });
 
-        chooiseMapButton = new TextButton("chooise map",skin);
+        Table mapChooseTable = new Table();
+        mapChooseTable.setFillParent(true);
+        stage.addActor(mapChooseTable);
+
+        chooiseMapButton = new TextButton("choose map",skin);
         chooiseMapButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                widgetController.addScreen(new MapEditorScreen(widgetController, "maps/aaagen.tmx"));
+                dialog.show(stage);
             }
         });
-        mapChooiseTable.add(chooiseMapButton).expandX().align(Align.right).prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
+        mapChooseTable.add(chooiseMapButton).expandX().align(Align.right).prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
 
-        exitButton = new TextButton("Exit",skin);
+        exitButton = new TextButton("exit",skin);
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -73,7 +100,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
                 widgetController.removeTopScreen();
             }
         });
-        mapChooiseTable.add(exitButton).expandX().align(Align.right).prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
+        mapChooseTable.add(exitButton).expandX().align(Align.right).prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
 
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
