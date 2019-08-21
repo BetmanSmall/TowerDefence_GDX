@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.util.FileChooser;
+import com.betmansmall.util.logging.Logger;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -38,11 +40,10 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
     private float zoomMax = 5.0f;
     private float zoomMin = 0.1f;
     private float initialScale = 2f;
-
     private TextButton chooiseMapButton;
     private TextButton exitButton;
     private Skin skin;
-
+    final private Label mapNameLabel;
     private OrthographicCamera camera;
     private Stage stage;
     private TiledMap map;
@@ -62,14 +63,17 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
             @Override
             public boolean result(boolean success, FileHandle result) {
                 if(success){
-                    Gdx.app.log("", "result.file().getPath():" + result.file().getPath());
+                    Logger.logDebug("result.file().getPath():" + result.file().getPath());
+
+//                    mapNmaeIsSelected = result.file().getName();
+                    mapNameLabel.setText("Map1:" + result.file().getName());
+                    Logger.logDebug("result.file().getName():" + result.file().getName());
                     widgetController.addScreen(new MapEditorScreen(widgetController, result.file().getPath()));
                 }
                 return true;
             }
         });
         dialog.disableDirectoryBrowsing();
-        dialog.setOkButtonText("Add");
         dialog.setFilter(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -82,6 +86,8 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
         mapChooseTable.setFillParent(true);
         stage.addActor(mapChooseTable);
 
+        mapNameLabel = new Label("Map2: ", skin);
+        mapChooseTable.add(mapNameLabel).align(Align.topRight).expand().row();
         chooiseMapButton = new TextButton("choose map",skin);
         chooiseMapButton.addListener(new ClickListener(){
             @Override
@@ -143,7 +149,6 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener,
         camera.update();
         batchTiledMapRenderer.setView(camera);
         batchTiledMapRenderer.render();
-
         stage.act();
         stage.draw();
     }
