@@ -16,6 +16,9 @@
   <terrain name="explosion11" tile="11"/>
  </terraintypes>
  <tile id="0">
+  <properties>
+   <property name="tileName" value="explosion_"/>
+  </properties>
   <animation>
    <frame tileid="0" duration="100"/>
    <frame tileid="1" duration="100"/>

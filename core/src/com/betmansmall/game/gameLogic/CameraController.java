@@ -53,7 +53,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public float halfSizeCellX, halfSizeCellY;
     public float zoomMax = 5.0f;
     public float zoomMin = 0.1f;
-    public float zoom = 1;
+//    public float zoom = 1;
     public float borderLeftX = 0.0f, borderRightX = 0.0f;
     public float borderUpY = 0.0f, borderDownY = 0.0f;
 
@@ -328,7 +328,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Gdx.app.log("CameraController::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY);
+//        Gdx.app.log("CameraController::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY);
         if (gameField != null && gameField.getUnderConstruction() != null) {
             Vector3 touch = new Vector3(screenX, screenY, 0.0f);
             if (whichCell(touch, isDrawableTowers)) {
@@ -544,7 +544,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         sb.append(",cameraY:" + camera.position.y);
         sb.append(",sizeCellX:" + sizeCellX);
         sb.append(",sizeCellY:" + sizeCellY);
-        sb.append(",zoom:" + zoom);
+        sb.append(",camera.zoom:" + camera.zoom);
 //        sb.append(",zoomMax:" + zoomMax);
 //        sb.append(",zoomMin:" + zoomMin);
 //        sb.append(",borderLeftX:" + borderLeftX);

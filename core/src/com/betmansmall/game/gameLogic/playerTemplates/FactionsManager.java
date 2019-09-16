@@ -16,6 +16,8 @@ import java.util.StringTokenizer;
 public class FactionsManager {
     public SimpleTemplate fireball_0;
     public SimpleTemplate explosion;
+    public SimpleTemplate axe;
+    public SimpleTemplate catapultRock;
     private Array<Faction> factions;
 
     public static Float defHealthPoints = 500f;
@@ -29,6 +31,10 @@ public class FactionsManager {
         Gdx.app.log("FactionsManager::FactionsManager()", "-- fireball_0:" + fireball_0.toString());
         this.explosion = new SimpleTemplate(Gdx.files.internal("maps/other/explosion.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- explosion:" + explosion.toString());
+        this.axe = new SimpleTemplate(Gdx.files.internal("maps/other/axe.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- axe:" + axe.toString());
+        this.catapultRock = new SimpleTemplate(Gdx.files.internal("maps/other/catapult_rock.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- catapultRock:" + catapultRock.toString());
         this.factions = new Array<Faction>();
         loadFactions();
     }
@@ -186,6 +192,13 @@ public class FactionsManager {
                             TemplateForUnit templateForUnit = new TemplateForUnit(templateFile);
 //                            templateForUnit.setFaction(faction);
                             faction.getTemplateForUnits().add(templateForUnit);
+//                            if (templateForUnit.unitAttack != null && templateForUnit.unitAttack.attackType == UnitAttack.AttackType.Range) {
+                            if (templateForUnit.templateName.equals("unit2_troll_axethrower")) {
+                                templateForUnit.loadWeapon(axe);
+                            }
+                            if (templateForUnit.templateName.equals("unit4_catapult")) {
+                                templateForUnit.loadWeapon(catapultRock);
+                            }
                             Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForUnit.toString(true));
                         }
                     }
@@ -201,6 +214,7 @@ public class FactionsManager {
 //                            if (templateForTower.templateName.contains("tower_FireBall")) {
                                 templateForTower.loadFireBall(fireball_0);
                             }
+                            templateForTower.loadExplosion(explosion);
                             faction.getTemplateForTowers().add(templateForTower);
                             Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForTower.toString(true));
                         }

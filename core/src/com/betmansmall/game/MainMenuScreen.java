@@ -257,8 +257,8 @@ public class MainMenuScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_3 || Input.Keys.NUM_3);");
             clickAnalyzer((short)3);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER || Input.Keys.SPACE);");
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
             widgetController.nextGameLevel();
         }

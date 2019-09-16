@@ -8,13 +8,13 @@
   <property name="cost" value="50"/>
   <property name="speed" value="1.0"/>
   <property name="type" value="unit"/>
-  <property name="attackType" value="RangeStand"/>
+  <property name="attackType" value="Range"/>
   <property name="attackType_damage" value="5"/>
-  <property name="attackType_range" value="20"/>
+  <property name="attackType_range" value="170"/>
   <property name="attackType_attackSpeed" value="0.6"/>
   <property name="attackType_reload" value="0.9"/>
   <property name="attackType_stackInOneCell" value="false"/>
-  <!-- <property name="attackType_walkToSide" value="true"/> -->
+  <property name="attackType_stayToDie" value="true"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/catapult.png" width="320" height="640"/>
  <tile id="0">
@@ -80,6 +80,66 @@
    <frame tileid="9" duration="100"/>
    <frame tileid="4" duration="100"/>
    <frame tileid="9" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="10">
+  <properties>
+   <property name="actionAndDirection" value="attack_UP"/>
+  </properties>
+  <animation>
+   <frame tileid="0" duration="100"/>
+   <frame tileid="15" duration="100"/>
+   <frame tileid="10" duration="100"/>
+   <frame tileid="15" duration="100"/>
+   <frame tileid="0" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="11">
+  <properties>
+   <property name="actionAndDirection" value="attack_UP_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="1" duration="100"/>
+   <frame tileid="16" duration="100"/>
+   <frame tileid="11" duration="100"/>
+   <frame tileid="16" duration="100"/>
+   <frame tileid="1" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="12">
+  <properties>
+   <property name="actionAndDirection" value="attack_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="2" duration="100"/>
+   <frame tileid="17" duration="100"/>
+   <frame tileid="12" duration="100"/>
+   <frame tileid="17" duration="100"/>
+   <frame tileid="2" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="13">
+  <properties>
+   <property name="actionAndDirection" value="attack_DOWN_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="3" duration="100"/>
+   <frame tileid="18" duration="100"/>
+   <frame tileid="13" duration="100"/>
+   <frame tileid="18" duration="100"/>
+   <frame tileid="3" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="14">
+  <properties>
+   <property name="actionAndDirection" value="attack_DOWN"/>
+  </properties>
+  <animation>
+   <frame tileid="4" duration="100"/>
+   <frame tileid="19" duration="100"/>
+   <frame tileid="14" duration="100"/>
+   <frame tileid="19" duration="100"/>
+   <frame tileid="4" duration="100"/>
   </animation>
  </tile>
  <tile id="20">

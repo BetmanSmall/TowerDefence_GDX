@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.StringBuilder;
 
 /**
@@ -10,8 +11,8 @@ import com.badlogic.gdx.utils.StringBuilder;
 public class UnitAttack {
     public enum AttackType {
         Melee("Melee"), // attack to die
-        RangeStand("RangeStand"), // attack to die
-        RangeWalk("RangeWalk"); // walk and attack
+//        RangeStand("RangeStand"), // attack to die
+        Range("Range"); // walk and attack
 
         private final String text;
         AttackType(final String text) {
@@ -42,11 +43,20 @@ public class UnitAttack {
     public float speedProjectile;
     public float reload;
     public boolean stackInOneCell;
-//    public boolean walkToSide;
+    public boolean stayToDie;
+
+    public float ammoSize; // need transfer to Weapon Or Unit Attack template and other
+    public float ammoSpeed;
+    public UnitAttack defUnitAttack;
 
     public float elapsedTimeRecharge;
     public float elapsedTimeAttacked;
     public boolean attacked;
+    public Circle circle;
+//    public Circle circle1;
+//    public Circle circle2;
+//    public Circle circle3;
+//    public Circle circle4;
 
     public UnitAttack(AttackType attackType) {
         this.attackType = attackType;
@@ -55,7 +65,7 @@ public class UnitAttack {
         this.attacked = false;
     }
 
-    public UnitAttack(UnitAttack unitAttack) {
+    public UnitAttack(UnitAttack unitAttack) { // mb need create TemplateUnitAttack
         if (unitAttack != null) {
             this.attackType = unitAttack.attackType;
             this.damage = unitAttack.damage;
@@ -65,14 +75,41 @@ public class UnitAttack {
             this.speedProjectile = unitAttack.speedProjectile;
             this.reload = unitAttack.reload;
             this.stackInOneCell = unitAttack.stackInOneCell;
+            this.stayToDie = unitAttack.stayToDie;
+
+            this.ammoSize = unitAttack.ammoSize;
+            this.ammoSpeed = unitAttack.ammoSpeed;
+            this.defUnitAttack = unitAttack;
 
             this.elapsedTimeRecharge = unitAttack.elapsedTimeRecharge;
             this.elapsedTimeAttacked = unitAttack.elapsedTimeAttacked;
             this.attacked = unitAttack.attacked;
+            if (attackType != null && attackType == AttackType.Range) {
+                this.circle = new Circle(0, 0, range);
+                Gdx.app.log("UnitAttack::UnitAttack()", "-- circle:" + circle);
+//                this.circle1 = new Circle(0, 0, range);
+//                this.circle2 = new Circle(0, 0, range);
+//                this.circle3 = new Circle(0, 0, range);
+//                this.circle4 = new Circle(0, 0, range);
+            } else {
+                Gdx.app.log("UnitAttack::UnitAttack()", "-- attackType:" + attackType);
+            }
 //        } else {
 //            throw new Exception("UnitAttack::UnitAttack(); -- unitAttack:" + unitAttack);
         }
     }
+
+//    public void setRange(float range) {
+//        this.range = range;
+//        if (attackType != null && attackType == AttackType.Range) {
+//            this.circle1 = new Circle(0, 0, range);
+//            this.circle2 = new Circle(0, 0, range);
+//            this.circle3 = new Circle(0, 0, range);
+//            this.circle4 = new Circle(0, 0, range);
+//        } else {
+//            Gdx.app.log("UnitAttack::setRange()", "-- attackType:" + attackType);
+//        }
+//    }
 
 //    @Override
 //    public boolean equals(Object object) {
@@ -97,6 +134,10 @@ public class UnitAttack {
         sb.append(",reload:" + reload);
         sb.append(",elapsedTimeRecharge:" + elapsedTimeRecharge);
         sb.append(",elapsedTimeAttacked:" + elapsedTimeAttacked);
+        sb.append(",attacked:" + attacked);
+        sb.append(",circle:" + circle);
+        sb.append(",ammoSize:" + ammoSize);
+        sb.append(",ammoSpeed:" + ammoSpeed);
         sb.append("]");
         return sb.toString();
     }

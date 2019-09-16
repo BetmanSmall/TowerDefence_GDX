@@ -173,10 +173,10 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
 
 //    @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("TowersSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
-        Gdx.app.log("TowersSelector::isPanning()", "-- coordinateX:" + coordinateX + " coordinateY:" + coordinateY);
-        Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
-        Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight + " parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
+//        Gdx.app.log("TowersSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+//        Gdx.app.log("TowersSelector::isPanning()", "-- coordinateX:" + coordinateX + " coordinateY:" + coordinateY);
+//        Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
+//        Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight + " parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
 
         float deltaXabs = Math.abs(deltaX);
         float deltaYabs = Math.abs(deltaY);

@@ -47,6 +47,8 @@ public class Unit {
     private Animation animation;
     public Array<TowerShellEffect> shellEffectTypes;
 
+    public Array<UnitBullet> bullets;
+
     public Unit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
         if(route != null) {
             this.route = route;
@@ -75,6 +77,7 @@ public class Unit {
             this.direction = Direction.UP;
             setAnimation("walk_");
             this.shellEffectTypes = new Array<TowerShellEffect>();
+            this.bullets = new Array<UnitBullet>();
         } else {
             Gdx.app.error("Unit::Unit()", "-- route == null");
         }
@@ -143,6 +146,13 @@ public class Unit {
                     speed += towerShellEffect.speed;
                     smallSpeed = speed/100f;
                     stepsInTime = smallSpeed*percentSteps;
+                    if (unitAttack != null) {
+                        float smallSpeed2 = unitAttack.attackSpeed / 100f;
+                        float percentSteps2 = unitAttack.elapsedTimeAttacked / smallSpeed2;
+                        unitAttack.attackSpeed += towerShellEffect.speed;
+                        smallSpeed2 = unitAttack.attackSpeed / 100f;
+                        unitAttack.elapsedTimeAttacked = smallSpeed2 * percentSteps2;
+                    }
                 } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
                     hp -= towerShellEffect.damage;
 //                    if(die(towerShellEffect.damage, null)) {
@@ -166,6 +176,13 @@ public class Unit {
                     speed = speed- towerShellEffect.speed;
                     smallSpeed = speed/100f;
                     stepsInTime = smallSpeed*percentSteps;
+                    if (unitAttack != null) {
+                        float smallSpeed2 = unitAttack.attackSpeed / 100f;
+                        float percentSteps2 = unitAttack.elapsedTimeAttacked / smallSpeed2;
+                        unitAttack.attackSpeed = unitAttack.attackSpeed - towerShellEffect.speed;
+                        smallSpeed2 = unitAttack.attackSpeed / 100f;
+                        unitAttack.elapsedTimeAttacked = smallSpeed2 * percentSteps2;
+                    }
                 }
                 shellEffectTypes.removeValue(towerShellEffect, true);
             }
@@ -243,8 +260,10 @@ public class Unit {
         if (stepsInTime >= speed) {
             if (route != null && !route.isEmpty()) {
                 stepsInTime = 0f;
-                currentCell = nextCell;
-                nextCell = route.pollFirst();
+                if (unitAttack == null || (!unitAttack.attacked && towerAttack == null) ) {
+                    currentCell = nextCell;
+                    nextCell = route.pollFirst();
+                }
 //                if (nextCell == null) {
 //                    nextCell = currentCell;
 //                }
@@ -255,19 +274,21 @@ public class Unit {
                 return null;
             }
         }
-        Direction oldDirection = direction;
-        int oldX = currentCell.cellX, oldY = currentCell.cellY;
-        int newX = nextCell.cellX, newY = nextCell.cellY;
+        if (unitAttack == null || (!unitAttack.attacked && towerAttack == null) ) {
+            Direction oldDirection = direction;
+            int oldX = currentCell.cellX, oldY = currentCell.cellY;
+            int newX = nextCell.cellX, newY = nextCell.cellY;
 
-        calculateDirection(oldX, oldY, newX, newY, cameraController);
+            calculateDirection(oldX, oldY, newX, newY, cameraController);
 
-        velocity = new Vector2(backStepPoint.x - currentPoint.x, backStepPoint.y - currentPoint.y);
-        velocity.nor().scl(Math.min(currentPoint.dst(backStepPoint.x, backStepPoint.y), speed));
-        displacement = new Vector2(velocity.x * delta, velocity.y * delta);
+            velocity = new Vector2(backStepPoint.x - currentPoint.x, backStepPoint.y - currentPoint.y);
+            velocity.nor().scl(Math.min(currentPoint.dst(backStepPoint.x, backStepPoint.y), speed));
+            displacement = new Vector2(velocity.x * delta, velocity.y * delta);
 
 //        Gdx.app.log("Unit::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
-        if(!direction.equals(oldDirection)) {
-            setAnimation("walk_");
+            if (!direction.equals(oldDirection)) {
+                setAnimation("walk_");
+            }
         }
         return currentCell;
     }
@@ -325,7 +346,7 @@ public class Unit {
                     correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            if (unitAttack == null || towerAttack == null) {
+            if (unitAttack == null || !unitAttack.attacked) {
                 circle4.setPosition(fVc);
             }
         }
@@ -375,7 +396,7 @@ public class Unit {
                     correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            if (unitAttack == null || towerAttack == null) {
+            if (unitAttack == null || !unitAttack.attacked) {
                 circle3.setPosition(fVc);
             }
         }
@@ -425,7 +446,7 @@ public class Unit {
                     correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            if (unitAttack == null || towerAttack == null) {
+            if (unitAttack == null || !unitAttack.attacked) {
                 circle2.setPosition(fVc);
             }
         }
@@ -475,81 +496,143 @@ public class Unit {
                     correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
                 }
             }
-            if (unitAttack == null || towerAttack == null) {
+            if (unitAttack == null || !unitAttack.attacked) {
                 circle1.setPosition(fVc);
             }
         }
 
-        if (unitAttack == null || towerAttack == null) {
+        if (unitAttack == null || !unitAttack.attacked) {
 //            circle4.setPosition(fVc);
 //            circle3.setPosition(fVc);
 //            circle2.setPosition(fVc);
 //            circle1.setPosition(fVc);
             backStepPoint.set(currentPoint);
             currentPoint.set(fVc);
+            if (unitAttack != null && unitAttack.circle != null) {
+                unitAttack.circle.setPosition(fVc);
+            }
         }
         fVc = null; // delete fVc;
     }
 
-    public Tower tryFoundTower(final CameraController cameraController) {
-        Cell unitCell = currentCell;
-        int radius = Math.round(unitAttack.range);
-        if (unitAttack.attackType == UnitAttack.AttackType.Melee) {
-            for (int tmpX = -radius; tmpX <= radius; tmpX++) {
-                for (int tmpY = -radius; tmpY <= radius; tmpY++) {
-                    Cell cell = cameraController.gameField.getCell(tmpX + unitCell.cellX, tmpY + unitCell.cellY);
-                    if (cell != null && cell.getTower() != null) {
-                        Tower tower = cell.getTower();
-                        towerAttackInit(tower, cameraController);
-                        return tower;
+    public boolean tryAttackTower(float delta, final CameraController cameraController) {
+        if (unitAttack != null) {
+//            UnitAttack.AttackType attackType = unitAttack.attackType;
+//            if (attackType == UnitAttack.AttackType.Melee) {
+//                if ( (!unitAttack.stackInOneCell && this.equals(currentCell.getUnit())) || unitAttack.stackInOneCell) {
+                    if (recharge(delta)) {
+                        if (tryFoundTower(cameraController) != null) {
+//                            return towerAttack(delta, cameraController);
+                            if (!towerAttack(delta, cameraController)) {
+                                return true;
+                            }
+                        }
                     }
-                }
-            }
-//        } else { // other UnitAttack.AttackType.Range;
-
-        }
-        return null;
-    }
-
-    public boolean recharge(float deltaTime) {
-//        Gdx.app.log("Unit::recharge()", " -- unitAttack.elapsedTimeRecharge:" + unitAttack.elapsedTimeRecharge);
-//        Gdx.app.log("Unit::recharge()", " -- unitAttack.reload:" + unitAttack.reload);
-        if (towerAttack != null) {
-//            if (!unitAttack.attacked) {
-                unitAttack.elapsedTimeRecharge += deltaTime;
-                if (unitAttack.elapsedTimeRecharge >= unitAttack.reload) {
-//                    unitAttack.elapsedTimeRecharge = 0;
-                    unitAttack.attacked = true;
-                    return true;
-                }
-//            } else {
-//                return true;
+//                    if (!unitAttack.attacked || towerAttack == null) {
+//                        if (tryFoundTower(cameraController) != null) {
+//                            return true;
+//                        }
+//                    } else {
+//                        return true;
+//                    }
+//                }
+//            } else if (attackType == UnitAttack.AttackType.Range) {
+//                if (recharge(delta)) {
+//                    towerAttack(delta, cameraController);
+//                }
+//                if (!unitAttack.attacked || towerAttack == null) {
+//                    if (tryFoundTower(cameraController) != null) {
+////                        continue;
+//                    }
+//                } else {
+////                    continue;
+//                }
 //            }
         }
         return false;
     }
 
-    public boolean towerAttack(float deltaTime) {
+    public Tower tryFoundTower(final CameraController cameraController) {
+        if (towerAttack == null) {
+//            if ( (!unitAttack.stackInOneCell && this.equals(currentCell.getUnit())) || unitAttack.stackInOneCell) {
+            if (unitAttack.stackInOneCell || currentCell.getUnit().equals(this)) {
+                int radius = Math.round(unitAttack.range);
+                if (unitAttack.attackType == UnitAttack.AttackType.Melee) {
+                    for (int tmpX = -radius; tmpX <= radius; tmpX++) {
+                        for (int tmpY = -radius; tmpY <= radius; tmpY++) {
+                            Cell cell = cameraController.gameField.getCell(tmpX + currentCell.cellX, tmpY + currentCell.cellY);
+                            if (cell != null && cell.getTower() != null) {
+                                Tower tower = cell.getTower();
+                                towerAttackInit(tower, cameraController);
+                                return tower;
+                            }
+                        }
+                    }
+                } else if (unitAttack.attackType == UnitAttack.AttackType.Range) {
+                    for (Tower tower : cameraController.gameField.towersManager.towers) {
+                        if (unitAttack.circle.overlaps(tower.circles.get(cameraController.isDrawableTowers - 1))) {
+                            towerAttackInit(tower, cameraController);
+                            return tower;
+                        }
+                    }
+                } else {
+                    Gdx.app.log("Unit::tryFoundTower()", "-- unitAttack.attackType:" + unitAttack.attackType);
+                }
+            }
+            return null;
+        } else {
+            if (unitAttack.elapsedTimeRecharge >= unitAttack.reload) {
+//                unitAttack.attacked = true;
+//                towerAttackInit(towerAttack, cameraController);
+                updateTowerAttack(cameraController);
+            }
+        }
+        return towerAttack;
+    }
+
+    public boolean recharge(float deltaTime) {
+//        Gdx.app.log("Unit::recharge()", " -- unitAttack.elapsedTimeRecharge:" + unitAttack.elapsedTimeRecharge);
+//        Gdx.app.log("Unit::recharge()", " -- unitAttack.reload:" + unitAttack.reload);
+//        if (towerAttack != null) {
+//            if (!unitAttack.attacked) {
+                unitAttack.elapsedTimeRecharge += deltaTime;
+                if (unitAttack.elapsedTimeRecharge >= unitAttack.reload) {
+                    return true;
+                }
+//            } else {
+//                return true;
+//            }
+//        }
+        return false;
+    }
+
+    public boolean towerAttack(float deltaTime, final CameraController cameraController) {
 //        Gdx.app.log("Unit::towerAttack()", " -- unitAttack.elapsedTimeAttacked:" + unitAttack.elapsedTimeAttacked);
 //        Gdx.app.log("Unit::towerAttack()", " -- unitAttack.attackSpeed:" + unitAttack.attackSpeed);
-//        if (unitAttack.elapsedTime > 0) {
-            unitAttack.elapsedTimeAttacked += deltaTime;
-            if (unitAttack.elapsedTimeAttacked >= unitAttack.attackSpeed) {
-                unitAttack.elapsedTimeRecharge = 0;
-//                unitAttack.elapsedTimeAttacked = 0;
-//                towerAttack.destroy() // need func!
-                towerAttack.hp -= unitAttack.damage;
-                if (towerAttack.hp <= 0) {
-//                    towerAttack.destroyElapsedTime = 0;
-//                    towerAttack.setAnimation("death_");
+//        unitAttack.attacked = true;
+        unitAttack.elapsedTimeAttacked += deltaTime;
+        if (unitAttack.elapsedTimeAttacked >= unitAttack.attackSpeed) {
+            unitAttack.elapsedTimeAttacked = 0;
+            unitAttack.elapsedTimeRecharge = 0;
+            if (unitAttack.attackType == UnitAttack.AttackType.Melee) {
+                if (towerAttack.destroy(unitAttack.damage)) {
                     towerAttack = null;
                 }
-//                if (unitAttack.attackType == UnitAttack.AttackType.Melee) {
-                    unitAttack.attacked = false;
-//                }
-                return true;
+            } else if (unitAttack.attackType == UnitAttack.AttackType.Range) {
+                Vector2 vector2 = new Vector2(currentPoint);
+                vector2.add(0, cameraController.halfSizeCellY);
+                bullets.add(new UnitBullet(vector2, templateForUnit, towerAttack));
             }
-//        }
+            if (!unitAttack.stayToDie) {
+                towerAttack = null;
+//                return false;
+            } else {
+                direction = Direction.UP;
+                setAnimation("idle_");
+            }
+            unitAttack.attacked = false;
+            return true;
+        }
         return false;
     }
 
@@ -560,8 +643,13 @@ public class Unit {
         towerAttack = tower;
         towerAttack.whoAttackMe.add(this);
 
+        updateTowerAttack(cameraController);
+    }
+
+    private void updateTowerAttack(CameraController cameraController) {
+        unitAttack.attacked = true;
         int oldX = currentCell.cellX, oldY = currentCell.cellY;
-        int newX = tower.cell.cellX, newY = tower.cell.cellY;
+        int newX = towerAttack.cell.cellX, newY = towerAttack.cell.cellY;
 
         calculateDirection(oldX, oldY, newX, newY, cameraController);
         setAnimation("attack_");
@@ -579,6 +667,25 @@ public class Unit {
             return false;
         }
         return false;
+    }
+
+    public void moveAllShells(float delta, CameraController cameraController) {
+//        Logger.logDebug("-- bullets:" + bullets);
+        for (UnitBullet bullet : bullets) {
+            moveShell(delta, bullet, cameraController);
+        }
+    }
+
+    private void moveShell(float delta, UnitBullet bullet, CameraController cameraController) {
+        switch (bullet.flightOfShell(delta, cameraController)) {
+            case 1:
+                break;
+            case 0:
+//                break;
+            case -1:
+                bullets.removeValue(bullet, false);
+                break;
+        }
     }
 
     private boolean addEffect(TowerShellEffect towerShellEffect) {

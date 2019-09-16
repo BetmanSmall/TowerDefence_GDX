@@ -642,13 +642,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        Gdx.app.log("GameInterface::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+//        Gdx.app.log("GameInterface::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         return false;
     }
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("GameInterface::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
+//        Gdx.app.log("GameInterface::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
         return false;
     }
 
@@ -669,7 +669,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("GameInterface::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+//        Gdx.app.log("GameInterface::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
         return false;
     }
 
@@ -684,13 +684,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        Gdx.app.log("GameInterface::zoom()", "-- initialDistance:" + initialDistance + " distance:" + distance);
+//        Gdx.app.log("GameInterface::zoom()", "-- initialDistance:" + initialDistance + " distance:" + distance);
         return false;
     }
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        Gdx.app.log("GameInterface::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
+//        Gdx.app.log("GameInterface::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
         return false;
     }
 
@@ -719,11 +719,11 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("GameInterface::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+//        Gdx.app.log("GameInterface::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
         boolean returnSuperTouchDown = super.touchDown(screenX, screenY, pointer, button);
-        Gdx.app.log("GameInterface::touchDown()", "-- returnSuperTouchDown :" + returnSuperTouchDown);
+//        Gdx.app.log("GameInterface::touchDown()", "-- returnSuperTouchDown :" + returnSuperTouchDown);
 //        Actor actor = hit(screenX, screenY, true);
 //        Gdx.app.log("GameInterface::touchDown()", "-- actor:" + actor);
         if(unitsSelector != null) {
@@ -741,9 +741,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("GameInterface::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+//        Gdx.app.log("GameInterface::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
         boolean returnSuperTouchUp = super.touchUp(screenX, screenY, pointer, button);
-        Gdx.app.log("GameInterface::touchUp()", "-- returnSuperTouchUp:" + returnSuperTouchUp);
+//        Gdx.app.log("GameInterface::touchUp()", "-- returnSuperTouchUp:" + returnSuperTouchUp);
         if(unitsSelector != null) {
             if (unitsSelector.panStop(screenX, screenY, pointer, button)) {
                 return true;
@@ -759,13 +759,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Gdx.app.log("GameInterface::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
+//        Gdx.app.log("GameInterface::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
         float deltaX = screenX - prevMouseX;
         float deltaY = screenY - prevMouseY;
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
         boolean returnSuperTouchDragged = super.touchDragged(screenX, screenY, pointer);
-        Gdx.app.log("GameInterface::touchDragged()", "-- returnSuperTouchDown:" + returnSuperTouchDragged);
+//        Gdx.app.log("GameInterface::touchDragged()", "-- returnSuperTouchDown:" + returnSuperTouchDragged);
         if(unitsSelector != null) {
             if(unitsSelector.pan(screenX, screenY, deltaX, deltaY)) {
                 return true;

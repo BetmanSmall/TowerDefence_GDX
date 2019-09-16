@@ -1,9 +1,12 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
+import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
@@ -29,6 +32,11 @@ public class Tower {
 
     public float hp;
     public Array<Unit> whoAttackMe;
+    public Array<Circle> circles;
+
+    private Animation animation;
+    private float destroyTime = 3f; // TODO 3f sec not good!
+    private float destroyElapsedTime;
 
     public Tower(Cell cell, TemplateForTower templateForTower, int player) {
 //        Gdx.app.log("Tower::Tower()", "-- cell:" + cell + " templateForTower:" + templateForTower + " player:" + player);
@@ -45,6 +53,11 @@ public class Tower {
 
         this.hp = templateForTower.healthPoints;
         this.whoAttackMe = new Array<Unit>();
+        this.circles = new Array<Circle>(4);
+        this.circles.add(new Circle(0f, 0f, 16f));
+        this.circles.add(new Circle(0f, 0f, 16f));
+        this.circles.add(new Circle(0f, 0f, 16f));
+        this.circles.add(new Circle(0f, 0f, 16f));
     }
 
     public void dispose() {
@@ -65,14 +78,21 @@ public class Tower {
     }
 
     void updateCenterGraphicCoordinates(CameraController cameraController) {
-        if (cameraController.isDrawableTowers == 1 || cameraController.isDrawableTowers == 5) {
+        if (cameraController.isDrawableTowers == 1) {
             centerGraphicCoord.set(cell.graphicCoordinates1);
+            circles.get(0).setPosition(cell.graphicCoordinates1);
         } else if (cameraController.isDrawableTowers == 2) {
             centerGraphicCoord.set(cell.graphicCoordinates2);
+            circles.get(1).setPosition(cell.graphicCoordinates2);
         } else if (cameraController.isDrawableTowers == 3) {
             centerGraphicCoord.set(cell.graphicCoordinates3);
+            circles.get(2).setPosition(cell.graphicCoordinates3);
         } else if (cameraController.isDrawableTowers == 4) {
             centerGraphicCoord.set(cell.graphicCoordinates4);
+            circles.get(3).setPosition(cell.graphicCoordinates4);
+        } else if (cameraController.isDrawableTowers == 5) {
+            centerGraphicCoord.set(cell.graphicCoordinates1);
+            circles.get(0).setPosition(cell.graphicCoordinates1);
         } else {
             centerGraphicCoord.setZero();
         }
@@ -174,6 +194,45 @@ public class Tower {
                 bullets.removeValue(bullet, false);
                 break;
         }
+    }
+
+    public boolean destroy(float damage) {//, TowerShellEffect towerShellEffect) {
+        if(hp > 0) {
+            hp -= damage;
+//            addEffect(towerShellEffect);
+            if(hp <= 0) {
+                destroyElapsedTime = 0;
+                setAnimation("explosion_");
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private void setAnimation(String action) { // Action transform to Enum
+//        Gdx.app.log("Unit::setAnimation()", "-- action+direction:" + action+direction );
+        AnimatedTiledMapTile animatedTiledMapTile = templateForTower.animations.get(action);
+        if (animatedTiledMapTile != null) {
+            StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+            TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
+            for (int k = 0; k < staticTiledMapTiles.length; k++) {
+                textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
+            }
+            if (action.equals("explosion_")) {
+                animation = new Animation(destroyTime / staticTiledMapTiles.length, textureRegions);
+            }
+//            Gdx.app.log("Unit::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
+        } else {
+            Gdx.app.log("Unit::setAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
+        }
+    }
+
+    public TextureRegion getCurrentDestroyFrame() {
+        if (animation != null) {
+            return (TextureRegion) animation.getKeyFrame(destroyElapsedTime, true);
+        }
+        return null;
     }
 
     public String toString() {

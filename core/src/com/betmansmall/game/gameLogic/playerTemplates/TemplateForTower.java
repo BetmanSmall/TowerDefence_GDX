@@ -54,6 +54,19 @@ public class TemplateForTower extends Template {
         }
     }
 
+    void loadExplosion(SimpleTemplate explosion) {
+        if (explosion != null) {
+            for (AnimatedTiledMapTile animatedTile : explosion.animatedTiles.values()) {
+                String tileName = animatedTile.getProperties().get("tileName", null);
+                if (tileName != null) {
+                    if(tileName.equals("explosion_")) {
+                        animations.put("explosion_", animatedTile);
+                    }
+                }
+            }
+        }
+    }
+
     void loadFireBall(SimpleTemplate fireBall) {
         if (fireBall != null) {
             for (AnimatedTiledMapTile animatedTile : fireBall.animatedTiles.values()) {
@@ -99,18 +112,6 @@ public class TemplateForTower extends Template {
                 animations.put("ammo_" + Direction.DOWN, tile);
             }
         }
-    }
-
-    private AnimatedTiledMapTile flipAnimatedTiledMapTile(AnimatedTiledMapTile animatedTiledMapTile) {
-        Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(animatedTiledMapTile.getFrameTiles());
-        for (int k = 0; k < frames.size; k++) {
-            TextureRegion textureRegion = new TextureRegion(frames.get(k).getTextureRegion());
-            textureRegion.flip(true, false);
-            StaticTiledMapTile frame = new StaticTiledMapTile(textureRegion);
-            frames.set(k, frame);
-        }
-        IntArray intervals = new IntArray(animatedTiledMapTile.getAnimationIntervals());
-        return new AnimatedTiledMapTile(intervals, frames);
     }
 
 //    private TiledMapTile flipTile(TiledMapTile TiledMapTile) {

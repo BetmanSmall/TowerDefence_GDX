@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -902,12 +903,21 @@ public class GameField {
 //            cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius/2);
 //            cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
+        // todo fix this shit 1 || this fix bug with transparent when select tower
+        cameraController.spriteBatch.end();
+        cameraController.shapeRenderer.end();
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
         Color oldColor = cameraController.shapeRenderer.getColor();
         cameraController.shapeRenderer.setColor(Color.WHITE);
         if (cameraController.prevCellX == cell.cellX && cameraController.prevCellY == cell.cellY) {
             cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
         cameraController.shapeRenderer.setColor(oldColor);
+
+        cameraController.shapeRenderer.end();
+        cameraController.spriteBatch.begin();
+        // todo fix this shit 2
         towerPos = null; // delete towerPos;
     }
 
@@ -965,6 +975,16 @@ public class GameField {
 //                spriteBatch.draw(textureRegion, bullet.currentPoint.x, bullet.currentPoint.y, width, height);
                     cameraController.spriteBatch.draw(textureRegion, bullet.currentPoint.x - bullet.currCircle.radius, bullet.currentPoint.y - bullet.currCircle.radius, bullet.currCircle.radius * 2, bullet.currCircle.radius * 2);
 //                Gdx.app.log("GameField", "drawProjecTiles(); -- Draw bullet:" + bullet.currentPoint);
+                }
+            }
+        }
+        for (Unit unit : unitsManager.units) {
+            for (UnitBullet bullet : unit.bullets) {
+                TextureRegion textureRegion = bullet.textureRegion;
+//                Gdx.app.log("GameField::drawBullets()", "-- textureRegion:" + textureRegion);
+//                Gdx.app.log("GameField::drawBullets()", "-- Draw bullet:" + bullet.currentPoint);
+                if (textureRegion != null) {
+                    cameraController.spriteBatch.draw(textureRegion, bullet.currentPoint.x - bullet.currCircle.radius, bullet.currentPoint.y - bullet.currCircle.radius, bullet.currCircle.radius * 2, bullet.currCircle.radius * 2);
                 }
             }
         }
@@ -1075,6 +1095,16 @@ public class GameField {
                 }
             }
         }
+        for (Unit unit : unitsManager.units) {
+            for (UnitBullet bullet : unit.bullets) {
+                cameraController.shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, cameraController.sizeCellX/40f);
+                if (null != bullet.currCircle) {
+                    if (bullet.animation == null) {
+                        cameraController.shapeRenderer.circle(bullet.currCircle.x, bullet.currCircle.y, bullet.currCircle.radius);
+                    }
+                }
+            }
+        }
         cameraController.shapeRenderer.end();
 
         cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -1091,14 +1121,21 @@ public class GameField {
 
         cameraController.shapeRenderer.setColor(Color.RED);
         for (Unit unit : unitsManager.units) {
-            if(cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5)
+            if(cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5) {
                 cameraController.shapeRenderer.circle(unit.circle1.x, unit.circle1.y, unit.circle1.radius);
-            if(cameraController.isDrawableUnits == 2 || cameraController.isDrawableUnits == 5)
+            }
+            if(cameraController.isDrawableUnits == 2 || cameraController.isDrawableUnits == 5) {
                 cameraController.shapeRenderer.circle(unit.circle2.x, unit.circle2.y, unit.circle2.radius);
-            if(cameraController.isDrawableUnits == 3 || cameraController.isDrawableUnits == 5)
+            }
+            if(cameraController.isDrawableUnits == 3 || cameraController.isDrawableUnits == 5) {
                 cameraController.shapeRenderer.circle(unit.circle3.x, unit.circle3.y, unit.circle3.radius);
-            if(cameraController.isDrawableUnits == 4 || cameraController.isDrawableUnits == 5)
+            }
+            if(cameraController.isDrawableUnits == 4 || cameraController.isDrawableUnits == 5) {
                 cameraController.shapeRenderer.circle(unit.circle4.x, unit.circle4.y, unit.circle4.radius);
+            }
+            if (unit.unitAttack != null && unit.unitAttack.circle != null) {
+                cameraController.shapeRenderer.circle(unit.unitAttack.circle.x, unit.unitAttack.circle.y, unit.unitAttack.circle.radius);
+            }
         }
 
 //        cameraController.shapeRenderer.setColor(new Color(153f, 255f, 51f, 0.012f));
@@ -1859,69 +1896,53 @@ public class GameField {
             Cell nextCurrentCell = unit.nextCell;
             if (unit.isAlive()) {
                 unit.shellEffectsMove(delta);
-                if (unit.unitAttack != null) {
-                    if (unit.unitAttack.attackType == UnitAttack.AttackType.Melee) {
-                        if ( (!unit.unitAttack.stackInOneCell && unit.equals(unit.currentCell.getUnit())) || unit.unitAttack.stackInOneCell) {
 
-//                        } else {
-                            if (unit.recharge(delta)) {
-                                unit.towerAttack(delta);
-                            }
-                            if (!unit.unitAttack.attacked || unit.towerAttack == null) {
-                                if (unit.tryFoundTower(cameraController) != null) {
-                                    continue;
+                if (!unit.tryAttackTower(delta, cameraController)) {
+//                    if (!unit.unitAttack.attacked && unit.towerAttack == null) {
+//                    if (unit.unitAttack == null || (!unit.unitAttack.attacked && unit.towerAttack == null) ) {
+                        Cell currentCell = unit.move(delta, cameraController);
+                        if (currentCell != null) {
+                            if (!currentCell.equals(oldCurrentCell)) { // ?? currentCell == oldCurrentCell ??
+                                if (oldCurrentCell != null && currentCell != null) {
+                                    oldCurrentCell.removeUnit(unit);
+                                    currentCell.setUnit(unit);
+//                                Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + nextCell.getX() + " Y:" + nextCell.getY());
+                                } else {
+                                    Gdx.app.error("GameField::stepAllUnits()", "-- Unit bad! Cells:oldCurrentCell:" + oldCurrentCell + " currentCell:" + currentCell + " nextCurrentCell:" + nextCurrentCell);
                                 }
-                            } else {
-                                continue;
                             }
-                        }
-//                    } else if (unit.unitAttack.attackType == UnitAttack.AttackType.RangeStand) {
-//
-//                    } else if (unit.unitAttack.attackType == UnitAttack.AttackType.RangeWalk) {
-//
-                    }
-                }
-                Cell currentCell = unit.move(delta, cameraController);
-                if (currentCell != null) {
-                    if (!currentCell.equals(oldCurrentCell)) { // ?? currentCell == oldCurrentCell ??
-                        if (oldCurrentCell != null && currentCell != null) {
-                            oldCurrentCell.removeUnit(unit);
-                            currentCell.setUnit(unit);
-//                            Gdx.app.log("GameField::stepAllUnits()", "-- Unit move to X:" + nextCell.getX() + " Y:" + nextCell.getY());
                         } else {
-                            Gdx.app.error("GameField::stepAllUnits()", "-- Unit bad! Cells:oldCurrentCell:" + oldCurrentCell + " currentCell:" + currentCell + " nextCurrentCell:" + nextCurrentCell);
-                        }
-                    }
-                } else {
-                    Cell cell = oldCurrentCell;
-                    if (unit.player == 1) {
-                        gameSettings.missedUnitsForComputer0++;
-                    } else if (unit.player == 0) {
-                        if (unit.exitCell == nextCurrentCell) { // ?? unit.exitCell.equals(cell) ?? // hueta! change plz Nikita!
-                            gameSettings.missedUnitsForPlayer1++;
-                            if (cell != null) {
-                                cell.removeUnit(unit);
-                            }
-                            unitsManager.removeUnit(unit);
-                            Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(unit):");
-                        } else {
-                            if (unit.route == null || unit.route.isEmpty()) {
-                                int randomX = (int)(Math.random()*map.width);
-                                int randomY = (int)(Math.random()*map.height);
-                                unit.route = pathFinder.route(nextCurrentCell.cellX, nextCurrentCell.cellY, randomX, randomY); // nextCurrentCell -?- currentCell
-                                if (unit.route != null && !unit.route.isEmpty()) {
-                                    unit.route.removeFirst();
-//                                    unit.route.removeLast();
+                            Cell cell = oldCurrentCell;
+                            if (unit.player == 1) {
+                                gameSettings.missedUnitsForComputer0++;
+                            } else if (unit.player == 0) {
+                                if (unit.exitCell == nextCurrentCell) { // ?? unit.exitCell.equals(cell) ?? // hueta! change plz Nikita!
+                                    gameSettings.missedUnitsForPlayer1++;
+                                    if (cell != null) {
+                                        cell.removeUnit(unit);
+                                    }
+                                    unitsManager.removeUnit(unit);
+                                    Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(tower):");
+                                } else {
+                                    if (unit.route == null || unit.route.isEmpty()) {
+                                        int randomX = (int) (Math.random() * map.width);
+                                        int randomY = (int) (Math.random() * map.height);
+                                        unit.route = pathFinder.route(nextCurrentCell.cellX, nextCurrentCell.cellY, randomX, randomY); // nextCurrentCell -?- currentCell
+                                        if (unit.route != null && !unit.route.isEmpty()) {
+                                            unit.route.removeFirst();
+//                                        unit.route.removeLast();
+                                        }
+//                                    Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + tower.route);
+                                    }
                                 }
-//                                Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + unit.route);
+//                            Cell* cell = getCell(currentCell.x, currentCell.y);
+//                            if (cell->isTerrain()) {
+//                                cell->removeTerrain(true);
+//                                updatePathFinderWalls();
+//                            }
                             }
                         }
-//                    Cell* cell = getCell(currentCell.x, currentCell.y);
-//                    if (cell->isTerrain()) {
-//                        cell->removeTerrain(true);
-//                        updatePathFinderWalls();
 //                    }
-                    }
                 }
             } else {
 //            if (!unit.isAlive()) {
@@ -2022,6 +2043,9 @@ public class GameField {
     private void moveAllShells(float delta, CameraController cameraController) {
         for (Tower tower : towersManager.towers) {
             tower.moveAllShells(delta, cameraController);
+        }
+        for (Unit unit : unitsManager.units) {
+            unit.moveAllShells(delta, cameraController);
         }
     }
 

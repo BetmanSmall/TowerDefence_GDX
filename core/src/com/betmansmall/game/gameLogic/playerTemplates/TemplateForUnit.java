@@ -27,6 +27,8 @@ public class TemplateForUnit extends Template {
 
     public ObjectMap<String, AnimatedTiledMapTile> animations;
 
+    public SimpleTemplate weaponTemplate;
+
     public TemplateForUnit(FileHandle templateFile) throws Exception {
         try {
             animations = new ObjectMap<String, AnimatedTiledMapTile>();
@@ -51,6 +53,34 @@ public class TemplateForUnit extends Template {
 //            }
 //        }
 //    }
+
+    void loadWeapon(SimpleTemplate weapon) {
+        if (weapon != null && unitAttack != null) {
+            weaponTemplate = weapon;
+            for (AnimatedTiledMapTile animatedTile : weapon.animatedTiles.values()) {
+                String tileName = animatedTile.getProperties().get("tileName", null);
+                if (tileName != null) {
+                    if(tileName.contains("weapon_")) {
+//                        setWeaponTiles(tileName.replace("axe_", "weapon_"), animatedTile);
+                        setWeaponTiles(tileName, animatedTile);
+                    }
+                }
+            }
+            properties.putAll(weapon.properties);
+            Gdx.app.log("TemplateForUnit::loadWeapon();", "-- properties:" + properties);
+            if (!properties.containsKey("ammoSize")) {
+                Gdx.app.log("TemplateForUnit::loadWeapon()", "-- NotFound: ammoSize");
+            } else {
+                unitAttack.ammoSize = Float.parseFloat(properties.get("ammoSize"));
+            }
+            if (!properties.containsKey("ammoSpeed")) {
+                Gdx.app.log("TemplateForUnit::loadWeapon()", "-- NotFound: ammoSpeed");
+            } else {
+                unitAttack.ammoSpeed = Float.parseFloat(properties.get("ammoSpeed"));
+            }
+            Gdx.app.log("TemplateForUnit::loadWeapon();", "-- " + toString());
+        }
+    }
 
     void specificLoad() {
         for (AnimatedTiledMapTile animatedTile : animatedTiles.values()) {
@@ -78,6 +108,25 @@ public class TemplateForUnit extends Template {
                 } else if(actionAndDirection.equals("attack_" + Direction.DOWN_RIGHT)) {
                     animations.put("attack_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(animatedTile));
                 }
+            }
+        }
+    }
+
+    private void setWeaponTiles(String tileName, AnimatedTiledMapTile tile) {
+        if(tile != null) {
+            if(tileName.equals("weapon_" + Direction.UP)) {
+                animations.put("weapon_" + Direction.UP, tile);
+            } else if(tileName.equals("weapon_" + Direction.UP_RIGHT)) {
+                animations.put("weapon_" + Direction.UP_RIGHT, tile);
+                animations.put("weapon_" + Direction.UP_LEFT, flipAnimatedTiledMapTile(tile));
+            } else if(tileName.equals("weapon_" + Direction.RIGHT)) {
+                animations.put("weapon_" + Direction.RIGHT, tile);
+                animations.put("weapon_" + Direction.LEFT, flipAnimatedTiledMapTile(tile));
+            } else if(tileName.equals("weapon_" + Direction.DOWN_RIGHT)) {
+                animations.put("weapon_" + Direction.DOWN_RIGHT, tile);
+                animations.put("weapon_" + Direction.DOWN_LEFT, flipAnimatedTiledMapTile(tile));
+            } else if(tileName.equals("weapon_" + Direction.DOWN)) {
+                animations.put("weapon_" + Direction.DOWN, tile);
             }
         }
     }
@@ -151,18 +200,6 @@ public class TemplateForUnit extends Template {
         }
     }
 
-    private AnimatedTiledMapTile flipAnimatedTiledMapTile(AnimatedTiledMapTile animatedTiledMapTile) {
-        Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(animatedTiledMapTile.getFrameTiles());
-        for (int k = 0; k < frames.size; k++) {
-            TextureRegion textureRegion = new TextureRegion(frames.get(k).getTextureRegion());
-            textureRegion.flip(true, false);
-            StaticTiledMapTile frame = new StaticTiledMapTile(textureRegion);
-            frames.set(k, frame);
-        }
-        IntArray intervals = new IntArray(animatedTiledMapTile.getAnimationIntervals());
-        return new AnimatedTiledMapTile(intervals, frames);
-    }
-
     private void validate() {
         basicValidate();
         // Need check range values
@@ -230,11 +267,11 @@ public class TemplateForUnit extends Template {
             } else {
                 unitAttack.stackInOneCell = Boolean.parseBoolean(properties.get("attackType_stackInOneCell"));
             }
-//            if (!properties.containsKey("attackType_walkToSide")) {
-//                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_walkToSide");
-//            } else {
-//                unitAttack.walkToSide = Boolean.parseBoolean(properties.get("attackType_walkToSide"));
-//            }
+            if (!properties.containsKey("attackType_stayToDie")) {
+                Gdx.app.log("TemplateForUnit::validate()", "-- NotFound: attackType_stayToDie");
+            } else {
+                unitAttack.stayToDie = Boolean.parseBoolean(properties.get("attackType_stayToDie"));
+            }
         }
 
         if(animations.size == 0)

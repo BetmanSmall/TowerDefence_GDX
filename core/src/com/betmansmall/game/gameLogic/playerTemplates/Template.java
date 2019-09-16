@@ -112,6 +112,18 @@ public class Template {
         return properties;
     }
 
+    protected AnimatedTiledMapTile flipAnimatedTiledMapTile(AnimatedTiledMapTile animatedTiledMapTile) {
+        Array<StaticTiledMapTile> frames = new Array<StaticTiledMapTile>(animatedTiledMapTile.getFrameTiles());
+        for (int k = 0; k < frames.size; k++) {
+            TextureRegion textureRegion = new TextureRegion(frames.get(k).getTextureRegion());
+            textureRegion.flip(true, false);
+            StaticTiledMapTile frame = new StaticTiledMapTile(textureRegion);
+            frames.set(k, frame);
+        }
+        IntArray intervals = new IntArray(animatedTiledMapTile.getAnimationIntervals());
+        return new AnimatedTiledMapTile(intervals, frames);
+    }
+
     public String toStringProperties() {
         StringBuilder sb = new StringBuilder();
         sb.append("Properties[");
@@ -122,7 +134,7 @@ public class Template {
 //            String key = keys.next();
                 sb.append(key + ":" + properties.get(key) + ",");
             }
-            sb.replace(sb.length - 2, sb.length - 1, "");
+            sb.deleteCharAt(sb.length - 1);
         } else {
             sb.append("empty");
         }
