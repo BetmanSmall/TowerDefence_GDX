@@ -35,7 +35,7 @@ public class Tower {
     public Array<Circle> circles;
 
     private Animation animation;
-    private float destroyTime = 3f; // TODO 3f sec not good!
+    private float destroyTime = 1.5f; // TODO 1.5f sec not good!
     private float destroyElapsedTime;
 
     public Tower(Cell cell, TemplateForTower templateForTower, int player) {
@@ -196,6 +196,13 @@ public class Tower {
         }
     }
 
+    public boolean isNotDestroyed() {
+//        if(animation == null) { // TODO Не верно, нужно исправить.
+//            return false;
+//        }
+        return hp > 0 ? true : false;
+    }
+
     public boolean destroy(float damage) {//, TowerShellEffect towerShellEffect) {
         if(hp > 0) {
             hp -= damage;
@@ -211,7 +218,7 @@ public class Tower {
     }
 
     private void setAnimation(String action) { // Action transform to Enum
-//        Gdx.app.log("Unit::setAnimation()", "-- action+direction:" + action+direction );
+//        Gdx.app.log("Tower::setAnimation()", "-- action+direction:" + action+direction );
         AnimatedTiledMapTile animatedTiledMapTile = templateForTower.animations.get(action);
         if (animatedTiledMapTile != null) {
             StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
@@ -222,10 +229,23 @@ public class Tower {
             if (action.equals("explosion_")) {
                 animation = new Animation(destroyTime / staticTiledMapTiles.length, textureRegions);
             }
-//            Gdx.app.log("Unit::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
+            Gdx.app.log("Tower::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
         } else {
-            Gdx.app.log("Unit::setAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
+            Gdx.app.log("Tower::setAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
         }
+    }
+
+    public boolean changeDestroyFrame(float delta) {
+        if(hp <= 0) {
+            if(destroyElapsedTime >= destroyTime) { // need change to template.destroyTime
+//                dispose();
+                return false;
+            } else {
+                destroyElapsedTime += delta;
+            }
+            return true;
+        }
+        return false;
     }
 
     public TextureRegion getCurrentDestroyFrame() {

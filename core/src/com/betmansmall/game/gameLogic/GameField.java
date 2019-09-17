@@ -807,70 +807,70 @@ public class GameField {
 
     private void drawUnitsBars(CameraController cameraController) {
         for (Unit unit : unitsManager.units) {
-            if(cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5) {
-                drawUnitBar(cameraController, unit, unit.circle1.x, unit.circle1.y);
-            }
-            if(cameraController.isDrawableUnits == 2 || cameraController.isDrawableUnits == 5) {
-                drawUnitBar(cameraController, unit, unit.circle2.x, unit.circle2.y);
-            }
-            if(cameraController.isDrawableUnits == 3 || cameraController.isDrawableUnits == 5) {
-                drawUnitBar(cameraController, unit, unit.circle3.x, unit.circle3.y);
-            }
-            if(cameraController.isDrawableUnits == 4 || cameraController.isDrawableUnits == 5) {
-                drawUnitBar(cameraController, unit, unit.circle4.x, unit.circle4.y);
+            if (unit.isAlive()) {
+                if (cameraController.isDrawableUnits == 1 || cameraController.isDrawableUnits == 5) {
+                    drawUnitBar(cameraController, unit, unit.circle1.x, unit.circle1.y);
+                }
+                if (cameraController.isDrawableUnits == 2 || cameraController.isDrawableUnits == 5) {
+                    drawUnitBar(cameraController, unit, unit.circle2.x, unit.circle2.y);
+                }
+                if (cameraController.isDrawableUnits == 3 || cameraController.isDrawableUnits == 5) {
+                    drawUnitBar(cameraController, unit, unit.circle3.x, unit.circle3.y);
+                }
+                if (cameraController.isDrawableUnits == 4 || cameraController.isDrawableUnits == 5) {
+                    drawUnitBar(cameraController, unit, unit.circle4.x, unit.circle4.y);
+                }
             }
         }
     }
 
     private void drawUnitBar(CameraController cameraController, Unit unit, float fVx, float fVy) {
-        if (unit.isAlive()) {
-            float maxHP = unit.templateForUnit.healthPoints;
-            float hp = unit.hp;
-            if (maxHP != hp) {
-                TextureRegion currentFrame = unit.getCurrentFrame();
-                fVx -= cameraController.sizeCellX/2;
-                fVy -= cameraController.sizeCellY;
-                float currentFrameWidth = currentFrame.getRegionWidth();
-                float currentFrameHeight = currentFrame.getRegionHeight();
-                float hpBarSpace = 0.8f;
-                float hpBarHPWidth = 30f;
-                float hpBarHeight = 7f;
-                float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
-                float hpBarTopIndent = hpBarHeight;
+        float maxHP = unit.templateForUnit.healthPoints;
+        float hp = unit.hp;
+        if (maxHP != hp) {
+            TextureRegion currentFrame = unit.getCurrentFrame();
+            fVx -= cameraController.sizeCellX/2;
+            fVy -= cameraController.sizeCellY;
+            float currentFrameWidth = currentFrame.getRegionWidth();
+            float currentFrameHeight = currentFrame.getRegionHeight();
+            float hpBarSpace = 0.8f;
+            float hpBarHPWidth = 30f;
+            float hpBarHeight = 7f;
+            float hpBarWidthIndent = (currentFrameWidth - hpBarHPWidth) / 2;
+            float hpBarTopIndent = hpBarHeight;
 
-                cameraController.shapeRenderer.setColor(Color.BLACK);
-                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
-                cameraController.shapeRenderer.setColor(Color.GREEN);
+            cameraController.shapeRenderer.setColor(Color.BLACK);
+            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent, fVy + currentFrameHeight - hpBarTopIndent, hpBarHPWidth, hpBarHeight);
+            cameraController.shapeRenderer.setColor(Color.GREEN);
 
-                hpBarHPWidth = hpBarHPWidth / maxHP * hp;
-                cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
+            hpBarHPWidth = hpBarHPWidth / maxHP * hp;
+            cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
 
-                float allTime = 0f;
-                for (TowerShellEffect towerShellEffect : unit.shellEffectTypes) {
-                    allTime += towerShellEffect.time;
-                }
+            float allTime = 0f;
+            for (TowerShellEffect towerShellEffect : unit.shellEffectTypes) {
+                allTime += towerShellEffect.time;
+            }
 
-                if (allTime != 0.0) {
-                    float effectBarWidthSpace = hpBarSpace * 2;
-                    float effectBarHeightSpace = hpBarSpace * 2;
-                    float effectBarWidth = hpBarHPWidth - effectBarWidthSpace * 2;
-                    float effectBarHeight = hpBarHeight - (effectBarHeightSpace * 2);
-                    float effectWidth = effectBarWidth / allTime;
-                    float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
-                    float efY = fVy + currentFrameHeight - hpBarTopIndent + effectBarHeightSpace;
-                    float effectBlockWidth = effectBarWidth / unit.shellEffectTypes.size;
-                    for (int effectIndex = 0; effectIndex < unit.shellEffectTypes.size; effectIndex++) {
-                        TowerShellEffect towerShellEffect = unit.shellEffectTypes.get(effectIndex);
-                        if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
-                            cameraController.shapeRenderer.setColor(Color.RED);
-                        } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
-                            cameraController.shapeRenderer.setColor(Color.ROYAL);
-                        }
-                        float efWidth = effectBlockWidth - effectWidth * towerShellEffect.elapsedTime;
-                        cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
-                        efX += effectBlockWidth;
-//                        Gdx.app.log("GameField::drawUnit()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
+            if (allTime != 0.0) {
+                float effectBarWidthSpace = hpBarSpace * 2;
+                float effectBarHeightSpace = hpBarSpace * 2;
+                float effectBarWidth = hpBarHPWidth - effectBarWidthSpace * 2;
+                float effectBarHeight = hpBarHeight - (effectBarHeightSpace * 2);
+                float effectWidth = effectBarWidth / allTime;
+                float efX = fVx + hpBarWidthIndent + effectBarWidthSpace;
+                float efY = fVy + currentFrameHeight - hpBarTopIndent + effectBarHeightSpace;
+                float effectBlockWidth = effectBarWidth / unit.shellEffectTypes.size;
+                for (int effectIndex = 0; effectIndex < unit.shellEffectTypes.size; effectIndex++) {
+                    TowerShellEffect towerShellEffect = unit.shellEffectTypes.get(effectIndex);
+                    if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FireEffect) {
+                        cameraController.shapeRenderer.setColor(Color.RED);
+                    } else if (towerShellEffect.shellEffectEnum == TowerShellEffect.ShellEffectEnum.FreezeEffect) {
+                        cameraController.shapeRenderer.setColor(Color.ROYAL);
                     }
+                    float efWidth = effectBlockWidth - effectWidth * towerShellEffect.elapsedTime;
+                    cameraController.shapeRenderer.rect(efX, efY, efWidth, effectBarHeight);
+                    efX += effectBlockWidth;
+//                    Gdx.app.log("GameField::drawUnit()", "-- efX:" + efX + " efWidth:" + efWidth + ":" + effectIndex);
                 }
             }
         }
@@ -881,13 +881,20 @@ public class GameField {
         int towerSize = tower.templateForTower.size;
 //        Vector2 towerPos = new Vector2(cell.getGraphicCoordinates(cameraController.isDrawableTowers));
 //        cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, 3);
-        Vector2 towerPos = new Vector2();
-        TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
         float sizeCellX = cameraController.sizeCellX;
         float sizeCellY = cameraController.sizeCellY*2;
+
+        TextureRegion currentFrame = null;
+        if (tower.isNotDestroyed()) {
+            currentFrame = tower.templateForTower.idleTile.getTextureRegion();
+        } else {
+            sizeCellY = cameraController.sizeCellY*1.5f;
+            currentFrame = tower.getCurrentDestroyFrame();
+        }
         if (!gameSettings.isometric) {
             sizeCellY = cameraController.sizeCellY;
         }
+        Vector2 towerPos = new Vector2();
         if (cameraController.isDrawableTowers == 5) {
             for (int m = 1; m < cameraController.isDrawableTowers; m++) {
                 towerPos.set(cell.getGraphicCoordinates(m));
@@ -924,23 +931,24 @@ public class GameField {
 
     private void drawTowersBars(CameraController cameraController) {
         for (Tower tower : towersManager.towers) {
-            if(cameraController.isDrawableTowers == 1 || cameraController.isDrawableTowers == 5) {
-                drawTowerBar(cameraController, tower, tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
+            if (tower.isNotDestroyed()) {
+                if (cameraController.isDrawableTowers == 1 || cameraController.isDrawableTowers == 5) {
+                    drawTowerBar(cameraController, tower, tower.centerGraphicCoord.x, tower.centerGraphicCoord.y);
+                }
+//                if(cameraController.isDrawableTowers == 2 || cameraController.isDrawableTowers == 5) {
+//                    drawUnitBar(cameraController, tower, tower.circle2.x, tower.circle2.y);
+//                }
+//                if(cameraController.isDrawableTowers == 3 || cameraController.isDrawableTowers == 5) {
+//                    drawUnitBar(cameraController, tower, tower.circle3.x, tower.circle3.y);
+//                }
+//                if(cameraController.isDrawableTowers == 4 || cameraController.isDrawableTowers == 5) {
+//                    drawUnitBar(cameraController, tower, tower.circle4.x, tower.circle4.y);
+//                }
             }
-//            if(cameraController.isDrawableTowers == 2 || cameraController.isDrawableTowers == 5) {
-//                drawUnitBar(cameraController, tower, tower.circle2.x, tower.circle2.y);
-//            }
-//            if(cameraController.isDrawableTowers == 3 || cameraController.isDrawableTowers == 5) {
-//                drawUnitBar(cameraController, tower, tower.circle3.x, tower.circle3.y);
-//            }
-//            if(cameraController.isDrawableTowers == 4 || cameraController.isDrawableTowers == 5) {
-//                drawUnitBar(cameraController, tower, tower.circle4.x, tower.circle4.y);
-//            }
         }
     }
 
     private void drawTowerBar(CameraController cameraController, Tower tower, float fVx, float fVy) {
-//        if (tower.isAlive()) {
         float maxHP = tower.templateForTower.healthPoints;
         float hp = tower.hp;
         if (maxHP != hp) {
@@ -962,7 +970,6 @@ public class GameField {
             hpBarHPWidth = hpBarHPWidth / maxHP * hp;
             cameraController.shapeRenderer.rect(fVx + hpBarWidthIndent + hpBarSpace, fVy + currentFrameHeight - hpBarTopIndent + hpBarSpace, hpBarHPWidth - (hpBarSpace * 2), hpBarHeight - (hpBarSpace * 2));
         }
-//        }
     }
 
     private void drawBullets(CameraController cameraController) {
@@ -1961,28 +1968,26 @@ public class GameField {
     private void shotAllTowers(float delta, CameraController cameraController) {
         updateTowersGraphicCoordinates(cameraController);
         for (Tower tower : towersManager.towers) {
-            if (tower.hp <= 0) { // need impelement func Tower.destroy();
-                removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
-                continue;
-            }
-            TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
-            if (towerAttackType == TowerAttackType.Pit) {
-                checkPitTower(tower);
-            } else if (towerAttackType == TowerAttackType.Melee) {
-                shotMeleeTower(tower);
-            } else if (towerAttackType == TowerAttackType.Range || towerAttackType == TowerAttackType.RangeFly) {
-                if (tower.recharge(delta)) {
-                    for (Unit unit : unitsManager.units) {
-                        if (unit != null && unit.isAlive() && unit.player != tower.player) {
-                            if ( (unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
-                                    (!unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) {
-//                                Gdx.app.log("GameField::shotAllTowers()", "-- tower.radiusDetectionCircle:" + tower.radiusDetectionCircle);
-                                if (tower.radiusDetectionCircle != null) {
-                                    if (tower.radiusDetectionCircle.overlaps(unit.circle1)) { // circle1 2 3 4?
-//                                    Gdx.app.log("GameField::shotAllTowers()", "-- overlaps");
-                                        if (tower.shoot(unit, cameraController)) {
-                                            if (tower.templateForTower.towerShellType != TowerShellType.MassAddEffect) {
-                                                break;
+            if (tower.isNotDestroyed()) {
+                TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
+                if (towerAttackType == TowerAttackType.Pit) {
+                    checkPitTower(tower);
+                } else if (towerAttackType == TowerAttackType.Melee) {
+                    shotMeleeTower(tower);
+                } else if (towerAttackType == TowerAttackType.Range || towerAttackType == TowerAttackType.RangeFly) {
+                    if (tower.recharge(delta)) {
+                        for (Unit unit : unitsManager.units) {
+                            if (unit != null && unit.isAlive() && unit.player != tower.player) {
+                                if ((unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.RangeFly) ||
+                                        (!unit.templateForUnit.type.equals("fly") && towerAttackType == TowerAttackType.Range)) {
+//                                    Gdx.app.log("GameField::shotAllTowers()", "-- tower.radiusDetectionCircle:" + tower.radiusDetectionCircle);
+                                    if (tower.radiusDetectionCircle != null) {
+                                        if (tower.radiusDetectionCircle.overlaps(unit.circle1)) { // circle1 2 3 4?
+//                                        Gdx.app.log("GameField::shotAllTowers()", "-- overlaps");
+                                            if (tower.shoot(unit, cameraController)) {
+                                                if (tower.templateForTower.towerShellType != TowerShellType.MassAddEffect) {
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -1990,11 +1995,15 @@ public class GameField {
                             }
                         }
                     }
+                } else if (towerAttackType == TowerAttackType.FireBall) {
+                    if (tower.recharge(delta)) {
+                        tower.shotFireBall(cameraController);
+                    }
                 }
-            } else if (towerAttackType == TowerAttackType.FireBall) {
-                if (tower.recharge(delta)) {
-//                    fireBallTowerAttack(delta, tower);
-                    tower.shotFireBall(cameraController);
+            } else {
+                if (!tower.changeDestroyFrame(delta)) {
+                    removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
+                    continue;
                 }
             }
         }

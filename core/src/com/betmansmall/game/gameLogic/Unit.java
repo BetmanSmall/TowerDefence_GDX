@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
 import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
+import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Circle;
@@ -561,18 +562,26 @@ public class Unit {
                     for (int tmpX = -radius; tmpX <= radius; tmpX++) {
                         for (int tmpY = -radius; tmpY <= radius; tmpY++) {
                             Cell cell = cameraController.gameField.getCell(tmpX + currentCell.cellX, tmpY + currentCell.cellY);
-                            if (cell != null && cell.getTower() != null) {
+                            if (cell != null) {
                                 Tower tower = cell.getTower();
-                                towerAttackInit(tower, cameraController);
-                                return tower;
+                                if (tower != null) {
+                                    if (tower.isNotDestroyed()) {
+                                        towerAttackInit(tower, cameraController);
+                                        return tower;
+                                    }
+                                }
                             }
                         }
                     }
                 } else if (unitAttack.attackType == UnitAttack.AttackType.Range) {
                     for (Tower tower : cameraController.gameField.towersManager.towers) {
-                        if (unitAttack.circle.overlaps(tower.circles.get(cameraController.isDrawableTowers - 1))) {
-                            towerAttackInit(tower, cameraController);
-                            return tower;
+                        if (tower.templateForTower.towerAttackType != TowerAttackType.Pit) {
+                            if (tower.isNotDestroyed()) {
+                                if (unitAttack.circle.overlaps(tower.circles.get(cameraController.isDrawableTowers - 1))) {
+                                    towerAttackInit(tower, cameraController);
+                                    return tower;
+                                }
+                            }
                         }
                     }
                 } else {
@@ -636,14 +645,18 @@ public class Unit {
         return false;
     }
 
-    public void towerAttackInit(Tower tower, CameraController cameraController) {
+    public boolean towerAttackInit(Tower tower, CameraController cameraController) {
 //        Gdx.app.log("Unit::towerAttackInit()", " -- unitAttack.elapsedTimeAttacked:" + unitAttack.elapsedTimeAttacked);
-        unitAttack.elapsedTimeRecharge = unitAttack.reload;
-        unitAttack.elapsedTimeAttacked = 0;
-        towerAttack = tower;
-        towerAttack.whoAttackMe.add(this);
+//        if (tower.isNotDestroyed()) {
+            unitAttack.elapsedTimeRecharge = unitAttack.reload;
+            unitAttack.elapsedTimeAttacked = 0;
+            towerAttack = tower;
+            towerAttack.whoAttackMe.add(this);
 
-        updateTowerAttack(cameraController);
+            updateTowerAttack(cameraController);
+            return true;
+//        }
+//        return false;
     }
 
     private void updateTowerAttack(CameraController cameraController) {

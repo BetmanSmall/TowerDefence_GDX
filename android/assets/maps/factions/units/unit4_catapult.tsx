@@ -9,10 +9,10 @@
   <property name="speed" value="1.0"/>
   <property name="type" value="unit"/>
   <property name="attackType" value="Range"/>
-  <property name="attackType_damage" value="5"/>
+  <property name="attackType_damage" value="40"/>
   <property name="attackType_range" value="170"/>
-  <property name="attackType_attackSpeed" value="0.6"/>
-  <property name="attackType_reload" value="0.9"/>
+  <property name="attackType_attackSpeed" value="0.8"/>
+  <property name="attackType_reload" value="1.9"/>
   <property name="attackType_stackInOneCell" value="false"/>
   <property name="attackType_stayToDie" value="true"/>
  </properties>

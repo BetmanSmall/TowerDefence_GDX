@@ -9,7 +9,7 @@
   <property name="speed" value="0.6"/>
   <property name="type" value="unit"/>
   <property name="attackType" value="Range"/>
-  <property name="attackType_damage" value="2"/>
+  <property name="attackType_damage" value="20"/>
   <property name="attackType_range" value="200"/>
   <property name="attackType_attackSpeed" value="0.5"/>
   <property name="attackType_reload" value="1.5"/>
