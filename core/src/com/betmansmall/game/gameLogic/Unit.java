@@ -22,63 +22,72 @@ import java.util.ArrayDeque;
  */
 public class Unit {
     public ArrayDeque<Cell> route;
+    public TemplateForUnit templateForUnit;
+    public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
+
+    public Cell exitCell;
     public Cell currentCell;
     public Cell nextCell;
-    public Cell exitCell;
+
     public float hp;
     public float speed;
     public float stepsInTime;
     public float deathElapsedTime;
 
-    public UnitAttack unitAttack;
     public Tower towerAttack;
-    public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
+    public UnitAttack unitAttack;
     public Vector2 currentPoint;
     public Vector2 backStepPoint;
-    public Circle circle1;
-    public Circle circle2;
-    public Circle circle3;
-    public Circle circle4;
     public Vector2 velocity;
     public Vector2 displacement;
 
-    public TemplateForUnit templateForUnit;
+//    public Circle circle1;
+//    public Circle circle2;
+//    public Circle circle3;
+//    public Circle circle4;
+    public Array<Circle> circles;
 
+    public Array<TowerShellEffect> shellEffectTypes;
+    public Array<UnitBullet> bullets;
     public Direction direction;
     private Animation animation;
-    public Array<TowerShellEffect> shellEffectTypes;
-
-    public Array<UnitBullet> bullets;
 
     public Unit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
         if(route != null) {
             this.route = route;
+            this.templateForUnit = templateForUnit;
+            this.player = player;
+
+            this.exitCell = exitCell;
             this.currentCell = route.peekFirst();
             this.nextCell = route.pollFirst();
-            this.exitCell = exitCell;
+
             this.hp = templateForUnit.healthPoints;
             this.speed = templateForUnit.speed;
             this.stepsInTime = 0f;//templateForUnit.speed; // need respawn animation
             this.deathElapsedTime = 0f;
 
-            this.unitAttack = (templateForUnit.unitAttack != null) ? (new UnitAttack(templateForUnit.unitAttack)) : null; // in template need create simple UnitAttack!
             this.towerAttack = null;
-            this.player = player;
+            this.unitAttack = (templateForUnit.unitAttack != null) ? (new UnitAttack(templateForUnit.unitAttack)) : null; // in template need create simple UnitAttack!
             this.currentPoint = new Vector2();
             this.backStepPoint = new Vector2();
-            this.circle1 = new Circle(0, 0, 16f);
-            this.circle2 = new Circle(0, 0, 16f);
-            this.circle3 = new Circle(0, 0, 16f);
-            this.circle4 = new Circle(0, 0, 16f);
             this.velocity = new Vector2();
             this.displacement = new Vector2();
 
-            this.templateForUnit = templateForUnit;
+//            this.circle1 = new Circle(0, 0, 16f);
+//            this.circle2 = new Circle(0, 0, 16f);
+//            this.circle3 = new Circle(0, 0, 16f);
+//            this.circle4 = new Circle(0, 0, 16f);
+            this.circles = new Array<Circle>(4);
+            this.circles.add(new Circle(0, 0, 16f));
+            this.circles.add(new Circle(0, 0, 16f));
+            this.circles.add(new Circle(0, 0, 16f));
+            this.circles.add(new Circle(0, 0, 16f));
 
-            this.direction = Direction.UP;
-            setAnimation("walk_");
             this.shellEffectTypes = new Array<TowerShellEffect>();
             this.bullets = new Array<UnitBullet>();
+            this.direction = Direction.UP;
+            this.setAnimation("walk_");
         } else {
             Gdx.app.error("Unit::Unit()", "-- route == null");
         }
@@ -87,29 +96,44 @@ public class Unit {
     public void dispose() {
         if (route != null) {
 //            route.clear(); // it is not need with Cell but mb need with Node in PathFinder!
-            route = null;
+            this.route = null;
         }
+//        this.templateForUnit.dispose();
+        this.templateForUnit = null;
+//        this.player = 0;
 
-//        currentCell.dispose();
-        currentCell = null;
-//        nextCell.dispose();
-        nextCell = null;
-        exitCell = null;
+//        this.exitCell.dispose();
+        this.exitCell = null;
+//        this.currentCell.dispose();
+        this.currentCell = null;
+//        this.nextCell.dispose();
+        this.nextCell = null;
 
-        currentPoint = null;
-        backStepPoint = null;
-        circle1 = null;
-        circle2 = null;
-        circle3 = null;
-        circle4 = null;
-        velocity = null;
-        displacement = null;
+//        this.hp = 0;
+//        this.speed = 0;
+//        this.stepsInTime = 0;
+//        this.deathElapsedTime = 0;
 
-        templateForUnit = null;
+        this.towerAttack = null;
+        this.unitAttack = null;
+        this.currentPoint = null;
+        this.backStepPoint = null;
+        this.velocity = null;
+        this.displacement = null;
 
-        direction = null;
-        animation = null;
-        shellEffectTypes.clear();
+//        this.circle1 = null;
+//        this.circle2 = null;
+//        this.circle3 = null;
+//        this.circle4 = null;
+        this.circles.clear();
+        this.circles = null;
+
+        this.shellEffectTypes.clear();
+        this.shellEffectTypes = null;
+        this.bullets.clear();
+        this.bullets = null;
+        this.direction = null;
+        this.animation = null;
     }
 
     private void setAnimation(String action) { // Action transform to Enum
@@ -302,12 +326,12 @@ public class Unit {
         Vector2 fVc = new Vector2(); // fVc = floatVectorCoordinates
         int isDrawableUnits = cameraController.isDrawableUnits;
         if (isDrawableUnits == 4 || isDrawableUnits == 5) {
-//                fVc = new Vector2(getCell(nextX, nextY).graphicsCoord4)
-            float fVx = (-(halfSizeCellX * nextY) - (nextX * halfSizeCellX) ) - halfSizeCellX;
-            float fVy = ( (halfSizeCellY * nextY) - (nextX * halfSizeCellY) );
+//            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(isDrawableUnits));
+            float fVx = (-(halfSizeCellX * currY) - (currX * halfSizeCellX) ) - halfSizeCellX;
+            float fVy = ( (halfSizeCellY * currY) - (currX * halfSizeCellY) );
             if (!cameraController.gameField.gameSettings.isometric) {
-                fVx = (-(nextX * sizeCellX) ) - halfSizeCellX;
-                fVy = ( (nextY * sizeCellY) ) + halfSizeCellY;
+                fVx = (-(currX * sizeCellX) ) - halfSizeCellX;
+                fVy = ( (currY * sizeCellY) ) + halfSizeCellY;
             }
             fVc.set(fVx, fVy);
             if (cameraController.gameField.gameSettings.isometric) {
@@ -348,16 +372,19 @@ public class Unit {
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
+                Circle circle4 = circles.get(3);
                 circle4.setPosition(fVc);
+//                this.circles.insert(3, circle4);
+//                this.circle4.set(circle4);
             }
         }
         if(isDrawableUnits == 3 || isDrawableUnits == 5) {
-//                fVc = new Vector2(getCell(nextX, nextY).graphicsCoord3)
-            float fVx = (-(halfSizeCellX * nextY) + (nextX * halfSizeCellX) );
-            float fVy = ( (halfSizeCellY * nextY) + (nextX * halfSizeCellY) ) + halfSizeCellY;
+//            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(isDrawableUnits));
+            float fVx = (-(halfSizeCellX * currY) + (currX * halfSizeCellX) );
+            float fVy = ( (halfSizeCellY * currY) + (currX * halfSizeCellY) ) + halfSizeCellY;
             if (!cameraController.gameField.gameSettings.isometric) {
-                fVx = ( (nextX * sizeCellX) ) + halfSizeCellX;
-                fVy = ( (nextY * sizeCellY) ) + halfSizeCellY;
+                fVx = ( (currX * sizeCellX) ) + halfSizeCellX;
+                fVy = ( (currY * sizeCellY) ) + halfSizeCellY;
             }
             fVc.set(fVx, fVy);
             if (cameraController.gameField.gameSettings.isometric) {
@@ -398,16 +425,19 @@ public class Unit {
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
+                Circle circle3 = circles.get(2);
                 circle3.setPosition(fVc);
+//                this.circles.insert(2, circle3);
+//                this.circle3.set(circle3);
             }
         }
         if(isDrawableUnits == 2 || isDrawableUnits == 5) {
-//                fVc = new Vector2(getCell(nextX, nextY).graphicsCoord2)
-            float fVx = ( (halfSizeCellX * nextY) + (nextX * halfSizeCellX) ) + halfSizeCellX;
-            float fVy = ( (halfSizeCellY * nextY) - (nextX * halfSizeCellY) );
+//            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(isDrawableUnits));
+            float fVx = ( (halfSizeCellX * currY) + (currX * halfSizeCellX) ) + halfSizeCellX;
+            float fVy = ( (halfSizeCellY * currY) - (currX * halfSizeCellY) );
             if (!cameraController.gameField.gameSettings.isometric) {
-                fVx = ( (nextX * sizeCellX) ) + halfSizeCellX;
-                fVy = (-(nextY * sizeCellY) ) - halfSizeCellY;
+                fVx = ( (currX * sizeCellX) ) + halfSizeCellX;
+                fVy = (-(currY * sizeCellY) ) - halfSizeCellY;
             }
             fVc.set(fVx, fVy);
             if (cameraController.gameField.gameSettings.isometric) {
@@ -448,11 +478,14 @@ public class Unit {
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
+                Circle circle2 = circles.get(1);
                 circle2.setPosition(fVc);
+//                this.circles.insert(1, circle2);
+//                this.circle2.set(circle2);
             }
         }
         if(isDrawableUnits == 1 || isDrawableUnits == 5) {
-//                fVc = new Vector2(getCell(nextX, nextY).graphicsCoord1)
+//            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(cameraController.isDrawableUnits));
             float fVx = (-(halfSizeCellX * currY) + (currX * halfSizeCellX) );
             float fVy = (-(halfSizeCellY * currY) - (currX * halfSizeCellY) ) - halfSizeCellY;
             if (!cameraController.gameField.gameSettings.isometric) {
@@ -498,7 +531,10 @@ public class Unit {
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
+                Circle circle1 = circles.get(0);
                 circle1.setPosition(fVc);
+//                this.circles.insert(0, circle1);
+//                this.circle1.set(circle1);
             }
         }
 
@@ -556,7 +592,8 @@ public class Unit {
     public Tower tryFoundTower(final CameraController cameraController) {
         if (towerAttack == null) {
 //            if ( (!unitAttack.stackInOneCell && this.equals(currentCell.getUnit())) || unitAttack.stackInOneCell) {
-            if (unitAttack.stackInOneCell || currentCell.getUnit().equals(this)) {
+            Unit unit = currentCell.getUnit();
+            if (unitAttack.stackInOneCell || (unit != null && unit.equals(this)) ) {
                 int radius = Math.round(unitAttack.range);
                 if (unitAttack.attackType == UnitAttack.AttackType.Melee) {
                     for (int tmpX = -radius; tmpX <= radius; tmpX++) {
@@ -577,9 +614,12 @@ public class Unit {
                     for (Tower tower : cameraController.gameField.towersManager.towers) {
                         if (tower.templateForTower.towerAttackType != TowerAttackType.Pit) {
                             if (tower.isNotDestroyed()) {
-                                if (unitAttack.circle.overlaps(tower.circles.get(cameraController.isDrawableTowers - 1))) {
-                                    towerAttackInit(tower, cameraController);
-                                    return tower;
+                                Circle towerCircle = tower.getCircle(cameraController.isDrawableTowers);
+                                if (towerCircle != null) {
+                                    if (unitAttack.circle.overlaps(towerCircle)) {
+                                        towerAttackInit(tower, cameraController);
+                                        return tower;
+                                    }
                                 }
                             }
                         }
@@ -749,6 +789,25 @@ public class Unit {
         }
     }
 
+    public Circle getCircle(int map) {
+//        if(map == 1) {
+//            return circle1;
+//        } else if(map == 2) {
+//            return circle2;
+//        } else if(map == 3) {
+//            return circle3;
+//        } else if(map == 4) {
+//            return circle4;
+//        }
+
+        map = (map == 5) ? 1 : map;
+        if (map > 0 && map < 5) {
+            return circles.get(map-1);
+        }
+        Gdx.app.log("Unit::getCircle(" + map + ")", "-- Bad map | return null!");
+        return null;
+    }
+
     public String toString() {
         return toString(false);
     }
@@ -766,21 +825,24 @@ public class Unit {
             sb.append(",stepsInTime:" + stepsInTime);
             sb.append(",deathElapsedTime:" + deathElapsedTime);
 
-            sb.append(",unitAttack:" + unitAttack);
-            sb.append(",towerAttack:" + towerAttack);
             sb.append(",player:" + player);
+            sb.append(",towerAttack:" + towerAttack);
+            sb.append(",unitAttack:" + unitAttack);
             sb.append(",currentPoint:" + currentPoint);
             sb.append(",backStepPoint:" + backStepPoint);
-            sb.append(",circle1:" + circle1);
-            sb.append(",circle2:" + circle2);
-            sb.append(",circle3:" + circle3);
-            sb.append(",circle4:" + circle4);
             sb.append(",velocity:" + velocity);
             sb.append(",displacement:" + displacement);
 
+//            sb.append(",circle1:" + circle1);
+//            sb.append(",circle2:" + circle2);
+//            sb.append(",circle3:" + circle3);
+//            sb.append(",circle4:" + circle4);
+            sb.append(",circles:" + circles);
+
+            sb.append(",shellEffectTypes:" + shellEffectTypes);
+            sb.append(",bullets:" + bullets);
             sb.append(",direction:" + direction);
             sb.append(",animation:" + animation);
-            sb.append(",shellEffectTypes:" + shellEffectTypes);
         }
         sb.append(",templateForUnit:" + templateForUnit);
         sb.append("]");

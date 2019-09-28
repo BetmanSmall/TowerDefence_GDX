@@ -47,8 +47,8 @@ public class UnitBullet {
 
         this.currentPoint = new Vector2(currentPoint);
         this.currCircle = new Circle(currentPoint, ammoSize);
-        this.endPoint = new Vector2(tower.centerGraphicCoord);
-        this.endCircle = new Circle(tower.centerGraphicCoord, 3f);
+        this.endPoint = new Vector2(tower.centerGraphicCoordinates);
+        this.endCircle = new Circle(tower.centerGraphicCoordinates, 3f);
 //        Gdx.app.log("UnitBullet::UnitBullet()", "-- currentPoint:" + currentPoint + " currCircle:" + currCircle);
 //        Gdx.app.log("UnitBullet::UnitBullet()", "-- endPoint:" + endPoint + " endCircle:" + endCircle);
 
@@ -177,13 +177,18 @@ public class UnitBullet {
 //            Gdx.app.log("UnitBullet::flightOfShell()", "-- flyingTime:" + flyingTime);
 //            Gdx.app.log("UnitBullet::flightOfShell()", "-- textureRegion:" + textureRegion);
         }
-        if (tower != null) {
-            if (currCircle.overlaps(tower.circles.get(cameraController.isDrawableTowers-1))) {
-                if (tower.destroy(templateForUnit.unitAttack.damage)) {//, templateForUnit.towerShellEffect)) {
-                    cameraController.gameField.gamerGold += tower.templateForTower.cost*0.5f;
+        if (tower != null && tower.isNotDestroyed()) {
+//            if (tower.circles != null && tower.circles.size != 0) {
+                Circle towerCircle = tower.getCircle(cameraController.isDrawableTowers);
+                if (towerCircle != null) {
+                    if (currCircle.overlaps(towerCircle)) {
+                        if (tower.destroy(templateForUnit.unitAttack.damage)) {//, templateForUnit.towerShellEffect)) {
+                            cameraController.gameField.gamerGold += tower.templateForTower.cost * 0.5f;
+                        }
+                        return 0;
+                    }
                 }
-                return 0;
-            }
+//            }
             return 1;
         }
         return -1;

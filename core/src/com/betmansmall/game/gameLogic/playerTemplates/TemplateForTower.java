@@ -2,14 +2,10 @@ package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
 import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
 
 /**
@@ -29,6 +25,7 @@ public class TemplateForTower extends Template {
     public Float    ammoSize;
     public Float    ammoSpeed;
     public Float    reloadTime;
+    public Float    destroyTime;
 //    public String   type;
     public TowerAttackType towerAttackType;
     public TowerShellType towerShellType;
@@ -177,6 +174,12 @@ public class TemplateForTower extends Template {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: reloadTime");
         } else {
             reloadTime = Float.parseFloat(properties.get("reloadTime"));
+        }
+        if (!properties.containsKey("destroyTime")) {
+            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: destroyTime");
+            destroyTime = 1.5f;
+        } else {
+            destroyTime = Float.parseFloat(properties.get("destroyTime"));
         }
         if (!properties.containsKey("towerAttackType")) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerAttackType");

@@ -37,10 +37,11 @@ public class Cell {
     public boolean exit;
 
     public int cellX, cellY;
-    public Vector2 graphicCoordinates1;
-    public Vector2 graphicCoordinates2;
-    public Vector2 graphicCoordinates3;
-    public Vector2 graphicCoordinates4;
+//    public Vector2 graphicCoordinates1;
+//    public Vector2 graphicCoordinates2;
+//    public Vector2 graphicCoordinates3;
+//    public Vector2 graphicCoordinates4;
+    public Array<Vector2> graphicCoordinates;
 
     public Cell() {
 //        Gdx.app.log("Cell::Cell()", "-- ");
@@ -57,10 +58,15 @@ public class Cell {
         this.spawn = false;
         this.exit = false;
 
-        graphicCoordinates1 = new Vector2();
-        graphicCoordinates2 = new Vector2();
-        graphicCoordinates3 = new Vector2();
-        graphicCoordinates4 = new Vector2();
+//        this.graphicCoordinates1 = new Vector2();
+//        this.graphicCoordinates2 = new Vector2();
+//        this.graphicCoordinates3 = new Vector2();
+//        this.graphicCoordinates4 = new Vector2();
+        this.graphicCoordinates = new Array<Vector2>(4);
+        this.graphicCoordinates.add(new Vector2());
+        this.graphicCoordinates.add(new Vector2());
+        this.graphicCoordinates.add(new Vector2());
+        this.graphicCoordinates.add(new Vector2());
     }
 
     public void dispose() {
@@ -79,6 +85,7 @@ public class Cell {
             units = null;
         }
 //        delete graphicCoordinates1,graphicCoordinates2,graphicCoordinates3, graphicCoordinates4;
+        graphicCoordinates.clear();
     }
 
     public void setGraphicCoordinates(int cellX, int cellY, float sizeCellX, float sizeCellY, boolean isometric) {
@@ -89,44 +96,73 @@ public class Cell {
         float halfSizeCellY = sizeCellY/2;
         if (isometric) {
 //        if(map == 1) { // Нижняя карта-java // Верхняя карта-с++
+            Vector2 graphicCoordinates1 = graphicCoordinates.get(0);
             graphicCoordinates1.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
             graphicCoordinates1.y = (-(halfSizeCellY * cellY) - (cellX * halfSizeCellY) ) - halfSizeCellY;
+//            this.graphicCoordinates.set(0, graphicCoordinates1);
+//            this.graphicCoordinates1.set(graphicCoordinates1);
 //        } else if(map == 2) { // Правая карта-(java && c++)
+            Vector2 graphicCoordinates2 = graphicCoordinates.get(1);
             graphicCoordinates2.x = ( (halfSizeCellX * cellY) + (cellX * halfSizeCellX) ) + halfSizeCellX;
             graphicCoordinates2.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
+//            this.graphicCoordinates.set(1, graphicCoordinates2);
+//            this.graphicCoordinates2.set(graphicCoordinates2);
 //        } else if(map == 3) { // Верхняя карта-java // Нижняя карта-c++
+            Vector2 graphicCoordinates3 = graphicCoordinates.get(2);
             graphicCoordinates3.x = (-(halfSizeCellX * cellY) + (cellX * halfSizeCellX) );
             graphicCoordinates3.y = ( (halfSizeCellY * cellY) + (cellX * halfSizeCellY) ) + halfSizeCellY;
+//            this.graphicCoordinates.set(2, graphicCoordinates3);
+//            this.graphicCoordinates3.set(graphicCoordinates3);
 //        } else if(map == 4) {// Левая карта-(java && c++)
+            Vector2 graphicCoordinates4 = graphicCoordinates.get(3);
             graphicCoordinates4.x = (-(halfSizeCellX * cellY) - (cellX * halfSizeCellX) ) - halfSizeCellX;
             graphicCoordinates4.y = ( (halfSizeCellY * cellY) - (cellX * halfSizeCellY) );
+//            this.graphicCoordinates.set(3, graphicCoordinates4);
+//            this.graphicCoordinates4.set(graphicCoordinates4);
 //        }
         } else {
 //        if(map == 1) { // НижняяЛевая карта-java // ВерхняяЛевая карта-с++
+            Vector2 graphicCoordinates1 = graphicCoordinates.get(0);
             graphicCoordinates1.x = (-(cellX * sizeCellX) ) - halfSizeCellX;
             graphicCoordinates1.y = (-(cellY * sizeCellY) ) - halfSizeCellY;
+//            this.graphicCoordinates.set(0, graphicCoordinates1);
+//            this.graphicCoordinates1.set(graphicCoordinates1);
 //        } else if(map == 2) { // НижняяПравая карта-java // ВерхняяПравая карта-с++
+            Vector2 graphicCoordinates2 = graphicCoordinates.get(1);
             graphicCoordinates2.x = ( (cellX * sizeCellX) ) + halfSizeCellX;
             graphicCoordinates2.y = (-(cellY * sizeCellY) ) - halfSizeCellY;
+//            this.graphicCoordinates.set(1, graphicCoordinates2);
+//            this.graphicCoordinates2.set(graphicCoordinates2);
 //        } else if(map == 3) { // ВерхняяПравая карта-java // НижняяПравая карта-с++
+            Vector2 graphicCoordinates3 = graphicCoordinates.get(2);
             graphicCoordinates3.x = ( (cellX * sizeCellX) ) + halfSizeCellX;
             graphicCoordinates3.y = ( (cellY * sizeCellY) ) + halfSizeCellY;
+//            this.graphicCoordinates.set(2, graphicCoordinates3);
+//            this.graphicCoordinates3.set(graphicCoordinates3);
 //        } else if(map == 4) {// ВерхняяЛевая карта-java // НижняяЛевая карта-c++
+            Vector2 graphicCoordinates4 = graphicCoordinates.get(3);
             graphicCoordinates4.x = (-(cellX * sizeCellX) ) - halfSizeCellX;
             graphicCoordinates4.y = ( (cellY * sizeCellY) ) + halfSizeCellY;
+//            this.graphicCoordinates.set(3, graphicCoordinates4);
+//            this.graphicCoordinates4.set(graphicCoordinates4);
 //        }
         }
     }
 
     public Vector2 getGraphicCoordinates(int map) {
-        if(map == 1) {
-            return graphicCoordinates1;
-        } else if(map == 2) {
-            return graphicCoordinates2;
-        } else if(map == 3) {
-            return graphicCoordinates3;
-        } else if(map == 4) {
-            return graphicCoordinates4;
+//        if(map == 1) {
+//            return graphicCoordinates1;
+//        } else if(map == 2) {
+//            return graphicCoordinates2;
+//        } else if(map == 3) {
+//            return graphicCoordinates3;
+//        } else if(map == 4) {
+//            return graphicCoordinates4;
+//        }
+
+//        map = (map == 5) ? 1 : map;
+        if (map > 0 && map < 5) {
+            return graphicCoordinates.get(map-1);
         }
         Gdx.app.log("Cell::getGraphicCoordinates(" + map + ")", "-- Bad map | return null!");
         return null;

@@ -203,11 +203,14 @@ public class Bullet {
                 currentPoint.add(velocity.x * delta * ammoSpeed, velocity.y * delta * ammoSpeed);
                 currCircle.setPosition(currentPoint);
                 // endPoint2 == endCircle == unit.currentPoint ~= unit.circle1
-                if (currCircle.overlaps(unit.circle1)) {
-                    if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
-                        cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
+                Circle unitCircle = unit.getCircle(cameraController.isDrawableUnits);
+                if (unitCircle != null) {
+                    if (currCircle.overlaps(unitCircle)) {
+                        if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
+                            cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
+                        }
+                        return 0;
                     }
-                    return 0;
                 }
                 return 1;
             }
@@ -218,10 +221,13 @@ public class Bullet {
     private boolean tryToHitUnits(CameraController cameraController) {
         boolean hit = false;
         for (Unit unit : cameraController.gameField.unitsManager.units) {
-            if (currCircle.overlaps(unit.circle1)) {
-                hit = true;
-                if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
-                    cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
+            Circle unitCircle = unit.getCircle(cameraController.isDrawableUnits);
+            if (unitCircle != null) {
+                if (currCircle.overlaps(unitCircle)) {
+                    hit = true;
+                    if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
+                        cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
+                    }
                 }
             }
         }

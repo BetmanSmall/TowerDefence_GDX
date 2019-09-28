@@ -20,89 +20,107 @@ import com.badlogic.gdx.math.Vector2; //AlexGor
  */
 public class Tower {
     public Cell cell;
-    public float elapsedReloadTime;
     public TemplateForTower templateForTower;
-
     public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
-    public int capacity;
+
+    public Array<Unit> whoAttackMe;
     public Array<Bullet> bullets;
-    public Vector2 centerGraphicCoord;
+    public Array<Circle> circles;
+
+    public Vector2 centerGraphicCoordinates;
     public Circle radiusDetectionCircle;
     public Circle radiusFlyShellCircle;
 
+    public Animation animation;
+    public float destroyElapsedTime;
+    public float elapsedReloadTime;
     public float hp;
-    public Array<Unit> whoAttackMe;
-    public Array<Circle> circles;
-
-    private Animation animation;
-    private float destroyTime = 1.5f; // TODO 1.5f sec not good!
-    private float destroyElapsedTime;
+    public int capacity;
 
     public Tower(Cell cell, TemplateForTower templateForTower, int player) {
 //        Gdx.app.log("Tower::Tower()", "-- cell:" + cell + " templateForTower:" + templateForTower + " player:" + player);
         this.cell = cell;
-        this.elapsedReloadTime = templateForTower.reloadTime;
         this.templateForTower = templateForTower;
-
         this.player = player;
-        this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
-        this.bullets = new Array<Bullet>();
-        this.centerGraphicCoord = new Vector2();
-        this.radiusDetectionCircle = new Circle(0, 0, templateForTower.radiusDetection);
-        this.radiusFlyShellCircle = null;
 
-        this.hp = templateForTower.healthPoints;
         this.whoAttackMe = new Array<Unit>();
+        this.bullets = new Array<Bullet>();
         this.circles = new Array<Circle>(4);
         this.circles.add(new Circle(0f, 0f, 16f));
         this.circles.add(new Circle(0f, 0f, 16f));
         this.circles.add(new Circle(0f, 0f, 16f));
         this.circles.add(new Circle(0f, 0f, 16f));
+
+        this.centerGraphicCoordinates = new Vector2();
+        this.radiusDetectionCircle = new Circle(0, 0, templateForTower.radiusDetection);
+        this.radiusFlyShellCircle = null;
+
+        this.animation = null;
+        this.destroyElapsedTime = 0f;
+        this.elapsedReloadTime = templateForTower.reloadTime;
+        this.hp = templateForTower.healthPoints;
+        this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
     }
 
     public void dispose() {
         Gdx.app.log("Tower::dispose()", "--");
-        cell = null;
-//        elapsedReloadTime = 0;
-        templateForTower = null;
-//        player = 0;
-//        capacity = 0;
-        bullets.clear();
-        centerGraphicCoord = null;
-        radiusDetectionCircle = null;
-        if (radiusFlyShellCircle != null) {
-            radiusFlyShellCircle = null;
-        }
-//        hp = 0;
-        whoAttackMe.clear();
+        this.cell = null;
+        this.templateForTower = null;
+//        this.player = 0;
+
+        this.whoAttackMe.clear();
+        this.whoAttackMe = null;
+        this.bullets.clear();
+        this.bullets = null;
+        this.circles.clear();
+        this.circles = null;
+
+        this.centerGraphicCoordinates = null;
+        this.radiusDetectionCircle = null;
+        this.radiusFlyShellCircle = null;
+
+        this.animation = null;
+//        this.destroyElapsedTime = 0;
+//        this.elapsedReloadTime = 0;
+//        this.hp = 0;
+//        this.capacity = 0;
     }
 
     void updateCenterGraphicCoordinates(CameraController cameraController) {
-        if (cameraController.isDrawableTowers == 1) {
-            centerGraphicCoord.set(cell.graphicCoordinates1);
-            circles.get(0).setPosition(cell.graphicCoordinates1);
-        } else if (cameraController.isDrawableTowers == 2) {
-            centerGraphicCoord.set(cell.graphicCoordinates2);
-            circles.get(1).setPosition(cell.graphicCoordinates2);
-        } else if (cameraController.isDrawableTowers == 3) {
-            centerGraphicCoord.set(cell.graphicCoordinates3);
-            circles.get(2).setPosition(cell.graphicCoordinates3);
-        } else if (cameraController.isDrawableTowers == 4) {
-            centerGraphicCoord.set(cell.graphicCoordinates4);
-            circles.get(3).setPosition(cell.graphicCoordinates4);
-        } else if (cameraController.isDrawableTowers == 5) {
-            centerGraphicCoord.set(cell.graphicCoordinates1);
-            circles.get(0).setPosition(cell.graphicCoordinates1);
-        } else {
-            centerGraphicCoord.setZero();
-        }
-        this.radiusDetectionCircle.setPosition(centerGraphicCoord);
-        if (templateForTower.towerShellType == TowerShellType.FirstTarget) {
-            if (templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
-                if (radiusFlyShellCircle == null) {
-                    this.radiusFlyShellCircle = new Circle(centerGraphicCoord, templateForTower.radiusFlyShell);
-                } else {
-                    this.radiusFlyShellCircle.setPosition(centerGraphicCoord);
+//        if (cameraController.isDrawableTowers == 1) {
+//            centerGraphicCoordinates.set(cell.graphicCoordinates1);
+//            circles.get(0).setPosition(cell.graphicCoordinates1);
+//        } else if (cameraController.isDrawableTowers == 2) {
+//            centerGraphicCoordinates.set(cell.graphicCoordinates2);
+//            circles.get(1).setPosition(cell.graphicCoordinates2);
+//        } else if (cameraController.isDrawableTowers == 3) {
+//            centerGraphicCoordinates.set(cell.graphicCoordinates3);
+//            circles.get(2).setPosition(cell.graphicCoordinates3);
+//        } else if (cameraController.isDrawableTowers == 4) {
+//            centerGraphicCoordinates.set(cell.graphicCoordinates4);
+//            circles.get(3).setPosition(cell.graphicCoordinates4);
+//        } else if (cameraController.isDrawableTowers == 5) {
+//            centerGraphicCoordinates.set(cell.graphicCoordinates1);
+//            circles.get(0).setPosition(cell.graphicCoordinates1);
+//        } else {
+//            centerGraphicCoordinates.setZero();
+//        }
+        int isDrawableTowers = (cameraController.isDrawableTowers == 5) ? 1 : cameraController.isDrawableTowers;
+        if (isDrawableTowers > 0 && isDrawableTowers < 5) {
+            centerGraphicCoordinates.set(cell.getGraphicCoordinates(isDrawableTowers));
+
+            Circle circle = circles.get(isDrawableTowers - 1);
+            circle.setPosition(centerGraphicCoordinates);
+//            circles.insertOrSet(isDrawableTowers, circle);
+
+            this.radiusDetectionCircle.setPosition(centerGraphicCoordinates);
+            if (templateForTower.towerShellType == TowerShellType.FirstTarget) {
+                if (templateForTower.radiusFlyShell != 0.0 && templateForTower.radiusFlyShell >= templateForTower.radiusDetection) {
+                    if (radiusFlyShellCircle == null) {
+                        this.radiusFlyShellCircle = new Circle(centerGraphicCoordinates, templateForTower.radiusFlyShell);
+                    } else {
+                        this.radiusFlyShellCircle.setPosition(centerGraphicCoordinates);
+                    }
                 }
             }
         }
@@ -130,7 +148,15 @@ public class Tower {
                     for (int tmpY = -radius; tmpY <= radius; tmpY++) {
                         Cell cell = cameraController.gameField.getCell(tmpX + towerCell.cellX, tmpY + towerCell.cellY);
                         if (cell != null && cell != towerCell) {
-                            bullets.add(new Bullet(centerGraphicCoord, templateForTower, cell.graphicCoordinates1, cameraController));
+                            Vector2 destPoint = cell.getGraphicCoordinates(cameraController.isDrawableTowers);
+                            if (destPoint != null) {
+//                                Circle towerCircle = this.getCircle(cameraController.isDrawableTowers);
+//                                if (towerCircle != null) {
+//                                    Vector2 towerPos = new Vector2(towerCircle.x, towerCircle.y);
+//                                    cameraController.getCorrectGraphicTowerCoord(towerPos, this.templateForTower.size, cameraController.isDrawableTowers);
+                                    bullets.add(new Bullet(centerGraphicCoordinates, templateForTower, destPoint, cameraController));
+//                                }
+                            }
                         }
                     }
                 }
@@ -163,7 +189,12 @@ public class Tower {
                     unit.shellEffectTypes.add(new TowerShellEffect(templateForTower.towerShellEffect));
                 }
             } else {
-                bullets.add(new Bullet(centerGraphicCoord, templateForTower, unit, cameraController));
+//                Circle towerCircle = this.getCircle(cameraController.isDrawableTowers);
+//                if (towerCircle != null) {
+//                    Vector2 towerPos = new Vector2(towerCircle.x, towerCircle.y);
+//                    cameraController.getCorrectGraphicTowerCoord(towerPos, this.templateForTower.size, cameraController.isDrawableTowers);
+                    bullets.add(new Bullet(centerGraphicCoordinates, templateForTower, unit, cameraController));
+//                }
             }
             elapsedReloadTime = 0f;
             return true;
@@ -200,6 +231,10 @@ public class Tower {
 //        if(animation == null) { // TODO Не верно, нужно исправить.
 //            return false;
 //        }
+        if (circles == null) {
+            return false;
+        }
+//        System.out.println("Tower::isNotDestroyed(); -- circle.size" + circles.size);
         return hp > 0 ? true : false;
     }
 
@@ -227,7 +262,7 @@ public class Tower {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
             }
             if (action.equals("explosion_")) {
-                animation = new Animation(destroyTime / staticTiledMapTiles.length, textureRegions);
+                animation = new Animation(templateForTower.destroyTime / staticTiledMapTiles.length, textureRegions);
             }
             Gdx.app.log("Tower::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
         } else {
@@ -237,7 +272,7 @@ public class Tower {
 
     public boolean changeDestroyFrame(float delta) {
         if(hp <= 0) {
-            if(destroyElapsedTime >= destroyTime) { // need change to template.destroyTime
+            if(destroyElapsedTime >= templateForTower.destroyTime) { // need change to template.destroyTime
 //                dispose();
                 return false;
             } else {
@@ -246,6 +281,25 @@ public class Tower {
             return true;
         }
         return false;
+    }
+
+    public Circle getCircle(int map) {
+//        if(map == 1) {
+//            return circle1;
+//        } else if(map == 2) {
+//            return circle2;
+//        } else if(map == 3) {
+//            return circle3;
+//        } else if(map == 4) {
+//            return circle4;
+//        }
+
+        map = (map == 5) ? 1 : map;
+        if (map > 0 && map < 5) {
+            return circles.get(map-1);
+        }
+        Gdx.app.log("Tower::getCircle(" + map + ")", "-- Bad map | return null!");
+        return null;
     }
 
     public TextureRegion getCurrentDestroyFrame() {
