@@ -6,8 +6,15 @@
   <property name="healthPoints" value="170"/>
   <property name="bounty" value="3"/>
   <property name="cost" value="10"/>
-  <property name="speed" value="0.3"/>
+  <property name="speed" value="0.7"/>
   <property name="type" value="unit"/>
+  <property name="attackType" value="Range"/>
+  <property name="attackType_damage" value="10"/>
+  <property name="attackType_range" value="150"/>
+  <property name="attackType_attackSpeed" value="0.6"/>
+  <property name="attackType_reload" value="0.5"/>
+  <property name="attackType_stackInOneCell" value="true"/>
+  <property name="attackType_stayToDie" value="true"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/elven_archer.png" trans="ff00ff" width="360" height="1224"/>
  <tile id="0">
@@ -105,6 +112,51 @@
    <frame tileid="24" duration="100"/>
    <frame tileid="19" duration="100"/>
    <frame tileid="24" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="25">
+  <properties>
+   <property name="actionAndDirection" value="attack_UP"/>
+  </properties>
+  <animation>
+   <frame tileid="25" duration="1000"/>
+   <frame tileid="30" duration="1000"/>
+  </animation>
+ </tile>
+ <tile id="26">
+  <properties>
+   <property name="actionAndDirection" value="attack_UP_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="26" duration="100"/>
+   <frame tileid="31" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="27">
+  <properties>
+   <property name="actionAndDirection" value="attack_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="27" duration="100"/>
+   <frame tileid="32" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="28">
+  <properties>
+   <property name="actionAndDirection" value="attack_DOWN_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="28" duration="100"/>
+   <frame tileid="33" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="29">
+  <properties>
+   <property name="actionAndDirection" value="attack_DOWN_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="29" duration="100"/>
+   <frame tileid="34" duration="100"/>
   </animation>
  </tile>
  <tile id="35">

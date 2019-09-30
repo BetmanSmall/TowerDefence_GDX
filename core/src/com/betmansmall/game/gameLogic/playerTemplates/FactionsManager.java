@@ -18,6 +18,12 @@ public class FactionsManager {
     public SimpleTemplate explosion;
     public SimpleTemplate axe;
     public SimpleTemplate catapultRock;
+    public SimpleTemplate touchOfDeath;
+    public SimpleTemplate dragonBreath;
+    public SimpleTemplate ballistaBolt;
+    public SimpleTemplate arrow;
+    public SimpleTemplate gryphonHammer;
+    public SimpleTemplate lightning;
     private Array<Faction> factions;
 
     public static Float defHealthPoints = 500f;
@@ -27,14 +33,26 @@ public class FactionsManager {
 
     public FactionsManager() throws Exception {
         Gdx.app.log("FactionsManager::FactionsManager()", "-- :");
-        this.fireball_0 = new SimpleTemplate(Gdx.files.internal("maps/other/fireball_0.tsx"));
+        this.fireball_0 = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/fireball_0.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- fireball_0:" + fireball_0.toString());
-        this.explosion = new SimpleTemplate(Gdx.files.internal("maps/other/explosion.tsx"));
+        this.explosion = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/explosion.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- explosion:" + explosion.toString());
-        this.axe = new SimpleTemplate(Gdx.files.internal("maps/other/axe.tsx"));
+        this.axe = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/axe.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- axe:" + axe.toString());
-        this.catapultRock = new SimpleTemplate(Gdx.files.internal("maps/other/catapult_rock.tsx"));
+        this.catapultRock = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/catapult_rock.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- catapultRock:" + catapultRock.toString());
+        this.touchOfDeath = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/touch_of_death.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- touchOfDeath:" + touchOfDeath.toString());
+        this.dragonBreath = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/dragon_breath.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- dragonBreath:" + dragonBreath.toString());
+        this.ballistaBolt = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/ballista_bolt.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- ballistaBolt:" + ballistaBolt.toString());
+        this.arrow = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/arrow.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- arrow:" + arrow.toString());
+        this.gryphonHammer = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/gryphon_hammer.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- gryphonHammer:" + gryphonHammer.toString());
+        this.lightning = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/lightning.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- lightning:" + lightning.toString());
         this.factions = new Array<Faction>();
         loadFactions();
     }
@@ -198,6 +216,24 @@ public class FactionsManager {
                             }
                             if (templateForUnit.templateName.equals("unit4_catapult")) {
                                 templateForUnit.loadWeapon(catapultRock);
+                            }
+                            if (templateForUnit.templateName.equals("unit6_death_knight")) {
+                                templateForUnit.loadWeapon(touchOfDeath);
+                            }
+                            if (templateForUnit.templateName.equals("unit7_dragon")) {
+                                templateForUnit.loadWeapon(dragonBreath);
+                            }
+                            if (templateForUnit.templateName.equals("unit10_ballista")) {
+                                templateForUnit.loadWeapon(ballistaBolt);
+                            }
+                            if (templateForUnit.templateName.equals("unit11_elven_archer")) {
+                                templateForUnit.loadWeapon(arrow);
+                            }
+                            if (templateForUnit.templateName.equals("unit12_gryphon_rider")) {
+                                templateForUnit.loadWeapon(gryphonHammer);
+                            }
+                            if (templateForUnit.templateName.equals("unit14_mage")) {
+                                templateForUnit.loadWeapon(lightning);
                             }
                             Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForUnit.toString(true));
                         }

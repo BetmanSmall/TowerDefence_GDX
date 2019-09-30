@@ -6,8 +6,15 @@
   <property name="healthPoints" value="350"/>
   <property name="bounty" value="5"/>
   <property name="cost" value="12"/>
-  <property name="speed" value="0.4"/>
+  <property name="speed" value="0.5"/>
   <property name="type" value="unit"/>
+  <property name="attackType" value="Melee"/>
+  <property name="attackType_damage" value="18"/>
+  <property name="attackType_range" value="1"/>
+  <property name="attackType_attackSpeed" value="0.5"/>
+  <property name="attackType_reload" value="0.6"/>
+  <property name="attackType_stackInOneCell" value="false"/>
+  <property name="attackType_stayToDie" value="false"/>
  </properties>
  <image source="../../textures/warcraft2/human/units/knight.png" trans="ff00ff" width="360" height="1008"/>
  <tile id="0">
@@ -184,28 +191,58 @@
  </tile>
  <tile id="25">
   <properties>
-   <property name="actionAndDirection" value="attack1_UP"/>
+   <property name="actionAndDirection" value="attack_UP"/>
   </properties>
+  <animation>
+   <frame tileid="25" duration="100"/>
+   <frame tileid="30" duration="100"/>
+   <frame tileid="35" duration="100"/>
+   <frame tileid="40" duration="100"/>
+  </animation>
  </tile>
  <tile id="26">
   <properties>
-   <property name="actionAndDirection" value="attack1_UP_RIGHT"/>
+   <property name="actionAndDirection" value="attack_UP_RIGHT"/>
   </properties>
+  <animation>
+   <frame tileid="26" duration="100"/>
+   <frame tileid="31" duration="100"/>
+   <frame tileid="36" duration="100"/>
+   <frame tileid="41" duration="100"/>
+  </animation>
  </tile>
  <tile id="27">
   <properties>
-   <property name="actionAndDirection" value="attack1_RIGHT"/>
+   <property name="actionAndDirection" value="attack_RIGHT"/>
   </properties>
+  <animation>
+   <frame tileid="27" duration="100"/>
+   <frame tileid="32" duration="100"/>
+   <frame tileid="37" duration="100"/>
+   <frame tileid="42" duration="100"/>
+  </animation>
  </tile>
  <tile id="28">
   <properties>
-   <property name="actionAndDirection" value="attack1_DOWN_RIGHT"/>
+   <property name="actionAndDirection" value="attack_DOWN_RIGHT"/>
   </properties>
+  <animation>
+   <frame tileid="28" duration="100"/>
+   <frame tileid="33" duration="100"/>
+   <frame tileid="38" duration="100"/>
+   <frame tileid="43" duration="100"/>
+  </animation>
  </tile>
  <tile id="29">
   <properties>
-   <property name="actionAndDirection" value="attack1_DOWN"/>
+   <property name="actionAndDirection" value="attack_DOWN"/>
   </properties>
+  <animation>
+   <frame tileid="29" duration="100"/>
+   <frame tileid="34" duration="100"/>
+   <frame tileid="39" duration="100"/>
+   <frame tileid="44" duration="100"/>
+  </animation>
  </tile>
  <tile id="30">
   <properties>

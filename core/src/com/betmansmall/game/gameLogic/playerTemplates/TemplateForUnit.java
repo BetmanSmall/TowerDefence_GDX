@@ -78,6 +78,11 @@ public class TemplateForUnit extends Template {
             } else {
                 unitAttack.ammoSpeed = Float.parseFloat(properties.get("ammoSpeed"));
             }
+            if (!properties.containsKey("animationTime")) {
+                Gdx.app.log("TemplateForUnit::loadWeapon()", "-- NotFound: animationTime");
+            } else {
+                unitAttack.animationTime = Float.parseFloat(properties.get("animationTime"));
+            }
             Gdx.app.log("TemplateForUnit::loadWeapon();", "-- " + toString());
         }
     }

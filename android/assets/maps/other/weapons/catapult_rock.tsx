@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="axe" tilewidth="32" tileheight="32" tilecount="15" columns="5">
- <image source="../textures/axe.png" width="160" height="96"/>
+<tileset name="catapult_rock" tilewidth="32" tileheight="32" tilecount="15" columns="5">
+ <image source="../../textures/warcraft2/missiles/catapult_rock.png" width="160" height="96"/>
  <properties>
-  <property name="ammoSize" value="10"/>
+  <property name="ammoSize" value="15"/>
   <property name="ammoSpeed" value="10"/>
-  <property name="animationTime" value="10"/>
+  <property name="animationTime" value="3"/>
  </properties>
- <tile id="0">
+ <tile id="10">
   <properties>
    <property name="tileName" value="weapon_UP"/>
   </properties>
@@ -14,9 +14,10 @@
    <frame tileid="0" duration="100"/>
    <frame tileid="5" duration="100"/>
    <frame tileid="10" duration="100"/>
+   <frame tileid="5" duration="100"/>
   </animation>
  </tile>
- <tile id="1">
+ <tile id="11">
   <properties>
    <property name="tileName" value="weapon_UP_RIGHT"/>
   </properties>
@@ -24,9 +25,10 @@
    <frame tileid="1" duration="100"/>
    <frame tileid="6" duration="100"/>
    <frame tileid="11" duration="100"/>
+   <frame tileid="6" duration="100"/>
   </animation>
  </tile>
- <tile id="2">
+ <tile id="12">
   <properties>
    <property name="tileName" value="weapon_RIGHT"/>
   </properties>
@@ -34,9 +36,10 @@
    <frame tileid="2" duration="100"/>
    <frame tileid="7" duration="100"/>
    <frame tileid="12" duration="100"/>
+   <frame tileid="7" duration="100"/>
   </animation>
  </tile>
- <tile id="3">
+ <tile id="13">
   <properties>
    <property name="tileName" value="weapon_DOWN_RIGHT"/>
   </properties>
@@ -44,9 +47,10 @@
    <frame tileid="3" duration="100"/>
    <frame tileid="8" duration="100"/>
    <frame tileid="13" duration="100"/>
+   <frame tileid="8" duration="100"/>
   </animation>
  </tile>
- <tile id="4">
+ <tile id="14">
   <properties>
    <property name="tileName" value="weapon_DOWN"/>
   </properties>
@@ -54,6 +58,7 @@
    <frame tileid="4" duration="100"/>
    <frame tileid="9" duration="100"/>
    <frame tileid="14" duration="100"/>
+   <frame tileid="9" duration="100"/>
   </animation>
  </tile>
 </tileset>

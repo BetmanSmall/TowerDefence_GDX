@@ -140,7 +140,7 @@ public class UnitBullet {
             for (int k = 0; k < staticTiledMapTiles.length; k++) {
                 textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
             }
-            animation = new Animation((ammoSpeed / staticTiledMapTiles.length)/ammoSpeed, textureRegions);
+            animation = new Animation(templateForUnit.unitAttack.animationTime / staticTiledMapTiles.length, textureRegions);
 //            Gdx.app.log("UnitBullet::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
         } else {
             Gdx.app.log("UnitBullet::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " animatedTiledMapTile: " + animatedTiledMapTile);

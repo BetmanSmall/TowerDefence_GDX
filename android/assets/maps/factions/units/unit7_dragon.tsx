@@ -8,6 +8,13 @@
   <property name="cost" value="60"/>
   <property name="speed" value="0.9"/>
   <property name="type" value="fly"/>
+  <property name="attackType" value="Range"/>
+  <property name="attackType_damage" value="50"/>
+  <property name="attackType_range" value="200"/>
+  <property name="attackType_attackSpeed" value="1.0"/>
+  <property name="attackType_reload" value="1.0"/>
+  <property name="attackType_stackInOneCell" value="false"/>
+  <property name="attackType_stayToDie" value="true"/>
  </properties>
  <image source="../../textures/warcraft2/orc/units/dragon.png" trans="ff00ff" width="440" height="800"/>
  <tile id="0">
@@ -73,6 +80,63 @@
    <frame tileid="14" duration="100"/>
    <frame tileid="19" duration="100"/>
    <frame tileid="14" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="10">
+  <properties>
+   <property name="actionAndDirection" value="idle_UP"/>
+  </properties>
+  <animation>
+   <frame tileid="10" duration="100"/>
+   <frame tileid="11" duration="100"/>
+   <frame tileid="12" duration="100"/>
+   <frame tileid="13" duration="100"/>
+   <frame tileid="14" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="20">
+  <properties>
+   <property name="actionAndDirection" value="attack_UP"/>
+  </properties>
+  <animation>
+   <frame tileid="20" duration="100"/>
+   <frame tileid="15" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="21">
+  <properties>
+   <property name="actionAndDirection" value="attack_UP_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="21" duration="1000"/>
+   <frame tileid="16" duration="1000"/>
+  </animation>
+ </tile>
+ <tile id="22">
+  <properties>
+   <property name="actionAndDirection" value="attack_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="22" duration="1000"/>
+   <frame tileid="7" duration="1000"/>
+  </animation>
+ </tile>
+ <tile id="23">
+  <properties>
+   <property name="actionAndDirection" value="attack_DOWN_RIGHT"/>
+  </properties>
+  <animation>
+   <frame tileid="23" duration="100"/>
+   <frame tileid="18" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="24">
+  <properties>
+   <property name="actionAndDirection" value="attack_DOWN"/>
+  </properties>
+  <animation>
+   <frame tileid="24" duration="100"/>
+   <frame tileid="19" duration="100"/>
   </animation>
  </tile>
  <tile id="25">

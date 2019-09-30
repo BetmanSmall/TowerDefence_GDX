@@ -47,6 +47,7 @@ public class UnitAttack {
 
     public float ammoSize; // need transfer to Weapon Or Unit Attack template and other
     public float ammoSpeed;
+    public float animationTime;
     public UnitAttack defUnitAttack;
 
     public float elapsedTimeRecharge;
@@ -79,6 +80,7 @@ public class UnitAttack {
 
             this.ammoSize = unitAttack.ammoSize;
             this.ammoSpeed = unitAttack.ammoSpeed;
+            this.animationTime = unitAttack.animationTime;
             this.defUnitAttack = unitAttack;
 
             this.elapsedTimeRecharge = unitAttack.elapsedTimeRecharge;
@@ -138,6 +140,7 @@ public class UnitAttack {
         sb.append(",circle:" + circle);
         sb.append(",ammoSize:" + ammoSize);
         sb.append(",ammoSpeed:" + ammoSpeed);
+        sb.append(",animationTime:" + animationTime);
         sb.append("]");
         return sb.toString();
     }
