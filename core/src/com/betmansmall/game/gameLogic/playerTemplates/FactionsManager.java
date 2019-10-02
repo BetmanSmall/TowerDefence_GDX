@@ -14,6 +14,10 @@ import java.util.StringTokenizer;
  * Created by betmansmall on 23.02.2016.
  */
 public class FactionsManager {
+    public SimpleTemplate bigFire;
+    public SimpleTemplate smallFire;
+    public Array<SimpleTemplate> burningsTemplates;
+
     public SimpleTemplate fireball_0;
     public SimpleTemplate explosion;
     public SimpleTemplate axe;
@@ -33,25 +37,33 @@ public class FactionsManager {
 
     public FactionsManager() throws Exception {
         Gdx.app.log("FactionsManager::FactionsManager()", "-- :");
-        this.fireball_0 = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/fireball_0.tsx"));
+        this.bigFire = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/big_fire.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- bigFire:" + bigFire.toString());
+        this.smallFire = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/small_fire.tsx"));
+        Gdx.app.log("FactionsManager::FactionsManager()", "-- smallFire:" + smallFire.toString());
+        this.burningsTemplates = new Array<SimpleTemplate>();
+        this.burningsTemplates.add(smallFire);
+        this.burningsTemplates.add(bigFire);
+
+        this.fireball_0 = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/fireball_0.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- fireball_0:" + fireball_0.toString());
-        this.explosion = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/explosion.tsx"));
+        this.explosion = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/explosion.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- explosion:" + explosion.toString());
-        this.axe = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/axe.tsx"));
+        this.axe = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/axe.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- axe:" + axe.toString());
-        this.catapultRock = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/catapult_rock.tsx"));
+        this.catapultRock = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/catapult_rock.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- catapultRock:" + catapultRock.toString());
-        this.touchOfDeath = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/touch_of_death.tsx"));
+        this.touchOfDeath = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/touch_of_death.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- touchOfDeath:" + touchOfDeath.toString());
-        this.dragonBreath = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/dragon_breath.tsx"));
+        this.dragonBreath = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/dragon_breath.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- dragonBreath:" + dragonBreath.toString());
-        this.ballistaBolt = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/ballista_bolt.tsx"));
+        this.ballistaBolt = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/ballista_bolt.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- ballistaBolt:" + ballistaBolt.toString());
-        this.arrow = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/arrow.tsx"));
+        this.arrow = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/arrow.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- arrow:" + arrow.toString());
-        this.gryphonHammer = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/gryphon_hammer.tsx"));
+        this.gryphonHammer = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/gryphon_hammer.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- gryphonHammer:" + gryphonHammer.toString());
-        this.lightning = new SimpleTemplate(Gdx.files.internal("maps/other/weapons/lightning.tsx"));
+        this.lightning = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/lightning.tsx"));
         Gdx.app.log("FactionsManager::FactionsManager()", "-- lightning:" + lightning.toString());
         this.factions = new Array<Faction>();
         loadFactions();
@@ -251,6 +263,7 @@ public class FactionsManager {
                                 templateForTower.loadFireBall(fireball_0);
                             }
                             templateForTower.loadExplosion(explosion);
+                            templateForTower.loadBurnings(burningsTemplates);
                             faction.getTemplateForTowers().add(templateForTower);
                             Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForTower.toString(true));
                         }

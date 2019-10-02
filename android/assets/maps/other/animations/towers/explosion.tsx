@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="explosion" tilewidth="256" tileheight="128" tilecount="12" columns="3">
- <image source="../../textures/explosion.png" width="768" height="512"/>
+ <image source="../../../textures/explosion.png" width="768" height="512"/>
  <terraintypes>
   <terrain name="explosion0" tile="0"/>
   <terrain name="explosion1" tile="1"/>

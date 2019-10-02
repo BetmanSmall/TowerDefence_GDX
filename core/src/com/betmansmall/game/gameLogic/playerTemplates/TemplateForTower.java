@@ -2,11 +2,13 @@ package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
 import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
 import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
+import com.betmansmall.util.logging.Logger;
 
 /**
  * Created by betmansmall on 22.02.2016.
@@ -35,12 +37,15 @@ public class TemplateForTower extends Template {
 //    public AnimatedTiledMapTile idleTile;
     public TiledMapTile idleTile;
     public ObjectMap<String, AnimatedTiledMapTile> animations;
+    public Array<SimpleTemplate> burningsTemplates;
+    public Integer thresholdBurning;
 
     public TemplateForTower(FileHandle templateFile) throws Exception {
         try {
 //            this.radiusDetection = 0.0f;
 //            this.reloadTime = 3000;
-            animations = new ObjectMap<String, AnimatedTiledMapTile>();
+            this.animations = new ObjectMap<String, AnimatedTiledMapTile>();
+            this.burningsTemplates = new Array<SimpleTemplate>();
             loadBasicTemplate(templateFile);
             specificLoad();
             validate();
@@ -61,6 +66,24 @@ public class TemplateForTower extends Template {
                     }
                 }
             }
+        }
+    }
+
+    void loadBurnings(Array<SimpleTemplate> burningsTemplates) {
+        if (burningsTemplates != null) {
+            for (SimpleTemplate simpleTemplate : burningsTemplates) {
+                for (AnimatedTiledMapTile animatedTile : simpleTemplate.animatedTiles.values()) {
+                    String tileName = animatedTile.getProperties().get("tileName", null);
+                    if (tileName != null) {
+                        if (tileName.equals("burning_")) {
+                            Logger.logDebug("this.burningAnimations.size:" + this.burningsTemplates.size);
+                            animations.put("burning_" + this.burningsTemplates.size, animatedTile);
+                            this.burningsTemplates.add(simpleTemplate);
+                        }
+                    }
+                }
+            }
+            thresholdBurning = (int)(healthPoints / (burningsTemplates.size+1)); // 100 / 1 = 100 // 100 / 2 = 50 // 100 / 3 = 33.3
         }
     }
 

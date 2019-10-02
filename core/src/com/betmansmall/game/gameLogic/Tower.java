@@ -7,12 +7,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
 import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
+import com.betmansmall.game.gameLogic.playerTemplates.SimpleTemplate;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
+import com.betmansmall.util.logging.Logger;
 
 
 /**
@@ -31,8 +33,12 @@ public class Tower {
     public Circle radiusDetectionCircle;
     public Circle radiusFlyShellCircle;
 
-    public Animation animation;
     public float destroyElapsedTime;
+    public Animation animation;
+    public float burningElapsedTime;
+    public Animation burningAnimation;
+    public Integer currBurningIndex;
+
     public float elapsedReloadTime;
     public float hp;
     public int capacity;
@@ -55,8 +61,12 @@ public class Tower {
         this.radiusDetectionCircle = new Circle(0, 0, templateForTower.radiusDetection);
         this.radiusFlyShellCircle = null;
 
-        this.animation = null;
         this.destroyElapsedTime = 0f;
+        this.animation = null;
+        this.burningElapsedTime = 0f;
+        this.burningAnimation = null;
+        this.currBurningIndex = null;
+
         this.elapsedReloadTime = templateForTower.reloadTime;
         this.hp = templateForTower.healthPoints;
         this.capacity = (templateForTower.capacity != null) ? templateForTower.capacity : 0;
@@ -79,8 +89,11 @@ public class Tower {
         this.radiusDetectionCircle = null;
         this.radiusFlyShellCircle = null;
 
-        this.animation = null;
 //        this.destroyElapsedTime = 0;
+        this.animation = null;
+//        this.burningElapsedTime = 0;
+        this.burningAnimation = null;
+        this.currBurningIndex = null;
 //        this.elapsedReloadTime = 0;
 //        this.hp = 0;
 //        this.capacity = 0;
@@ -122,6 +135,15 @@ public class Tower {
                         this.radiusFlyShellCircle.setPosition(centerGraphicCoordinates);
                     }
                 }
+            }
+        }
+    }
+
+    public void moveAnimations(float delta) {
+        if (burningAnimation != null) {
+            burningElapsedTime += delta;
+            if (burningElapsedTime >= burningAnimation.getAnimationDuration()) {
+                burningElapsedTime = 0f;
             }
         }
     }
@@ -239,13 +261,20 @@ public class Tower {
     }
 
     public boolean destroy(float damage) {//, TowerShellEffect towerShellEffect) {
-        if(hp > 0) {
+        if (hp > 0) {
             hp -= damage;
 //            addEffect(towerShellEffect);
-            if(hp <= 0) {
+            if (hp <= 0) {
                 destroyElapsedTime = 0;
                 setAnimation("explosion_");
                 return true;
+            } else {
+                for (int k = templateForTower.burningsTemplates.size-1; k >= 0; k--) {
+                    if ( hp < (templateForTower.healthPoints - templateForTower.thresholdBurning*(k+1)) ) {
+                        setBurningAnimation("burning_", k);
+                        break;
+                    }
+                }
             }
             return false;
         }
@@ -253,7 +282,7 @@ public class Tower {
     }
 
     private void setAnimation(String action) { // Action transform to Enum
-//        Gdx.app.log("Tower::setAnimation()", "-- action+direction:" + action+direction );
+//        Gdx.app.log("Tower::setAnimation()", "-- action:" + action);
         AnimatedTiledMapTile animatedTiledMapTile = templateForTower.animations.get(action);
         if (animatedTiledMapTile != null) {
             StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
@@ -267,6 +296,29 @@ public class Tower {
             Gdx.app.log("Tower::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
         } else {
             Gdx.app.log("Tower::setAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
+        }
+    }
+
+    private void setBurningAnimation(String action, int index) {
+//        Gdx.app.log("Tower::setBurningAnimation()", "-- action_index:" + action+index);
+        if (currBurningIndex == null || currBurningIndex != index) {
+            AnimatedTiledMapTile animatedTiledMapTile = templateForTower.animations.get(action + index);
+            if (animatedTiledMapTile != null) {
+                StaticTiledMapTile[] staticTiledMapTiles = animatedTiledMapTile.getFrameTiles();
+                TextureRegion[] textureRegions = new TextureRegion[staticTiledMapTiles.length];
+                for (int k = 0; k < staticTiledMapTiles.length; k++) {
+                    textureRegions[k] = staticTiledMapTiles[k].getTextureRegion();
+                }
+                if (action.contains("burning_")) {
+                    SimpleTemplate simpleTemplate = templateForTower.burningsTemplates.get(index);
+                    float animationTime = Float.parseFloat(simpleTemplate.properties.get("animationTime"));
+                    burningAnimation = new Animation(animationTime / staticTiledMapTiles.length, textureRegions);
+                }
+                Gdx.app.log("Tower::setBurningAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
+            } else {
+                Gdx.app.log("Tower::setBurningAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
+            }
+            currBurningIndex = index;
         }
     }
 
@@ -299,6 +351,13 @@ public class Tower {
             return circles.get(map-1);
         }
         Gdx.app.log("Tower::getCircle(" + map + ")", "-- Bad map | return null!");
+        return null;
+    }
+
+    public TextureRegion getCurrentBurningFrame() {
+        if (burningAnimation != null) {
+            return (TextureRegion) burningAnimation.getKeyFrame(burningElapsedTime, true);
+        }
         return null;
     }
 

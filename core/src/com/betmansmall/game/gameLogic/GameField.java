@@ -935,9 +935,13 @@ public class GameField {
         float sizeCellX = cameraController.sizeCellX;
         float sizeCellY = cameraController.sizeCellY*2;
 
+        TextureRegion burningFrame = null;
         TextureRegion currentFrame = null;
         if (tower.isNotDestroyed()) {
             currentFrame = tower.templateForTower.idleTile.getTextureRegion();
+            if (tower.burningAnimation != null) {
+                burningFrame = tower.getCurrentBurningFrame();
+            }
         } else {
             sizeCellY = cameraController.sizeCellY*1.5f;
             currentFrame = tower.getCurrentDestroyFrame();
@@ -951,6 +955,9 @@ public class GameField {
                 towerPos.set(cell.getGraphicCoordinates(m));
                 cameraController.getCorrectGraphicTowerCoord(towerPos, towerSize, m);
                 cameraController.spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, sizeCellY * towerSize);
+                if (burningFrame != null) {
+                    cameraController.spriteBatch.draw(burningFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, sizeCellY * towerSize);
+                }
 //                cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius/2);
 //                cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
             }
@@ -958,6 +965,9 @@ public class GameField {
             towerPos.set(cell.getGraphicCoordinates(cameraController.isDrawableTowers));
             cameraController.getCorrectGraphicTowerCoord(towerPos, towerSize, cameraController.isDrawableTowers);
             cameraController.spriteBatch.draw(currentFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, sizeCellY * towerSize);
+            if (burningFrame != null) {
+                cameraController.spriteBatch.draw(burningFrame, towerPos.x, towerPos.y, sizeCellX * towerSize, sizeCellY * towerSize);
+            }
 //            cameraController.shapeRenderer.circle(towerPos.x, towerPos.y, tower.radiusDetectionCircle.radius/2);
 //            cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
@@ -2117,8 +2127,10 @@ public class GameField {
     }
 
     private void shotAllTowers(float delta, CameraController cameraController) {
-        updateTowersGraphicCoordinates(cameraController);
+//        updateTowersGraphicCoordinates(cameraController);
         for (Tower tower : towersManager.towers) {
+            tower.updateCenterGraphicCoordinates(cameraController);
+            tower.moveAnimations(delta);
             if (tower.isNotDestroyed()) {
                 TowerAttackType towerAttackType = tower.templateForTower.towerAttackType;
                 if (towerAttackType == TowerAttackType.Pit) {

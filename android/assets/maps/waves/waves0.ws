@@ -6,7 +6,7 @@
     <!-- startToMove - ну тут все понятно. столько пройдет времени после нажатия пользователем кнопки пуска крипов -->
     <!-- startToMove -> delay-->
     <wave spawnPointX="15" spawnPointY="0" exitPointX="15" exitPointY="30" spawnInterval="3" startToMove="0">
-        <!-- <unit templateName="unit1_grunt" amount="3"/> -->
+        <unit templateName="unit1_grunt" amount="10"/>
         <!-- <unit templateName="unit2_troll_axethrower" amount="3"/> -->
         <!-- <unit templateName="unit3_footman" amount="4"/> -->
         <!-- <unit templateName="unit4_catapult" amount="2"/> -->

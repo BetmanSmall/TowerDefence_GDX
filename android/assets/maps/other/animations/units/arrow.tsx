@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="ballista_bolt" tilewidth="64" tileheight="64" tilecount="5" columns="5">
- <image source="../../textures/warcraft2/missiles/ballista_bolt.png" width="320" height="64"/>
+<tileset name="arrow" tilewidth="40" tileheight="40" tilecount="5" columns="5">
+ <image source="../../../textures/warcraft2/missiles/arrow.png" width="200" height="40"/>
  <properties>
-  <property name="ammoSize" value="20"/>
-  <property name="ammoSpeed" value="15"/>
+  <property name="ammoSize" value="10"/>
+  <property name="ammoSpeed" value="13"/>
   <property name="animationTime" value="10"/>
  </properties>
  <tile id="0">
