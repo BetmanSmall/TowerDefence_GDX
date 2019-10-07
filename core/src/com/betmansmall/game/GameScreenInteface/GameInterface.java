@@ -21,6 +21,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.enums.GameState;
+import com.betmansmall.game.GameScreen;
 import com.betmansmall.game.GameType;
 import com.betmansmall.game.WidgetController;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -33,7 +35,8 @@ import com.betmansmall.game.gameLogic.UnderConstruction;
  * Changed by nMukhin on 2019
  */
 public class GameInterface extends Stage implements GestureDetector.GestureListener/*, InputProcessor*/ {
-    private GameField gameField;
+    private GameScreen gameScreen;
+//    private GameField gameField;
 //    private ShapeRenderer shapeRenderer;
 //    private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
@@ -74,13 +77,15 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private float currentTextureTime, maxTextureTime;
     public int prevMouseX, prevMouseY;
 
-    public GameInterface(final GameField gameField, BitmapFont bitmapFont) {
+    public GameInterface(final GameScreen gameScreen) {
         super(new ScreenViewport());
-        Gdx.app.log("GameInterface::GameInterface(" + gameField + "," + bitmapFont + ")", "-- Called!");
-        this.gameField = gameField;
+//        Gdx.app.log("GameInterface::GameInterface(" + gameField + "," + bitmapFont + ")", "-- Called!");
+        this.gameScreen = gameScreen;
+//        this.gameField = gameField;
 //        this.shapeRenderer = shapeRenderer;
 //        this.spriteBatch = spriteBatch;
-        this.bitmapFont = bitmapFont;
+        this.bitmapFont = new BitmapFont();
+        this.bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
 
         this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
@@ -245,8 +250,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
-                gameField.gamePaused = pauseMenuButton.isChecked();
-                pauseMenuTable.setVisible(gameField.gamePaused);
+                gameScreen.gameField.gamePaused = pauseMenuButton.isChecked();
+                pauseMenuTable.setVisible(gameScreen.gameField.gamePaused);
                 tableWithSelectors.setVisible(!pauseMenuButton.isChecked());
                 tableWithButtons.setVisible(!pauseMenuButton.isChecked());
                 interfaceTouched = true;
@@ -256,8 +261,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedMinus.isChecked():" + gameSpeedMinus.isChecked());
-                if (gameField.gameSpeed > 0.1f) {
-                    gameField.gameSpeed -= 0.1f;
+                if (gameScreen.gameField.gameSpeed > 0.1f) {
+                    gameScreen.gameField.gameSpeed -= 0.1f;
                 }
             }
         });
@@ -265,26 +270,26 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- startAndPauseButton.isChecked():" + startAndPauseButton.isChecked());
-//                if (!gameField.gamePaused) {
-//                    if (gameField.gameSpeed < 1f) {
-//                        gameField.gameSpeed = 1f;
-//                    } else if (gameField.gameSpeed < 2f) {
-//                        gameField.gameSpeed = 2f;
-//                    } else if (gameField.gameSpeed < 3f) {
-//                        gameField.gameSpeed = 3f;
-//                    } else if (gameField.gameSpeed < 4f) {
-//                        gameField.gameSpeed = 4f;
-//                    } else if (gameField.gameSpeed < 5f) {
-//                        gameField.gameSpeed = 5f;
+//                if (!gameScreen.gameField.gamePaused) {
+//                    if (gameScreen.gameField.gameSpeed < 1f) {
+//                        gameScreen.gameField.gameSpeed = 1f;
+//                    } else if (gameScreen.gameField.gameSpeed < 2f) {
+//                        gameScreen.gameField.gameSpeed = 2f;
+//                    } else if (gameScreen.gameField.gameSpeed < 3f) {
+//                        gameScreen.gameField.gameSpeed = 3f;
+//                    } else if (gameScreen.gameField.gameSpeed < 4f) {
+//                        gameScreen.gameField.gameSpeed = 4f;
+//                    } else if (gameScreen.gameField.gameSpeed < 5f) {
+//                        gameScreen.gameField.gameSpeed = 5f;
 //                    } else {
-//                        gameField.gamePaused = !gameField.gamePaused;
+//                        gameScreen.gameField.gamePaused = !gameScreen.gameField.gamePaused;
 //                    }
 //                } else {
-                gameField.gameSpeed = 1f;
-                gameField.gamePaused = !gameField.gamePaused;
-                if (!gameField.unitsSpawn && GameField.unitsManager.units.size == 0) {
-                    gameField.unitsSpawn = true;
-                    gameField.gamePaused = false;
+                gameScreen.gameField.gameSpeed = 1f;
+                gameScreen.gameField.gamePaused = !gameScreen.gameField.gamePaused;
+                if (!gameScreen.gameField.unitsSpawn && GameField.unitsManager.units.size == 0) {
+                    gameScreen.gameField.unitsSpawn = true;
+                    gameScreen.gameField.gamePaused = false;
                 }
 //                }
                 interfaceTouched = true;
@@ -294,7 +299,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedPlus.isChecked():" + gameSpeedPlus.isChecked());
-                gameField.gameSpeed += 0.1f;
+                gameScreen.gameField.gameSpeed += 0.1f;
             }
         });
     }
@@ -505,7 +510,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         optionTable.add(drawAll).fill().row();
 
         topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
-        topBottomLeftRightSelector.setChecked(gameField.gameSettings.topBottomLeftRightSelector);
+        topBottomLeftRightSelector.setChecked(gameScreen.gameField.gameSettings.topBottomLeftRightSelector);
         topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
         topBottomLeftRightSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
         topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
@@ -513,13 +518,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
-                gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
+                gameScreen.gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
             }
         });
         optionTable.add(topBottomLeftRightSelector).colspan(2).fill().row();
 
         verticalSelector = new CheckBox("verticalSelector", skin);
-        verticalSelector.setChecked(gameField.gameSettings.verticalSelector);
+        verticalSelector.setChecked(gameScreen.gameField.gameSettings.verticalSelector);
         verticalSelector.getImage().setScaling(Scaling.stretch);
         verticalSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
         verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
@@ -527,17 +532,17 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
-                gameField.gameSettings.verticalSelector = verticalSelector.isChecked();
+                gameScreen.gameField.gameSettings.verticalSelector = verticalSelector.isChecked();
             }
         });
         optionTable.add(verticalSelector).colspan(2).fill();
 
         if (cameraController.gameField.waveManager.wavesForUser.size > 0) {
-            unitsSelector = new UnitsSelector(gameField, bitmapFont, tableWithSelectors);
+            unitsSelector = new UnitsSelector(gameScreen.gameField, bitmapFont, tableWithSelectors);
         }
 
         if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
-            towersSelector = new TowersSelector(gameField, bitmapFont, skin, this);
+            towersSelector = new TowersSelector(gameScreen.gameField, bitmapFont, skin, this);
             tableWithSelectors.add(towersSelector).expand();
 
             towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
@@ -581,10 +586,10 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         }
         fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
         deltaTimeLabel.setText("delta:" + String.valueOf(delta));
-        mapPathLabel.setText("gameField.map.mapPath:" + gameField.map.mapPath);
-        gameType.setText("gameField.gameSettings.gameType:" + gameField.gameSettings.gameType);
-        isometricLabel.setText("gameField.gameSettings.isometric:" + gameField.gameSettings.isometric);
-        UnderConstruction underConstruction = gameField.getUnderConstruction();
+        mapPathLabel.setText("gameScreen.gameField.map.mapPath:" + gameScreen.gameField.map.mapPath);
+        gameType.setText("gameScreen.gameField.gameSettings.gameType:" + gameScreen.gameField.gameSettings.gameType);
+        isometricLabel.setText("gameScreen.gameField.gameSettings.isometric:" + gameScreen.gameField.gameSettings.isometric);
+        UnderConstruction underConstruction = gameScreen.gameField.getUnderConstruction();
         if (underConstruction != null) {
             underConstrEndCoord.setText("underConstructionEndCoord:(" + underConstruction.endX + "," + underConstruction.endY + ")");
             underConstructionLabel.setText("underConstructionTemplateName:" + underConstruction.templateForTower.name);
@@ -594,21 +599,21 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             underConstructionLabel.setText("underConstructionTemplateName:NULL");
             underConstructionLabel.setColor(Color.RED);
         }
-        gamerGoldLabel.setText("gameField.gamerGold:" + gameField.gamerGold);
-        unitsManagerSize.setText("gameField.unitsManager.units.size:" + gameField.unitsManager.units.size);
-        towersManagerSize.setText("gameField.towersManager.towers.size:" + gameField.towersManager.towers.size);
-        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameField.gameSettings.missedUnitsForPlayer1 + "/" + gameField.gameSettings.maxOfMissedUnitsForPlayer1);
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameField.gameSettings.missedUnitsForComputer0 + "/" + gameField.gameSettings.maxOfMissedUnitsForComputer0);
-        nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
-        unitsSpawn.setText("unitsSpawn:" + gameField.unitsSpawn);
-        gamePaused.setText("gamePaused:" + gameField.gamePaused);
+        gamerGoldLabel.setText("gameScreen.gameField.gamerGold:" + gameScreen.gameField.gamerGold);
+        unitsManagerSize.setText("gameScreen.gameField.unitsManager.units.size:" + gameScreen.gameField.unitsManager.units.size);
+        towersManagerSize.setText("gameScreen.gameField.towersManager.towers.size:" + gameScreen.gameField.towersManager.towers.size);
+        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.gameField.gameSettings.missedUnitsForPlayer1 + "/" + gameScreen.gameField.gameSettings.maxOfMissedUnitsForPlayer1);
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.gameField.gameSettings.missedUnitsForComputer0 + "/" + gameScreen.gameField.gameSettings.maxOfMissedUnitsForComputer0);
+        nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameScreen.gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameScreen.gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
+        unitsSpawn.setText("unitsSpawn:" + gameScreen.gameField.unitsSpawn);
+        gamePaused.setText("gamePaused:" + gameScreen.gameField.gamePaused);
         if (towersSelector != null) {
             towersSelectorCoord.setText("towersSelectorCoord:" + towersSelector.coordinateX + "," + towersSelector.coordinateY);
             selectorBorderVertical.setText("selectorBorderVertical:" + towersSelector.selectorBorderVertical);
             selectorBorderHorizontal.setText("selectorBorderHorizontal:" + towersSelector.selectorBorderHorizontal);
         }
 
-        startAndPauseButton.setText((gameField.gamePaused) ? "PLAY" : (gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : (GameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameField.gameSpeed : "START NEXT WAVE");
+        startAndPauseButton.setText((gameScreen.gameField.gamePaused) ? "PLAY" : (gameScreen.gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : (GameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : "START NEXT WAVE");
 //        if (pauseMenuButton.isChecked()) {
 //            interfaceTouched = true;
 //        }
@@ -622,7 +627,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         super.draw();
     }
 
-    public void renderEndGame(float delta, String gameState) {
+    public void renderEndGame(float delta, GameState gameState) {
         currentTextureTime += delta;
         if (currentTextureTime > maxTextureTime) {
 //            this.dispose();
@@ -632,9 +637,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         Batch batch = getBatch(); // Need have own batch. mb get from GameScreen
         Gdx.app.log("GameInterface::renderEndGame()", "-- batch:" + batch);
         batch.begin();
-        if(gameState.equals("Win")) {
+        if(gameState == GameState.WIN) {
             batch.draw(winTexture, 0, 0, getWidth(), getHeight());
-        } else if(gameState.equals("Lose")) {
+        } else if(gameState == GameState.LOSE) {
             batch.draw(loseTexture, 0, 0, getWidth(), getHeight());
         }
         batch.end();

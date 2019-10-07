@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.server.GameServerScreen;
+import com.betmansmall.server.SessionSettings;
 
 public class MainMenuScreen implements Screen {
     private WidgetController widgetController;
@@ -25,12 +27,14 @@ public class MainMenuScreen implements Screen {
     private TextButton exitButton;
     private TextButton backButton;
     private TextButton homeButton;
+    private TextButton serverButton;
+    private TextButton clientButton;
 
     private Label sizeLabel;
 
     private int menuLvl;
 
-    public String mapName;
+//    public String mapName;
 
     public MainMenuScreen(final WidgetController widgetController) {
         this.widgetController = widgetController;
@@ -94,7 +98,39 @@ public class MainMenuScreen implements Screen {
                 switchMenuButtons();
             }
         });
-        leftTable.add(homeButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
+        leftTable.add(homeButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
+
+        serverButton = new TextButton("GameServerScreen", skin);
+        serverButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                SessionSettings sessionSettings = new SessionSettings(widgetController.gameSettings);
+                sessionSettings.localServer = true;
+                sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
+                sessionSettings.gameSettings.gameType = GameType.TowerDefence;
+                widgetController.addScreen(new GameServerScreen(widgetController.factionsManager, sessionSettings));
+            }
+        });
+        leftTable.add(serverButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
+
+        clientButton = new TextButton("GameClientScreen", skin);
+        clientButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::clientButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                SessionSettings sessionSettings = new SessionSettings(widgetController.gameSettings);
+//                sessionSettings.localServer = false;
+//                sessionSettings.host = "localhost";
+//                sessionSettings.port = 48999;
+//                sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
+//                sessionSettings.gameSettings.gameType = GameType.TowerDefence;
+                widgetController.addScreen(new GameClientScreen(widgetController.factionsManager, sessionSettings));
+            }
+        });
+        leftTable.add(clientButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
         rootTable.add(leftTable).expandX().fillX().left();
 
         Table middleTable = new Table(skin);
@@ -311,19 +347,19 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena0.tmx";
+                        widgetController.gameSettings.mapPath = "maps/arena0.tmx";
                         break;
                     case 2:
                         //Choose map2
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena2.tmx";
+                        widgetController.gameSettings.mapPath = "maps/arena2.tmx";
                         break;
                     case 3:
                         //Choose map3
                         menuLvl = 3;
                         switchMenuButtons();
-                        mapName = "maps/arena4.tmx";
+                        widgetController.gameSettings.mapPath = "maps/arena4.tmx";
                         break;
                 }
                 break;
@@ -332,17 +368,17 @@ public class MainMenuScreen implements Screen {
                     case 1:
                         //start game with EASY
                         widgetController.gameSettings.difficultyLevel = 0.5f;
-                        widgetController.addScreen(new GameScreen(mapName, widgetController.factionsManager, widgetController.gameSettings));
+                        widgetController.addScreen(new GameScreen(widgetController.factionsManager, widgetController.gameSettings));
                         break;
                     case 2:
                         //start game with NORMAL
                         widgetController.gameSettings.difficultyLevel = 1f;
-                        widgetController.addScreen(new GameScreen(mapName, widgetController.factionsManager, widgetController.gameSettings));
+                        widgetController.addScreen(new GameScreen(widgetController.factionsManager, widgetController.gameSettings));
                         break;
                     case 3:
                         //start game with HARD
                         widgetController.gameSettings.difficultyLevel = 2f;
-                        widgetController.addScreen(new GameScreen(mapName, widgetController.factionsManager, widgetController.gameSettings));
+                        widgetController.addScreen(new GameScreen(widgetController.factionsManager, widgetController.gameSettings));
                         break;
                 }
                 break;
@@ -386,8 +422,7 @@ public class MainMenuScreen implements Screen {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("MainMenuScreen[");
-        sb.append("mapName:" + mapName);
-        sb.append(",menuLvl:" + menuLvl);
+        sb.append("menuLvl:" + menuLvl);
         if (full) {
             sb.append(",stage:" + stage);
         }

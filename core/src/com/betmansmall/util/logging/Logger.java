@@ -1,6 +1,5 @@
 package com.betmansmall.util.logging;
 
-import com.badlogic.gdx.Gdx;
 import java.util.HashMap;
 
 /**
@@ -23,6 +22,14 @@ public class Logger {
     public static Logger instance = new Logger();
     private HashMap<String, String> classNamesCache;
     private String threadClassName;
+
+    public static void logFuncStart() {
+        instance().log("[START]", ANSI_BLUE);
+    }
+
+    public static void logFuncEnd() {
+        instance().log("[END]", ANSI_CYAN);
+    }
 
     public static void logError(String message) {
         instance().log(message, ANSI_RED);
@@ -56,7 +63,7 @@ public class Logger {
     private void log(String message, String color) {
         StackTraceElement callerElement = getCallerElement(Thread.currentThread().getStackTrace());
         if (callerElement == null) return;
-        Gdx.app.log(color + getClassName(callerElement) +"::" + callerElement.getMethodName() + "()" + ANSI_RESET, "-- " + message);
+        System.out.println(color + getClassName(callerElement) +"::" + callerElement.getMethodName() + "();" + ANSI_RESET + " -- " + message);
     }
 
     /**

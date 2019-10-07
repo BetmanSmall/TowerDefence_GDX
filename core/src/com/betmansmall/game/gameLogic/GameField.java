@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.GameState;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.GameType;
 import com.betmansmall.game.gameLogic.mapLoader.MapLayer;
@@ -2227,7 +2228,7 @@ public class GameField {
         return waveManager.getNumberOfActions() + unitsManager.units.size;
     }
 
-    public String getGameState() {
+    public GameState getGameState() {
 //        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForPlayer1:" + gameSettings.missedUnitsForPlayer1);
 //        Gdx.app.log("GameField::getGameState()", "-- maxOfMissedUnitsForPlayer1:" + gameSettings.maxOfMissedUnitsForPlayer1);
 //        Gdx.app.log("GameField::getGameState()", "-- missedUnitsForComputer0:" + gameSettings.missedUnitsForComputer0);
@@ -2242,31 +2243,31 @@ public class GameField {
                     if (pos.cellX == hero.exitCell.cellX && pos.cellY == hero.exitCell.cellY) {
                         Gdx.app.log("GameField::getGameState()", "-- hero.nextCell:" + hero.nextCell);
                         Gdx.app.log("GameField::getGameState()", "-- hero.exitCell:" + hero.exitCell);
-                        return "LittleGame_Win";
+                        return GameState.WIN;//"LittleGame_Win";
                     }
                 } else {
-                    return "LittleGame_WTF";
+                    return GameState.LOSE;//"LittleGame_WTF";
                 }
             }
         } else if (gameSettings.gameType == GameType.TowerDefence) {
             if (gameSettings.missedUnitsForPlayer1 >= gameSettings.maxOfMissedUnitsForPlayer1) {
 //                Gdx.app.log("GameField::getGameState()", "-- LOSE!!");
-                return "Lose";
+                return GameState.LOSE;
             } else {
                 if (gameSettings.missedUnitsForComputer0 >= gameSettings.maxOfMissedUnitsForComputer0) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
 //                    Gdx.app.log("GameField::getGameState()", "-- WIN!!");
-                    return "Win";
+                    return GameState.WIN;
                 }
                 if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
 //                    Gdx.app.log("GameField::getGameState()", "-- WIN!!");
-                    return "Win";
+                    return GameState.WIN;
                 }
             }
         } else {
             Gdx.app.log("GameField::getGameState()", "-bad- gameSettings.gameType:" + gameSettings.gameType);
         }
 //        Gdx.app.log("GameField::getGameState()", "-- IN PROGRESS!!");
-        return "In progress";
+        return GameState.IN_PROGRESS;
     }
 
     public void turnRight() {

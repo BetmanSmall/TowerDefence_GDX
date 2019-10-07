@@ -206,7 +206,7 @@ public class WidgetController extends Game {
 //            removeTopScreen();
             String mapPath = gameLevelMaps.first();
             gameSettings.setGameTypeByMap(mapPath);
-            addScreen(new GameScreen(gameLevelMaps.first(), factionsManager, gameSettings));
+            addScreen(new GameScreen(factionsManager, gameSettings));
             gameLevelMaps.removeIndex(0);
         } else {
             Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);

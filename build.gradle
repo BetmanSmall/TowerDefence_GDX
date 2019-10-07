@@ -37,6 +37,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.6.0'
         aiVersion = '1.6.0'
+//        visuiVersion = '1.4.2'
     }
 
     repositories {
@@ -98,6 +99,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+//        compile "com.kotcrab.vis:vis-ui:$visuiVersion"
     }
 }
 

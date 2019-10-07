@@ -7,43 +7,38 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-//import com.badlogic.gdx.input.GestureDetector;
-//import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.GameState;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.util.logging.Logger;
 
 public class GameScreen implements Screen {
-//    private ShapeRenderer shapeRenderer; // Нужно все эти штуки вынести из интерфейса, сюда на уровень геймСкрина.
-//    private SpriteBatch spriteBatch; // CameraController тоже или нет?
-    private BitmapFont bitmapFont;
-
+    public GameSettings gameSettings;
     public GameField gameField;
     public GameInterface gameInterface;
     public CameraController cameraController;
 
-    public GameScreen(String mapPath, FactionsManager factionsManager, GameSettings gameSettings) {
-        Gdx.app.log("GameScreen::GameScreen()", "-START-");
-//        shapeRenderer = new ShapeRenderer();
-//        spriteBatch = new SpriteBatch();
-        bitmapFont = new BitmapFont();
-        bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
+    public GameScreen(FactionsManager factionsManager, GameSettings gameSettings) {
+        Logger.logFuncStart();
 
-        gameField = new GameField(mapPath, factionsManager, gameSettings);
-        gameInterface = new GameInterface(gameField, bitmapFont);
+        this.gameSettings = gameSettings;
+
+        gameField = new GameField(gameSettings.mapPath, factionsManager, gameSettings);
+        gameInterface = new GameInterface(this);
         cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         gameInterface.setCameraController(cameraController);
 
-        Gdx.app.log("GameScreen::GameScreen()", "-- mapPath:" + mapPath);
+        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings.mapPath:" + gameSettings.mapPath);
         Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
         Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings:" + gameSettings);
         Gdx.app.log("GameScreen::GameScreen()", "-- field:" + gameField);
         Gdx.app.log("GameScreen::GameScreen()", "-- gameField.map:" + gameField.map);
-        Gdx.app.log("GameScreen::GameScreen()", "-END-");
+        Logger.logFuncEnd();
     }
 
     @Override
@@ -52,6 +47,9 @@ public class GameScreen implements Screen {
         gameField.dispose();
         gameInterface.dispose();
         cameraController.dispose();
+    }
+
+    public void initGameField() {
     }
 
     @Override
@@ -259,15 +257,15 @@ public class GameScreen implements Screen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         inputHandler(delta);
 
-        String gameState = gameField.getGameState(); // Need change to enum GameState
-        if (gameState.equals("In progress")) {
+        GameState gameState = gameField.getGameState(); // Need change to enum GameState
+        if (gameState == GameState.IN_PROGRESS) {
             cameraController.update(delta);
             gameField.render(delta, cameraController);
             gameInterface.render(delta);
-        } else if (gameState.equals("Lose") || gameState.equals("Win")) {
+        } else if (gameState == GameState.LOSE || gameState == GameState.WIN) {
 //            gameField.dispose();
             gameInterface.renderEndGame(delta, gameState);
-        } else if (gameState.equals("LittleGame_Win")) {
+        } else if (gameState == GameState.LITTLE_GAME_WIN) {
             gameField.dispose();
             gameInterface.renderEndGame(delta, gameState);
         } else {
@@ -289,7 +287,6 @@ public class GameScreen implements Screen {
         cameraController.camera.viewportHeight = height;
         cameraController.camera.viewportWidth = width;
         cameraController.camera.update();
-//        gameInterface.updateStage(); // Андрей. Твой ресайз не пашет! Если это разкомменить. То не будет работать селектор вообще. Этот инит твой будет по несколько раз вызываться. Один раз при создании и два раза во время ресайза. (эти два ресайза делаются почему то во время инициализации)
     }
 
     @Override
