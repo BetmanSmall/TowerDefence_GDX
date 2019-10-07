@@ -1536,8 +1536,8 @@ public class GameField {
         if (drawFull) {
             Cell mainCell = getCell(buildX, buildY);
             if(mainCell != null) {
-                Color oldColorSB = cameraController.spriteBatch.getColor();
-                Color oldColorSR = cameraController.shapeRenderer.getColor();
+//                Color oldColorSB = cameraController.spriteBatch.getColor();
+//                Color oldColorSR = cameraController.shapeRenderer.getColor();
                 if (enoughGold && canBuild) {
                     cameraController.spriteBatch.setColor(0, 1f, 0, 0.55f);
                     cameraController.shapeRenderer.setColor(0, 1f, 0, 0.55f);
@@ -1552,8 +1552,8 @@ public class GameField {
                 } else if (cameraController.isDrawableTowers != 0) {
                     drawTowerUnderConstructionAndMarks(cameraController, cameraController.isDrawableTowers, templateForTower, mainCell, startDrawCell, finishDrawCell);
                 }
-                cameraController.spriteBatch.setColor(oldColorSB);
-                cameraController.shapeRenderer.setColor(oldColorSR);
+                cameraController.spriteBatch.setColor(Color.WHITE);
+                cameraController.shapeRenderer.setColor(Color.WHITE);
             }
         }
     }

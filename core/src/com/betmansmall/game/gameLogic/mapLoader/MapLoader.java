@@ -205,12 +205,12 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             String source = waves.getAttribute("source", null);
             if (source != null) {
                 FileHandle tsx = getRelativeFileHandle(tmxFile, source);
-                try {
+//                try {
                     Element rootwaves = xml.parse(tsx);
                     wavesParser(rootwaves);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                } catch (IOException e) { // todo need check how in MapLoader in gdx 1.9.9
+//                    e.printStackTrace();
+//                }
 //            } else if(type != null/* && type == "empty"*/) { // LOL not WORK
 //                System.out.println("type=" + type); // Хотел сделать пустую волну, не получилася=( мб как нить сделаем.
 //                waveManager.addWave(new Wave(new GridPoint2(0, 0), new GridPoint2(0, 0), 10f));
@@ -344,7 +344,7 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
             FileHandle image = null;
             if (source != null) {
                 FileHandle tsx = getRelativeFileHandle(tmxFile, source);
-                try {
+//                try {
                     element = xml.parse(tsx);
                     name = element.get("name", null);
                     tilewidth = element.getIntAttribute("tilewidth", 0);
@@ -363,9 +363,9 @@ public class MapLoader extends BaseTmxMapLoader<MapLoader.Parameters> {
                         imageHeight = imageElement.getIntAttribute("height", 0);
                         image = getRelativeFileHandle(tsx, imageSource);
                     }
-                } catch (IOException e) {
-                    throw new GdxRuntimeException("Error parsing external tileset.");
-                }
+//                } catch (IOException e) {
+//                    throw new GdxRuntimeException("Error parsing external tileset."); // todo need check how in MapLoader in gdx 1.9.9
+//                }
             } else {
                 Element offset = element.getChildByName("tileoffset");
                 if (offset != null) {
