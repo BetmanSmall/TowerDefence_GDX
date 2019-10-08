@@ -3,6 +3,7 @@ package com.betmansmall.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -26,6 +27,8 @@ public class WidgetController extends Game {
     public Screen optionMenuScreen;
     public Screen helpMenuScreen;
     public GameSettings gameSettings;
+
+    public AssetManager assetManager = new AssetManager();
 
     public static WidgetController getInstance() {
         Logger.logDebug("");

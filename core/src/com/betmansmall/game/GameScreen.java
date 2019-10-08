@@ -18,7 +18,9 @@ import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.util.logging.Logger;
 
 public class GameScreen implements Screen {
+    public FactionsManager factionsManager;
     public GameSettings gameSettings;
+
     public GameField gameField;
     public GameInterface gameInterface;
     public CameraController cameraController;
@@ -26,12 +28,10 @@ public class GameScreen implements Screen {
     public GameScreen(FactionsManager factionsManager, GameSettings gameSettings) {
         Logger.logFuncStart();
 
+        this.factionsManager = factionsManager;
         this.gameSettings = gameSettings;
 
-        gameField = new GameField(gameSettings.mapPath, factionsManager, gameSettings);
-        gameInterface = new GameInterface(this);
-        cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        gameInterface.setCameraController(cameraController);
+        initGameField();
 
         Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings.mapPath:" + gameSettings.mapPath);
         Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
@@ -50,6 +50,10 @@ public class GameScreen implements Screen {
     }
 
     public void initGameField() {
+        gameField = new GameField(gameSettings.mapPath, factionsManager, gameSettings);
+        gameInterface = new GameInterface(this);
+        cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        gameInterface.setCameraController(cameraController);
     }
 
     @Override
