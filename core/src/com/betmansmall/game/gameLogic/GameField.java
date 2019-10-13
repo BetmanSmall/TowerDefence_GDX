@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.TTW;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.GameType;
@@ -56,17 +57,14 @@ public class GameField {
     public boolean unitsSpawn;
     public int gamerGold;
 
-    public GameField(String mapPath, FactionsManager factionsManager, GameSettings gameSettings) {
-        Gdx.app.log("GameField::GameField()", "-- mapPath:" + mapPath);
-        Gdx.app.log("GameField::GameField()", "-- factionsManager:" + factionsManager);
-        Gdx.app.log("GameField::GameField()", "-- gameSettings:" + gameSettings);
-        this.factionsManager = factionsManager;
-        waveManager = new WaveManager();
-        towersManager = new TowersManager();
-        unitsManager = new UnitsManager();
-        this.gameSettings = gameSettings;
+    public GameField() {
+        this.factionsManager = TTW.game.factionsManager;
+        this.waveManager = new WaveManager();
+        this.towersManager = new TowersManager();
+        this.unitsManager = new UnitsManager();
+        this.gameSettings = TTW.game.sessionSettings.gameSettings;
 
-        map = new MapLoader(waveManager).load(mapPath);
+        map = new MapLoader(waveManager).load(gameSettings.mapPath);
         Gdx.app.log("GameField::GameField()", "-- map:" + map);
 
         underConstruction = null;

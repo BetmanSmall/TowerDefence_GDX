@@ -15,16 +15,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.TTW;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.game.GameScreen;
 import com.betmansmall.game.GameType;
-import com.betmansmall.game.WidgetController;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
@@ -229,7 +228,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
-                WidgetController.getInstance().nextGameLevel();
+                TTW.game.nextGameLevel();
             }
         });
         optionButton.addListener(new ChangeListener() {
@@ -243,7 +242,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- exitButton.isChecked():" + exitButton.isChecked());
-                WidgetController.getInstance().removeTopScreen();
+                TTW.game.removeTopScreen();
             }
         });
         pauseMenuButton.addListener(new ChangeListener() {
@@ -631,7 +630,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         currentTextureTime += delta;
         if (currentTextureTime > maxTextureTime) {
 //            this.dispose();
-            WidgetController.getInstance().nextGameLevel();
+            TTW.game.nextGameLevel();
             return; // It'is really need???
         }
         Batch batch = getBatch(); // Need have own batch. mb get from GameScreen
@@ -824,13 +823,17 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     }
 
     public String toString() {
-        return toString(true);
+        return toString(false);
     }
 
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("GameInterface[");
-        sb.append("tableWithButtons:" + tableWithButtons);
+        sb.append("prevMouseX:" + prevMouseX);
+        sb.append(",prevMouseY:" + prevMouseY);
+        if (full == true) {
+            sb.append(",tableWithButtons:" + tableWithButtons);
+        }
         sb.append("]");
         return sb.toString();
     }

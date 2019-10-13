@@ -6,40 +6,39 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.TTW;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
-import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.util.logging.Logger;
 
 public class GameScreen implements Screen {
-    public FactionsManager factionsManager;
-    public GameSettings gameSettings;
+//    public FactionsManager factionsManager;
+//    public GameSettings gameSettings;
 
     public GameField gameField;
     public GameInterface gameInterface;
     public CameraController cameraController;
 
-    public GameScreen(FactionsManager factionsManager, GameSettings gameSettings) {
-        Logger.logFuncStart();
-
-        this.factionsManager = factionsManager;
-        this.gameSettings = gameSettings;
-
-        initGameField();
-
-        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings.mapPath:" + gameSettings.mapPath);
-        Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
-        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings:" + gameSettings);
-        Gdx.app.log("GameScreen::GameScreen()", "-- field:" + gameField);
-        Gdx.app.log("GameScreen::GameScreen()", "-- gameField.map:" + gameField.map);
-        Logger.logFuncEnd();
-    }
+//    public GameScreen(FactionsManager factionsManager, GameSettings gameSettings) {
+//        Logger.logFuncStart();
+//
+//        this.factionsManager = factionsManager;
+//        this.gameSettings = gameSettings;
+//
+//        initGameField();
+//
+//        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings.mapPath:" + gameSettings.mapPath);
+//        Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
+//        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings:" + gameSettings);
+//        Gdx.app.log("GameScreen::GameScreen()", "-- field:" + gameField);
+//        Gdx.app.log("GameScreen::GameScreen()", "-- gameField.map:" + gameField.map);
+//        Logger.logFuncEnd();
+//    }
 
     @Override
     public void dispose() {
@@ -50,7 +49,7 @@ public class GameScreen implements Screen {
     }
 
     public void initGameField() {
-        gameField = new GameField(gameSettings.mapPath, factionsManager, gameSettings);
+        gameField = new GameField();
         gameInterface = new GameInterface(this);
         cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         gameInterface.setCameraController(cameraController);
@@ -59,14 +58,15 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log("GameScreen::show()", "--");
-        cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
+        initGameField();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new GestureDetector(gameInterface));
         inputMultiplexer.addProcessor(gameInterface);
         inputMultiplexer.addProcessor(cameraController);
         inputMultiplexer.addProcessor(new GestureDetector(cameraController));
-        Gdx.input.setInputProcessor(inputMultiplexer);
+//        Gdx.input.setInputProcessor(inputMultiplexer);
+        TTW.input.addProcessor(inputMultiplexer);
     }
 
     private void inputHandler(float delta) {
@@ -207,10 +207,10 @@ public class GameScreen implements Screen {
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.drawOrder:" + cameraController.drawOrder);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE)");
-            WidgetController.getInstance().removeTopScreen();
+            TTW.game.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER)");
-            WidgetController.getInstance().nextGameLevel();
+            TTW.game.nextGameLevel();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.A)");
             gameField.turnLeft();
@@ -301,11 +301,13 @@ public class GameScreen implements Screen {
     @Override
     public void resume() {
         Gdx.app.log("GameScreen::resume()", "--");
+        cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
     }
 
     @Override
     public void hide() {
         Gdx.app.log("GameScreen::hide()", "--");
+        TTW.input.removeProcessor(TTW.input.size()-1);
     }
 
     public String toString() {

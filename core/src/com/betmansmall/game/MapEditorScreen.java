@@ -11,12 +11,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.betmansmall.TTW;
 
 /**
  * Created by betma on 09.05.2016.
  */
 public class MapEditorScreen implements Screen, GestureDetector.GestureListener {
-    private WidgetController widgetController;
+    private GameMaster gameMaster;
     private SpriteBatch spriteBatch;
 
     private static final float MAX_ZOOM = 50f; //max size
@@ -31,9 +32,9 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
     private TiledMap map;
     private IsometricTiledMapRenderer renderer;
 
-    public MapEditorScreen(WidgetController widgetController, String fileName) {
-        Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- widgetController:" + widgetController + " fileName:" + fileName);
-        this.widgetController = widgetController;
+    public MapEditorScreen(GameMaster gameMaster, String fileName) {
+        Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- gameMaster:" + gameMaster + " fileName:" + fileName);
+        this.gameMaster = gameMaster;
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera();
@@ -62,7 +63,7 @@ public class MapEditorScreen implements Screen, GestureDetector.GestureListener 
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("MapEditorScreen::render()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            WidgetController.getInstance().removeTopScreen();
+            TTW.game.removeTopScreen();
         }
     }
 

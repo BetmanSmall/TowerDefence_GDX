@@ -1,6 +1,7 @@
 package com.betmansmall.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -9,11 +10,12 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.betmansmall.game.WidgetController;
+import com.betmansmall.TTW;
+import com.betmansmall.game.GameClientScreen;
 import com.betmansmall.game.screens.actors.LoadingBar;
 import com.betmansmall.util.logging.Logger;
 
-public class LoadingScreen extends AbstractScreen {
+public class LoadingScreen extends ScreenAdapter {
     private Stage stage;
 
     private Image logo;
@@ -27,18 +29,14 @@ public class LoadingScreen extends AbstractScreen {
 
     private Actor loadingBar;
 
-    public LoadingScreen(WidgetController widgetController) {
-        super(widgetController);
-    }
-
     @Override
     public void show() {
-        widgetController.assetManager.load("data/loading.pack", TextureAtlas.class);
-        widgetController.assetManager.finishLoading();
+        TTW.assets.load("data/loading.pack", TextureAtlas.class);
+        TTW.assets.finishLoading();
 
         stage = new Stage();
 
-        TextureAtlas atlas = widgetController.assetManager.get("data/loading.pack", TextureAtlas.class);
+        TextureAtlas atlas = TTW.assets.get("data/loading.pack", TextureAtlas.class);
 
         logo = new Image(atlas.findRegion("libgdx-logo"));
         loadingFrame = new Image(atlas.findRegion("loading-frame"));
@@ -63,24 +61,25 @@ public class LoadingScreen extends AbstractScreen {
         stage.addActor(logo);
 
         // Add everything to be loaded, for instance:
-        // widgetController.assetManager.load("data/assets1.pack", TextureAtlas.class);
-        // widgetController.assetManager.load("data/assets2.pack", TextureAtlas.class);
-        // widgetController.assetManager.load("data/assets3.pack", TextureAtlas.class);
+        // TTW.assetManager.load("data/assets1.pack", TextureAtlas.class);
+        // TTW.assetManager.load("data/assets2.pack", TextureAtlas.class);
+        // TTW.assetManager.load("data/assets3.pack", TextureAtlas.class);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (widgetController.assetManager.update()) { // Load some, will return true if done loading
+        if (TTW.assets.update()) { // Load some, will return true if done loading
             if (Gdx.input.isTouched()) { // If the screen is touched after the game is done loading, go to the main menu screen
 //                game.setScreen(new MainMenuScreen(game));
                 Logger.logDebug("touched");
+                TTW.game.addScreen(new GameClientScreen());
             }
         }
 
         // Interpolate the percentage to make it more smooth
-        percent = Interpolation.linear.apply(percent, widgetController.assetManager.getProgress(), 0.1f);
+        percent = Interpolation.linear.apply(percent, TTW.assets.getProgress(), 0.1f);
 
         // Update positions (and size) to match the percentage
         loadingBarHidden.setX(startX + endX * percent);
@@ -125,7 +124,6 @@ public class LoadingScreen extends AbstractScreen {
 
     @Override
     public void hide() {
-        widgetController.assetManager.unload("data/loading.pack");
+        TTW.assets.unload("data/loading.pack");
     }
-
 }

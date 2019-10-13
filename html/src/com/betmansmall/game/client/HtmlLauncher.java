@@ -3,7 +3,7 @@ package com.betmansmall.game.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.betmansmall.game.WidgetController;
+import com.betmansmall.game.GameMaster;
 
 public class HtmlLauncher extends GwtApplication {
     @Override
@@ -13,6 +13,6 @@ public class HtmlLauncher extends GwtApplication {
 
     @Override
     public ApplicationListener createApplicationListener() {
-        return new WidgetController();
+        return new GameMaster();
     }
 }

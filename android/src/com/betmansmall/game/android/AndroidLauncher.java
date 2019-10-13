@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.betmansmall.game.WidgetController;
+import com.betmansmall.game.GameMaster;
 
 public class AndroidLauncher extends AndroidApplication {
     @Override
@@ -14,7 +14,7 @@ public class AndroidLauncher extends AndroidApplication {
         config.useAccelerometer = false;
         config.useCompass = false;
         config.useImmersiveMode = true;
-        initialize(new WidgetController(), config);
+        initialize(new GameMaster(), config);
 //        resolutions:
 //        AcerZ150 854x480
 //        M13 1920x1080

@@ -13,11 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.TTW;
 import com.betmansmall.server.GameServerScreen;
-import com.betmansmall.server.SessionSettings;
 
 public class MainMenuScreen implements Screen {
-    private WidgetController widgetController;
+//    private GameMaster gameMaster;
 
     private Stage stage;
 
@@ -36,8 +36,8 @@ public class MainMenuScreen implements Screen {
 
 //    public String mapName;
 
-    public MainMenuScreen(final WidgetController widgetController) {
-        this.widgetController = widgetController;
+    public MainMenuScreen() {
+//        this.gameMaster = gameMaster;
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 //        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
@@ -50,7 +50,7 @@ public class MainMenuScreen implements Screen {
 //        skin.newDrawable("default-round-down");
 
         stage = new Stage(new ScreenViewport());
-        stage.addActor(widgetController.backgroundImages.get(0));
+        stage.addActor(TTW.game.backgroundImages.get(0));
 //        stage.setDebugAll(true);
         stage.setDebugUnderMouse(true);
         stage.setDebugParentUnderMouse(true);
@@ -67,7 +67,7 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
                 super.clicked(event, x, y);
-                widgetController.addScreen(widgetController.helpMenuScreen);
+                TTW.game.addScreen(TTW.game.helpMenuScreen);
             }
         });
         leftTable.add(helpButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
@@ -106,11 +106,11 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
                 super.clicked(event, x, y);
-                SessionSettings sessionSettings = new SessionSettings(widgetController.gameSettings);
-                sessionSettings.localServer = true;
-                sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
-                sessionSettings.gameSettings.gameType = GameType.TowerDefence;
-                widgetController.addScreen(new GameServerScreen(widgetController.factionsManager, sessionSettings));
+//                SessionSettings sessionSettings = new SessionSettings(TTW.game.gameSettings);
+                TTW.game.sessionSettings.localServer = true;
+                TTW.game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
+                TTW.game.sessionSettings.gameSettings.gameType = GameType.TowerDefence;
+                TTW.game.addScreen(new GameServerScreen());
             }
         });
         leftTable.add(serverButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
@@ -121,13 +121,13 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("MainMenuScreen::clientButton::clicked()", "-- event:" + event);
                 super.clicked(event, x, y);
-                SessionSettings sessionSettings = new SessionSettings(widgetController.gameSettings);
+//                SessionSettings sessionSettings = new SessionSettings(TTW.game.gameSettings);
 //                sessionSettings.localServer = false;
 //                sessionSettings.host = "localhost";
 //                sessionSettings.port = 48999;
 //                sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
 //                sessionSettings.gameSettings.gameType = GameType.TowerDefence;
-                widgetController.addScreen(new GameClientScreen(widgetController.factionsManager, sessionSettings));
+                TTW.game.addScreen(new GameClientScreen());
             }
         });
         leftTable.add(clientButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
@@ -178,37 +178,38 @@ public class MainMenuScreen implements Screen {
         rightTable.add(exitButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
         rootTable.add(rightTable).expand().fillX().right();
 
-//        widgetController.gameLevelMaps.add("maps/test.tmx");
+//        TTW.game.gameLevelMaps.add("maps/test.tmx");
         // Campaign levels
 //        FileHandle mapsDir = Gdx.files.internal("maps");
 //        if(mapsDir.list().length == 0) {
-//            widgetController.gameLevelMaps.add("maps/desert.tmx");
-//            widgetController.gameLevelMaps.add("maps/summer.tmx");
-//            widgetController.gameLevelMaps.add("maps/winter.tmx");
-            widgetController.gameLevelMaps.add("maps/arena0.tmx");
-            widgetController.gameLevelMaps.add("maps/randomMap.tmx");
-            widgetController.gameLevelMaps.add("maps/island.tmx");
-            widgetController.gameLevelMaps.add("maps/arena1.tmx");
-            widgetController.gameLevelMaps.add("maps/arena2.tmx");
-//            widgetController.gameLevelMaps.add("maps/old/arena3.tmx");
-            widgetController.gameLevelMaps.add("maps/arena4.tmx");
-            widgetController.gameLevelMaps.add("maps/arena4_1.tmx");
-            widgetController.gameLevelMaps.add("maps/sample.tmx");
+//            TTW.game.gameLevelMaps.add("maps/desert.tmx");
+//            TTW.game.gameLevelMaps.add("maps/summer.tmx");
+//            TTW.game.gameLevelMaps.add("maps/winter.tmx");
+            TTW.game.gameLevelMaps.add("maps/arena0.tmx");
+            TTW.game.gameLevelMaps.add("maps/randomMap.tmx");
+            TTW.game.gameLevelMaps.add("maps/island.tmx");
+            TTW.game.gameLevelMaps.add("maps/arena1.tmx");
+            TTW.game.gameLevelMaps.add("maps/arena2.tmx");
+//            TTW.game.gameLevelMaps.add("maps/old/arena3.tmx");
+            TTW.game.gameLevelMaps.add("maps/arena4.tmx");
+            TTW.game.gameLevelMaps.add("maps/arena4_1.tmx");
+            TTW.game.gameLevelMaps.add("maps/sample.tmx");
 //        } else {
 //            for(FileHandle fileHandle : mapsDir.list()) {
 //                if(fileHandle.extension().equals("tmx")) {
-//                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- widgetController.gameLevelMaps.add():" + fileHandle.path());
-//                    widgetController.gameLevelMaps.add(fileHandle.path());
+//                    Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- TTW.game.gameLevelMaps.add():" + fileHandle.path());
+//                    TTW.game.gameLevelMaps.add(fileHandle.path());
 //                }
 //            }
 //        }
-        Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- widgetController.gameLevelMaps.size:" + widgetController.gameLevelMaps.size);
+        Gdx.app.log("MainMenuScreen::MainMenuScreen()", "-- TTW.game.gameLevelMaps.size:" + TTW.game.gameLevelMaps.size);
     }
 
     @Override
     public void show() {
         Gdx.app.log("MainMenuScreen::show()", "-- Called!");
-        Gdx.input.setInputProcessor(stage);
+        TTW.input.addProcessor(stage);
+//        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -261,6 +262,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void hide() {
         Gdx.app.log("MainMenuScreen::hide()", "--");
+        TTW.input.removeProcessor(stage);
     }
 
     @Override
@@ -278,12 +280,12 @@ public class MainMenuScreen implements Screen {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             menuLvl--;
             if(menuLvl == -1) {
-                widgetController.dispose();
+                TTW.game.dispose();
             }
             switchMenuButtons();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
             Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_0 || Input.Keys.NUM_0);");
-            widgetController.addScreen(widgetController.helpMenuScreen);
+            TTW.game.addScreen(TTW.game.helpMenuScreen);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
             clickAnalyzer((short)1);
@@ -295,8 +297,8 @@ public class MainMenuScreen implements Screen {
             clickAnalyzer((short)3);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER || Input.Keys.SPACE);");
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
-            widgetController.nextGameLevel();
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + TTW.game.gameLevelMaps.toString());
+            TTW.game.nextGameLevel();
         }
     }
 
@@ -309,19 +311,19 @@ public class MainMenuScreen implements Screen {
                         switchMenuButtons();
                         break;
                     case 2:
-                        widgetController.addScreen(widgetController.optionMenuScreen);
+                        TTW.game.addScreen(TTW.game.optionMenuScreen);
                         break;
                     case 3:
                         //Exit button
-                        widgetController.dispose();
+                        TTW.game.dispose();
                         break;
                 }
                 break;
             case 1:                                             //Play menu
                 switch (buttonNumber) {
                     case 1:
-                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
-                        widgetController.nextGameLevel();
+                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Campaign levels:" + TTW.game.gameLevelMaps.toString());
+                        TTW.game.nextGameLevel();
                         break;
                     case 2:
                         menuLvl = 2;
@@ -334,9 +336,9 @@ public class MainMenuScreen implements Screen {
 //                        int ret = fileopen.showDialog(null, "Открыть файл");
 //                        if (ret == JFileChooser.APPROVE_OPTION) {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
-//                            widgetController.setScreen(new MapEditorScreen(widgetController, fileName));
+//                            TTW.game.setScreen(new MapEditorScreen(TTW.game, fileName));
 //                        } else {
-                            widgetController.addScreen(new MapEditorScreen(widgetController, "maps/aaagen.tmx"));
+                            TTW.game.addScreen(new MapEditorScreen(TTW.game, "maps/aaagen.tmx"));
 //                        }
                         break;
                 }
@@ -347,19 +349,19 @@ public class MainMenuScreen implements Screen {
                         //Choose map FOREST
                         menuLvl = 3;
                         switchMenuButtons();
-                        widgetController.gameSettings.mapPath = "maps/arena0.tmx";
+                        TTW.game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
                         break;
                     case 2:
                         //Choose map2
                         menuLvl = 3;
                         switchMenuButtons();
-                        widgetController.gameSettings.mapPath = "maps/arena2.tmx";
+                        TTW.game.sessionSettings.gameSettings.mapPath = "maps/arena2.tmx";
                         break;
                     case 3:
                         //Choose map3
                         menuLvl = 3;
                         switchMenuButtons();
-                        widgetController.gameSettings.mapPath = "maps/arena4.tmx";
+                        TTW.game.sessionSettings.gameSettings.mapPath = "maps/arena4.tmx";
                         break;
                 }
                 break;
@@ -367,18 +369,18 @@ public class MainMenuScreen implements Screen {
                 switch (buttonNumber) {
                     case 1:
                         //start game with EASY
-                        widgetController.gameSettings.difficultyLevel = 0.5f;
-                        widgetController.addScreen(new GameScreen(widgetController.factionsManager, widgetController.gameSettings));
+                        TTW.game.sessionSettings.gameSettings.difficultyLevel = 0.5f;
+                        TTW.game.addScreen(new GameScreen());
                         break;
                     case 2:
                         //start game with NORMAL
-                        widgetController.gameSettings.difficultyLevel = 1f;
-                        widgetController.addScreen(new GameScreen(widgetController.factionsManager, widgetController.gameSettings));
+                        TTW.game.sessionSettings.gameSettings.difficultyLevel = 1f;
+                        TTW.game.addScreen(new GameScreen());
                         break;
                     case 3:
                         //start game with HARD
-                        widgetController.gameSettings.difficultyLevel = 2f;
-                        widgetController.addScreen(new GameScreen(widgetController.factionsManager, widgetController.gameSettings));
+                        TTW.game.sessionSettings.gameSettings.difficultyLevel = 2f;
+                        TTW.game.addScreen(new GameScreen());
                         break;
                 }
                 break;

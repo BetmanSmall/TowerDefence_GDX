@@ -1,5 +1,7 @@
 package com.betmansmall.util.logging;
 
+import com.badlogic.gdx.utils.StringBuilder;
+
 import java.util.HashMap;
 
 /**
@@ -25,6 +27,15 @@ public class Logger {
 
     public static void logFuncStart() {
         instance().log("[START]", ANSI_BLUE);
+    }
+
+    public static void logFuncStart(String ... strs) {
+        StringBuilder sb = new StringBuilder();
+        for (String str : strs) {
+            sb.append(str + ",");
+        }
+        sb.deleteCharAt(sb.length - 1);
+        instance().log("[START] -- " + sb.toString(), ANSI_BLUE);
     }
 
     public static void logFuncEnd() {

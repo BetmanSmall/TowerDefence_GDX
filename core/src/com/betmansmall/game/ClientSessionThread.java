@@ -1,5 +1,6 @@
 package com.betmansmall.game;
 
+import com.betmansmall.server.SessionSettings;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.server.networking.TcpSocketListener;
@@ -12,11 +13,11 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
     private String host;
     private int port;
 
-    public ClientSessionThread(String host, int port) {
+    public ClientSessionThread(SessionSettings sessionSettings) {
         Logger.logInfo("");
         this.connection = null;
-        this.host = host;
-        this.port = port;
+        this.host = sessionSettings.host;
+        this.port = sessionSettings.port;
     }
 
     @Override

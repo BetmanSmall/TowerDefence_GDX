@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */
 
 public class OptionMenuScreen implements Screen {
-    private WidgetController widgetController;
+    private GameMaster gameMaster;
 
     private Stage stage;
 
@@ -39,13 +39,13 @@ public class OptionMenuScreen implements Screen {
     private CheckBox panRightMouseButton;
     private TextButton backButton;
 
-    public OptionMenuScreen(final WidgetController widgetController, final GameSettings gameSettings) {
-        this.widgetController = widgetController;
+    public OptionMenuScreen(final GameMaster gameMaster, final GameSettings gameSettings) {
+        this.gameMaster = gameMaster;
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         stage = new Stage(new ScreenViewport());
-        stage.addActor(widgetController.backgroundImages.get(2));
+        stage.addActor(gameMaster.backgroundImages.get(2));
 //        stage.setDebugAll(true);
         stage.setDebugUnderMouse(true);
         stage.setDebugParentUnderMouse(true);
@@ -229,7 +229,7 @@ public class OptionMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("OptionMenuScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
-                widgetController.removeTopScreen();
+                gameMaster.removeTopScreen();
             }
         });
         rightTable.add(backButton).expand().fill().colspan(2);//.prefHeight(Gdx.graphics.getHeight()*0.3f);
@@ -289,7 +289,7 @@ public class OptionMenuScreen implements Screen {
 //        Gdx.app.log("OptionMenuScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("OptionMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            widgetController.removeTopScreen();
+            gameMaster.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("OptionMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
 //            clickAnalyzer((short)1);
@@ -301,8 +301,8 @@ public class OptionMenuScreen implements Screen {
 //            clickAnalyzer((short)3);
 //        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
 //            Gdx.app.log("OptionMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
-//            Gdx.app.log("OptionMenuScreen::inputHandler()", "-- Campaign levels:" + widgetController.gameLevelMaps.toString());
-//            widgetController.nextGameLevel();
+//            Gdx.app.log("OptionMenuScreen::inputHandler()", "-- Campaign levels:" + gameMaster.gameLevelMaps.toString());
+//            gameMaster.nextGameLevel();
         }
     }
 }

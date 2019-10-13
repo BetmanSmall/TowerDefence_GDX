@@ -8,9 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.betmansmall.game.WidgetController;
 
 public class ServerSettingsScreen implements Screen {
     private Stage stage;
@@ -27,7 +25,7 @@ public class ServerSettingsScreen implements Screen {
         startServer.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                WidgetController.getInstance().addScreen(new GameServerScreen(WidgetController.getInstance().factionsManager, ));
+//                GameMaster.game.addScreen(new GameServerScreen(GameMaster.game.factionsManager, ));
             }
         });
         mainTable.add(startServer);
