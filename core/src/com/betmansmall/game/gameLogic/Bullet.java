@@ -33,7 +33,7 @@ public class Bullet {
     public Vector2 velocity;
 
     Direction direction;
-    Animation animation;
+    public Animation animation;
     float flyingTime;
 
     public Bullet(Vector2 currentPoint, TemplateForTower templateForTower, Vector2 destPoint, CameraController cameraController) {

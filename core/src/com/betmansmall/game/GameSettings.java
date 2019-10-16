@@ -19,7 +19,7 @@ public class GameSettings {
     public boolean panMidMouseButton;
     public boolean panRightMouseButton;
 
-    public boolean isometric;
+    public static boolean isometric = false;
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
@@ -41,7 +41,6 @@ public class GameSettings {
         panMidMouseButton = false;
         panRightMouseButton = false;
 
-        isometric = false;
         cellSpawnHero = null;
         cellExitHero = null;
     }
