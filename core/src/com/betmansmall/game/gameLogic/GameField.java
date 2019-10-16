@@ -43,7 +43,7 @@ public class GameField {
     public GameSettings gameSettings;
     public TiledMap map;
     public boolean turnedMap = false; // костыль. нужно допиливать поворт карты. если этот функционал дествительно нужен.
-    public Cell[][] field;
+    private Cell[][] field;
     private PathFinder pathFinder;
 
     public UnderConstruction underConstruction;
@@ -262,6 +262,10 @@ public class GameField {
 
     public Cell getCell(int x, int y) {
         return x >= 0 && x < map.width && y >= 0 && y < map.height ? field[x][y] : null;
+    }
+
+    public Cell getCellNoCheck(int x, int y) {
+        return field[x][y];
     }
 
     public void updateCellsGraphicCoordinates(float sizeCellX, float sizeCellY) {

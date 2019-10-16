@@ -152,68 +152,68 @@ public class GameFieldRenderer {
             case 0:
                 for (int y = 0; y < map.height; y++) {
                     for (int x = 0; x < map.width; x++) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 1:
                 for (int x = 0; x < map.width; x++) {
                     for (int y = 0; y < map.height; y++) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 2:
                 for (int y = map.height - 1; y >= 0; y--) {
                     for (int x = map.width - 1; x >= 0; x--) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 3:
                 for (int x = map.width - 1; x >= 0; x--) {
                     for (int y = map.height - 1; y >= 0; y--) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 4:
                 for (int y = map.height - 1; y >= 0; y--) {
                     for (int x = 0; x < map.width; x++) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 5:
                 for (int x = 0; x < map.width; x++) {
                     for (int y = map.height - 1; y >= 0; y--) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 6:
                 for (int y = 0; y < map.height; y++) {
                     for (int x = map.width - 1; x >= 0; x--) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 7:
                 for (int x = map.width - 1; x >= 0; x--) {
                     for (int y = 0; y < map.height; y++) {
-                        drawBackGroundCell(gameField.field[x][y]);
+                        drawBackGroundCell(gameField.getCellNoCheck(x, y));
                     }
                 }
                 break;
             case 8:
                 int x = 0, y = 0;
-                int length = (map.width > map.height) ? map.width : map.height;
+                int length = Math.max(map.width, map.height);
                 while (x < length) {
                     if (x < map.width && y < map.height) {
                         if (x == length - 1 && y == length - 1) {
-                            drawBackGroundCell(gameField.field[x][y]);
+                            drawBackGroundCell(gameField.getCellNoCheck(x, y));
                         } else {
-                            drawBackGroundCell(gameField.field[x][y]);
+                            drawBackGroundCell(gameField.getCellNoCheck(x, y));
                         }
                     }
                     if (x == length - 1) {
@@ -260,49 +260,49 @@ public class GameFieldRenderer {
         if (cameraController.drawOrder == 0) {
             for (int y = 0; y < map.height; y++) {
                 for (int x = 0; x < map.width; x++) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 1) {
             for (int x = 0; x < map.width; x++) {
                 for (int y = 0; y < map.height; y++) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 2) {
             for (int y = map.height - 1; y >= 0; y--) {
                 for (int x = map.width - 1; x >= 0; x--) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 3) {
             for (int x = map.width - 1; x >= 0; x--) {
                 for (int y = map.height - 1; y >= 0; y--) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 4) {
             for (int y = map.height - 1; y >= 0; y--) {
                 for (int x = 0; x < map.width; x++) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 5) {
             for (int x = 0; x < map.width; x++) {
                 for (int y = map.height - 1; y >= 0; y--) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 6) {
             for (int y = 0; y < map.height; y++) {
                 for (int x = map.width - 1; x >= 0; x--) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 7) {
             for (int x = map.width - 1; x >= 0; x--) {
                 for (int y = 0; y < map.height; y++) {
-                    drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                    drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 8) {
@@ -311,9 +311,9 @@ public class GameFieldRenderer {
             while (x < length) {
                 if (x < map.width && y < map.height) {
                     if (x == length - 1 && y == length - 1) {
-                        drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                        drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                     } else {
-                        drawGroundCellWithUnitsAndTower(gameField, gameField.field[x][y]);
+                        drawGroundCellWithUnitsAndTower(gameField, gameField.getCellNoCheck(x, y));
                     }
                 }
                 if (x == length - 1) {
@@ -580,49 +580,49 @@ public class GameFieldRenderer {
         if (cameraController.drawOrder == 0) {
             for (int y = 0; y < map.height; y++) {
                 for (int x = 0; x < map.width; x++) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 1) {
             for (int x = 0; x < map.width; x++) {
                 for (int y = 0; y < map.height; y++) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 2) {
             for (int y = map.height - 1; y >= 0; y--) {
                 for (int x = map.width - 1; x >= 0; x--) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 3) {
             for (int x = map.width - 1; x >= 0; x--) {
                 for (int y = map.height - 1; y >= 0; y--) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 4) {
             for (int y = map.height - 1; y >= 0; y--) {
                 for (int x = 0; x < map.width; x++) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 5) {
             for (int x = 0; x < map.width; x++) {
                 for (int y = map.height - 1; y >= 0; y--) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 6) {
             for (int y = 0; y < map.height; y++) {
                 for (int x = map.width - 1; x >= 0; x--) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 7) {
             for (int x = map.width - 1; x >= 0; x--) {
                 for (int y = 0; y < map.height; y++) {
-                    drawForeGroundCell(gameField, gameField.field[x][y]);
+                    drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                 }
             }
         } else if (cameraController.drawOrder == 8) {
@@ -631,9 +631,9 @@ public class GameFieldRenderer {
             while (x < length) {
                 if (x < map.width && y < map.height) {
                     if (x == length - 1 && y == length - 1) {
-                        drawForeGroundCell(gameField, gameField.field[x][y]);
+                        drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                     } else {
-                        drawForeGroundCell(gameField, gameField.field[x][y]);
+                        drawForeGroundCell(gameField, gameField.getCellNoCheck(x, y));
                     }
                 }
                 if (x == length - 1) {
@@ -771,7 +771,7 @@ public class GameFieldRenderer {
         float gridNavRadius = cameraController.sizeCellX/20f;
         for (int y = 0; y < map.height; y++) {
             for (int x = 0; x < map.width; x++) {
-                Cell cell = gameField.field[x][y];
+                Cell cell = gameField.getCellNoCheck(x, y);
                 if (cell != null && !cell.isEmpty()) {
                     if (cell.isTerrain()) {
                         cameraController.shapeRenderer.setColor(Color.RED);
@@ -816,7 +816,7 @@ public class GameFieldRenderer {
         cameraController.shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
         if (!gameField.turnedMap) {
             for (GridPoint2 spawnPoint : spawnPoints) {
-                Cell cell = gameField.field[spawnPoint.x][spawnPoint.y]; // ArrayIndexOutOfBoundsException x==31 because turn x==16 && y==31 // turnedMap kostbIl
+                Cell cell = gameField.getCell(spawnPoint.x, spawnPoint.y); // ArrayIndexOutOfBoundsException x==31 because turn x==16 && y==31 // turnedMap kostbIl
                 if (cell != null) { // TODO need in turnAndFlip() convert. and this point and other
 //                    if (cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
 //                        pos.set(cell.getGraphicCoordinates(1));
@@ -854,7 +854,7 @@ public class GameFieldRenderer {
         if (!gameField.turnedMap) {
             for (GridPoint2 exitPoint : exitPoints) {
 //            Gdx.app.log("GameField::drawGridNav()", "-- exitCell.cellX:" + exitCell.cellX + " exitCell.y:" + exitCell.y + " cameraController.isDrawableGridNav:" + cameraController.isDrawableGridNav);
-                Cell cell = gameField.field[exitPoint.x][exitPoint.y];
+                Cell cell = gameField.getCell(exitPoint.x, exitPoint.y);
 //                if (cameraController.isDrawableGridNav == 1 || cameraController.isDrawableGridNav == 5) {
 //                    pos.set(cell.getGraphicCoordinates(1));
 //                    cameraController.shapeRenderer.circle(pos.x, pos.y, gridNavRadius);
@@ -1147,8 +1147,8 @@ public class GameFieldRenderer {
             Node endNode = null;
             while (nodeIterator.hasNext()) {
                 endNode = nodeIterator.next();
-                Cell startCell = gameField.field[startNode.getX()][startNode.getY()];
-                Cell endCell = gameField.field[endNode.getX()][endNode.getY()];
+                Cell startCell = gameField.getCell(startNode.getX(), startNode.getY());
+                Cell endCell = gameField.getCell(endNode.getX(), endNode.getY());
 //                if(cameraController.isDrawableRoutes == 1 || cameraController.isDrawableRoutes == 5) {
 //                    cameraController.shapeRenderer.rectLine(startCell.graphicCoordinates1, endCell.graphicCoordinates1, linesWidth);
 //                }
@@ -1222,10 +1222,8 @@ public class GameFieldRenderer {
         for (int x = startX; x <= finishX; x++) {
             for (int y = startY; y <= finishY; y++) {
                 Cell cell = gameField.getCell(buildX + x, buildY + y);
-                if(cell == null || !cell.isEmpty()) {
-                    if (drawFull) {
-                        canBuild = false;
-                    }
+                if(cell == null || !cell.isEmpty() && drawFull) {
+                    canBuild = false;
                 }
             }
         }
