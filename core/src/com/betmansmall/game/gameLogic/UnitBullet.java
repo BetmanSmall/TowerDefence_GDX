@@ -28,7 +28,7 @@ public class UnitBullet {
     public Vector2 velocity;
 
     Direction direction;
-    Animation animation;
+    public Animation animation;
     float flyingTime;
 
     public UnitBullet(Vector2 currentPoint, TemplateForUnit templateForUnit, Tower tower) {

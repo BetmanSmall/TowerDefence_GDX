@@ -14,14 +14,13 @@ import com.betmansmall.game.GameScreenInteface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.render.GameFieldRenderer;
 import com.betmansmall.util.logging.Logger;
 
 public class GameScreen implements Screen {
-//    public FactionsManager factionsManager;
-//    public GameSettings gameSettings;
-
     public GameField gameField;
     public GameInterface gameInterface;
+    public GameFieldRenderer gameFieldRenderer;
     public CameraController cameraController;
 
 //    public GameScreen(FactionsManager factionsManager, GameSettings gameSettings) {
@@ -52,6 +51,7 @@ public class GameScreen implements Screen {
         gameField = new GameField();
         gameInterface = new GameInterface(this);
         cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        gameFieldRenderer = new GameFieldRenderer(cameraController);
         gameInterface.setCameraController(cameraController);
     }
 
@@ -264,7 +264,8 @@ public class GameScreen implements Screen {
         GameState gameState = gameField.getGameState(); // Need change to enum GameState
         if (gameState == GameState.IN_PROGRESS) {
             cameraController.update(delta);
-            gameField.render(delta, cameraController);
+            gameField.update(delta, cameraController);
+            gameFieldRenderer.render(gameField);
             gameInterface.render(delta);
         } else if (gameState == GameState.LOSE || gameState == GameState.WIN) {
 //            gameField.dispose();

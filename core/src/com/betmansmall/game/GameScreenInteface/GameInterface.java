@@ -286,7 +286,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //                } else {
                 gameScreen.gameField.gameSpeed = 1f;
                 gameScreen.gameField.gamePaused = !gameScreen.gameField.gamePaused;
-                if (!gameScreen.gameField.unitsSpawn && GameField.unitsManager.units.size == 0) {
+                if (!gameScreen.gameField.unitsSpawn && gameScreen.gameField.unitsManager.units.size == 0) {
                     gameScreen.gameField.unitsSpawn = true;
                     gameScreen.gameField.gamePaused = false;
                 }
@@ -612,7 +612,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             selectorBorderHorizontal.setText("selectorBorderHorizontal:" + towersSelector.selectorBorderHorizontal);
         }
 
-        startAndPauseButton.setText((gameScreen.gameField.gamePaused) ? "PLAY" : (gameScreen.gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : (GameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : "START NEXT WAVE");
+        startAndPauseButton.setText((gameScreen.gameField.gamePaused) ? "PLAY" : (gameScreen.gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : (gameScreen.gameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : "START NEXT WAVE");
 //        if (pauseMenuButton.isChecked()) {
 //            interfaceTouched = true;
 //        }
