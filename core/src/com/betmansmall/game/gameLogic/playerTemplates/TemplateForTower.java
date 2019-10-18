@@ -2,12 +2,12 @@ package com.betmansmall.game.gameLogic.playerTemplates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
-import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
 import com.betmansmall.util.logging.Logger;
 
 /**

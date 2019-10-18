@@ -25,7 +25,6 @@ import com.betmansmall.enums.GameState;
 import com.betmansmall.game.GameScreen;
 import com.betmansmall.game.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
-import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 
 /**
@@ -585,9 +584,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         }
         fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
         deltaTimeLabel.setText("delta:" + String.valueOf(delta));
-        mapPathLabel.setText("gameScreen.gameField.map.mapPath:" + gameScreen.gameField.map.mapPath);
+        mapPathLabel.setText("gameScreen.gameField.tmxMap.mapPath:" + gameScreen.gameField.tmxMap.mapPath);
         gameType.setText("gameScreen.gameField.gameSettings.gameType:" + gameScreen.gameField.gameSettings.gameType);
-        isometricLabel.setText("gameScreen.gameField.gameSettings.isometric:" + gameScreen.gameField.gameSettings.isometric);
+        isometricLabel.setText("gameScreen.gameField.tmxMap.isometric:" + gameScreen.gameField.tmxMap.isometric);
         UnderConstruction underConstruction = gameScreen.gameField.getUnderConstruction();
         if (underConstruction != null) {
             underConstrEndCoord.setText("underConstructionEndCoord:(" + underConstruction.endX + "," + underConstruction.endY + ")");

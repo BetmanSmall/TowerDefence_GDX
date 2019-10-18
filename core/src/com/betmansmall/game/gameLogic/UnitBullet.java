@@ -3,11 +3,11 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
@@ -27,9 +27,9 @@ public class UnitBullet {
     public Circle endCircle;
     public Vector2 velocity;
 
-    Direction direction;
+    public Direction direction;
     public Animation animation;
-    float flyingTime;
+    public float flyingTime;
 
     public UnitBullet(Vector2 currentPoint, TemplateForUnit templateForUnit, Tower tower) {
 //        Gdx.app.log("UnitBullet::UnitBullet()", "-- currentPoint:" + currentPoint);

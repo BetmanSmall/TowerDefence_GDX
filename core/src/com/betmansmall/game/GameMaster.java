@@ -18,7 +18,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -50,8 +49,8 @@ import java.util.Collection;
 public class GameMaster extends Game {
     private static final String TAG = "Client";
 
-    private static final boolean DEBUG_AUDIO_UNPACKER = !true;
-    private static final boolean DEBUG_VIEWPORTS = !true;
+//    private static final boolean DEBUG_AUDIO_UNPACKER = !true;
+//    private static final boolean DEBUG_VIEWPORTS = true;
 
     private final Matrix4 BATCH_RESET = new Matrix4();
 
@@ -77,7 +76,7 @@ public class GameMaster extends Game {
     private GdxCommandManager     commands;
     private GdxCvarManager        cvars;
     private GdxKeyMapper          keys;
-    private I18NBundle bundle;
+//    private I18NBundle bundle;
 //    private StringTBLs            string;
 //    private Colors                colors;
 //    private Palettes              palettes;
@@ -97,10 +96,9 @@ public class GameMaster extends Game {
     private byte    drawFpsMethod;
 
 //    private final GlyphLayout fps = new GlyphLayout();
-    private String realm;
+//    private String realm;
 
     //---------
-
     public Array<Image> backgroundImages;
 
     public FactionsManager factionsManager;
@@ -109,6 +107,7 @@ public class GameMaster extends Game {
     public Screen optionMenuScreen;
     public Screen helpMenuScreen;
     public SessionSettings sessionSettings;
+    //---------
 
     public GameMaster() {
         this(TTW.DESKTOP_VIEWPORT_HEIGHT);
@@ -125,6 +124,26 @@ public class GameMaster extends Game {
 
     public float height() {
         return height;
+    }
+
+    public boolean isWindowedForced() {
+        return forceWindowed;
+    }
+
+    public void setWindowedForced(boolean b) {
+        forceWindowed = b;
+    }
+
+    public boolean isDrawFPSForced() {
+        return forceDrawFps;
+    }
+
+    public void setDrawFPSForced(boolean b) {
+        forceDrawFps = b;
+    }
+
+    private String screenToString(Screen screen) {
+        return screen != null ? screen.getClass().getSimpleName() : null;
     }
 
     @Override
@@ -263,146 +282,9 @@ public class GameMaster extends Game {
         }
     }
 
-    private void bindCvars() {
-        Cvars.Client.Display.ShowFPS.addStateListener(new CvarStateAdapter<Byte>() {
-            @Override
-            public void onChanged(Cvar<Byte> cvar, Byte from, Byte to) {
-                drawFpsMethod = to;
-            }
-        });
-
-        Cvars.Client.Display.Gamma.addStateListener(new CvarStateAdapter<Float>() {
-            @Override
-            public void onChanged(Cvar<Float> cvar, Float from, Float to) {
-                batch.setGamma(to);
-            }
-        });
-
-        Cvars.Client.Display.VSync.addStateListener(new CvarStateAdapter<Boolean>() {
-            @Override
-            public void onChanged(Cvar<Boolean> cvar, Boolean from, Boolean to) {
-                Gdx.graphics.setVSync(to);
-            }
-        });
-
-        Cvars.Client.Realm.addStateListener(new CvarStateAdapter<String>() {
-            @Override
-            public void onChanged(Cvar<String> cvar, String from, String to) {
-                realm = to;
-            }
-        });
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        Logger.logDebug("resize(" + width + ", " + height + ")");
-        this.width  = width;
-        this.height = height;
-        BATCH_RESET.setToOrtho2D(0, 0, width, height);
-        console.resize(width, height);
-        //viewport.update(width, height, true);
-        scalingViewport.update(width, height, true);
-        extendViewport.update(width, height, true);
-        super.resize(width, height);
-        Gdx.app.debug(TAG, viewport + "; " + width + "x" + height + "; " + viewport.getWorldWidth() + "x" + viewport.getWorldHeight());
-    }
-
-    @Override
-    public void render() {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        Camera camera = viewport.getCamera();
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
-        shapes.setProjectionMatrix(camera.combined);
-
-        if (DEBUG_VIEWPORTS) {
-            shapes.begin(ShapeRenderer.ShapeType.Filled);
-            shapes.setColor(Color.DARK_GRAY);
-            shapes.rect(0, 0, 853, 480);
-            shapes.setColor(Color.GRAY);
-            shapes.rect(0, 0, 640, 480);
-            shapes.setColor(Color.BLUE);
-            shapes.rect(0, 0, 840, 360);
-            shapes.setColor(Color.RED);
-            shapes.rect(0, 0, 720, 360);
-            shapes.setColor(Color.LIGHT_GRAY);
-            shapes.rect(0, 0, 640, 360);
-            shapes.setColor(Color.WHITE);
-            shapes.rect(0, 0, 100, 100);
-            shapes.setColor(Color.GREEN);
-            shapes.rect(0, 0, 2, viewport.getWorldHeight());
-            shapes.rect(0, viewport.getWorldHeight() - 2, viewport.getWorldWidth(), viewport.getWorldHeight());
-            shapes.rect(viewport.getWorldWidth() - 2, 0, 2, viewport.getWorldHeight());
-            shapes.rect(0, 0, viewport.getWorldWidth(), 2);
-            shapes.end();
-        }
-
-        super.render();
-//        cursor.act(Gdx.graphics.getDeltaTime());
-//        cursor.render(batch);
-
-        Batch b = batch;
-        b.setProjectionMatrix(BATCH_RESET);
-        b.begin(); {
-            batch.setShader(null);
-//            if (!TTW.assets.update()) {
-//                drawLoading(b);
-//            }
-//
-//            if (drawFpsMethod > 0 || forceDrawFps) {
-//                drawFps(b);
-//            }
-
-            console.render(b);
-        } b.end();
-    }
-
-    @Override
-    public void pause() {
-        Logger.logDebug("Called!");
-        super.pause();
-    }
-
-    @Override
-    public void resume() {
-        Logger.logDebug("Called!");
-        TTW.game = this;
-//        TTW.home = home;
-        TTW.viewport = viewport;
-        TTW.defaultViewport = defaultViewport;
-        TTW.scalingViewport = scalingViewport;
-        TTW.extendViewport = extendViewport;
-        TTW.batch = batch;
-        TTW.shader = shader;
-        TTW.shapes = shapes;
-//        TTW.mpqs = mpqs;
-        TTW.assets = assets;
-        TTW.input = input;
-        TTW.console = console;
-        TTW.commands = commands;
-        TTW.cvars = cvars;
-        TTW.keys = keys;
-        TTW.bundle = bundle;
-//        TTW.string = string;
-//        TTW.colors = colors;
-//        TTW.palettes = palettes;
-//        TTW.colormaps = colormaps;
-//        TTW.fonts = fonts;
-//        TTW.files = files;
-//        TTW.cofs = cofs;
-//        TTW.textures = textures;
-//        TTW.audio = audio;
-//        TTW.music = music;
-//        TTW.cursor = cursor;
-//        TTW.charData = charData;
-//        TTW.engine = engine;
-        super.resume();
-    }
-
     @Override
     public void dispose() {
-        Logger.logDebug("Called!");
+        Logger.logFuncStart();
         super.dispose();
 
         Gdx.app.debug(TAG, "Disposing shader...");
@@ -453,6 +335,143 @@ public class GameMaster extends Game {
         helpMenuScreen.dispose();
 //        removeAllScreens();
 //        Gdx.app.exit();
+    }
+
+    @Override
+    public void pause() {
+        Logger.logDebug("Called!");
+        super.pause();
+    }
+
+    @Override
+    public void resume() {
+        Logger.logDebug("Called!");
+        TTW.game = this;
+//        TTW.home = home;
+        TTW.viewport = viewport;
+        TTW.defaultViewport = defaultViewport;
+        TTW.scalingViewport = scalingViewport;
+        TTW.extendViewport = extendViewport;
+        TTW.batch = batch;
+        TTW.shader = shader;
+        TTW.shapes = shapes;
+//        TTW.mpqs = mpqs;
+        TTW.assets = assets;
+        TTW.input = input;
+        TTW.console = console;
+        TTW.commands = commands;
+        TTW.cvars = cvars;
+        TTW.keys = keys;
+//        TTW.bundle = bundle;
+//        TTW.string = string;
+//        TTW.colors = colors;
+//        TTW.palettes = palettes;
+//        TTW.colormaps = colormaps;
+//        TTW.fonts = fonts;
+//        TTW.files = files;
+//        TTW.cofs = cofs;
+//        TTW.textures = textures;
+//        TTW.audio = audio;
+//        TTW.music = music;
+//        TTW.cursor = cursor;
+//        TTW.charData = charData;
+//        TTW.engine = engine;
+        super.resume();
+    }
+
+    @Override
+    public void render() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        Camera camera = viewport.getCamera();
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        shapes.setProjectionMatrix(camera.combined);
+
+//        if (DEBUG_VIEWPORTS) {
+//            shapes.begin(ShapeRenderer.ShapeType.Filled);
+//            shapes.setColor(Color.DARK_GRAY);
+//            shapes.rect(0, 0, 853, 480);
+//            shapes.setColor(Color.GRAY);
+//            shapes.rect(0, 0, 640, 480);
+//            shapes.setColor(Color.BLUE);
+//            shapes.rect(0, 0, 840, 360);
+//            shapes.setColor(Color.RED);
+//            shapes.rect(0, 0, 720, 360);
+//            shapes.setColor(Color.LIGHT_GRAY);
+//            shapes.rect(0, 0, 640, 360);
+//            shapes.setColor(Color.WHITE);
+//            shapes.rect(0, 0, 100, 100);
+//            shapes.setColor(Color.GREEN);
+//            shapes.rect(0, 0, 2, viewport.getWorldHeight());
+//            shapes.rect(0, viewport.getWorldHeight() - 2, viewport.getWorldWidth(), viewport.getWorldHeight());
+//            shapes.rect(viewport.getWorldWidth() - 2, 0, 2, viewport.getWorldHeight());
+//            shapes.rect(0, 0, viewport.getWorldWidth(), 2);
+//            shapes.end();
+//        }
+
+        super.render();
+//        cursor.act(Gdx.graphics.getDeltaTime());
+//        cursor.render(batch);
+
+        Batch b = batch;
+        b.setProjectionMatrix(BATCH_RESET);
+        b.begin(); {
+            batch.setShader(null);
+//            if (!TTW.assets.update()) {
+//                drawLoading(b);
+//            }
+//
+//            if (drawFpsMethod > 0 || forceDrawFps) {
+//                drawFps(b);
+//            }
+
+            console.render(b);
+        } b.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        Logger.logDebug("resize(" + width + ", " + height + ")");
+        this.width  = width;
+        this.height = height;
+        BATCH_RESET.setToOrtho2D(0, 0, width, height);
+        console.resize(width, height);
+        //viewport.update(width, height, true);
+        scalingViewport.update(width, height, true);
+        extendViewport.update(width, height, true);
+        super.resize(width, height);
+        Gdx.app.debug(TAG, viewport + "; " + width + "x" + height + "; " + viewport.getWorldWidth() + "x" + viewport.getWorldHeight());
+    }
+
+    private void bindCvars() {
+//        Cvars.Client.Display.ShowFPS.addStateListener(new CvarStateAdapter<Byte>() {
+//            @Override
+//            public void onChanged(Cvar<Byte> cvar, Byte from, Byte to) {
+//                drawFpsMethod = to;
+//            }
+//        });
+
+        Cvars.Client.Display.Gamma.addStateListener(new CvarStateAdapter<Float>() {
+            @Override
+            public void onChanged(Cvar<Float> cvar, Float from, Float to) {
+                batch.setGamma(to);
+            }
+        });
+
+        Cvars.Client.Display.VSync.addStateListener(new CvarStateAdapter<Boolean>() {
+            @Override
+            public void onChanged(Cvar<Boolean> cvar, Boolean from, Boolean to) {
+                Gdx.graphics.setVSync(to);
+            }
+        });
+
+//        Cvars.Client.Realm.addStateListener(new CvarStateAdapter<String>() {
+//            @Override
+//            public void onChanged(Cvar<String> cvar, String from, String to) {
+//                realm = to;
+//            }
+//        });
     }
 
     public void addScreen(Screen screen) {

@@ -1,54 +1,45 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.TTW;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.GameType;
-import com.betmansmall.game.gameLogic.mapLoader.MapLayer;
-import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
-import com.betmansmall.game.gameLogic.mapLoader.TiledMap;
-import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
-import com.betmansmall.game.gameLogic.mapLoader.TiledMapTileLayer;
-import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
+import com.betmansmall.maps.TmxMap;
+import com.betmansmall.maps.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
-import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
+import com.betmansmall.util.logging.Logger;
 
 import java.util.ArrayDeque;
-import java.util.Iterator;
 
 /**
  * Created by betmansmall on 08.02.2016.
  */
 public class GameField {
+    public GameSettings gameSettings;
     public FactionsManager factionsManager;
     public WaveManager waveManager; // ALL public for all || we are friendly :)
     public TowersManager towersManager;
     public UnitsManager unitsManager; // For Bullet
-    public GameSettings gameSettings;
-    public TiledMap map;
+    public TmxMap tmxMap;
     public boolean turnedMap = false; // костыль. нужно допиливать поворт карты. если этот функционал дествительно нужен.
     private Cell[][] field;
     private PathFinder pathFinder;
-
-    public UnderConstruction underConstruction;
-    public Texture greenCheckmark;
-    public Texture redCross;
+    private UnderConstruction underConstruction;
 
     // GAME INTERFACE ZONE1
     public float timeOfGame;
@@ -58,26 +49,22 @@ public class GameField {
     public int gamerGold;
 
     public GameField() {
+        this.gameSettings = TTW.game.sessionSettings.gameSettings;
         this.factionsManager = TTW.game.factionsManager;
-        this.waveManager = new WaveManager();
+        this.waveManager = new WaveManager(gameSettings.mapPath);
         this.towersManager = new TowersManager();
         this.unitsManager = new UnitsManager();
-        this.gameSettings = TTW.game.sessionSettings.gameSettings;
 
-        map = new MapLoader(waveManager).load(gameSettings.mapPath);
-        Gdx.app.log("GameField::GameField()", "-- map:" + map);
+        tmxMap = (TmxMap)new MapLoader().load(gameSettings.mapPath);
+        Gdx.app.log("GameField::GameField()", "-- tmxMap:" + tmxMap);
 
         underConstruction = null;
-        greenCheckmark = new Texture(Gdx.files.internal("maps/textures/green_checkmark.png"));
-        redCross = new Texture(Gdx.files.internal("maps/textures/red_cross.png"));
-        if (greenCheckmark == null || redCross == null) {
-            Gdx.app.error("GameField::GameField()", "-- Achtung! NOT FOUND 'maps/textures/green_checkmark.png' || 'maps/textures/red_cross.png'");
-        }
 
         createField();
-        if (gameSettings.isometric) {
+        if (tmxMap.isometric) {
             flipY();
         }
+        landscapeGenerator(tmxMap.mapPath);
         pathFinder = new PathFinder(this);
         pathFinder.loadCharMatrix(getCharMatrix());
         Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
@@ -93,8 +80,8 @@ public class GameField {
             int randomEnemyCount = gameSettings.enemyCount;
             Gdx.app.log("GameField::GameField()", "-- randomEnemyCount:" + randomEnemyCount);
             for (int k = 0; k < randomEnemyCount; k++) {
-                int randomX = (int)(Math.random()*map.width);
-                int randomY = (int)(Math.random()*map.height);
+                int randomX = (int)(Math.random() * tmxMap.width);
+                int randomY = (int)(Math.random() * tmxMap.height);
                 Gdx.app.log("GameField::GameField()", "-- k:" + k);
                 Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
                 Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
@@ -109,8 +96,8 @@ public class GameField {
             int randomTowerCount = gameSettings.towersCount;
             Gdx.app.log("GameField::GameField()", "-- randomTowerCount:" + randomTowerCount);
             for (int k = 0; k < randomTowerCount; k++) {
-                int randomX = (int)(Math.random()*map.width);
-                int randomY = (int)(Math.random()*map.height);
+                int randomX = (int)(Math.random() * tmxMap.width);
+                int randomY = (int)(Math.random() * tmxMap.height);
                 Gdx.app.log("GameField::GameField()", "-- k:" + k);
                 Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
                 Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
@@ -124,11 +111,11 @@ public class GameField {
             }
             spawnHeroInSpawnPoint();
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            waveManager.validationPoints(field, map.width, map.height);
+            waveManager.validationPoints(field, tmxMap.width, tmxMap.height);
             if (waveManager.waves.size == 0) {
                 for (int w = 0; w < 10; w++) {
-                    GridPoint2 spawnPoint = new GridPoint2((int) (Math.random() * map.width), (int) (Math.random() * map.height));
-                    GridPoint2 exitPoint = new GridPoint2((int) (Math.random() * map.width), (int) (Math.random() * map.height));
+                    GridPoint2 spawnPoint = new GridPoint2((int) (Math.random() * tmxMap.width), (int) (Math.random() * tmxMap.height));
+                    GridPoint2 exitPoint = new GridPoint2((int) (Math.random() * tmxMap.width), (int) (Math.random() * tmxMap.height));
                     Cell spawnCell = getCell(spawnPoint.x, spawnPoint.y);
                     Cell exitCell = getCell(exitPoint.x, exitPoint.y);
                     if (spawnCell != null && spawnCell.isEmpty()) {
@@ -145,7 +132,7 @@ public class GameField {
 
             }
             waveManager.checkRoutes(pathFinder);
-            MapProperties mapProperties = map.getProperties();
+            MapProperties mapProperties = tmxMap.getProperties();
             Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
             if (mapProperties.containsKey("gamerGold")) {
 //                gamerGold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
@@ -167,11 +154,12 @@ public class GameField {
 
     public void dispose() {
         Gdx.app.log("GameField::dispose()", "-- Called!");
+//        gameSettings.dispose();
 //        factionsManager.dispose();
         waveManager.dispose();
         towersManager.dispose();
         unitsManager.dispose();
-        map.dispose();
+        tmxMap.dispose();
 //        for (Cell[] cellArr : field) { // memory leak
 //            for (Cell cell : cellArr) {
 //                cell.dispose();
@@ -184,22 +172,17 @@ public class GameField {
         if (underConstruction != null) {
             underConstruction.dispose();
         }
-        greenCheckmark.dispose();
-        redCross.dispose();
     }
 
     private void createField() {
-        if (map.getProperties().containsKey("orientation") && map.getProperties().get("orientation").equals("isometric")) {
-            GameSettings.isometric = true;
-        }
         Gdx.app.log("GameField::createField()", "-START- field:" + field);
         if (field == null) {
-            field = new Cell[map.width][map.height];
-            for (int y = 0; y < map.height; y++) {
-                for (int x = 0; x < map.width; x++) {
+            field = new Cell[tmxMap.width][tmxMap.height];
+            for (int y = 0; y < tmxMap.height; y++) {
+                for (int x = 0; x < tmxMap.width; x++) {
                     Cell cell = field[x][y] = new Cell();
-                    cell.setGraphicCoordinates(x, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
-                    for (MapLayer mapLayer : map.getLayers()) {
+                    cell.setGraphicCoordinates(x, y, tmxMap.tileWidth, tmxMap.tileHeight, tmxMap.isometric);
+                    for (MapLayer mapLayer : tmxMap.getLayers()) {
                         if (mapLayer instanceof TiledMapTileLayer) {
                             TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
                             TiledMapTileLayer.Cell tileLayerCell = layer.getCell(x, y);
@@ -257,11 +240,29 @@ public class GameField {
 
     public boolean landscapeGenerator(String mapPath) {
         Gdx.app.log("GameField::landscapeGenerator()", "-- mapPath:" + mapPath);
+//    int terrainType = rand()%2;
+        if (mapPath.contains("randomMap")) {
+            for (int x = 0; x < tmxMap.width; x++) {
+                for (int y = 0; y < tmxMap.height; y++) {
+                    if( (Math.random()*100) < 30 ) {
+                        if (getCellNoCheck(x, y).isEmpty()) {
+                            TiledMapTileSet tiledMapTileSet = tmxMap.getTileSets().getTileSet(1);
+                            int firstgid = tiledMapTileSet.getProperties().get("firstgid", Integer.class);
+
+                            int randNumber = (int) (firstgid + 43 + (Math.random()*4)); // bricks from TileObjectsRubbleWalls.tsx
+                            TiledMapTile tile = tiledMapTileSet.getTile(randNumber);
+                            Logger.logDebug("tile:" + tile);
+                            getCellNoCheck(x, y).setTerrain(tile);
+                        }
+                    }
+                }
+            }
+        }
         return true;
     }
 
     public Cell getCell(int x, int y) {
-        return x >= 0 && x < map.width && y >= 0 && y < map.height ? field[x][y] : null;
+        return x >= 0 && x < tmxMap.width && y >= 0 && y < tmxMap.height ? field[x][y] : null;
     }
 
     public Cell getCellNoCheck(int x, int y) {
@@ -269,9 +270,9 @@ public class GameField {
     }
 
     public void updateCellsGraphicCoordinates(float sizeCellX, float sizeCellY) {
-        for (int cellX = 0; cellX < map.width; cellX++) {
-            for (int cellY = 0; cellY < map.height; cellY++) {
-                field[cellX][cellY].setGraphicCoordinates(cellX, cellY, sizeCellX, sizeCellY, gameSettings.isometric);
+        for (int cellX = 0; cellX < tmxMap.width; cellX++) {
+            for (int cellY = 0; cellY < tmxMap.height; cellY++) {
+                field[cellX][cellY].setGraphicCoordinates(cellX, cellY, sizeCellX, sizeCellY, tmxMap.isometric);
             }
         }
     }
@@ -369,8 +370,8 @@ public class GameField {
                 return createUnit(cell, cell, factionsManager.getTemplateForUnitByName("unit3_footman"), 1, gameSettings.cellExitHero); // player1 = hero
             }
         } else {
-            int randomX = (int)(Math.random()*map.width);
-            int randomY = (int)(Math.random()*map.height);
+            int randomX = (int)(Math.random() * tmxMap.width);
+            int randomY = (int)(Math.random() * tmxMap.height);
             gameSettings.cellExitHero = getCell(randomX, randomY);
             Unit hero = spawnHero(cellX, cellY);
             if (hero == null) {
@@ -382,8 +383,8 @@ public class GameField {
 
     public Unit spawnCompUnitToRandomExit(int x, int y) {
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- x:" + x + " y:" + y);
-        int randomX = (int)(Math.random()*map.width);
-        int randomY = (int)(Math.random()*map.height);
+        int randomX = (int)(Math.random() * tmxMap.width);
+        int randomY = (int)(Math.random() * tmxMap.height);
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
         return createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), 0, null);
     }
@@ -634,9 +635,9 @@ public class GameField {
 
     public char[][] getCharMatrix() {
         if (field != null) {
-            char[][] charMatrix = new char[map.height][map.width];
-            for (int y = 0; y < map.height; y++) {
-                for (int x = 0; x < map.width; x++) {
+            char[][] charMatrix = new char[tmxMap.height][tmxMap.width];
+            for (int y = 0; y < tmxMap.height; y++) {
+                for (int x = 0; x < tmxMap.width; x++) {
                     if (field[x][y].isTerrain() || field[x][y].getTower() != null) {
                         if (field[x][y].getTower() != null && field[x][y].getTower().templateForTower.towerAttackType == TowerAttackType.Pit) {
                             charMatrix[y][x] = '.';
@@ -792,8 +793,8 @@ public class GameField {
                                     Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(tower):");
                                 } else {
                                     if (unit.route == null || unit.route.isEmpty()) {
-                                        int randomX = (int) (Math.random() * map.width);
-                                        int randomY = (int) (Math.random() * map.height);
+                                        int randomX = (int) (Math.random() * tmxMap.width);
+                                        int randomY = (int) (Math.random() * tmxMap.height);
                                         unit.route = pathFinder.route(nextCurrentCell.cellX, nextCurrentCell.cellY, randomX, randomY); // nextCurrentCell -?- currentCell
                                         if (unit.route != null && !unit.route.isEmpty()) {
                                             unit.route.removeFirst();
@@ -969,13 +970,13 @@ public class GameField {
     }
 
     public void turnRight() {
-        map.setSize(map.height, map.width); // flip size
+        tmxMap.setSize(tmxMap.height, tmxMap.width); // flip size
         Cell[][] newCells = new Cell[field[0].length][field.length]; // flip array size
-        int y2 = map.width - 1;
-        for(int y = 0; y < map.width; y++) {
-            for(int x = 0; x < map.height; x++) {
+        int y2 = tmxMap.width - 1;
+        for(int y = 0; y < tmxMap.width; y++) {
+            for(int x = 0; x < tmxMap.height; x++) {
                 newCells[y2][x] = field[x][y];
-                newCells[y2][x].setGraphicCoordinates(y2, x, map.tileWidth, map.tileHeight, gameSettings.isometric);
+                newCells[y2][x].setGraphicCoordinates(y2, x, tmxMap.tileWidth, tmxMap.tileHeight, tmxMap.isometric);
             }
             y2--;
         }
@@ -985,13 +986,13 @@ public class GameField {
     }
 
     public void turnLeft() {
-        map.setSize(map.height, map.width); // flip size
+        tmxMap.setSize(tmxMap.height, tmxMap.width); // flip size
         Cell[][] newCells = new Cell[field[0].length][field.length]; // flip array size
-        int x2 = map.height - 1;
-        for(int x = 0; x < map.height; x++) {
-            for(int y = 0; y < map.width; y++) {
+        int x2 = tmxMap.height - 1;
+        for(int x = 0; x < tmxMap.height; x++) {
+            for(int y = 0; y < tmxMap.width; y++) {
                 newCells[y][x2] = field[x][y];
-                newCells[y][x2].setGraphicCoordinates(y, x2, map.tileWidth, map.tileHeight, gameSettings.isometric);
+                newCells[y][x2].setGraphicCoordinates(y, x2, tmxMap.tileWidth, tmxMap.tileHeight, tmxMap.isometric);
             }
             x2--;
         }
@@ -1004,12 +1005,12 @@ public class GameField {
      * Flips cells array by X axis.
      */
     public void flipX() {
-        Cell[][] newCells = new Cell[map.width][map.height];
-        int x2 = map.width - 1;
-        for (int x = 0; x < map.width; x++) {
-            for (int y = 0; y < map.height; y++) {
+        Cell[][] newCells = new Cell[tmxMap.width][tmxMap.height];
+        int x2 = tmxMap.width - 1;
+        for (int x = 0; x < tmxMap.width; x++) {
+            for (int y = 0; y < tmxMap.height; y++) {
                 newCells[x][y] = field[x2][y];
-                newCells[x][y].setGraphicCoordinates(x, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
+                newCells[x][y].setGraphicCoordinates(x, y, tmxMap.tileWidth, tmxMap.tileHeight, tmxMap.isometric);
             }
             x2--;
         }
@@ -1021,12 +1022,12 @@ public class GameField {
      * Flips cells array by Y axis.
      */
     public void flipY() {
-        Cell[][] newCells = new Cell[map.width][map.height];
-        int y2 = map.height - 1;
-        for(int y = 0; y < map.height; y++) {
-            for(int x = 0; x < map.width; x++) {
+        Cell[][] newCells = new Cell[tmxMap.width][tmxMap.height];
+        int y2 = tmxMap.height - 1;
+        for(int y = 0; y < tmxMap.height; y++) {
+            for(int x = 0; x < tmxMap.width; x++) {
                 newCells[x][y] = field[x][y2];
-                newCells[x][y].setGraphicCoordinates(x, y, map.tileWidth, map.tileHeight, gameSettings.isometric);
+                newCells[x][y].setGraphicCoordinates(x, y, tmxMap.tileWidth, tmxMap.tileHeight, tmxMap.isometric);
             }
             y2--;
         }
@@ -1034,6 +1035,7 @@ public class GameField {
         field = newCells;
     }
 
+    @Override
     public String toString() {
         return toString(true);
     }
@@ -1049,7 +1051,7 @@ public class GameField {
             sb.append(",underConstruction:" + underConstruction);
             sb.append(",pathFinder:" + pathFinder);
             sb.append(",field.length:" + ( (field!=null) ? field.length : "null"));
-            sb.append(",map:" + map);
+            sb.append(",tmxMap:" + tmxMap);
             sb.append(",gameSettings:" + gameSettings);
             sb.append(",unitsManager:" + unitsManager);
             sb.append(",towersManager:" + towersManager);

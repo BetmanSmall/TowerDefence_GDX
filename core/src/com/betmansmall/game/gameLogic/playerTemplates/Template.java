@@ -4,18 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
-import com.betmansmall.game.gameLogic.mapLoader.MapLoader;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
-import com.betmansmall.game.gameLogic.mapLoader.TiledMapTile;
-
-import java.util.Iterator;
+import com.betmansmall.maps.MapLoader;
 
 /**
  * Created by betma on 06.11.2018.

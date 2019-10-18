@@ -17,7 +17,6 @@ import com.betmansmall.game.GameType;
 /**
  * Created by betma on 16.11.2018.
  */
-
 public class CameraController implements GestureDetector.GestureListener, InputProcessor {
     public ShapeRenderer shapeRenderer;
     public SpriteBatch spriteBatch;
@@ -42,6 +41,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public int isDrawableGridNav = 1;
     public int isDrawableRoutes = 1;
     public int drawOrder = 8;
+    public boolean isDrawableFullField = false;
 
     public boolean flinging = false; // Что бы не пересикалось одно действие с другим действием (с) Андрей А
     public float initialScale = 2f;
@@ -65,21 +65,21 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public int prevMouseX, prevMouseY;
     public int prevCellX, prevCellY;
 
-    public CameraController(GameField gameField, GameInterface gameInterface, OrthographicCamera camera) {
+    public CameraController(GameField gameField, GameInterface gameInterface) {
         Gdx.app.log("CameraController::CameraController()", "--");
         this.shapeRenderer = new ShapeRenderer();
         this.spriteBatch = new SpriteBatch();
         this.bitmapFont = new BitmapFont();
-        bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
+        this.bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
 
         this.gameField = gameField;
         this.gameInterface = gameInterface;
-        this.camera = camera;
+        this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        this.mapWidth = gameField.map.width;
-        this.mapHeight = gameField.map.height;
-        this.sizeCellX = gameField.map.tileWidth;
-        this.sizeCellY = gameField.map.tileHeight;
+        this.mapWidth = gameField.tmxMap.width;
+        this.mapHeight = gameField.tmxMap.height;
+        this.sizeCellX = gameField.tmxMap.tileWidth;
+        this.sizeCellY = gameField.tmxMap.tileHeight;
         this.halfSizeCellX = sizeCellX/2;
         this.halfSizeCellY = sizeCellY/2;
 
@@ -291,7 +291,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
                                     gameField.createTower(cell.cellX, cell.cellY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction(), ((int) (Math.random() * 3)));
                                     if ((((int) (Math.random() * 2)) == 0) ? true : false) {
                                         int randNumber = (125 + (int) (Math.random() * 2));
-                                        cell.setTerrain(gameField.map.getTileSets().getTileSet(0).getTile(randNumber), true, true);
+                                        cell.setTerrain(gameField.tmxMap.getTileSets().getTileSet(0).getTile(randNumber), true, true);
                                     }
                                 }
                             }
@@ -469,14 +469,14 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 //        Gdx.app.log("CameraController::whichCell()", "-grph- mouseX:" + mouse.x + " mouseY:" + mouse.y);
         float gameX = ((mouse.x / (halfSizeCellX)) + (mouse.y / (halfSizeCellY))) / 2;
         float gameY = ((mouse.y / (halfSizeCellY)) - (mouse.x / (halfSizeCellX))) / 2;
-        if (!gameField.gameSettings.isometric) {
+        if (!gameField.tmxMap.isometric) {
             gameX = (mouse.x / sizeCellX);
             gameY = (mouse.y / sizeCellY);
         }
 //        Gdx.app.log("CameraController::whichCell()", "-graphics- mouseX:" + mouse.x + " mouseY:" + mouse.y + " map:" + map + " -new- gameX:" + gameX + " gameY:" + gameY);
         int cellX = Math.abs((int) gameX);
         int cellY = Math.abs((int) gameY);
-        if(gameField.gameSettings.isometric && gameY < 0) {
+        if(gameField.tmxMap.isometric && gameY < 0) {
             int tmpX = cellX;
             cellX = cellY;
             cellY = tmpX;
@@ -503,7 +503,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
 
     public boolean getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
         if(map == 1) {
-            if (!gameField.gameSettings.isometric) {
+            if (!gameField.tmxMap.isometric) {
                 towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
             } else {
                 towerPos.x += (-(halfSizeCellX * towerSize) );
@@ -511,13 +511,13 @@ public class CameraController implements GestureDetector.GestureListener, InputP
             towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
         } else if(map == 2) {
             towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
-            if (!gameField.gameSettings.isometric) {
+            if (!gameField.tmxMap.isometric) {
                 towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
             } else {
                 towerPos.y += (-(halfSizeCellY * towerSize));
             }
         } else if(map == 3) {
-            if (!gameField.gameSettings.isometric) {
+            if (!gameField.tmxMap.isometric) {
                 towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
             } else {
                 towerPos.x += (-(halfSizeCellX * towerSize) );
@@ -525,7 +525,7 @@ public class CameraController implements GestureDetector.GestureListener, InputP
             towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
         } else if(map == 4) {
             towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-            if (!gameField.gameSettings.isometric) {
+            if (!gameField.tmxMap.isometric) {
                 towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
             } else {
                 towerPos.y += (-(halfSizeCellY * towerSize));

@@ -1,9 +1,12 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.XmlReader;
+import com.betmansmall.maps.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 
@@ -32,13 +35,95 @@ public class WaveManager {
     public GridPoint2 lastExitPoint;
     public float waitForNextSpawnUnit;
 
-    WaveManager() {
+    WaveManager(String filePath) {
         Gdx.app.log("WaveManager::WaveManager()", "--");
-//        this.allTogether = true;
+        this.allTogether = false;
         this.currentWave = null;
         this.waves = new Array<Wave>();
         this.wavesForUser = new Array<Wave>();
-//        this.waitForNextSpawnUnit =
+        this.waitForNextSpawnUnit = 0f;
+        this.load(filePath);
+    }
+
+    private boolean load(String filePath) {
+        XmlReader xml = new XmlReader();
+        FileHandle tmxFile = Gdx.files.internal(filePath);
+        XmlReader.Element root = xml.parse(tmxFile);
+
+        XmlReader.Element waves = root.getChildByName("waves");
+        if(waves != null) {
+//            String type = waves.getAttribute("type", null);
+            String source = waves.getAttribute("source", null);
+            if (source != null) {
+                FileHandle tsx = MapLoader.getRelativeFileHandle(tmxFile, source);
+                XmlReader.Element rootwaves = xml.parse(tsx);
+                wavesParser(rootwaves);
+//            } else if(type != null/* && type == "empty"*/) { // LOL not WORK
+//                System.out.println("type=" + type); // Хотел сделать пустую волну, не получилася=( мб как нить сделаем.
+//                waveManager.addWave(new Wave(new GridPoint2(0, 0), new GridPoint2(0, 0), 10f));
+            } else {
+                wavesParser(waves);
+            }
+            return true;
+        } else {
+            Gdx.app.log("WaveManager::load()", "-- Not found waves block in tmxMap:" + tmxFile);
+        }
+        return false;
+    }
+
+    private void wavesParser(XmlReader.Element waves) {
+        this.allTogether = waves.getBoolean("allTogether", false);
+        Array<XmlReader.Element> waveElements = waves.getChildrenByName("wave");
+        for (XmlReader.Element waveElement : waveElements) {
+            int spawnPointX = waveElement.getIntAttribute("spawnPointX");
+            int spawnPointY = waveElement.getIntAttribute("spawnPointY");
+            int exitPointX = waveElement.getIntAttribute("exitPointX");
+            int exitPointY = waveElement.getIntAttribute("exitPointY");
+            float spawnInterval = waveElement.getFloat("spawnInterval", 0.0f);
+            float startToMove = waveElement.getFloat("startToMove", 0.0f);
+            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY), startToMove);
+            int actionsCount = waveElement.getChildCount();
+            for (int a = 0; a < actionsCount; a++) {
+                XmlReader.Element action = waveElement.getChild(a);
+                String sAction = action.getName();
+                if (sAction.equals("unit")) { // mb bad?
+                    float delay = action.getFloat("delay", 0.0f);
+                    if (delay > 0f) {
+                        wave.addAction("delay=" + delay);
+                    }
+                    String unitTemplateName = action.getAttribute("templateName");
+
+                    float interval = action.getFloat("interval", 0.0f) + spawnInterval;
+                    int amount = action.getInt("amount", 0);
+                    for (int u = 0; u < amount; u++) {
+                        if (interval > 0f) {
+                            wave.addAction("interval=" + interval);
+                        }
+                        wave.addAction(unitTemplateName);
+                    }
+                }
+            }
+//            Array<Element> units = waveElement.getChildrenByName("unit");
+//            for (Element unit : units) {
+//                String unitTemplateName = unit.getAttribute("templateName");
+//                int unitsAmount = unit.getIntAttribute("amount");
+//                int delay = unit.getIntAttribute("delay", 0);
+//                for (int k = 0; k < unitsAmount; k++) {
+//                    wave.addTemplateForUnit(unitTemplateName);
+//                    wave.addDelayForUnit(delay);
+//                }
+//            }
+            this.addWave(wave);
+        }
+        Array<XmlReader.Element> waveForUserElements = waves.getChildrenByName("waveForUser");
+        for (XmlReader.Element waveElement : waveForUserElements) {
+            int spawnPointX = waveElement.getIntAttribute("spawnPointX");
+            int spawnPointY = waveElement.getIntAttribute("spawnPointY");
+            int exitPointX = waveElement.getIntAttribute("exitPointX");
+            int exitPointY = waveElement.getIntAttribute("exitPointY");
+            Wave wave = new Wave(new GridPoint2(spawnPointX, spawnPointY), new GridPoint2(exitPointX, exitPointY));
+            this.wavesForUser.add(wave);
+        }
     }
 
     public void dispose() {

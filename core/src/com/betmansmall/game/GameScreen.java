@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
 //        Gdx.app.log("GameScreen::GameScreen()", "-- factionsManager:" + factionsManager);
 //        Gdx.app.log("GameScreen::GameScreen()", "-- gameSettings:" + gameSettings);
 //        Gdx.app.log("GameScreen::GameScreen()", "-- field:" + gameField);
-//        Gdx.app.log("GameScreen::GameScreen()", "-- gameField.map:" + gameField.map);
+//        Gdx.app.log("GameScreen::GameScreen()", "-- gameField.tmxMap:" + gameField.tmxMap);
 //        Logger.logFuncEnd();
 //    }
 
@@ -45,12 +45,13 @@ public class GameScreen implements Screen {
         gameField.dispose();
         gameInterface.dispose();
         cameraController.dispose();
+        gameFieldRenderer.dispose();
     }
 
     public void initGameField() {
         gameField = new GameField();
         gameInterface = new GameInterface(this);
-        cameraController = new CameraController(gameField, gameInterface, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        cameraController = new CameraController(gameField, gameInterface);
         gameFieldRenderer = new GameFieldRenderer(cameraController);
         gameInterface.setCameraController(cameraController);
     }
@@ -102,6 +103,7 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
 //            gameInterface.unitsSelector.changeGameState(); need func() here
+            cameraController.isDrawableFullField = !cameraController.isDrawableFullField;
             cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
             gameInterface.addActionToHistory("-- cameraController.camera.position:" + cameraController.camera.position);
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.position:" + cameraController.camera.position);

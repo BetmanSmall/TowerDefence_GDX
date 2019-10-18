@@ -19,7 +19,6 @@ public class GameSettings {
     public boolean panMidMouseButton;
     public boolean panRightMouseButton;
 
-    public static boolean isometric = false;
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
@@ -78,7 +77,6 @@ public class GameSettings {
             sb.append(",panMidMouseButton:" + panMidMouseButton);
             sb.append(",panRightMouseButton:" + panRightMouseButton);
 
-            sb.append(",isometric:" + isometric);
             sb.append(",cellSpawnHero:" + cellSpawnHero);
             sb.append(",cellExitHero:" + cellExitHero);
 

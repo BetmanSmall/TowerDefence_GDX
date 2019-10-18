@@ -3,11 +3,11 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.game.gameLogic.mapLoader.AnimatedTiledMapTile;
-import com.betmansmall.game.gameLogic.mapLoader.StaticTiledMapTile;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
@@ -329,46 +329,46 @@ public class Unit {
 //            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(isDrawableUnits));
             float fVx = (-(halfSizeCellX * currY) - (currX * halfSizeCellX) ) - halfSizeCellX;
             float fVy = ( (halfSizeCellY * currY) - (currX * halfSizeCellY) );
-            if (!cameraController.gameField.gameSettings.isometric) {
+            if (!cameraController.gameField.tmxMap.isometric) {
                 fVx = (-(currX * sizeCellX) ) - halfSizeCellX;
                 fVy = ( (currY * sizeCellY) ) + halfSizeCellY;
             }
             fVc.set(fVx, fVy);
-            if (cameraController.gameField.gameSettings.isometric) {
+            if (cameraController.gameField.tmxMap.isometric) {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             } else {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
@@ -382,46 +382,46 @@ public class Unit {
 //            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(isDrawableUnits));
             float fVx = (-(halfSizeCellX * currY) + (currX * halfSizeCellX) );
             float fVy = ( (halfSizeCellY * currY) + (currX * halfSizeCellY) ) + halfSizeCellY;
-            if (!cameraController.gameField.gameSettings.isometric) {
+            if (!cameraController.gameField.tmxMap.isometric) {
                 fVx = ( (currX * sizeCellX) ) + halfSizeCellX;
                 fVy = ( (currY * sizeCellY) ) + halfSizeCellY;
             }
             fVc.set(fVx, fVy);
-            if (cameraController.gameField.gameSettings.isometric) {
+            if (cameraController.gameField.tmxMap.isometric) {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             } else {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
@@ -435,46 +435,46 @@ public class Unit {
 //            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(isDrawableUnits));
             float fVx = ( (halfSizeCellX * currY) + (currX * halfSizeCellX) ) + halfSizeCellX;
             float fVy = ( (halfSizeCellY * currY) - (currX * halfSizeCellY) );
-            if (!cameraController.gameField.gameSettings.isometric) {
+            if (!cameraController.gameField.tmxMap.isometric) {
                 fVx = ( (currX * sizeCellX) ) + halfSizeCellX;
                 fVy = (-(currY * sizeCellY) ) - halfSizeCellY;
             }
             fVc.set(fVx, fVy);
-            if (cameraController.gameField.gameSettings.isometric) {
+            if (cameraController.gameField.tmxMap.isometric) {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             } else {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
@@ -488,46 +488,46 @@ public class Unit {
 //            fVc.set(cameraController.gameField.getCell(currX, currY).getGraphicCoordinates(cameraController.isDrawableUnits));
             float fVx = (-(halfSizeCellX * currY) + (currX * halfSizeCellX) );
             float fVy = (-(halfSizeCellY * currY) - (currX * halfSizeCellY) ) - halfSizeCellY;
-            if (!cameraController.gameField.gameSettings.isometric) {
+            if (!cameraController.gameField.tmxMap.isometric) {
                 fVx = (-(currX * sizeCellX)) - halfSizeCellX;
                 fVy = (-(currY * sizeCellY)) - halfSizeCellY;
             }
             fVc.set(fVx, fVy);
-            if (cameraController.gameField.gameSettings.isometric) {
+            if (cameraController.gameField.tmxMap.isometric) {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             } else {
                 if (nextX < currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY > currY) {
-                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.DOWN_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX > currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_LEFT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX == currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY < currY) {
-                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.UP_RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 } else if (nextX < currX && nextY == currY) {
-                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.gameSettings.isometric);
+                    correct_fVc(fVc, Direction.RIGHT, sizeCellX, sizeCellY, cameraController.gameField.tmxMap.isometric);
                 }
             }
             if (unitAttack == null || !unitAttack.attacked) {
