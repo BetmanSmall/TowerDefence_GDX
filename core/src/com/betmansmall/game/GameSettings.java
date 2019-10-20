@@ -1,6 +1,7 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.Cell;
 
 /**

@@ -11,8 +11,8 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.game.GameScreenInteface.GameInterface;
-import com.betmansmall.game.GameType;
+import com.betmansmall.game.gameInterface.GameInterface;
+import com.betmansmall.enums.GameType;
 
 /**
  * Created by betma on 16.11.2018.

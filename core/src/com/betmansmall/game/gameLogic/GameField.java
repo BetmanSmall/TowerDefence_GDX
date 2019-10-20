@@ -10,10 +10,10 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.TTW;
 import com.betmansmall.enums.GameState;
+import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.game.GameSettings;
-import com.betmansmall.game.GameType;
+import com.betmansmall.enums.GameType;
 import com.betmansmall.maps.TmxMap;
 import com.betmansmall.maps.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
@@ -48,9 +48,9 @@ public class GameField {
     public boolean unitsSpawn;
     public int gamerGold;
 
-    public GameField() {
-        this.gameSettings = TTW.game.sessionSettings.gameSettings;
-        this.factionsManager = TTW.game.factionsManager;
+    public GameField(GameScreen gameScreen) {
+        this.gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        this.factionsManager = gameScreen.game.factionsManager;
         this.waveManager = new WaveManager(gameSettings.mapPath);
         this.towersManager = new TowersManager();
         this.unitsManager = new UnitsManager();

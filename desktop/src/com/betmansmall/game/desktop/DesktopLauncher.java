@@ -2,7 +2,7 @@ package com.betmansmall.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.betmansmall.game.GameMaster;
+import com.betmansmall.GameMaster;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {
