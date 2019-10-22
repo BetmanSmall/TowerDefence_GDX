@@ -43,12 +43,6 @@ public class GameScreen extends AbstractScreen {
         cameraController = new CameraController(gameField, gameInterface);
         gameFieldRenderer = new GameFieldRenderer(cameraController);
         gameInterface.setCameraController(cameraController);
-    }
-
-    @Override
-    public void show() {
-        Gdx.app.log("GameScreen::show()", "--");
-        initGameField();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new GestureDetector(gameInterface));
@@ -56,6 +50,15 @@ public class GameScreen extends AbstractScreen {
         inputMultiplexer.addProcessor(cameraController);
         inputMultiplexer.addProcessor(new GestureDetector(cameraController));
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    @Override
+    public void show() {
+        Logger.logFuncStart();
+//        initGameField();
+
 //        TTW.input.addProcessor(inputMultiplexer);
     }
 
@@ -250,6 +253,11 @@ public class GameScreen extends AbstractScreen {
 //      Gdx.app.log("GameScreen::render()", "-- delta:" + delta + " FPS:" + Gdx.graphics.getFramesPerSecond());
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (gameField == null) {
+            initGameField();
+        }
+
         inputHandler(delta);
 
         GameState gameState = gameField.getGameState(); // Need change to enum GameState
@@ -278,11 +286,15 @@ public class GameScreen extends AbstractScreen {
 //            gameInterface.getViewport().update(width, height, true);
 //        }
 
-        gameInterface.resize(width, height);
+        if (gameInterface != null) {
+            gameInterface.resize(width, height);
+        }
 
-        cameraController.camera.viewportHeight = height;
-        cameraController.camera.viewportWidth = width;
-        cameraController.camera.update();
+        if (cameraController != null) {
+            cameraController.camera.viewportHeight = height;
+            cameraController.camera.viewportWidth = width;
+            cameraController.camera.update();
+        }
     }
 
     @Override
@@ -293,7 +305,6 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void resume() {
         Gdx.app.log("GameScreen::resume()", "--");
-        cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
     }
 
     @Override

@@ -10,12 +10,16 @@ public class SessionSettings {
 
     public GameSettings gameSettings;
 
-    public SessionSettings(GameSettings gameSettings) {
+    public SessionSettings() {
         this.localServer = false;
         this.host = "localhost";
         this.port = 48999;
 
-        this.gameSettings = gameSettings;
+        this.gameSettings = new GameSettings();
+    }
+
+    public void dispose() {
+//        this.gameSettings.dispose();
     }
 
     @Override

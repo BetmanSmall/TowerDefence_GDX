@@ -8,8 +8,8 @@ import com.badlogic.gdx.Gdx;
 
 public enum GameType {
     LittleGame("LittleGame"),
-    TowerDefence("TowerDefence"),
-    OrthogonalityTowerDefence("OrthogonalityTowerDefence");
+    TowerDefence("TowerDefence");
+//    OrthogonalityTowerDefence("OrthogonalityTowerDefence");
 
     private final String text;
 

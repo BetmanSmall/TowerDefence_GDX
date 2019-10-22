@@ -13,12 +13,32 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
+    public void show() {
+        Logger.logFuncStart();
+    }
+
+    @Override
+    public void render(float delta) {
+        Logger.logFuncStart();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        Logger.logFuncStart("width:" + width + ", height:" + height);
+    }
+
+    @Override
     public void pause() {
         Logger.logFuncStart();
     }
 
     @Override
     public void resume() {
+        Logger.logFuncStart();
+    }
+
+    @Override
+    public void hide() {
         Logger.logFuncStart();
     }
 

@@ -2,6 +2,7 @@ package com.betmansmall.util.logging;
 
 import com.badlogic.gdx.utils.StringBuilder;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 /**
@@ -25,21 +26,33 @@ public class Logger {
     private HashMap<String, String> classNamesCache;
     private String threadClassName;
 
+    private static SimpleDateFormat simpleDateFormat;
+
+    private static String convert(String ... strings) {
+        StringBuilder sb = new StringBuilder();
+        for (String string : strings) {
+            sb.append(string + ",");
+        }
+        if (sb.length > 0) {
+            sb.deleteCharAt(sb.length - 1);
+        }
+        return sb.toString();
+    }
+
     public static void logFuncStart() {
         instance().log("[START]", ANSI_BLUE);
     }
 
-    public static void logFuncStart(String ... strs) {
-        StringBuilder sb = new StringBuilder();
-        for (String str : strs) {
-            sb.append(str + ",");
-        }
-        sb.deleteCharAt(sb.length - 1);
-        instance().log("[START] -- " + sb.toString(), ANSI_BLUE);
+    public static void logFuncStart(String ... strings) {
+        instance().log("[START] -- " + convert(strings), ANSI_BLUE);
     }
 
     public static void logFuncEnd() {
         instance().log("[END]", ANSI_CYAN);
+    }
+
+    public static void logWithTime(String ... strings) {
+        instance().log("[" + simpleDateFormat.format(System.currentTimeMillis()) + "] -- " + convert(strings), ANSI_BLACK);
     }
 
     public static void logError(String message) {
@@ -59,13 +72,14 @@ public class Logger {
     }
 
     public static Logger instance() {
-        if(instance == null) instance = new Logger();
+        if (instance == null) instance = new Logger();
         return instance;
     }
 
     public Logger() {
         classNamesCache = new HashMap<String, String>();
         threadClassName = Thread.class.getName();
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss.SSS");//yyyy-MM-dd 'at' HH:mm:ss z");
     }
 
     /**

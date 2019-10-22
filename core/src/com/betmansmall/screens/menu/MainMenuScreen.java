@@ -13,12 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
-import com.betmansmall.enums.GameType;
 import com.betmansmall.screens.AbstractScreen;
-import com.betmansmall.screens.LoadingScreen;
-import com.betmansmall.screens.client.GameClientScreen;
+import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
-import com.betmansmall.screens.server.GameServerScreen;
+import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.util.logging.Logger;
 
 public class MainMenuScreen extends AbstractScreen {
@@ -108,11 +106,7 @@ public class MainMenuScreen extends AbstractScreen {
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
                 super.clicked(event, x, y);
-//                SessionSettings sessionSettings = new SessionSettings(game.gameSettings);
-                game.sessionSettings.localServer = true;
-                game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
-                game.sessionSettings.gameSettings.gameType = GameType.TowerDefence;
-                game.addScreen(new GameServerScreen(game));
+                game.addScreen(new ServerSettingsScreen(game));
             }
         });
         leftTable.add(serverButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
@@ -127,9 +121,10 @@ public class MainMenuScreen extends AbstractScreen {
 //                sessionSettings.localServer = false;
 //                sessionSettings.host = "localhost";
 //                sessionSettings.port = 48999;
-                game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
-                game.sessionSettings.gameSettings.gameType = GameType.TowerDefence;
-                game.addScreen(new LoadingScreen(game, new GameClientScreen(game)));
+//                game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
+//                game.sessionSettings.gameSettings.gameType = GameType.TowerDefence;
+//                game.addScreen(new LoadingScreen(game, new GameClientScreen(game)));
+                game.addScreen(new ClientSettingsScreen(game));
             }
         });
         leftTable.add(clientButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();

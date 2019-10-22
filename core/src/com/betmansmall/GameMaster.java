@@ -9,14 +9,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
-import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.menu.HelpMenuScreen;
 import com.betmansmall.screens.menu.MainMenuScreen;
 import com.betmansmall.screens.menu.OptionMenuScreen;
+import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.server.SessionSettings;
 import com.betmansmall.util.logging.Logger;
+import com.kotcrab.vis.ui.VisUI;
+
+import org.apache.commons.cli.CommandLine;
 
 /**
  * Created by BetmanSmall on 13.10.201x.
@@ -34,9 +38,21 @@ public class GameMaster extends Game {
     public Screen optionMenuScreen;
     public Screen helpMenuScreen;
 
+    public CommandLine cmd;
+
+    public GameMaster() {
+
+    }
+
+    public GameMaster(CommandLine cmd) {
+        Logger.logFuncStart(cmd.getArgs());
+        this.cmd = cmd;
+    }
+
     @Override
     public void create() {
         Logger.logFuncStart();
+        VisUI.load();
         screensStack = new Array<>();
 
         backgroundImages = new Array<>();
@@ -79,8 +95,8 @@ public class GameMaster extends Game {
 
         gameLevelMaps = new Array<>();
 //        gameLevelMaps.add("maps/test.tmx");
-        FileHandle mapsDir = Gdx.files.internal("maps");
-        if (mapsDir.list().length == 0) {
+//        FileHandle mapsDir = Gdx.files.internal("maps");
+//        if (mapsDir.list().length == 0) {
 //            gameLevelMaps.add("maps/desert.tmx");
 //            gameLevelMaps.add("maps/summer.tmx");
 //            gameLevelMaps.add("maps/winter.tmx");
@@ -93,28 +109,33 @@ public class GameMaster extends Game {
             gameLevelMaps.add("maps/arena4.tmx");
             gameLevelMaps.add("maps/arena4_1.tmx");
             gameLevelMaps.add("maps/sample.tmx");
-        } else {
-            for (FileHandle fileHandle : mapsDir.list()) {
-                if (fileHandle.extension().equals("tmx")) {
-                    Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.add():" + fileHandle.path());
-                    gameLevelMaps.add(fileHandle.path());
-                }
-            }
-        }
+//        } else {
+//            for (FileHandle fileHandle : mapsDir.list()) {
+//                if (fileHandle.extension().equals("tmx")) {
+//                    Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.add():" + fileHandle.path());
+//                    gameLevelMaps.add(fileHandle.path());
+//                }
+//            }
+//        }
         Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
 
         this.assetManager = new AssetManager();
         try {
-            sessionSettings = new SessionSettings(new GameSettings());
+            sessionSettings = new SessionSettings();
             factionsManager = new FactionsManager();
             mainMenuScreen = new MainMenuScreen(this);
             optionMenuScreen = new OptionMenuScreen(this, sessionSettings.gameSettings);
             helpMenuScreen = new HelpMenuScreen(this);
-
-            addScreen(mainMenuScreen);
-//            addScreen(new LoadingScreen(this));
         } catch (Exception exeption) {
             exeption.printStackTrace();
+        }
+
+        if (cmd.hasOption("server")) {
+            addScreen(new ServerSettingsScreen(this));
+        } else if (cmd.hasOption("client")) {
+            addScreen(new ClientSettingsScreen(this));
+        } else {
+            addScreen(mainMenuScreen);
         }
     }
 
@@ -122,6 +143,7 @@ public class GameMaster extends Game {
     public void dispose() {
         Logger.logFuncStart();
         super.dispose();
+        VisUI.dispose();
         screensStack.clear();
 
         backgroundImages.clear();

@@ -1,4 +1,6 @@
 package com.betmansmall.server.data;
 
-public interface NetworkPackage {
+import java.io.Serializable;
+
+public interface NetworkPackage extends Serializable {
 }

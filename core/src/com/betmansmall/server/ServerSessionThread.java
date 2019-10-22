@@ -2,7 +2,9 @@ package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.enums.SessionState;
+import com.betmansmall.screens.server.ServerGameScreen;
 import com.betmansmall.server.data.SendObject;
+import com.betmansmall.server.data.ServerInfoData;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.server.networking.TcpSocketListener;
 import com.betmansmall.util.logging.Logger;
@@ -11,24 +13,39 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class ServerSessionThread extends Thread implements TcpSocketListener {
+    private ServerGameScreen serverGameScreen;
+    private SessionSettings sessionSettings;
+    private ServerSocket serverSocket;
+    private Array<TcpConnection> connections;
     public SessionState sessionState;
-    public SessionSettings sessionSettings;
-    public ServerSocket serverSocket;
-    public Array<TcpConnection> connections;
 
-    public ServerSessionThread(SessionSettings sessionSettings) {
+    public ServerSessionThread(ServerGameScreen serverGameScreen) {
         Logger.logFuncStart();
-        this.sessionState = SessionState.INITIALIZATION;
-        this.sessionSettings = sessionSettings;
+        this.serverGameScreen = serverGameScreen;
+        this.sessionSettings = serverGameScreen.game.sessionSettings;
         this.serverSocket = null;
         this.connections = new Array<TcpConnection>();
+        this.sessionState = SessionState.INITIALIZATION;
         Logger.logFuncEnd();
+    }
+
+    public void dispose() {
+        Logger.logFuncStart();
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for(TcpConnection socket : connections) {
+            socket.disconnect();
+        }
+        this.interrupt();
     }
 
     @Override
     public void run() {
         Logger.logFuncStart();
-//        try ( ServerSocket serverSocket = new ServerSocket(port) ) {
+//        try ( ServerSocket serverSocket = new ServerSocket(sessionSettings.port) ) {
 //            this.serverSocket = serverSocket;
         try {
             this.serverSocket = new ServerSocket(sessionSettings.port);
@@ -51,25 +68,11 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         Logger.logFuncEnd();
     }
 
-//    public void dispose() {
-//        Logger.logInfo("");
-//        for(TcpConnection socket : connections) {
-//            socket.disconnect();
-//        }
-//        try {
-//            serverSocket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        gameServer = null;
-//        this.interrupt();
-//    }
-
     @Override
     public void onConnectionReady(TcpConnection tcpConnection) {
-        Logger.logInfo("tcpConnection:" + tcpConnection);
+        Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
-//        tcpConnection.sendObject(new PackageServerGreating());
+        tcpConnection.sendObject(new SendObject(new ServerInfoData(sessionSettings.gameSettings)));
 //        gameServer.sendServerGreating(tcpConnection);
     }
 
@@ -89,5 +92,6 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     @Override
     public void onException(TcpConnection tcpConnection, Exception exception) {
         Logger.logError("tcpConnection:" + tcpConnection + ", exception:" + exception);
+        exception.printStackTrace();
     }
 }
