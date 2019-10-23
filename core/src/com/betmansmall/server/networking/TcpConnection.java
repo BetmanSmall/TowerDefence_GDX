@@ -71,6 +71,10 @@ public class TcpConnection {
         }
     }
 
+    public String getSocketIP() {
+        return socket.getRemoteSocketAddress().toString();
+    }
+
     @Override
     public String toString() {
         return toString(false);

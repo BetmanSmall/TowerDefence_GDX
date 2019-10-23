@@ -68,6 +68,11 @@ public class GameScreen extends AbstractScreen {
                 Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.MINUS && ALT_LEFT)");
                 gameInterface.infoTabloTable.setVisible(!gameInterface.infoTabloTable.isVisible());
             }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+                Logger.logDebug("-- Gdx.input.isKeyJustPressed(Input.Keys.C && ALT_LEFT)");
+                gameInterface.playersViewTable.setVisible(!gameInterface.playersViewTable.isVisible());
+            }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.MINUS)");
             if (cameraController.camera.zoom <= cameraController.zoomMax) {

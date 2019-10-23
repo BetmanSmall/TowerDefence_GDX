@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.betmansmall.util.logging.Logger;
 
 import java.util.StringTokenizer;
 
@@ -276,6 +277,24 @@ public class FactionsManager {
         } else {
             Gdx.app.error("FactionsManager::loadFaction()", "-- Could not load Faction! (factionFile == null) or (factionFile.isDirectory() == true)");
         }
+    }
+
+    public Array<String> getFactionsNames() {
+        Array<String> names = new Array<>(factions.size);
+        for (Faction faction : factions) {
+            names.add(faction.getName());
+        }
+        return names;
+    }
+
+    public Faction getFactionByName(String name) {
+        Logger.logFuncStart("name:" + name);
+        for (Faction faction : factions) {
+            if (name.equals(faction.getName())) {
+                return faction;
+            }
+        }
+        return null;
     }
 
     protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {

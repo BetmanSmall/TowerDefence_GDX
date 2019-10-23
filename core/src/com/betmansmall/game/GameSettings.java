@@ -28,21 +28,25 @@ public class GameSettings {
     public int maxOfMissedUnitsForPlayer1;
     public int missedUnitsForPlayer1;
 
+    public PlayersManager playersManager;
+
     public GameSettings() {
 //        this.gameType = GameType.LittleGame;
         this.difficultyLevel = 1f;
         this.enemyCount = 20;
         this.towersCount = 10;
 
-        topBottomLeftRightSelector = true;
-        verticalSelector = true;
-        smoothFlingSelector = true;
-        panLeftMouseButton = true;
-        panMidMouseButton = false;
-        panRightMouseButton = false;
+        this.topBottomLeftRightSelector = true;
+        this.verticalSelector = true;
+        this.smoothFlingSelector = true;
+        this.panLeftMouseButton = true;
+        this.panMidMouseButton = false;
+        this.panRightMouseButton = false;
 
-        cellSpawnHero = null;
-        cellExitHero = null;
+        this.cellSpawnHero = null;
+        this.cellExitHero = null;
+
+        this.playersManager = new PlayersManager();
     }
 
     public void setGameTypeByMap(String mapPath) {
@@ -85,6 +89,8 @@ public class GameSettings {
             sb.append(",missedUnitsForComputer0:" + missedUnitsForComputer0);
             sb.append(",maxOfMissedUnitsForPlayer1:" + maxOfMissedUnitsForPlayer1);
             sb.append(",missedUnitsForPlayer1:" + missedUnitsForPlayer1);
+
+            sb.append(",playersManager:" + playersManager);
         }
         sb.append("]");
         return sb.toString();

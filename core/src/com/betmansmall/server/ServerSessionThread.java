@@ -2,7 +2,10 @@ package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.enums.SessionState;
+import com.betmansmall.game.Player;
 import com.betmansmall.screens.server.ServerGameScreen;
+import com.betmansmall.server.data.NetworkPackage;
+import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.ServerInfoData;
 import com.betmansmall.server.networking.TcpConnection;
@@ -73,13 +76,23 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
         tcpConnection.sendObject(new SendObject(new ServerInfoData(sessionSettings.gameSettings)));
-//        gameServer.sendServerGreating(tcpConnection);
     }
 
     @Override
     public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) {
         Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
-//        gameServer.serverPackageProcessing(tcpConnection, sendObject);
+        for (NetworkPackage networkPackage : sendObject.networkPackages) {
+            if (networkPackage instanceof PlayerInfoData) {
+                PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+                Player player = new Player();
+                player.connection = tcpConnection;
+                player.playerID = sessionSettings.gameSettings.playersManager.players.size;
+                player.name = playerInfoData.name;
+                player.faction = serverGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
+                sessionSettings.gameSettings.playersManager.players.add(player);
+                sessionState = SessionState.PLAYER_CONNECTED;
+            }
+        }
     }
 
     @Override

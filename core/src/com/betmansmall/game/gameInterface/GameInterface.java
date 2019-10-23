@@ -43,6 +43,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     public Table tableWithButtons, tableWithSelectors, tableConsoleLog, tableInfoTablo, pauseMenuTable, optionTable;
     public Table infoTabloTable;
+    public PlayersViewTable playersViewTable;
+
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
     public Slider drawGrid, drawUnits, drawTowers, drawBackground, drawGround, drawForeground, drawGridNav, drawRoutes, drawOrder, drawAll;
@@ -207,6 +209,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(gamePaused).left().row();
 
+        playersViewTable = new PlayersViewTable(gameScreen.game.sessionSettings.gameSettings.playersManager, skin);
+        playersViewTable.setFillParent(true);
+        addActor(playersViewTable);
 
         tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableWithSelectors.setFillParent(true);

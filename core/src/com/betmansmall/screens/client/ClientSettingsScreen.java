@@ -10,6 +10,7 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
@@ -35,6 +36,16 @@ public class ClientSettingsScreen extends AbstractScreen {
         VisTable rootTable = new VisTable();
         rootTable.setFillParent(true);
 
+        rootTable.add(new VisLabel("name:"));
+        VisTextField nameField = new VisTextField("Player");
+        rootTable.add(nameField).row();
+
+        rootTable.add(new VisLabel("faction:"));
+
+        VisSelectBox<String> factionSelectBox = new VisSelectBox();
+        factionSelectBox.setItems(game.factionsManager.getFactionsNames());
+        rootTable.add(factionSelectBox).row();
+
         VisLabel hostLabel = new VisLabel("host:");
         rootTable.add(hostLabel);
 
@@ -51,6 +62,8 @@ public class ClientSettingsScreen extends AbstractScreen {
         connectToServer.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.sessionSettings.gameSettings.playersManager.localPlayer.name = nameField.getText();
+                game.sessionSettings.gameSettings.playersManager.localPlayer.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
                 game.sessionSettings.host = hostField.getText();
                 game.sessionSettings.port = Integer.parseInt(portField.getText());
                 game.addScreen(new ClientGameScreen(game));

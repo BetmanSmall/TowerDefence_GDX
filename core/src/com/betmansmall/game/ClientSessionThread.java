@@ -4,6 +4,7 @@ import com.betmansmall.enums.SessionState;
 import com.betmansmall.screens.client.ClientGameScreen;
 import com.betmansmall.server.SessionSettings;
 import com.betmansmall.server.data.NetworkPackage;
+import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.ServerInfoData;
 import com.betmansmall.server.networking.TcpConnection;
@@ -48,6 +49,7 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         this.connection = tcpConnection;
         sessionState = SessionState.CONNECTED;
+        tcpConnection.sendObject(new SendObject(new PlayerInfoData(sessionSettings.gameSettings.playersManager.localPlayer)));
     }
 
     @Override
