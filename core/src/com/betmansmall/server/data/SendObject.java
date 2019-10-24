@@ -9,9 +9,16 @@ public class SendObject implements Serializable {
     public enum SendObjectEnum implements Serializable {
         SERVER_INFO_DATA,
         PLAYER_INFO_DATA,
+        PLAYER_DISCONNECTED,
     }
     public SendObjectEnum sendObjectEnum;
     public ArrayList<NetworkPackage> networkPackages;
+
+    public SendObject(SendObjectEnum sendObjectEnum, NetworkPackage networkPackage) {
+        this.sendObjectEnum = sendObjectEnum;
+        this.networkPackages = new ArrayList<>();
+        this.networkPackages.add(networkPackage);
+    }
 
     public SendObject(NetworkPackage ... networkPackages) {
         this.networkPackages = new ArrayList<>();

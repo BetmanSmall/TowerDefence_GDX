@@ -8,7 +8,7 @@ import com.betmansmall.game.PlayersManager;
 import com.betmansmall.util.logging.Logger;
 
 public class PlayersViewTable extends Table {
-    private PlayersManager playersManager;
+    public PlayersManager playersManager;
 
     public PlayersViewTable(PlayersManager playersManager, Skin skin) {
         super(skin);

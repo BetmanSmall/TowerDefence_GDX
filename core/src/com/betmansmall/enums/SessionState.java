@@ -9,4 +9,5 @@ public enum SessionState {
     CONNECTED,
     RECEIVED_SERVER_INFO_DATA,
     INITIALIZED,
+    NEW_PLAYER_CONNECTED,
 }

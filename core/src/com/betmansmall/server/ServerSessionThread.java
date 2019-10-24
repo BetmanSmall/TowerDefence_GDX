@@ -62,6 +62,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
             }
         } catch (IOException exception) {
             Logger.logError("exception:" + exception);
+            serverGameScreen.game.removeTopScreen(); // TODO mb not good!
             throw new RuntimeException(exception);
 //        } finally {
 //            if (serverSocket != null) {
@@ -76,6 +77,12 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
         tcpConnection.sendObject(new SendObject(new ServerInfoData(sessionSettings.gameSettings)));
+
+        for (Player player : sessionSettings.gameSettings.playersManager.players) {
+            if (player.playerID != 0) {
+                tcpConnection.sendObject(new SendObject(new PlayerInfoData(player)));
+            }
+        }
     }
 
     @Override
@@ -84,13 +91,19 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         for (NetworkPackage networkPackage : sendObject.networkPackages) {
             if (networkPackage instanceof PlayerInfoData) {
                 PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+
                 Player player = new Player();
                 player.connection = tcpConnection;
                 player.playerID = sessionSettings.gameSettings.playersManager.players.size;
                 player.name = playerInfoData.name;
                 player.faction = serverGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
                 sessionSettings.gameSettings.playersManager.players.add(player);
+//                serverGameScreen.gameInterface.playersViewTable.updateView();
                 sessionState = SessionState.PLAYER_CONNECTED;
+
+                for (TcpConnection connection : connections) {
+                    connection.sendObject(new SendObject(new PlayerInfoData(player)));
+                }
             }
         }
     }
@@ -98,7 +111,12 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     @Override
     public void onDisconnect(TcpConnection tcpConnection) {
         Logger.logInfo("tcpConnection:" + tcpConnection);
-//        connections.removeValue(tcpConnection, true);
+        connections.removeValue(tcpConnection, true);
+        Player player = sessionSettings.gameSettings.playersManager.getPlayerByConnection(tcpConnection);
+        for (TcpConnection connection : connections) {
+            connection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_DISCONNECTED, new PlayerInfoData(player)));
+        }
+        sessionSettings.gameSettings.playersManager.removePlayer(player);
 //        gameServer.playerDisconnect(tcpConnection);
     }
 

@@ -621,6 +621,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //        }
 //        stage.act(delta);
 //        stage.draw();
+        if (playersViewTable.getChildren().size != playersViewTable.playersManager.players.size) {
+            playersViewTable.updateView(); // real time update if new player connected!
+        }
     }
 
 //    @Override

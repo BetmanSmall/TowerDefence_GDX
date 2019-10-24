@@ -2,6 +2,8 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.server.networking.TcpConnection;
+import com.betmansmall.util.logging.Logger;
 
 public class PlayersManager {
     public Array<Player> players;
@@ -19,6 +21,29 @@ public class PlayersManager {
 
     public void dispose() {
         this.players.clear();
+    }
+
+    public Player getPlayerByConnection(TcpConnection connection) {
+        Logger.logFuncStart("connection:" + connection, "players:" + players);
+        for (Player player : players) {
+            if (player.connection != null && player.connection.equals(connection)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public boolean removePlayerByID(Integer playerID) {
+        for (Player player : players) {
+            if (player.playerID == playerID && players.removeValue(player, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removePlayer(Player player) {
+        return players.removeValue(player, true);
     }
 
     @Override

@@ -2,26 +2,27 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.enums.GameType;
+import com.betmansmall.screens.client.GameScreen;
+import com.betmansmall.util.logging.Logger;
 
 /**
  * Created by betma on 16.11.2018.
  */
-public class CameraController implements GestureDetector.GestureListener, InputProcessor {
+public class CameraController extends AbstractCameraController {
     public ShapeRenderer shapeRenderer;
     public SpriteBatch spriteBatch;
     public BitmapFont bitmapFont;
 
+    public GameScreen gameScreen;
     public GameField gameField;
     public GameInterface gameInterface;
 
@@ -65,15 +66,16 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     public int prevMouseX, prevMouseY;
     public int prevCellX, prevCellY;
 
-    public CameraController(GameField gameField, GameInterface gameInterface) {
-        Gdx.app.log("CameraController::CameraController()", "--");
+    public CameraController(GameScreen gameScreen) {
+        Logger.logFuncStart("gameScreen:" + gameScreen);
         this.shapeRenderer = new ShapeRenderer();
         this.spriteBatch = new SpriteBatch();
         this.bitmapFont = new BitmapFont();
         this.bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
 
-        this.gameField = gameField;
-        this.gameInterface = gameInterface;
+        this.gameScreen = gameScreen;
+        this.gameField = gameScreen.gameField;
+        this.gameInterface = gameScreen.gameInterface;
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         this.mapWidth = gameField.tmxMap.width;
@@ -97,27 +99,13 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         spriteBatch.dispose();
         bitmapFont.dispose();
 
+        gameScreen = null;
         gameField = null;
         gameInterface = null;
         camera = null;
     }
 
 //    void setBorders(float borderLeftX, float borderRightX, float borderUpY, float borderDownY);
-
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        Gdx.app.log("CameraController::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        return false;
-    }
-
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("CameraController::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
-//        if (gameInterface.touchDown(x, y, count, button)) {
-//            return false;
-//        }
-        return false;
-    }
 
     @Override
     public boolean longPress(float x, float y) {
@@ -151,24 +139,6 @@ public class CameraController implements GestureDetector.GestureListener, InputP
     }
 
     @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY/*, int buttons*/) {
-        Gdx.app.log("CameraController::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-//        if (paning && gameInterface.pan(x, y, deltaX, deltaY)) {
-//            return true;
-//        }
-        return false;
-    }
-
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
-        Gdx.app.log("CameraController::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-//        if(gameInterface.panStop(x, y, pointer, button)) {
-//            return true;
-//        }
-        return false;
-    }
-
-    @Override
     public boolean zoom(float initialDistance, float distance) {
         Gdx.app.log("CameraController::zoom()", "-- initialDistance:" + initialDistance + " distance:" + distance);
         Gdx.app.log("CameraController::zoom()", "-- initialScale:" + initialScale);
@@ -177,35 +147,6 @@ public class CameraController implements GestureDetector.GestureListener, InputP
         if (newZoom < zoomMax && newZoom > zoomMin) {
             camera.zoom = newZoom;
         }
-        return false;
-    }
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        Gdx.app.log("CameraController::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
-        return false;
-    }
-
-    @Override
-    public void pinchStop() {
-        Gdx.app.log("CameraController::pinchStop()", "--");
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        Gdx.app.log("CameraController::keyDown()", "-- keycode:" + keycode);
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        Gdx.app.log("CameraController::keyUp()", "-- keycode:" + keycode);
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        Gdx.app.log("CameraController::keyTyped()", "-- character:" + character);
         return false;
     }
 

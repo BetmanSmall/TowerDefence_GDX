@@ -40,6 +40,7 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
             new TcpConnection(this, sessionSettings.host, sessionSettings.port);
         } catch (IOException exception) {
             Logger.logError("exception:" + exception);
+            clientGameScreen.game.removeTopScreen(); // TODO mb not good!
             throw new RuntimeException(exception);
         }
     }
@@ -61,6 +62,20 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
                 clientGameScreen.game.sessionSettings.gameSettings.mapPath = serverInfoData.mapPath;
                 clientGameScreen.game.sessionSettings.gameSettings.gameType = serverInfoData.gameType;
                 sessionState = SessionState.RECEIVED_SERVER_INFO_DATA;
+            } else if (networkPackage instanceof PlayerInfoData) {
+                PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+
+                if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.PLAYER_DISCONNECTED) {
+                    sessionSettings.gameSettings.playersManager.removePlayerByID(playerInfoData.playerID);
+                } else {
+                    Player player = new Player();
+                    player.connection = tcpConnection;
+                    player.playerID = playerInfoData.playerID;
+                    player.name = playerInfoData.name;
+                    player.faction = clientGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
+                    sessionSettings.gameSettings.playersManager.players.add(player);
+//                    sessionState = SessionState.NEW_PLAYER_CONNECTED;
+                }
             }
         }
     }
@@ -68,6 +83,7 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
     @Override
     public void onDisconnect(TcpConnection tcpConnection) {
         Logger.logInfo("tcpConnection:" + tcpConnection);
+        clientGameScreen.game.removeTopScreen(); // TODO mb not good!
     }
 
     @Override

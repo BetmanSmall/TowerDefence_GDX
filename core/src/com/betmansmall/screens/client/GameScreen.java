@@ -40,7 +40,7 @@ public class GameScreen extends AbstractScreen {
         Logger.logFuncStart();
         gameField = new GameField(this);
         gameInterface = new GameInterface(this);
-        cameraController = new CameraController(gameField, gameInterface);
+        cameraController = new CameraController(this);
         gameFieldRenderer = new GameFieldRenderer(cameraController);
         gameInterface.setCameraController(cameraController);
 
@@ -251,7 +251,7 @@ public class GameScreen extends AbstractScreen {
             gameInterface.addActionToHistory("-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
             Gdx.app.log("GameScreen::inputHandler()", "-- factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
         }
-}
+    }
 
     @Override
     public void render(float delta) {
