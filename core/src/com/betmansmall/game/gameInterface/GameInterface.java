@@ -601,11 +601,11 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             underConstructionLabel.setText("underConstructionTemplateName:NULL");
             underConstructionLabel.setColor(Color.RED);
         }
-        gamerGoldLabel.setText("gameScreen.gameField.gamerGold:" + gameScreen.gameField.gamerGold);
+        gamerGoldLabel.setText("localPlayer.gold:" + gameScreen.game.sessionSettings.gameSettings.playersManager.localPlayer.gold);
         unitsManagerSize.setText("gameScreen.gameField.unitsManager.units.size:" + gameScreen.gameField.unitsManager.units.size);
         towersManagerSize.setText("gameScreen.gameField.towersManager.towers.size:" + gameScreen.gameField.towersManager.towers.size);
-        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.gameField.gameSettings.missedUnitsForPlayer1 + "/" + gameScreen.gameField.gameSettings.maxOfMissedUnitsForPlayer1);
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.gameField.gameSettings.missedUnitsForComputer0 + "/" + gameScreen.gameField.gameSettings.maxOfMissedUnitsForComputer0);
+        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.gameField.gameSettings.playersManager.localPlayer.missedUnits + "/" + gameScreen.gameField.gameSettings.playersManager.localPlayer.maxOfMissedUnits);
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.gameField.gameSettings.playersManager.localComputer.missedUnits + "/" + gameScreen.gameField.gameSettings.playersManager.localComputer.maxOfMissedUnits);
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameScreen.gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameScreen.gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         unitsSpawn.setText("unitsSpawn:" + gameScreen.gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameScreen.gameField.gamePaused);
@@ -621,7 +621,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //        }
 //        stage.act(delta);
 //        stage.draw();
-        if (playersViewTable.getChildren().size != playersViewTable.playersManager.players.size) {
+        if (playersViewTable.getChildren().size != playersViewTable.playersManager.getPlayers().size) {
             playersViewTable.updateView(); // real time update if new player connected!
         }
     }

@@ -202,6 +202,7 @@ public class CameraController extends AbstractCameraController {
             if (gameField.getUnderConstruction() != null) {
                 if (button == 0) {
                     if (whichCell(touch, isDrawableTowers)) {
+//                        gameScreen.buildTower((int)touch.x, (int)touch.y);
                         gameField.buildTowersWithUnderConstruction((int) touch.x, (int) touch.y);
                     }
                 } else if (button == 1) {
@@ -226,10 +227,11 @@ public class CameraController extends AbstractCameraController {
                                     Gdx.app.log("CameraController::touchUp", "-- x:" + cell.cellX + " y:" + cell.cellY + " cell.isTerrain():" + cell.isTerrain());
                                 } else if (cell.getTower() != null) {
                                     Tower tower = cell.getTower();
-                                    gameField.removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
+//                                    gameField.removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
+                                    gameField.removeTower(tower.cell.cellX, tower.cell.cellY);
                                 } else if (cell.isEmpty()) {
 //                                gameField.towerActions(cell.cellX, cell.cellY);
-                                    gameField.createTower(cell.cellX, cell.cellY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction(), ((int) (Math.random() * 3)));
+                                    gameField.createTower(cell.cellX, cell.cellY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction());
                                     if ((((int) (Math.random() * 2)) == 0) ? true : false) {
                                         int randNumber = (125 + (int) (Math.random() * 2));
                                         cell.setTerrain(gameField.tmxMap.getTileSets().getTileSet(0).getTile(randNumber), true, true);
@@ -248,7 +250,8 @@ public class CameraController extends AbstractCameraController {
                     } else if (gameField.gameSettings.gameType == GameType.TowerDefence) {
                         if (button == 0 || button == 1) {
                             if (whichCell(touch, isDrawableTowers)) {
-                                gameField.towerActions((int) touch.x, (int) touch.y);
+//                                gameField.towerActions((int) touch.x, (int) touch.y);
+                                gameScreen.buildTower((int) touch.x, (int) touch.y);
                             }
                         } else if (button == 2) {
                             if (whichCell(touch, isDrawableUnits)) {
@@ -269,30 +272,32 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-//        Gdx.app.log("CameraController::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY);
-        if (gameField != null && gameField.getUnderConstruction() != null) {
-            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-            if (whichCell(touch, isDrawableTowers)) {
-                gameField.getUnderConstruction().setEndCoors((int)touch.x, (int)touch.y);
+        if (gameField != null) {
+            UnderConstruction underConstruction = gameField.getUnderConstruction();
+            if (underConstruction != null) {
+                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+                if (whichCell(touch, isDrawableTowers)) {
+                    underConstruction.setEndCoors((int) touch.x, (int) touch.y);
+                }
             }
-        }
 
-        if (gameField.getUnderConstruction() == null || Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
-            if (paning) {
-//                whichPrevCell(screenX, screenY, 5);
-                float deltaX = this.prevMouseX - screenX;
-                float deltaY = this.prevMouseY - screenY;
-                prevMouseX = screenX;
-                prevMouseY = screenY;
-                float newCameraX = camera.position.x + (deltaX * camera.zoom);
-                float newCameraY = camera.position.y - (deltaY * camera.zoom);
-                if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
-                    if (borderLeftX < newCameraX && newCameraX < borderRightX &&
-                            borderUpY > newCameraY && newCameraY > borderDownY) {
+            if (underConstruction == null || Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
+                if (paning) {
+//                    whichPrevCell(screenX, screenY, 5);
+                    float deltaX = this.prevMouseX - screenX;
+                    float deltaY = this.prevMouseY - screenY;
+                    prevMouseX = screenX;
+                    prevMouseY = screenY;
+                    float newCameraX = camera.position.x + (deltaX * camera.zoom);
+                    float newCameraY = camera.position.y - (deltaY * camera.zoom);
+                    if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
+                        if (borderLeftX < newCameraX && newCameraX < borderRightX &&
+                                borderUpY > newCameraY && newCameraY > borderDownY) {
+                            camera.position.set(newCameraX, newCameraY, 0.0f);
+                        }
+                    } else {
                         camera.position.set(newCameraX, newCameraY, 0.0f);
                     }
-                } else {
-                    camera.position.set(newCameraX, newCameraY, 0.0f);
                 }
             }
         }
@@ -323,10 +328,13 @@ public class CameraController extends AbstractCameraController {
 ////        pan(screenX, screenY, deltaX, deltaY/*, buttons*/);
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
-        if (gameField != null && gameField.getUnderConstruction() != null) {
-            Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-            if (whichCell(touch, isDrawableTowers)) {
-                gameField.getUnderConstruction().setEndCoors((int)touch.x, (int)touch.y);
+        if (gameField != null) {
+            UnderConstruction underConstruction = gameField.getUnderConstruction();
+            if (underConstruction != null) {
+                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
+                if (whichCell(touch, isDrawableTowers)) {
+                    underConstruction.setEndCoors((int) touch.x, (int) touch.y);
+                }
             }
         }
         return false;

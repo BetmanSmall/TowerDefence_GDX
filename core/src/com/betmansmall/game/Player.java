@@ -10,12 +10,20 @@ public class Player {
     public int playerID;
     public String name;
     public Faction faction;
+    public int gold = 1000;
 
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
     public int maxOfMissedUnits;
     public int missedUnits;
+
+    public Player(TcpConnection connection) {
+        this.connection = connection;
+        if (connection != null) {
+            this.connection.player = this;
+        }
+    }
 
     @Override
     public String toString() {
@@ -29,6 +37,7 @@ public class Player {
         sb.append(",playerID:" + playerID);
         sb.append(",name:" + name);
         sb.append(",faction:" + faction);
+        sb.append(",gold:" + gold);
         if (full) {
             sb.append(",cellSpawnHero:" + cellSpawnHero);
             sb.append(",cellExitHero:" + cellExitHero);

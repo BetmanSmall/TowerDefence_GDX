@@ -30,6 +30,15 @@ public class Faction {
         return templateForTowers;
     }
 
+    public TemplateForTower getTemplateForTower(String templateName) {
+        for (TemplateForTower templateForTower : templateForTowers) {
+            if (templateForTower.templateName.equals(templateName)) {
+                return templateForTower;
+            }
+        }
+        return null;
+    }
+
     public String toString() {
         return toString(false);
     }

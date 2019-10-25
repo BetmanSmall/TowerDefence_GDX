@@ -6,21 +6,39 @@ import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.util.logging.Logger;
 
 public class PlayersManager {
-    public Array<Player> players;
+    private Array<Player> players;
+    public Player localComputer;
     public Player localPlayer;
 
     public PlayersManager() {
         this.players = new Array<>();
-        this.localPlayer = new Player();
 
-        Player computer = new Player();
+        Player computer = new Player(null);
         computer.playerID = 0;
         computer.name = "Computer0";
-        players.add(computer);
+        computer.gold = 999999;
+        this.players.add(computer);
+
+        this.localComputer = computer;
+        this.localPlayer = new Player(null);
+//        this.localPlayer.playerID = 1;
+//        this.players.add(localPlayer); when receive server add localPlayer to players;
     }
 
     public void dispose() {
         this.players.clear();
+    }
+
+    public Array<Player> getPlayers() {
+        return players;
+    }
+
+    public boolean addPlayer(Player player) {
+        if (!players.contains(player, false)) { // TODO or true?
+            players.add(player);
+            return true;
+        }
+        return false;
     }
 
     public Player getPlayerByConnection(TcpConnection connection) {

@@ -1,6 +1,7 @@
 package com.betmansmall.server.networking;
 
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.Player;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.util.logging.Logger;
 
@@ -16,6 +17,8 @@ public class TcpConnection {
 
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
+
+    public Player player;
 
     public TcpConnection(TcpSocketListener tcpSocketListener, String host, int port) throws IOException {
         this(tcpSocketListener, new Socket(host, port));

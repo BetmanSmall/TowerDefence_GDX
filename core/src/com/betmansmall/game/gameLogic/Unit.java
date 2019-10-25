@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
@@ -23,7 +24,7 @@ import java.util.ArrayDeque;
 public class Unit {
     public ArrayDeque<Cell> route;
     public TemplateForUnit templateForUnit;
-    public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
+    public Player player;
 
     public Cell exitCell;
     public Cell currentCell;
@@ -52,7 +53,7 @@ public class Unit {
     public Direction direction;
     private Animation animation;
 
-    public Unit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
+    public Unit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, Player player, Cell exitCell) {
         if(route != null) {
             this.route = route;
             this.templateForUnit = templateForUnit;
@@ -670,7 +671,7 @@ public class Unit {
             } else if (unitAttack.attackType == UnitAttack.AttackType.Range) {
                 Vector2 vector2 = new Vector2(currentPoint);
                 vector2.add(0, cameraController.halfSizeCellY);
-                bullets.add(new UnitBullet(vector2, templateForUnit, towerAttack));
+                bullets.add(new UnitBullet(vector2, this, towerAttack));
             }
             if (!unitAttack.stayToDie) {
                 towerAttack = null;

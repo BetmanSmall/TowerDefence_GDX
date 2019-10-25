@@ -1,9 +1,9 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
 /**
@@ -22,7 +22,7 @@ public class TowersManager {
         towers.clear();
     }
 
-    public Tower createTower(Cell cell, TemplateForTower templateForTower, int player) {
+    public Tower createTower(Cell cell, TemplateForTower templateForTower, Player player) {
         Tower tower = new Tower(cell, templateForTower, player);
         towers.add(tower);
         return tower;

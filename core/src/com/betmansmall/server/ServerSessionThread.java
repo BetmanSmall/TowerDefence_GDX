@@ -3,7 +3,10 @@ package com.betmansmall.server;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.enums.SessionState;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.gameLogic.Tower;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.server.ServerGameScreen;
+import com.betmansmall.server.data.BuildTowerData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.SendObject;
@@ -78,7 +81,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         connections.add(tcpConnection);
         tcpConnection.sendObject(new SendObject(new ServerInfoData(sessionSettings.gameSettings)));
 
-        for (Player player : sessionSettings.gameSettings.playersManager.players) {
+        for (Player player : sessionSettings.gameSettings.playersManager.getPlayers()) {
             if (player.playerID != 0) {
                 tcpConnection.sendObject(new SendObject(new PlayerInfoData(player)));
             }
@@ -92,17 +95,24 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
             if (networkPackage instanceof PlayerInfoData) {
                 PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
 
-                Player player = new Player();
-                player.connection = tcpConnection;
-                player.playerID = sessionSettings.gameSettings.playersManager.players.size;
+                Player player = new Player(tcpConnection);
+                player.playerID = sessionSettings.gameSettings.playersManager.getPlayers().size;
                 player.name = playerInfoData.name;
                 player.faction = serverGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
-                sessionSettings.gameSettings.playersManager.players.add(player);
-//                serverGameScreen.gameInterface.playersViewTable.updateView();
+                sessionSettings.gameSettings.playersManager.addPlayer(player);
                 sessionState = SessionState.PLAYER_CONNECTED;
 
                 for (TcpConnection connection : connections) {
                     connection.sendObject(new SendObject(new PlayerInfoData(player)));
+                }
+            } else if (networkPackage instanceof BuildTowerData) {
+                BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
+
+                TemplateForTower templateForTower = tcpConnection.player.faction.getTemplateForTower(buildTowerData.templateName);
+                Tower tower = serverGameScreen.tryCreateTower(buildTowerData.buildX, buildTowerData.buildY, templateForTower, tcpConnection.player);
+
+                for (TcpConnection connection : connections) {
+                    connection.sendObject(new SendObject(new BuildTowerData(tower)));
                 }
             }
         }

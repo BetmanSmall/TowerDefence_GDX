@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.playerTemplates.SimpleTemplate;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
@@ -15,14 +16,13 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
 
-
 /**
  * Created by Андрей on 24.01.2016.
  */
 public class Tower {
     public Cell cell;
     public TemplateForTower templateForTower;
-    public int player; // In Future need change to enumPlayers {Computer0, Player1, Player2} and etc
+    public Player player;
 
     public Array<Unit> whoAttackMe;
     public Array<Bullet> bullets;
@@ -42,7 +42,7 @@ public class Tower {
     public float hp;
     public int capacity;
 
-    public Tower(Cell cell, TemplateForTower templateForTower, int player) {
+    public Tower(Cell cell, TemplateForTower templateForTower, Player player) {
 //        Gdx.app.log("Tower::Tower()", "-- cell:" + cell + " templateForTower:" + templateForTower + " player:" + player);
         this.cell = cell;
         this.templateForTower = templateForTower;
@@ -175,7 +175,7 @@ public class Tower {
 //                                if (towerCircle != null) {
 //                                    Vector2 towerPos = new Vector2(towerCircle.x, towerCircle.y);
 //                                    cameraController.getCorrectGraphicTowerCoord(towerPos, this.templateForTower.size, cameraController.isDrawableTowers);
-                                    bullets.add(new Bullet(centerGraphicCoordinates, templateForTower, destPoint, cameraController));
+                                    bullets.add(new Bullet(centerGraphicCoordinates, this, destPoint));
 //                                }
                             }
                         }
@@ -214,7 +214,7 @@ public class Tower {
 //                if (towerCircle != null) {
 //                    Vector2 towerPos = new Vector2(towerCircle.x, towerCircle.y);
 //                    cameraController.getCorrectGraphicTowerCoord(towerPos, this.templateForTower.size, cameraController.isDrawableTowers);
-                    bullets.add(new Bullet(centerGraphicCoordinates, templateForTower, unit, cameraController));
+                    bullets.add(new Bullet(centerGraphicCoordinates, this, unit));
 //                }
             }
             elapsedReloadTime = 0f;

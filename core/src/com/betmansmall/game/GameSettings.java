@@ -23,11 +23,6 @@ public class GameSettings {
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
-    public int maxOfMissedUnitsForComputer0;
-    public int missedUnitsForComputer0;
-    public int maxOfMissedUnitsForPlayer1;
-    public int missedUnitsForPlayer1;
-
     public PlayersManager playersManager;
 
     public GameSettings() {
@@ -84,11 +79,6 @@ public class GameSettings {
 
             sb.append(",cellSpawnHero:" + cellSpawnHero);
             sb.append(",cellExitHero:" + cellExitHero);
-
-            sb.append(",maxOfMissedUnitsForComputer0:" + maxOfMissedUnitsForComputer0);
-            sb.append(",missedUnitsForComputer0:" + missedUnitsForComputer0);
-            sb.append(",maxOfMissedUnitsForPlayer1:" + maxOfMissedUnitsForPlayer1);
-            sb.append(",missedUnitsForPlayer1:" + missedUnitsForPlayer1);
 
             sb.append(",playersManager:" + playersManager);
         }

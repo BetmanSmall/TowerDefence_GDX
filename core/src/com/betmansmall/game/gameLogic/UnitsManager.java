@@ -3,6 +3,7 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 
@@ -24,10 +25,10 @@ public class UnitsManager {
         units.clear();
     }
 
-    public Unit createUnit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, int player, Cell exitCell) {
+    public Unit createUnit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, Player player, Cell exitCell) {
         Unit unit = new Unit(route, templateForUnit, player, exitCell);
         units.add(unit);
-        if (player != 0) {
+        if (player.playerID != 0) {
             hero.add(unit);
         }
         return unit;

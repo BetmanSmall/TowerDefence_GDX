@@ -3,6 +3,7 @@ package com.betmansmall.game;
 import com.betmansmall.enums.SessionState;
 import com.betmansmall.screens.client.ClientGameScreen;
 import com.betmansmall.server.SessionSettings;
+import com.betmansmall.server.data.BuildTowerData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.SendObject;
@@ -68,14 +69,17 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
                 if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.PLAYER_DISCONNECTED) {
                     sessionSettings.gameSettings.playersManager.removePlayerByID(playerInfoData.playerID);
                 } else {
-                    Player player = new Player();
-                    player.connection = tcpConnection;
+                    Player player = new Player(tcpConnection);
                     player.playerID = playerInfoData.playerID;
                     player.name = playerInfoData.name;
                     player.faction = clientGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
-                    sessionSettings.gameSettings.playersManager.players.add(player);
+                    sessionSettings.gameSettings.playersManager.addPlayer(player);
 //                    sessionState = SessionState.NEW_PLAYER_CONNECTED;
                 }
+            } else if (networkPackage instanceof BuildTowerData) {
+                BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
+
+                clientGameScreen.buildTowerFromServer(buildTowerData, tcpConnection.player);
             }
         }
     }
@@ -92,7 +96,7 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
         exception.printStackTrace();
     }
 
-//    private synchronized void printMSG(final String msgWarn) { // synchronized for different threads;
-//        System.out.println("ClientSessionThread::printMSG(); -- " + msgWarn);
-//    }
+    public synchronized void sendObject(final SendObject sendObject) {
+        this.connection.sendObject(sendObject);
+    }
 }

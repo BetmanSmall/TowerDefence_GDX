@@ -238,7 +238,7 @@ public class Cell {
 
     public Unit getHero() {
         for (Unit unit : units) {
-            if (unit.player == 1) {
+            if (unit.player.playerID == 1) {
                 return unit;
             }
         }

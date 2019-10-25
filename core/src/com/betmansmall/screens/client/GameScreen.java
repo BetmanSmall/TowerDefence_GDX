@@ -8,10 +8,13 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.GameMaster;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.render.GameFieldRenderer;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
@@ -52,14 +55,6 @@ public class GameScreen extends AbstractScreen {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
-
-    @Override
-    public void show() {
-        Logger.logFuncStart();
-//        initGameField();
-
-//        TTW.input.addProcessor(inputMultiplexer);
     }
 
     private void inputHandler(float delta) {
@@ -285,11 +280,6 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void resize(int width, int height) {
         Gdx.app.log("GameScreen::resize(" + width + ", " + height + ")", "--");
-//        if(Gdx.app.getType() == Application.ApplicationType.Android) {
-//            gameInterface.stage.getViewport().update(width/2, height/2, true);
-//        } else {
-//            gameInterface.getViewport().update(width, height, true);
-//        }
 
         if (gameInterface != null) {
             gameInterface.resize(width, height);
@@ -302,20 +292,14 @@ public class GameScreen extends AbstractScreen {
         }
     }
 
-    @Override
-    public void pause() {
-        Gdx.app.log("GameScreen::pause()", "--");
+    public Tower buildTower(int buildX, int buildY) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
+        return null;
     }
 
-    @Override
-    public void resume() {
-        Gdx.app.log("GameScreen::resume()", "--");
-    }
-
-    @Override
-    public void hide() {
-        Gdx.app.log("GameScreen::hide()", "--");
-//        TTW.input.removeProcessor(TTW.input.size()-1);
+    public Tower tryCreateTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
+        return gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower, player);
     }
 
     public String toString() {

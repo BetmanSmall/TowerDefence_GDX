@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
@@ -17,12 +18,12 @@ import com.badlogic.gdx.math.Vector2;
  * Created by betmansmall on 29.03.2016.
  */
 public class Bullet {
-//    public UnitsManager unitsManager;
+    public TemplateForTower templateForTower;
+    public Player player;
     public Unit unit;
     public float ammoExpSize;
     public float ammoSize;
     public float ammoSpeed;
-    public TemplateForTower templateForTower;
 
     public TextureRegion textureRegion;
 
@@ -36,42 +37,37 @@ public class Bullet {
     public Animation animation;
     public float flyingTime;
 
-    public Bullet(Vector2 currentPoint, TemplateForTower templateForTower, Vector2 destPoint, CameraController cameraController) {
-//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint);
-//        Gdx.app.log("Bullet::Bullet()", "-- templateForTower:" + templateForTower);
-//        Gdx.app.log("Bullet::Bullet()", "-- destPoint:" + destPoint);
-//        Gdx.app.log("Bullet::Bullet()", "-- cameraController:" + cameraController);
+    public Bullet(Vector2 currentPoint, Tower tower, Vector2 destPoint) {
+//        Logger.logFuncStart("currentPoint:" + currentPoint, "tower:" + tower, "destPoint:" + destPoint);
+        this.templateForTower = tower.templateForTower;
+        this.player = tower.player;
+        this.unit = null;
         this.ammoExpSize = templateForTower.ammoSize;
         this.ammoSize = templateForTower.ammoSize;
         this.ammoSpeed = templateForTower.ammoSpeed;
-        this.templateForTower = templateForTower;
-//        Gdx.app.log("Bullet::Bullet()", "-- ammoExpSize:" + ammoExpSize);
-//        Gdx.app.log("Bullet::Bullet()", "-- ammoSize:" + ammoSize);
-//        Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
+//        Logger.logDebug("ammoExpSize:" + ammoExpSize + ",ammoSize:" + ammoSize + ",ammoSpeed:" + ammoSpeed);
 
         this.currentPoint = new Vector2(currentPoint);
         this.currCircle = new Circle(currentPoint, ammoSize);
         this.endPoint = new Vector2(destPoint);
         this.endCircle = new Circle(destPoint, 3f);
-//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + " currCircle:" + currCircle);
-//        Gdx.app.log("Bullet::Bullet()", "-- endPoint:" + endPoint + " endCircle:" + endCircle);
+//        Logger.logDebug("currentPoint:" + currentPoint + " currCircle:" + currCircle);
+//        Logger.logDebug("endPoint:" + endPoint + " endCircle:" + endCircle);
 
         velocity = new Vector2(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y);
         velocity.nor().scl(Math.min(currentPoint.dst(endPoint.x, endPoint.y), ammoSpeed));
-//        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
+//        Logger.logDebug("velocity:" + velocity);
         setAnimation("ammo_");
     }
 
-    public Bullet(Vector2 currentPoint, TemplateForTower templateForTower, Unit unit, CameraController cameraController) {
-//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint);
-//        Gdx.app.log("Bullet::Bullet()", "-- templateForTower:" + templateForTower);
-//        Gdx.app.log("Bullet::Bullet()", "-- unit:" + unit);
-//        Gdx.app.log("Bullet::Bullet()", "-- cameraController:" + cameraController);
+    public Bullet(Vector2 currentPoint, Tower tower, Unit unit) {
+//        Logger.logFuncStart("currentPoint:" + currentPoint, "tower:" + tower, "unit:" + unit);
+        this.templateForTower = tower.templateForTower;
+        this.player = tower.player;
+        this.unit = unit;
         this.ammoExpSize = templateForTower.ammoSize;
         this.ammoSize = templateForTower.ammoSize;
         this.ammoSpeed = templateForTower.ammoSpeed;
-        this.templateForTower = templateForTower;
-        this.unit = unit;
 
         this.currentPoint = new Vector2(currentPoint);
         this.currCircle = new Circle(currentPoint, ammoSize);
@@ -86,27 +82,30 @@ public class Bullet {
 //        setAnimation("ammo_");
         TiledMapTile tiledMapTile = templateForTower.animations.get("ammo_" + Direction.UP);
         this.textureRegion = tiledMapTile != null ? tiledMapTile.getTextureRegion() : templateForTower.idleTile.getTextureRegion();
+//        Logger.logDebug("currentPoint:" + currentPoint + ", endCircle:" + endCircle);
+//        Logger.logDebug("ammoSpeed:" + ammoSpeed);
 
-//        Gdx.app.log("Bullet::Bullet()", "-- currentPoint:" + currentPoint + ", endCircle:" + endCircle);
-//        Gdx.app.log("Bullet::Bullet()", "-- ammoSpeed:" + ammoSpeed);
         velocity = new Vector2(endCircle.x - currentPoint.x, endCircle.y - currentPoint.y);
         velocity.nor().scl(Math.min(currentPoint.dst(endCircle.x, endCircle.y), ammoSpeed));
-//        Gdx.app.log("Bullet::Bullet()", "-- velocity:" + velocity);
+//        Logger.logDebug("velocity:" + velocity);
 //        setAnimation("ammo_");
     }
 
     public void dispose() {
-        unit = null;
-        templateForTower = null;
-        textureRegion = null;
+        this.templateForTower = null;
+        this.player = null;
+        this.unit = null;
 
-        currentPoint = null;
-        currCircle = null;
-        endPoint = null;
-        endCircle = null;
-        velocity = null;
+        this.textureRegion = null;
 
-        animation = null;
+        this.currentPoint = null;
+        this.currCircle = null;
+        this.endPoint = null;
+        this.endCircle = null;
+        this.velocity = null;
+
+        this.direction = null;
+        this.animation = null;
     }
 
     void setAnimation(String action) {
@@ -207,7 +206,7 @@ public class Bullet {
                 if (unitCircle != null) {
                     if (currCircle.overlaps(unitCircle)) {
                         if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
-                            cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
+                            player.gold += unit.templateForUnit.bounty;
                         }
                         return 0;
                     }
@@ -226,7 +225,7 @@ public class Bullet {
                 if (currCircle.overlaps(unitCircle)) {
                     hit = true;
                     if (unit.die(templateForTower.damage, templateForTower.towerShellEffect)) {
-                        cameraController.gameField.gamerGold += unit.templateForUnit.bounty;
+                        player.gold += unit.templateForUnit.bounty;
                     }
                 }
             }
@@ -243,10 +242,12 @@ public class Bullet {
         sb.append("Bullet[");
         sb.append("unit:" + unit);
         if (full) {
+            sb.append(",templateForTower:" + templateForTower);
+            sb.append(",player:" + player);
+
             sb.append(",ammoExpSize:" + ammoExpSize);
             sb.append(",ammoSize:" + ammoSize);
             sb.append(",ammoSpeed:" + ammoSpeed);
-            sb.append(",templateForTower:" + templateForTower);
             sb.append(",textureRegion:" + textureRegion);
             sb.append(",currentPoint:" + currentPoint);
             sb.append(",currCircle:" + currCircle);

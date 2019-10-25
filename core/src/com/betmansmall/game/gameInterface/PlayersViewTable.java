@@ -26,9 +26,9 @@ public class PlayersViewTable extends Table {
     }
 
     public void updateView() {
-        Logger.logFuncStart(playersManager.players.toString());
+        Logger.logFuncStart(playersManager.getPlayers().toString());
         clear();
-        for (Player player : playersManager.players) {
+        for (Player player : playersManager.getPlayers()) {
             Table table = new Table();
             Label playerIDlabel = new Label("playerID:" + player.playerID, getSkin());
             table.add(playerIDlabel).row();

@@ -40,9 +40,7 @@ public class GameMaster extends Game {
 
     public CommandLine cmd;
 
-    public GameMaster() {
-
-    }
+    public GameMaster() {}
 
     public GameMaster(CommandLine cmd) {
         Logger.logFuncStart(cmd.getArgs());
