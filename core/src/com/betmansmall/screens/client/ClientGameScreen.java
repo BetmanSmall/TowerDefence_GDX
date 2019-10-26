@@ -14,11 +14,8 @@ public class ClientGameScreen extends GameScreen {
     public ClientSessionThread clientSessionThread;
 
     public ClientGameScreen(GameMaster gameMaster, Player player) {
-        super(gameMaster);
+        super(gameMaster, player);
         Logger.logFuncStart();
-
-        playersManager.localServer = new Player(null, Player.Type.SERVER, 0);
-        playersManager.localPlayer = player;
 
         this.clientSessionThread = new ClientSessionThread(this);
         clientSessionThread.start();

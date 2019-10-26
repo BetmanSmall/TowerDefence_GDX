@@ -979,17 +979,16 @@ public class GameField {
                 }
             }
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            if (gameScreen.playersManager.localPlayer.missedUnits >= gameScreen.playersManager.localPlayer.maxOfMissedUnits) {
-//                Logger.logDebug("LOSE!!");
-                return GameState.LOSE;
-            } else {
-                if (gameScreen.playersManager.localServer.missedUnits >= gameScreen.playersManager.localServer.maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
-//                    Logger.logDebug("WIN!!");
-                    return GameState.WIN;
-                }
-                if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
-//                    Logger.logDebug("WIN!!");
-                    return GameState.WIN;
+            if (gameScreen.playersManager.localServer != null && gameScreen.playersManager.localPlayer != null) {
+                if (gameScreen.playersManager.localPlayer.missedUnits >= gameScreen.playersManager.localPlayer.maxOfMissedUnits) {
+                    return GameState.LOSE;
+                } else {
+                    if (gameScreen.playersManager.localServer.missedUnits >= gameScreen.playersManager.localServer.maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
+                        return GameState.WIN;
+                    }
+                    if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
+                        return GameState.WIN;
+                    }
                 }
             }
         } else {

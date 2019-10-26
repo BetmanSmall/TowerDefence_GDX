@@ -112,7 +112,9 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
                 Tower tower = serverGameScreen.tryCreateTower(buildTowerData.buildX, buildTowerData.buildY, templateForTower, tcpConnection.player);
 
                 for (TcpConnection connection : connections) {
-                    connection.sendObject(new SendObject(new BuildTowerData(tower)));
+                    if (tcpConnection.equals(connection)) {
+                        connection.sendObject(new SendObject(new BuildTowerData(tower)));
+                    }
                 }
             }
         }
@@ -134,5 +136,11 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     public void onException(TcpConnection tcpConnection, Exception exception) {
         Logger.logError("tcpConnection:" + tcpConnection + ", exception:" + exception);
         exception.printStackTrace();
+    }
+
+    public synchronized void sendObjectToAll(final SendObject sendObject) {
+        for (TcpConnection connection : connections) {
+            connection.sendObject(sendObject);
+        }
     }
 }

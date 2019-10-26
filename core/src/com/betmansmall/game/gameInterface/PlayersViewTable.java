@@ -29,14 +29,21 @@ public class PlayersViewTable extends Table {
         Logger.logFuncStart(playersManager.getPlayers().toString());
         clear();
         for (Player player : playersManager.getPlayers()) {
+            Logger.logDebug("player:" + player);
             Table table = new Table();
-            Label playerIDlabel = new Label("playerID:" + player.playerID, getSkin());
-            table.add(playerIDlabel).row();
+
+            table.add(new Label("connection:" + ((player.connection!=null)?player.connection.getSocketIP():null), getSkin())).row();
+
+            Label typeLabel = new Label("type:" + player.type, getSkin());
+            table.add(typeLabel).row();
+            Label playerIDLabel = new Label("playerID:" + player.playerID, getSkin());
+            table.add(playerIDLabel).row();
             Label nameLabel = new Label("name:" + player.name, getSkin());
             table.add(nameLabel).row();
 
             table.add(new Label("factionName:" + ((player.faction!=null)?player.faction.getName():null), getSkin())).row();
-            table.add(new Label("connection:" + ((player.connection!=null)?player.connection.getSocketIP():null), getSkin())).row();
+            table.add(new Label("gold:" + player.gold, getSkin())).row();
+
             table.add(new Label("cellSpawnHero:" + player.cellSpawnHero, getSkin())).row();
             table.add(new Label("cellExitHero:" + player.cellExitHero, getSkin())).row();
             table.add(new Label("maxOfMissedUnits:" + player.maxOfMissedUnits, getSkin())).row();

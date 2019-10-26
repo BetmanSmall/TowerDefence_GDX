@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.GameType;
+import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
@@ -105,13 +106,16 @@ public class ServerSettingsScreen extends AbstractScreen {
                 game.sessionSettings.port = Integer.parseInt(portField.getText());
                 game.sessionSettings.gameSettings.gameType = gameTypeSelectBox.getSelected();
                 game.sessionSettings.gameSettings.mapPath = mapSelectBox.getSelected();
-                game.sessionSettings.localServer = true;
 
                 Player player = null;
                 if (withControlCheckBox.isChecked()) {
                     player = new Player(null, Player.Type.CLIENT, 1);
                     player.name = nameField.getText();
                     player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
+
+                    game.sessionSettings.sessionType = SessionType.SERVER_AND_CLIENT;
+                } else {
+                    game.sessionSettings.sessionType = SessionType.SERVER_STANDALONE;
                 }
                 game.addScreen(new ServerGameScreen(game, player));
             }
@@ -129,7 +133,7 @@ public class ServerSettingsScreen extends AbstractScreen {
 
         playerSettings = new VisTable();
         playerSettings.add(new VisLabel("name:"));
-        nameField = new VisTextField("Server");
+        nameField = new VisTextField("ClientByServer");
         playerSettings.add(nameField).row();
 
         playerSettings.add(new VisLabel("faction:"));

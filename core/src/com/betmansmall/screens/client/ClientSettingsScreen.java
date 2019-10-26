@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
@@ -65,6 +66,7 @@ public class ClientSettingsScreen extends AbstractScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 game.sessionSettings.host = hostField.getText();
                 game.sessionSettings.port = Integer.parseInt(portField.getText());
+                game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
 
                 Player player = new Player(null, Player.Type.CLIENT, null);
                 player.name = nameField.getText();

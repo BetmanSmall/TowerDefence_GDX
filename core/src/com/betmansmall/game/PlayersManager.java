@@ -2,6 +2,7 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.SessionType;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.util.logging.Logger;
 
@@ -10,19 +11,40 @@ public class PlayersManager {
     public Player localServer;
     public Player localPlayer;
 
-    public PlayersManager() {
+    public PlayersManager(SessionType sessionType, Player localPlayer) {
+        Logger.logFuncStart("sessionType:" + sessionType, "localPlayer:" + localPlayer);
         this.players = new Array<>();
 
-//        Player computer = new Player(null);
-//        computer.playerID = 0;
-//        computer.name = "Computer0";
-//        computer.gold = 999999;
-//        this.players.add(computer);
+        if (sessionType == SessionType.SERVER_STANDALONE) {
+            this.localServer = new Player(null, Player.Type.SERVER, 0);
+            this.localServer.name = "ServerStandalone";
+            this.localServer.gold = 999999;
+            this.players.add(localServer);
 
-//        this.localComputer = computer;
-//        this.localPlayer = new Player(null);
-//        this.localPlayer.playerID = 1;
-//        this.players.add(localPlayer); when receive server add localPlayer to players;
+            this.localPlayer = null;
+        } else if (sessionType == SessionType.SERVER_AND_CLIENT) {
+            this.localServer = new Player(null, Player.Type.SERVER, 0);
+            this.localServer.name = "ServerByClient";
+            this.localServer.gold = 999999;
+            this.players.add(localServer);
+
+            this.localPlayer = localPlayer;
+            this.players.add(localPlayer);
+        } else if (sessionType == SessionType.CLIENT_ONLY) {
+            this.localServer = null;
+            this.localPlayer = localPlayer;
+        } else if (sessionType == SessionType.CLIENT_STANDALONE) {
+            this.localServer = new Player(null, Player.Type.SERVER, 0);
+            this.localServer.name = "Server_ClientStandalone";
+            this.localServer.gold = 999999;
+            this.players.add(localServer);
+
+            this.localPlayer = new Player(null, Player.Type.CLIENT, 1);
+            this.localPlayer.name = "ClientStandalone";
+            this.localPlayer.gold = 9999;
+//            this.localPlayer.faction;
+            this.players.add(this.localPlayer);
+        }
     }
 
     public void dispose() {
@@ -34,6 +56,9 @@ public class PlayersManager {
     }
 
     public boolean addPlayer(Player player) {
+        if (player.playerID == 0 && player.type == Player.Type.SERVER) {
+            localServer = player;
+        }
         if (!players.contains(player, false)) { // TODO or true?
             players.add(player);
             return true;

@@ -2,6 +2,7 @@ package com.betmansmall.server.data;
 
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.Player;
+import com.betmansmall.util.logging.Logger;
 
 public class PlayerInfoData implements NetworkPackage {
     public Player.Type type;
@@ -10,6 +11,7 @@ public class PlayerInfoData implements NetworkPackage {
     public String factionName;
 
     public PlayerInfoData(Player player) {
+        Logger.logFuncStart("player:" + player);
         this.type = player.type;
         this.playerID = player.playerID;
         this.name = player.name;

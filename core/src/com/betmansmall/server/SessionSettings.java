@@ -1,17 +1,18 @@
 package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.GameSettings;
 
 public class SessionSettings {
-    public boolean localServer;
+    public SessionType sessionType;
     public String host;
     public Integer port;
 
     public GameSettings gameSettings;
 
     public SessionSettings() {
-        this.localServer = false;
+        this.sessionType = SessionType.SERVER_STANDALONE;
         this.host = "localhost";
         this.port = 48999;
 
@@ -30,7 +31,7 @@ public class SessionSettings {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("SessionSettings[");
-        sb.append("localServer:" + localServer);
+        sb.append("sessionType:" + sessionType);
         if (full) {
             sb.append(",host:" + host);
             sb.append(",port:" + port);

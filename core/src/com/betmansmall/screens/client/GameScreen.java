@@ -8,6 +8,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.GameMaster;
+import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
 import com.betmansmall.game.gameInterface.GameInterface;
@@ -31,7 +32,14 @@ public class GameScreen extends AbstractScreen {
     public GameScreen(GameMaster gameMaster) {
         super(gameMaster);
         Logger.logFuncStart();
-        this.playersManager = new PlayersManager();
+        gameMaster.sessionSettings.sessionType = SessionType.CLIENT_STANDALONE;
+        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, null);
+    }
+
+    public GameScreen(GameMaster gameMaster, Player player) {
+        super(gameMaster);
+        Logger.logFuncStart();
+        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, player);
     }
 
     @Override

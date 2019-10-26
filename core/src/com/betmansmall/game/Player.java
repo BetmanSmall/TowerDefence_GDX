@@ -16,7 +16,7 @@ public class Player {
     public Integer playerID;
     public String name;
     public Faction faction;
-    public int gold = 1000;
+    public int gold = 10000;
 
     public Cell cellSpawnHero;
     public Cell cellExitHero;
@@ -42,6 +42,7 @@ public class Player {
         StringBuilder sb = new StringBuilder();
         sb.append("Player[");
         sb.append("connection:" + connection);
+        sb.append(",type:" + type);
         sb.append(",playerID:" + playerID);
         sb.append(",name:" + name);
         sb.append(",faction:" + faction);

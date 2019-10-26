@@ -60,9 +60,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     public TextButton startAndPauseButton;
     public TextButton gameSpeedMinus, gameSpeedPlus;
     public Label fpsLabel, deltaTimeLabel, mapPathLabel, gameType, isometricLabel,
-            underConstrEndCoord, underConstructionLabel,
-            gamerGoldLabel, unitsManagerSize, towersManagerSize,
-            missedAndMaxForPlayer1, missedAndMaxForComputer0,
+            underConstrEndCoord, underConstructionLabel, unitsManagerSize, towersManagerSize,
+            gamerGoldLabel, missedAndMaxForPlayer1, missedAndMaxForComputer0,
             nextUnitSpawnLabel,
             unitsSpawn, gamePaused,
             towersSelectorCoord,
@@ -192,12 +191,12 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         infoTabloTable.add(underConstrEndCoord).left().row();
         underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(underConstructionLabel).left().row();
-        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
-        infoTabloTable.add(gamerGoldLabel).left().row();
         unitsManagerSize = new Label("unitsManagerSize:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(unitsManagerSize).left().row();
         towersManagerSize = new Label("towersManagerSize:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
         infoTabloTable.add(towersManagerSize).left().row();
+        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        infoTabloTable.add(gamerGoldLabel).left().row();
         missedAndMaxForPlayer1 = new Label("UnitsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(missedAndMaxForPlayer1).left().row();
         missedAndMaxForComputer0 = new Label("UnitsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
@@ -601,11 +600,15 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             underConstructionLabel.setText("underConstructionTemplateName:NULL");
             underConstructionLabel.setColor(Color.RED);
         }
-        gamerGoldLabel.setText("localPlayer.gold:" + gameScreen.playersManager.localPlayer.gold);
         unitsManagerSize.setText("gameScreen.gameField.unitsManager.units.size:" + gameScreen.gameField.unitsManager.units.size);
         towersManagerSize.setText("gameScreen.gameField.towersManager.towers.size:" + gameScreen.gameField.towersManager.towers.size);
-        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.playersManager.localPlayer.missedUnits + "/" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.playersManager.localServer.missedUnits + "/" + gameScreen.playersManager.localServer.maxOfMissedUnits);
+        if (gameScreen.playersManager.localPlayer != null) {
+            gamerGoldLabel.setText("localPlayer.gold:" + gameScreen.playersManager.localPlayer.gold);
+            missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.playersManager.localPlayer.missedUnits + "/" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
+        }
+        if (gameScreen.playersManager.localServer != null) {
+            missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.playersManager.localServer.missedUnits + "/" + gameScreen.playersManager.localServer.maxOfMissedUnits);
+        }
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameScreen.gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameScreen.gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         unitsSpawn.setText("unitsSpawn:" + gameScreen.gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameScreen.gameField.gamePaused);

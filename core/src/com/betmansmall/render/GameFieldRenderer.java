@@ -950,14 +950,14 @@ public class GameFieldRenderer {
             if(cameraController.isDrawableGridNav == 5) {
                 if(cameraController.isDrawableTowers == 5) {
                     for (int m = 1; m <= cameraController.isDrawableTowers; m++) {
-                        cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y);
+                        cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player.playerID), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y);
                     }
                 } else if(cameraController.isDrawableTowers != 0) {
-                    cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y);
+                    cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player.playerID), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y);
                 }
             } else if(cameraController.isDrawableGridNav != 0) {
                 if(cameraController.isDrawableGridNav == cameraController.isDrawableTowers) {
-                    cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y);
+                    cameraController.bitmapFont.draw(cameraController.spriteBatch, String.valueOf(tower.player.playerID), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y);
                 }
             }
         }
