@@ -209,7 +209,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(gamePaused).left().row();
 
-        playersViewTable = new PlayersViewTable(gameScreen.game.sessionSettings.gameSettings.playersManager, skin);
+        playersViewTable = new PlayersViewTable(gameScreen.playersManager, skin);
         playersViewTable.setFillParent(true);
         addActor(playersViewTable);
 
@@ -601,11 +601,11 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             underConstructionLabel.setText("underConstructionTemplateName:NULL");
             underConstructionLabel.setColor(Color.RED);
         }
-        gamerGoldLabel.setText("localPlayer.gold:" + gameScreen.game.sessionSettings.gameSettings.playersManager.localPlayer.gold);
+        gamerGoldLabel.setText("localPlayer.gold:" + gameScreen.playersManager.localPlayer.gold);
         unitsManagerSize.setText("gameScreen.gameField.unitsManager.units.size:" + gameScreen.gameField.unitsManager.units.size);
         towersManagerSize.setText("gameScreen.gameField.towersManager.towers.size:" + gameScreen.gameField.towersManager.towers.size);
-        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.gameField.gameSettings.playersManager.localPlayer.missedUnits + "/" + gameScreen.gameField.gameSettings.playersManager.localPlayer.maxOfMissedUnits);
-        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.gameField.gameSettings.playersManager.localComputer.missedUnits + "/" + gameScreen.gameField.gameSettings.playersManager.localComputer.maxOfMissedUnits);
+        missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.playersManager.localPlayer.missedUnits + "/" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
+        missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.playersManager.localServer.missedUnits + "/" + gameScreen.playersManager.localServer.maxOfMissedUnits);
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameScreen.gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameScreen.gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         unitsSpawn.setText("unitsSpawn:" + gameScreen.gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameScreen.gameField.gamePaused);

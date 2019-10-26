@@ -942,9 +942,9 @@ public class GameFieldRenderer {
                 }
             }
             cameraController.bitmapFont.getData().setScale(0.9f);
-            if (tower.player == gameField.gameSettings.playersManager.localComputer) {
+            if (tower.player == gameField.gameScreen.playersManager.localServer) {
                 cameraController.bitmapFont.setColor(Color.RED);
-            } else if (tower.player == gameField.gameSettings.playersManager.localPlayer) {
+            } else if (tower.player == gameField.gameScreen.playersManager.localPlayer) {
                 cameraController.bitmapFont.setColor(Color.BLUE);
             }
             if(cameraController.isDrawableGridNav == 5) {
@@ -970,7 +970,7 @@ public class GameFieldRenderer {
 
         float gridNavRadius = cameraController.sizeCellX/22f;
         for (Unit unit : gameField.unitsManager.units) {
-            if (unit.player == gameField.gameSettings.playersManager.localPlayer) {
+            if (unit.player == gameField.gameScreen.playersManager.localPlayer) {
                 cameraController.shapeRenderer.setColor(Color.WHITE);
             } else {
                 cameraController.shapeRenderer.setColor(Color.BROWN); // (100, 60, 21, 1f);
@@ -1060,14 +1060,14 @@ public class GameFieldRenderer {
         UnderConstruction underConstruction = gameField.getUnderConstruction();
         if (underConstruction != null) {
             int goldNeed = underConstruction.templateForTower.cost;
-            boolean enoughGold = (gameField.gameSettings.playersManager.localPlayer.gold >= goldNeed) ? true : false;
+            boolean enoughGold = (gameField.gameScreen.playersManager.localPlayer.gold >= goldNeed) ? true : false;
             if (underConstruction.state == 0) {
                 drawTowerUnderConstruction(gameField, underConstruction.endX, underConstruction.endY, underConstruction.templateForTower, enoughGold);
             } else if (underConstruction.state == 1) {
                 drawTowerUnderConstruction(gameField, underConstruction.startX, underConstruction.startY, underConstruction.templateForTower, enoughGold);
                 for (int k = 0; k < underConstruction.coorsX.size; k++) {
                     goldNeed += underConstruction.templateForTower.cost;
-                    enoughGold = (gameField.gameSettings.playersManager.localPlayer.gold >= goldNeed) ? true : false;
+                    enoughGold = (gameField.gameScreen.playersManager.localPlayer.gold >= goldNeed) ? true : false;
                     drawTowerUnderConstruction(gameField, underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, enoughGold);
                 }
             }

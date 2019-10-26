@@ -7,20 +7,20 @@ import com.betmansmall.util.logging.Logger;
 
 public class PlayersManager {
     private Array<Player> players;
-    public Player localComputer;
+    public Player localServer;
     public Player localPlayer;
 
     public PlayersManager() {
         this.players = new Array<>();
 
-        Player computer = new Player(null);
-        computer.playerID = 0;
-        computer.name = "Computer0";
-        computer.gold = 999999;
-        this.players.add(computer);
+//        Player computer = new Player(null);
+//        computer.playerID = 0;
+//        computer.name = "Computer0";
+//        computer.gold = 999999;
+//        this.players.add(computer);
 
-        this.localComputer = computer;
-        this.localPlayer = new Player(null);
+//        this.localComputer = computer;
+//        this.localPlayer = new Player(null);
 //        this.localPlayer.playerID = 1;
 //        this.players.add(localPlayer); when receive server add localPlayer to players;
     }
@@ -72,7 +72,8 @@ public class PlayersManager {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("PlayersManager[");
-        sb.append("players.size:" + players.size);
+        sb.append("localPlayer:" + localPlayer);
+        sb.append(",players.size:" + players.size);
         if (full) {
             for (Player player : players) {
                 sb.append("," + player);

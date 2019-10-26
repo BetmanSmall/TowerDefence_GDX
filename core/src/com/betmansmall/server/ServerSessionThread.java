@@ -81,7 +81,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         connections.add(tcpConnection);
         tcpConnection.sendObject(new SendObject(new ServerInfoData(sessionSettings.gameSettings)));
 
-        for (Player player : sessionSettings.gameSettings.playersManager.getPlayers()) {
+        for (Player player : serverGameScreen.playersManager.getPlayers()) {
             if (player.playerID != 0) {
                 tcpConnection.sendObject(new SendObject(new PlayerInfoData(player)));
             }
@@ -95,11 +95,11 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
             if (networkPackage instanceof PlayerInfoData) {
                 PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
 
-                Player player = new Player(tcpConnection);
-                player.playerID = sessionSettings.gameSettings.playersManager.getPlayers().size;
+                Player player = new Player(tcpConnection, playerInfoData.type, null);
+                player.playerID = serverGameScreen.playersManager.getPlayers().size;
                 player.name = playerInfoData.name;
                 player.faction = serverGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
-                sessionSettings.gameSettings.playersManager.addPlayer(player);
+                serverGameScreen.playersManager.addPlayer(player);
                 sessionState = SessionState.PLAYER_CONNECTED;
 
                 for (TcpConnection connection : connections) {
@@ -122,11 +122,11 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     public void onDisconnect(TcpConnection tcpConnection) {
         Logger.logInfo("tcpConnection:" + tcpConnection);
         connections.removeValue(tcpConnection, true);
-        Player player = sessionSettings.gameSettings.playersManager.getPlayerByConnection(tcpConnection);
+        Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
         for (TcpConnection connection : connections) {
             connection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_DISCONNECTED, new PlayerInfoData(player)));
         }
-        sessionSettings.gameSettings.playersManager.removePlayer(player);
+        serverGameScreen.playersManager.removePlayer(player);
 //        gameServer.playerDisconnect(tcpConnection);
     }
 

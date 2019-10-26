@@ -138,17 +138,17 @@ public class GameField {
             MapProperties mapProperties = tmxMap.getProperties();
             Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
 //            if (mapProperties.containsKey("gamerGold")) {
-//                gameSettings.playersManager.localPlayer.gold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
+//                gameScreen.playersManager.localPlayer.gold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
 //            }
-            gameSettings.playersManager.localComputer.maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForComputer0", gameSettings.playersManager.localPlayer.gold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
-            gameSettings.playersManager.localComputer.missedUnits = 0;
-            if (gameSettings.playersManager.localPlayer.maxOfMissedUnits == 0) {
-                gameSettings.playersManager.localPlayer.maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions() / 8, Integer.class); // it is not true | need implement getNumberOfUnits()
-            }
-            gameSettings.playersManager.localPlayer.missedUnits = 0;
-            Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gameSettings.playersManager.localPlayer.gold);
-            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForComputer0:" + gameSettings.playersManager.localComputer.maxOfMissedUnits);
-            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForPlayer1:" + gameSettings.playersManager.localPlayer.maxOfMissedUnits);
+//            gameScreen.playersManager.localServer.maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForComputer0", gameScreen.playersManager.localPlayer.gold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
+//            gameScreen.playersManager.localServer.missedUnits = 0;
+//            if (gameScreen.playersManager.localPlayer.maxOfMissedUnits == 0) {
+//                gameScreen.playersManager.localPlayer.maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions() / 8, Integer.class); // it is not true | need implement getNumberOfUnits()
+//            }
+//            gameScreen.playersManager.localPlayer.missedUnits = 0;
+//            Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gameScreen.playersManager.localPlayer.gold);
+//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForComputer0:" + gameScreen.playersManager.localServer.maxOfMissedUnits);
+//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
         } else {
             Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
@@ -299,8 +299,8 @@ public class GameField {
 
     public Unit spawnUnitFromUser(TemplateForUnit templateForUnit) {
         Gdx.app.log("GameField::spawnUnitFromUser()", "-- templateForUnit:" + templateForUnit);
-        if (gameSettings.playersManager.localPlayer.gold >= templateForUnit.cost) {
-            gameSettings.playersManager.localPlayer.gold -= templateForUnit.cost;
+        if (gameScreen.playersManager.localPlayer.gold >= templateForUnit.cost) {
+            gameScreen.playersManager.localPlayer.gold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
                 Cell spawnCell = getCell(wave.spawnPoint.x, wave.spawnPoint.y);
                 Cell destExitCell = getCell(wave.exitPoint.x, wave.exitPoint.y);
@@ -403,9 +403,9 @@ public class GameField {
 //        }
         Player player = null;
         if (playerInt == 0) {
-            player = gameSettings.playersManager.localComputer;
+            player = gameScreen.playersManager.localServer;
         } else if (playerInt == 1) {
-            player = gameSettings.playersManager.localPlayer;
+            player = gameScreen.playersManager.localPlayer;
         }
         Unit unit = null;
         if (spawnCell != null && destCell != null && pathFinder != null) {
@@ -488,7 +488,7 @@ public class GameField {
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
-        return createTowerWithGoldCheck(buildX, buildY, templateForTower, gameSettings.playersManager.localPlayer);
+        return createTowerWithGoldCheck(buildX, buildY, templateForTower, gameScreen.playersManager.localPlayer);
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
@@ -508,14 +508,14 @@ public class GameField {
 
     public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
-        Player localPlayer = gameSettings.playersManager.localPlayer;
+        Player localPlayer = gameScreen.playersManager.localPlayer;
         return createTower(buildX, buildY, templateForTower, localPlayer);
     }
 
     public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
         if (player == null) {
-            player = gameSettings.playersManager.localComputer; // ComputerPlayer0 inst;
+            player = gameScreen.playersManager.localServer; // ComputerPlayer0 inst;
         }
         if (templateForTower != null) {
             int towerSize = templateForTower.size;
@@ -810,9 +810,9 @@ public class GameField {
                             }
                         } else {
                             Cell cell = oldCurrentCell;
-                            if (unit.player == gameSettings.playersManager.localComputer) {
+                            if (unit.player == gameScreen.playersManager.localServer) {
                                 unit.player.missedUnits++;
-                            } else if (unit.player == gameSettings.playersManager.localPlayer) {
+                            } else if (unit.player == gameScreen.playersManager.localPlayer) {
                                 if (unit.exitCell == nextCurrentCell) { // ?? unit.exitCell.equals(cell) ?? // hueta! change plz Nikita!
                                     unit.player.missedUnits++;
                                     if (cell != null) {
@@ -958,10 +958,10 @@ public class GameField {
     }
 
     public GameState getGameState() {
-//        Logger.logDebug("missedUnitsForPlayer1:" + gameSettings.playersManager.localPlayer.missedUnits);
-//        Logger.logDebug("maxOfMissedUnitsForPlayer1:" + gameSettings.playersManager.localPlayer.maxOfMissedUnits);
-//        Logger.logDebug("missedUnitsForComputer0:" + gameSettings.playersManager.localComputer.missedUnits);
-//        Logger.logDebug("maxOfMissedUnitsForComputer0:" + gameSettings.playersManager.localComputer.maxOfMissedUnits);
+//        Logger.logDebug("missedUnitsForPlayer1:" + gameScreen.playersManager.localPlayer.missedUnits);
+//        Logger.logDebug("maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
+//        Logger.logDebug("missedUnitsForComputer0:" + gameScreen.playersManager.localServer.missedUnits);
+//        Logger.logDebug("maxOfMissedUnitsForComputer0:" + gameScreen.playersManager.localServer.maxOfMissedUnits);
 //        Logger.logDebug("waveManager.getNumberOfActions():" + waveManager.getNumberOfActions());
 //        Logger.logDebug("unitsManager.units.size:" + unitsManager.units.size);
 //        Logger.logDebug("gameSettings.gameType:" + gameSettings.gameType);
@@ -979,11 +979,11 @@ public class GameField {
                 }
             }
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            if (gameSettings.playersManager.localPlayer.missedUnits >= gameSettings.playersManager.localPlayer.maxOfMissedUnits) {
+            if (gameScreen.playersManager.localPlayer.missedUnits >= gameScreen.playersManager.localPlayer.maxOfMissedUnits) {
 //                Logger.logDebug("LOSE!!");
                 return GameState.LOSE;
             } else {
-                if (gameSettings.playersManager.localComputer.missedUnits >= gameSettings.playersManager.localComputer.maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
+                if (gameScreen.playersManager.localServer.missedUnits >= gameScreen.playersManager.localServer.maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
 //                    Logger.logDebug("WIN!!");
                     return GameState.WIN;
                 }

@@ -13,9 +13,12 @@ import com.betmansmall.util.logging.Logger;
 public class ClientGameScreen extends GameScreen {
     public ClientSessionThread clientSessionThread;
 
-    public ClientGameScreen(GameMaster gameMaster) {
+    public ClientGameScreen(GameMaster gameMaster, Player player) {
         super(gameMaster);
         Logger.logFuncStart();
+
+        playersManager.localServer = new Player(null, Player.Type.SERVER, 0);
+        playersManager.localPlayer = player;
 
         this.clientSessionThread = new ClientSessionThread(this);
         clientSessionThread.start();
@@ -49,7 +52,7 @@ public class ClientGameScreen extends GameScreen {
     @Override
     public Tower buildTower(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
-        Player player = game.sessionSettings.gameSettings.playersManager.localPlayer;
+        Player player = playersManager.localPlayer;
         return tryCreateTower(buildX, buildY, player.faction.getTemplateForTowers().random(), player);
     }
 

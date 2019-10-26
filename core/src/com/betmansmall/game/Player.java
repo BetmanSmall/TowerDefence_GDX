@@ -6,8 +6,14 @@ import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.server.networking.TcpConnection;
 
 public class Player {
+    public enum Type {
+        SERVER,
+        CLIENT,
+        SPECTATOR
+    }
     public TcpConnection connection;
-    public int playerID;
+    public Player.Type type;
+    public Integer playerID;
     public String name;
     public Faction faction;
     public int gold = 1000;
@@ -15,11 +21,13 @@ public class Player {
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
-    public int maxOfMissedUnits;
-    public int missedUnits;
+    public int maxOfMissedUnits = 100;
+    public int missedUnits = 0;
 
-    public Player(TcpConnection connection) {
+    public Player(TcpConnection connection, Player.Type type, Integer playerID) {
         this.connection = connection;
+        this.type = type;
+        this.playerID = playerID;
         if (connection != null) {
             this.connection.player = this;
         }

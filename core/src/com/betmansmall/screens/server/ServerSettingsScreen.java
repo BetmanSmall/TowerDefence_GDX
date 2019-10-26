@@ -9,8 +9,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.GameType;
+import com.betmansmall.game.Player;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -27,6 +29,10 @@ import java.util.Enumeration;
 public class ServerSettingsScreen extends AbstractScreen {
     private Stage stage;
     private VisTextButton startServer;
+    private VisCheckBox withControlCheckBox;
+    private VisTable playerSettings;
+    private VisTextField nameField;
+    private VisSelectBox<String> factionSelectBox;
 
     public ServerSettingsScreen(GameMaster gameMaster) {
         super(gameMaster);
@@ -100,10 +106,38 @@ public class ServerSettingsScreen extends AbstractScreen {
                 game.sessionSettings.gameSettings.gameType = gameTypeSelectBox.getSelected();
                 game.sessionSettings.gameSettings.mapPath = mapSelectBox.getSelected();
                 game.sessionSettings.localServer = true;
-                game.addScreen(new ServerGameScreen(game));
+
+                Player player = null;
+                if (withControlCheckBox.isChecked()) {
+                    player = new Player(null, Player.Type.CLIENT, 1);
+                    player.name = nameField.getText();
+                    player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
+                }
+                game.addScreen(new ServerGameScreen(game, player));
             }
         });
-        rootTable.add(startServer).colspan(2);
+        rootTable.add(startServer).colspan(2).row();
+
+        withControlCheckBox = new VisCheckBox("WITH CONTROL", true);
+        withControlCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                playerSettings.setVisible(withControlCheckBox.isChecked());
+            }
+        });
+        rootTable.add(withControlCheckBox).colspan(2).row();
+
+        playerSettings = new VisTable();
+        playerSettings.add(new VisLabel("name:"));
+        nameField = new VisTextField("Server");
+        playerSettings.add(nameField).row();
+
+        playerSettings.add(new VisLabel("faction:"));
+        factionSelectBox = new VisSelectBox();
+        factionSelectBox.setItems(game.factionsManager.getFactionsNames());
+        playerSettings.add(factionSelectBox).row();
+
+        rootTable.add(playerSettings).colspan(2).row();
 
         stage.addActor(rootTable);
     }

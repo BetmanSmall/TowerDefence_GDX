@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.PlayersManager;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.GameField;
@@ -25,9 +26,12 @@ public class GameScreen extends AbstractScreen {
     public GameFieldRenderer gameFieldRenderer;
     public CameraController cameraController;
 
+    public PlayersManager playersManager;
+
     public GameScreen(GameMaster gameMaster) {
         super(gameMaster);
         Logger.logFuncStart();
+        this.playersManager = new PlayersManager();
     }
 
     @Override

@@ -23,8 +23,6 @@ public class GameSettings {
     public Cell cellSpawnHero;
     public Cell cellExitHero;
 
-    public PlayersManager playersManager;
-
     public GameSettings() {
 //        this.gameType = GameType.LittleGame;
         this.difficultyLevel = 1f;
@@ -40,8 +38,6 @@ public class GameSettings {
 
         this.cellSpawnHero = null;
         this.cellExitHero = null;
-
-        this.playersManager = new PlayersManager();
     }
 
     public void setGameTypeByMap(String mapPath) {
@@ -79,8 +75,6 @@ public class GameSettings {
 
             sb.append(",cellSpawnHero:" + cellSpawnHero);
             sb.append(",cellExitHero:" + cellExitHero);
-
-            sb.append(",playersManager:" + playersManager);
         }
         sb.append("]");
         return sb.toString();
