@@ -3,6 +3,7 @@ package com.betmansmall.game;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.playerTemplates.Faction;
+import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.networking.TcpConnection;
 
 public class Player {
@@ -24,10 +25,23 @@ public class Player {
     public int maxOfMissedUnits = 100;
     public int missedUnits = 0;
 
-    public Player(TcpConnection connection, Player.Type type, Integer playerID) {
-        this.connection = connection;
+    public Player(Player.Type type, Integer playerID, String name, Faction faction) {
+        this.connection = null;
         this.type = type;
         this.playerID = playerID;
+        this.name = name;
+        this.faction = faction;
+        if (connection != null) {
+            this.connection.player = this;
+        }
+    }
+
+    public Player(TcpConnection connection, PlayerInfoData playerInfoData, Faction faction) {
+        this.connection = connection;
+        this.type = playerInfoData.type;
+        this.playerID = playerInfoData.playerID;
+        this.name = playerInfoData.name;
+        this.faction = faction;
         if (connection != null) {
             this.connection.player = this;
         }

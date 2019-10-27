@@ -9,8 +9,10 @@ public class SendObject implements Serializable {
     public enum SendObjectEnum implements Serializable {
         SERVER_INFO_DATA,
         PLAYER_INFO_DATA,
+        YOUR_PLAYER_INFO_DATA,
         PLAYER_DISCONNECTED,
         PLAYER_BUILD_TOWER,
+        PLAYER_REMOVE_TOWER,
     }
     public SendObjectEnum sendObjectEnum;
     public ArrayList<NetworkPackage> networkPackages;
@@ -32,6 +34,9 @@ public class SendObject implements Serializable {
                 this.networkPackages.add(networkPackage);
             } else if (networkPackage instanceof BuildTowerData) {
                 this.sendObjectEnum = SendObjectEnum.PLAYER_BUILD_TOWER;
+                this.networkPackages.add(networkPackage);
+            } else if (networkPackage instanceof RemoveTowerData) {
+                this.sendObjectEnum = SendObjectEnum.PLAYER_REMOVE_TOWER;
                 this.networkPackages.add(networkPackage);
             } else {
                 this.networkPackages.add(networkPackage);

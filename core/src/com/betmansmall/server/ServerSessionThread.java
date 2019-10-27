@@ -9,6 +9,7 @@ import com.betmansmall.screens.server.ServerGameScreen;
 import com.betmansmall.server.data.BuildTowerData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
+import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.ServerInfoData;
 import com.betmansmall.server.networking.TcpConnection;
@@ -95,27 +96,34 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
             if (networkPackage instanceof PlayerInfoData) {
                 PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
 
-                Player player = new Player(tcpConnection, playerInfoData.type, null);
-                player.playerID = serverGameScreen.playersManager.getPlayers().size;
-                player.name = playerInfoData.name;
-                player.faction = serverGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
-                serverGameScreen.playersManager.addPlayer(player);
+                Player player = serverGameScreen.playersManager.addPlayerByServer(tcpConnection, playerInfoData);
+//                Player player = new Player(tcpConnection, playerInfoData, null);
+//                player.playerID = serverGameScreen.playersManager.getPlayers().size;
+//                player.name = playerInfoData.name;
+//                player.faction = serverGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
+//                serverGameScreen.playersManager.addPlayer(player);
                 sessionState = SessionState.PLAYER_CONNECTED;
 
-                for (TcpConnection connection : connections) {
-                    connection.sendObject(new SendObject(new PlayerInfoData(player)));
-                }
+                tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.YOUR_PLAYER_INFO_DATA, new PlayerInfoData(player)));
+                sendObject(new SendObject(new PlayerInfoData(player)), tcpConnection);
             } else if (networkPackage instanceof BuildTowerData) {
                 BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
 
                 TemplateForTower templateForTower = tcpConnection.player.faction.getTemplateForTower(buildTowerData.templateName);
-                Tower tower = serverGameScreen.tryCreateTower(buildTowerData.buildX, buildTowerData.buildY, templateForTower, tcpConnection.player);
+                Tower tower = serverGameScreen.gameField.createTowerWithGoldCheck(buildTowerData.buildX, buildTowerData.buildY, templateForTower, tcpConnection.player);
 
-                for (TcpConnection connection : connections) {
-                    if (tcpConnection.equals(connection)) {
-                        connection.sendObject(new SendObject(new BuildTowerData(tower)));
+                if (tower != null) {
+                    for (TcpConnection connection : connections) {
+                        if (tcpConnection.equals(connection)) {
+                            connection.sendObject(new SendObject(new BuildTowerData(tower)));
+                        }
                     }
                 }
+            } else if (networkPackage instanceof RemoveTowerData) {
+                RemoveTowerData removeTowerData = (RemoveTowerData) networkPackage;
+
+                Player player = serverGameScreen.playersManager.getPlayer(removeTowerData.playerID);
+                serverGameScreen.gameField.removeTowerWithGold(removeTowerData.removeX, removeTowerData.removeY, player);
             }
         }
     }
@@ -138,7 +146,15 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         exception.printStackTrace();
     }
 
-    public synchronized void sendObjectToAll(final SendObject sendObject) {
+    public synchronized void sendObject(final SendObject sendObject, TcpConnection tcpConnection) {
+        for (TcpConnection connection : connections) {
+            if (!connection.equals(tcpConnection) || connection != tcpConnection) {
+                connection.sendObject(sendObject);
+            }
+        }
+    }
+
+    public synchronized void sendObject(final SendObject sendObject) {
         for (TcpConnection connection : connections) {
             connection.sendObject(sendObject);
         }

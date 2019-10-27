@@ -114,7 +114,8 @@ public class CameraController extends AbstractCameraController {
             Vector3 touch = new Vector3(x, y, 0.0f);
             whichCell(touch, isDrawableTowers);
             if (((int) (Math.random() * 2) == 0)) {
-                gameField.towerActions((int) touch.x, (int) touch.y);
+//                gameField.towerActions((int) touch.x, (int) touch.y);
+                gameScreen.towerToggle((int) touch.x, (int) touch.y);
             } else {
                 if (((int) (Math.random() * 5) == 0) && gameField.gameSettings.gameType == GameType.LittleGame) {
                     gameField.spawnHero((int) touch.x, (int) touch.y);
@@ -250,8 +251,7 @@ public class CameraController extends AbstractCameraController {
                     } else if (gameField.gameSettings.gameType == GameType.TowerDefence) {
                         if (button == 0 || button == 1) {
                             if (whichCell(touch, isDrawableTowers)) {
-//                                gameField.towerActions((int) touch.x, (int) touch.y);
-                                gameScreen.buildTower((int) touch.x, (int) touch.y);
+                                gameScreen.towerToggle((int) touch.x, (int) touch.y);
                             }
                         } else if (button == 2) {
                             if (whichCell(touch, isDrawableUnits)) {

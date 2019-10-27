@@ -109,9 +109,9 @@ public class ServerSettingsScreen extends AbstractScreen {
 
                 Player player = null;
                 if (withControlCheckBox.isChecked()) {
-                    player = new Player(null, Player.Type.CLIENT, 1);
-                    player.name = nameField.getText();
-                    player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
+                    player = new Player(Player.Type.CLIENT, 1, nameField.getText(), game.factionsManager.getFactionByName(factionSelectBox.getSelected()));
+//                    player.name = nameField.getText();
+//                    player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
 
                     game.sessionSettings.sessionType = SessionType.SERVER_AND_CLIENT;
                 } else {

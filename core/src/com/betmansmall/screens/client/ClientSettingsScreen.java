@@ -68,9 +68,7 @@ public class ClientSettingsScreen extends AbstractScreen {
                 game.sessionSettings.port = Integer.parseInt(portField.getText());
                 game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
 
-                Player player = new Player(null, Player.Type.CLIENT, null);
-                player.name = nameField.getText();
-                player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
+                Player player = new Player(Player.Type.CLIENT, -1, nameField.getText(), game.factionsManager.getFactionByName(factionSelectBox.getSelected()));
                 game.addScreen(new ClientGameScreen(game, player));
             }
         });

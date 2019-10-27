@@ -51,7 +51,7 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         this.connection = tcpConnection;
         sessionState = SessionState.CONNECTED;
-        tcpConnection.sendObject(new SendObject(new PlayerInfoData(clientGameScreen.playersManager.localPlayer)));
+        tcpConnection.sendObject(new SendObject(new PlayerInfoData(clientGameScreen.playersManager.getLocalPlayer())));
     }
 
     @Override
@@ -69,10 +69,10 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
                 if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.PLAYER_DISCONNECTED) {
                     clientGameScreen.playersManager.removePlayerByID(playerInfoData.playerID);
                 } else {
-                    Player player = new Player(tcpConnection, playerInfoData.type, playerInfoData.playerID);
-                    player.name = playerInfoData.name;
-                    player.faction = clientGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
-                    clientGameScreen.playersManager.addPlayer(player);
+                    Player player = clientGameScreen.playersManager.addPlayerByClient(tcpConnection, playerInfoData);
+                    if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.YOUR_PLAYER_INFO_DATA) {
+                        clientGameScreen.playersManager.setLocalPlayer(player);
+                    }
 //                    sessionState = SessionState.NEW_PLAYER_CONNECTED;
                 }
             } else if (networkPackage instanceof BuildTowerData) {

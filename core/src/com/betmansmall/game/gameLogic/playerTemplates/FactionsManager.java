@@ -297,6 +297,10 @@ public class FactionsManager {
         return null;
     }
 
+    public Faction getRandomFaction() {
+        return factions.random();
+    }
+
     protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {
         StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
         FileHandle result = file.parent();

@@ -210,7 +210,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
         playersViewTable = new PlayersViewTable(gameScreen.playersManager, skin);
         playersViewTable.setFillParent(true);
-        addActor(playersViewTable);
+        addActor(playersViewTable.scrollPane);
 
         tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableWithSelectors.setFillParent(true);
@@ -602,12 +602,12 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         }
         unitsManagerSize.setText("gameScreen.gameField.unitsManager.units.size:" + gameScreen.gameField.unitsManager.units.size);
         towersManagerSize.setText("gameScreen.gameField.towersManager.towers.size:" + gameScreen.gameField.towersManager.towers.size);
-        if (gameScreen.playersManager.localPlayer != null) {
-            gamerGoldLabel.setText("localPlayer.gold:" + gameScreen.playersManager.localPlayer.gold);
-            missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.playersManager.localPlayer.missedUnits + "/" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
+        if (gameScreen.playersManager.getLocalPlayer() != null) {
+            gamerGoldLabel.setText("getLocalPlayer().gold:" + gameScreen.playersManager.getLocalPlayer().gold);
+            missedAndMaxForPlayer1.setText("UnitsLimitPL1:" + gameScreen.playersManager.getLocalPlayer().missedUnits + "/" + gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits);
         }
-        if (gameScreen.playersManager.localServer != null) {
-            missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.playersManager.localServer.missedUnits + "/" + gameScreen.playersManager.localServer.maxOfMissedUnits);
+        if (gameScreen.playersManager.getLocalServer() != null) {
+            missedAndMaxForComputer0.setText("UnitsLimitComp0:" + gameScreen.playersManager.getLocalServer().missedUnits + "/" + gameScreen.playersManager.getLocalServer().maxOfMissedUnits);
         }
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameScreen.gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameScreen.gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         unitsSpawn.setText("unitsSpawn:" + gameScreen.gameField.unitsSpawn);

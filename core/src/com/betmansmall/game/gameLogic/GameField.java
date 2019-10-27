@@ -138,17 +138,17 @@ public class GameField {
             MapProperties mapProperties = tmxMap.getProperties();
             Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
 //            if (mapProperties.containsKey("gamerGold")) {
-//                gameScreen.playersManager.localPlayer.gold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
+//                gameScreen.playersManager.getLocalPlayer().gold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
 //            }
-//            gameScreen.playersManager.localServer.maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForComputer0", gameScreen.playersManager.localPlayer.gold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
-//            gameScreen.playersManager.localServer.missedUnits = 0;
-//            if (gameScreen.playersManager.localPlayer.maxOfMissedUnits == 0) {
-//                gameScreen.playersManager.localPlayer.maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions() / 8, Integer.class); // it is not true | need implement getNumberOfUnits()
+//            gameScreen.playersManager.getLocalServer().maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForComputer0", gameScreen.playersManager.getLocalPlayer().gold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
+//            gameScreen.playersManager.getLocalServer().missedUnits = 0;
+//            if (gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits == 0) {
+//                gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions() / 8, Integer.class); // it is not true | need implement getNumberOfUnits()
 //            }
-//            gameScreen.playersManager.localPlayer.missedUnits = 0;
-//            Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gameScreen.playersManager.localPlayer.gold);
-//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForComputer0:" + gameScreen.playersManager.localServer.maxOfMissedUnits);
-//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
+//            gameScreen.playersManager.getLocalPlayer().missedUnits = 0;
+//            Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gameScreen.playersManager.getLocalPlayer().gold);
+//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForComputer0:" + gameScreen.playersManager.getLocalServer().maxOfMissedUnits);
+//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits);
         } else {
             Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
@@ -299,8 +299,8 @@ public class GameField {
 
     public Unit spawnUnitFromUser(TemplateForUnit templateForUnit) {
         Gdx.app.log("GameField::spawnUnitFromUser()", "-- templateForUnit:" + templateForUnit);
-        if (gameScreen.playersManager.localPlayer.gold >= templateForUnit.cost) {
-            gameScreen.playersManager.localPlayer.gold -= templateForUnit.cost;
+        if (gameScreen.playersManager.getLocalPlayer().gold >= templateForUnit.cost) {
+            gameScreen.playersManager.getLocalPlayer().gold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
                 Cell spawnCell = getCell(wave.spawnPoint.x, wave.spawnPoint.y);
                 Cell destExitCell = getCell(wave.exitPoint.x, wave.exitPoint.y);
@@ -403,9 +403,9 @@ public class GameField {
 //        }
         Player player = null;
         if (playerInt == 0) {
-            player = gameScreen.playersManager.localServer;
+            player = gameScreen.playersManager.getLocalServer();
         } else if (playerInt == 1) {
-            player = gameScreen.playersManager.localPlayer;
+            player = gameScreen.playersManager.getLocalPlayer();
         }
         Unit unit = null;
         if (spawnCell != null && destCell != null && pathFinder != null) {
@@ -456,22 +456,6 @@ public class GameField {
         return underConstruction;
     }
 
-    public boolean towerActions(int buildX, int buildY) {
-        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
-        Cell cell = getCell(buildX, buildY);
-        if (cell != null) {
-            if (cell.isEmpty()) {
-                createTowerWithGoldCheck(buildX, buildY, factionsManager.getRandomTemplateForTowerFromAllFaction());
-                rerouteAllUnits();
-                return true;
-            } else if (cell.getTower() != null) {
-                removeTower(buildX, buildY);
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void buildTowersWithUnderConstruction(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         if (underConstruction != null) {
@@ -488,34 +472,32 @@ public class GameField {
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
-        return createTowerWithGoldCheck(buildX, buildY, templateForTower, gameScreen.playersManager.localPlayer);
+        return createTowerWithGoldCheck(buildX, buildY, templateForTower, gameScreen.playersManager.getLocalPlayer());
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
         if (player.gold >= templateForTower.cost) {
             Tower tower = createTower(buildX, buildY, templateForTower, player);
-//            rerouteForAllUnits();
             if (tower != null) {
                 player.gold -= templateForTower.cost;
                 Gdx.app.log("GameField::createTowerWithGoldCheck()", "-- Now player.gold:" + player.gold);
+                return tower;
             }
-            return tower;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
-        Player localPlayer = gameScreen.playersManager.localPlayer;
+        Player localPlayer = gameScreen.playersManager.getLocalPlayer();
         return createTower(buildX, buildY, templateForTower, localPlayer);
     }
 
     public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
         if (player == null) {
-            player = gameScreen.playersManager.localServer; // ComputerPlayer0 inst;
+            player = gameScreen.playersManager.getLocalServer(); // ComputerPlayer0 inst;
         }
         if (templateForTower != null) {
             int towerSize = templateForTower.size;
@@ -569,18 +551,18 @@ public class GameField {
         return false;
     }
 
-//    public boolean removeTowerWithGold(int cellX, int cellY) {
-//        int towerCost = removeTower(cellX, cellY);
-//        if (towerCost > 0) {
-////            rerouteForAllUnits();
-//            tower.gamerGold += towerCost; // *0.5;
-//            Gdx.app.log("GameField::removeTowerWithGold()", "-- Now gamerGold:" + gamerGold);
-//            return true;
-//        }
-//        return false;
-//    }
+    public boolean removeTowerWithGold(int cellX, int cellY, Player player) {
+        int towerCost = removeTower(cellX, cellY);
+        if (towerCost > 0) {
+//            rerouteForAllUnits();
+            player.gold += towerCost; // *0.5;
+            Gdx.app.log("GameField::removeTowerWithGold()", "-- Now gamerGold:" + player.gold);
+            return true;
+        }
+        return false;
+    }
 
-    public int removeTower(int cellX, int cellY) {
+    public int removeTower(int cellX, int cellY) { // TODO if tower.cost zero mb bug
         Tower tower = field[cellX][cellY].getTower();
         if (tower != null) {
             int x = tower.cell.cellX;
@@ -810,9 +792,9 @@ public class GameField {
                             }
                         } else {
                             Cell cell = oldCurrentCell;
-                            if (unit.player == gameScreen.playersManager.localServer) {
+                            if (unit.player == gameScreen.playersManager.getLocalServer()) {
                                 unit.player.missedUnits++;
-                            } else if (unit.player == gameScreen.playersManager.localPlayer) {
+                            } else if (unit.player == gameScreen.playersManager.getLocalPlayer()) {
                                 if (unit.exitCell == nextCurrentCell) { // ?? unit.exitCell.equals(cell) ?? // hueta! change plz Nikita!
                                     unit.player.missedUnits++;
                                     if (cell != null) {
@@ -958,10 +940,10 @@ public class GameField {
     }
 
     public GameState getGameState() {
-//        Logger.logDebug("missedUnitsForPlayer1:" + gameScreen.playersManager.localPlayer.missedUnits);
-//        Logger.logDebug("maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.localPlayer.maxOfMissedUnits);
-//        Logger.logDebug("missedUnitsForComputer0:" + gameScreen.playersManager.localServer.missedUnits);
-//        Logger.logDebug("maxOfMissedUnitsForComputer0:" + gameScreen.playersManager.localServer.maxOfMissedUnits);
+//        Logger.logDebug("missedUnitsForPlayer1:" + gameScreen.playersManager.getLocalPlayer().missedUnits);
+//        Logger.logDebug("maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits);
+//        Logger.logDebug("missedUnitsForComputer0:" + gameScreen.playersManager.getLocalServer().missedUnits);
+//        Logger.logDebug("maxOfMissedUnitsForComputer0:" + gameScreen.playersManager.getLocalServer().maxOfMissedUnits);
 //        Logger.logDebug("waveManager.getNumberOfActions():" + waveManager.getNumberOfActions());
 //        Logger.logDebug("unitsManager.units.size:" + unitsManager.units.size);
 //        Logger.logDebug("gameSettings.gameType:" + gameSettings.gameType);
@@ -979,11 +961,11 @@ public class GameField {
                 }
             }
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            if (gameScreen.playersManager.localServer != null && gameScreen.playersManager.localPlayer != null) {
-                if (gameScreen.playersManager.localPlayer.missedUnits >= gameScreen.playersManager.localPlayer.maxOfMissedUnits) {
+            if (gameScreen.playersManager.getLocalServer() != null && gameScreen.playersManager.getLocalPlayer() != null) {
+                if (gameScreen.playersManager.getLocalPlayer().missedUnits >= gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits) {
                     return GameState.LOSE;
                 } else {
-                    if (gameScreen.playersManager.localServer.missedUnits >= gameScreen.playersManager.localServer.maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
+                    if (gameScreen.playersManager.getLocalServer().missedUnits >= gameScreen.playersManager.getLocalServer().maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
                         return GameState.WIN;
                     }
                     if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
