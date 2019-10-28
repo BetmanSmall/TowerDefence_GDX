@@ -3,9 +3,10 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.util.logging.Logger;
 
-public abstract class AbstractCameraController implements GestureDetector.GestureListener, InputProcessor {
+public abstract class AbstractCameraController implements GestureDetector.GestureListener, InputProcessor, Disposable {
     @Override
     public boolean keyDown(int keycode) {
         Logger.logFuncStart("keycode:" + keycode);
