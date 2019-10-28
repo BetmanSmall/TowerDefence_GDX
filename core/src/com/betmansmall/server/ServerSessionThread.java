@@ -80,7 +80,9 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     public void onConnectionReady(TcpConnection tcpConnection) {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
-        tcpConnection.sendObject(new SendObject(new ServerInfoData(sessionSettings.gameSettings)));
+        NetworkPackage serverInfoData = new ServerInfoData(sessionSettings.gameSettings);
+        NetworkPackage serverPlayerInfoData = new PlayerInfoData(serverGameScreen.playersManager.getLocalServer());
+        tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.SERVER_INFO_DATA, serverInfoData, serverPlayerInfoData));
 
         for (Player player : serverGameScreen.playersManager.getPlayers()) {
             if (player.playerID != 0) {
@@ -97,33 +99,30 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
                 PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
 
                 Player player = serverGameScreen.playersManager.addPlayerByServer(tcpConnection, playerInfoData);
-//                Player player = new Player(tcpConnection, playerInfoData, null);
-//                player.playerID = serverGameScreen.playersManager.getPlayers().size;
-//                player.name = playerInfoData.name;
-//                player.faction = serverGameScreen.game.factionsManager.getFactionByName(playerInfoData.factionName);
-//                serverGameScreen.playersManager.addPlayer(player);
                 sessionState = SessionState.PLAYER_CONNECTED;
 
-                tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.YOUR_PLAYER_INFO_DATA, new PlayerInfoData(player)));
+                tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.UPDATE_PLAYER_INFO_DATA, new PlayerInfoData(player)));
                 sendObject(new SendObject(new PlayerInfoData(player)), tcpConnection);
             } else if (networkPackage instanceof BuildTowerData) {
                 BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
 
-                TemplateForTower templateForTower = tcpConnection.player.faction.getTemplateForTower(buildTowerData.templateName);
-                Tower tower = serverGameScreen.gameField.createTowerWithGoldCheck(buildTowerData.buildX, buildTowerData.buildY, templateForTower, tcpConnection.player);
+                Player player = serverGameScreen.playersManager.getPlayer(buildTowerData.playerID);
+                TemplateForTower templateForTower = player.faction.getTemplateForTower(buildTowerData.templateName);
+//                TemplateForTower templateForTower = tcpConnection.player.faction.getTemplateForTower(buildTowerData.templateName);
+                Tower tower = serverGameScreen.gameField.createTowerWithGoldCheck(buildTowerData.buildX, buildTowerData.buildY, templateForTower, player);
 
                 if (tower != null) {
-                    for (TcpConnection connection : connections) {
-                        if (tcpConnection.equals(connection)) {
-                            connection.sendObject(new SendObject(new BuildTowerData(tower)));
-                        }
-                    }
+                    this.sendObject(new SendObject(new BuildTowerData(tower)), tcpConnection);
                 }
             } else if (networkPackage instanceof RemoveTowerData) {
                 RemoveTowerData removeTowerData = (RemoveTowerData) networkPackage;
 
                 Player player = serverGameScreen.playersManager.getPlayer(removeTowerData.playerID);
                 serverGameScreen.gameField.removeTowerWithGold(removeTowerData.removeX, removeTowerData.removeY, player);
+
+                this.sendObject(new SendObject(removeTowerData), tcpConnection);
+//                 or
+//                this.sendObject(new SendObject(new RemoveTowerData(removeTowerData.removeX, removeTowerData.removeY, player)), tcpConnection);
             }
         }
     }

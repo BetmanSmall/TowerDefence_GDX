@@ -30,6 +30,7 @@ public class FactionsManager {
     public SimpleTemplate gryphonHammer;
     public SimpleTemplate lightning;
     private Array<Faction> factions;
+    private Faction allFactionsInOne;
 
     public static Float defHealthPoints = 500f;
     public static Float defBounty = 50f;
@@ -68,6 +69,12 @@ public class FactionsManager {
         Gdx.app.log("FactionsManager::FactionsManager()", "-- lightning:" + lightning.toString());
         this.factions = new Array<Faction>();
         loadFactions();
+
+        allFactionsInOne = new Faction("allFactionsInOne");
+        for (Faction faction : factions) {
+            allFactionsInOne.getTemplateForTowers().addAll(faction.getTemplateForTowers());
+            allFactionsInOne.getTemplateForUnits().addAll(faction.getTemplateForUnits());
+        }
     }
 
     public TemplateForUnit getRandomTemplateForUnitFromFirstFaction() {
@@ -295,6 +302,10 @@ public class FactionsManager {
             }
         }
         return null;
+    }
+
+    public Faction getServerFaction() {
+        return allFactionsInOne;
     }
 
     public Faction getRandomFaction() {

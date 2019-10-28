@@ -6,7 +6,7 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
-import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
+import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.BuildTowerData;
@@ -15,8 +15,8 @@ import com.betmansmall.util.logging.Logger;
 public class ClientGameScreen extends GameScreen {
     public ClientSessionThread clientSessionThread;
 
-    public ClientGameScreen(GameMaster gameMaster, Player player) {
-        super(gameMaster, player);
+    public ClientGameScreen(GameMaster gameMaster, UserAccount userAccount) {
+        super(gameMaster, userAccount);
         Logger.logFuncStart();
 
         this.clientSessionThread = new ClientSessionThread(this);
@@ -42,12 +42,6 @@ public class ClientGameScreen extends GameScreen {
         }
     }
 
-    public void buildTowerFromServer(BuildTowerData buildTowerData, Player player) {
-        Logger.logFuncStart("buildTowerData:" + buildTowerData, "player:" + player);
-        TemplateForTower templateForTower = player.faction.getTemplateForTower(buildTowerData.templateName);
-        gameField.createTower(buildTowerData.buildX, buildTowerData.buildY, templateForTower, player);
-    }
-
     @Override
     public Tower towerToggle(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
@@ -61,8 +55,12 @@ public class ClientGameScreen extends GameScreen {
                 }
                 return tower;
             } else if (cell.getTower() != null) {
-                gameField.removeTower(buildX, buildY);
-                clientSessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
+                Tower tower = cell.getTower();
+                Player localPlayer = playersManager.getLocalPlayer();
+                if (localPlayer.equals(tower.player)) {
+                    gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
+                    clientSessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
+                }
             }
         }
         return null;

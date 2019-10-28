@@ -9,18 +9,21 @@ public class SendObject implements Serializable {
     public enum SendObjectEnum implements Serializable {
         SERVER_INFO_DATA,
         PLAYER_INFO_DATA,
-        YOUR_PLAYER_INFO_DATA,
+        UPDATE_PLAYER_INFO_DATA,
         PLAYER_DISCONNECTED,
         PLAYER_BUILD_TOWER,
         PLAYER_REMOVE_TOWER,
     }
+
     public SendObjectEnum sendObjectEnum;
     public ArrayList<NetworkPackage> networkPackages;
 
-    public SendObject(SendObjectEnum sendObjectEnum, NetworkPackage networkPackage) {
+    public SendObject(SendObjectEnum sendObjectEnum, NetworkPackage ... networkPackages) {
         this.sendObjectEnum = sendObjectEnum;
         this.networkPackages = new ArrayList<>();
-        this.networkPackages.add(networkPackage);
+        for (NetworkPackage networkPackage : networkPackages) {
+            this.networkPackages.add(networkPackage);
+        }
     }
 
     public SendObject(NetworkPackage ... networkPackages) {

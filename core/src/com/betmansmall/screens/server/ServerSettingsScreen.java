@@ -107,17 +107,14 @@ public class ServerSettingsScreen extends AbstractScreen {
                 game.sessionSettings.gameSettings.gameType = gameTypeSelectBox.getSelected();
                 game.sessionSettings.gameSettings.mapPath = mapSelectBox.getSelected();
 
-                Player player = null;
                 if (withControlCheckBox.isChecked()) {
-                    player = new Player(Player.Type.CLIENT, 1, nameField.getText(), game.factionsManager.getFactionByName(factionSelectBox.getSelected()));
-//                    player.name = nameField.getText();
-//                    player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
-
+                    game.userAccount.loginName = nameField.getText();
+                    game.userAccount.factionName = factionSelectBox.getSelected();
                     game.sessionSettings.sessionType = SessionType.SERVER_AND_CLIENT;
                 } else {
                     game.sessionSettings.sessionType = SessionType.SERVER_STANDALONE;
                 }
-                game.addScreen(new ServerGameScreen(game, player));
+                game.addScreen(new ServerGameScreen(game, game.userAccount));
             }
         });
         rootTable.add(startServer).colspan(2).row();

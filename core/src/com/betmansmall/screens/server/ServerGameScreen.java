@@ -6,6 +6,7 @@ import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.server.ServerSessionThread;
+import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.BuildTowerData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
@@ -14,8 +15,8 @@ import com.betmansmall.util.logging.Logger;
 public class ServerGameScreen extends GameScreen {
     public ServerSessionThread serverSessionThread;
 
-    public ServerGameScreen(GameMaster gameMaster, Player player) {
-        super(gameMaster, player);
+    public ServerGameScreen(GameMaster gameMaster, UserAccount userAccount) {
+        super(gameMaster, userAccount);
         Logger.logFuncStart();
 
         this.serverSessionThread = new ServerSessionThread(this);
@@ -44,8 +45,12 @@ public class ServerGameScreen extends GameScreen {
                 }
                 return tower;
             } else if (cell.getTower() != null) {
-                gameField.removeTower(buildX, buildY);
-                serverSessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
+                Tower tower = cell.getTower();
+                Player localPlayer = playersManager.getLocalPlayer();
+                if (localPlayer.equals(tower.player)) {
+                    gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
+                    serverSessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
+                }
             }
         }
         return null;

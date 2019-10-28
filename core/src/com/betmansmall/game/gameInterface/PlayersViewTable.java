@@ -24,6 +24,7 @@ public class PlayersViewTable extends Table {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+        scrollPane.setVisible(visible);
         if (visible) {
             updateView();
         }
@@ -37,14 +38,14 @@ public class PlayersViewTable extends Table {
                 Logger.logDebug("player:" + player);
                 Table table = new Table();
 
-                table.add(new Label("connection:" + ((player.connection != null) ? player.connection.getSocketIP() : null), getSkin())).row();
+                if (player.connection != null) {
+                    table.add(new Label("connection:" + player.connection.getSocketIP(), getSkin())).row();
+                }
 
-                Label typeLabel = new Label("type:" + player.type, getSkin());
-                table.add(typeLabel).row();
-                Label playerIDLabel = new Label("playerID:" + player.playerID, getSkin());
-                table.add(playerIDLabel).row();
-                Label nameLabel = new Label("name:" + player.name, getSkin());
-                table.add(nameLabel).row();
+                table.add(new Label("type:" + player.type, getSkin())).row();
+                table.add(new Label("accountID:" + player.accountID, getSkin())).row();
+                table.add(new Label("playerID:" + player.playerID, getSkin())).row();
+                table.add(new Label("name:" + player.name, getSkin())).row();
 
                 table.add(new Label("factionName:" + ((player.faction != null) ? player.faction.getName() : null), getSkin())).row();
                 table.add(new Label("gold:" + player.gold, getSkin())).row();

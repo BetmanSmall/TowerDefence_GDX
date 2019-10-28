@@ -481,7 +481,7 @@ public class GameField {
             Tower tower = createTower(buildX, buildY, templateForTower, player);
             if (tower != null) {
                 player.gold -= templateForTower.cost;
-                Gdx.app.log("GameField::createTowerWithGoldCheck()", "-- Now player.gold:" + player.gold);
+                Logger.logDebug("player:" + player + ", Now player.gold:" + player.gold);
                 return tower;
             }
         }
@@ -494,7 +494,7 @@ public class GameField {
         return createTower(buildX, buildY, templateForTower, localPlayer);
     }
 
-    public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
+    private Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
         if (player == null) {
             player = gameScreen.playersManager.getLocalServer(); // ComputerPlayer0 inst;
@@ -961,15 +961,17 @@ public class GameField {
                 }
             }
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            if (gameScreen.playersManager.getLocalServer() != null && gameScreen.playersManager.getLocalPlayer() != null) {
-                if (gameScreen.playersManager.getLocalPlayer().missedUnits >= gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits) {
-                    return GameState.LOSE;
-                } else {
-                    if (gameScreen.playersManager.getLocalServer().missedUnits >= gameScreen.playersManager.getLocalServer().maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
-                        return GameState.WIN;
-                    }
-                    if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
-                        return GameState.WIN;
+            if (gameScreen.playersManager.getPlayers().size > 2) {
+                if (gameScreen.playersManager.getLocalServer() != null && gameScreen.playersManager.getLocalPlayer() != null) {
+                    if (gameScreen.playersManager.getLocalPlayer().missedUnits >= gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits) {
+                        return GameState.LOSE;
+                    } else {
+                        if (gameScreen.playersManager.getLocalServer().missedUnits >= gameScreen.playersManager.getLocalServer().maxOfMissedUnits) { // При инициализации если в карте не было голды игроку. и у игрока изначально было 0 голды. то он сразу же выиграет
+                            return GameState.WIN;
+                        }
+                        if (waveManager.getNumberOfActions() == 0 && unitsManager.units.size == 0) {
+                            return GameState.WIN;
+                        }
                     }
                 }
             }

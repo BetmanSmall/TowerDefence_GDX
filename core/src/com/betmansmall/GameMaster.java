@@ -17,6 +17,7 @@ import com.betmansmall.screens.menu.MainMenuScreen;
 import com.betmansmall.screens.menu.OptionMenuScreen;
 import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.server.SessionSettings;
+import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.util.logging.Logger;
 import com.kotcrab.vis.ui.VisUI;
 
@@ -31,6 +32,7 @@ public class GameMaster extends Game {
     public Array<Image> backgroundImages;
     public Array<String> gameLevelMaps;
 
+    public UserAccount userAccount;
     public AssetManager assetManager;
     public SessionSettings sessionSettings;
     public FactionsManager factionsManager;
@@ -117,6 +119,7 @@ public class GameMaster extends Game {
 //        }
         Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
 
+        this.userAccount = new UserAccount("root", null, "accID_" + System.currentTimeMillis());
         this.assetManager = new AssetManager();
         try {
             sessionSettings = new SessionSettings();

@@ -18,7 +18,7 @@ public class TcpConnection {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
-    public Player player;
+//    public Player player;
 
     public TcpConnection(TcpSocketListener tcpSocketListener, String host, int port) throws IOException {
         this(tcpSocketListener, new Socket(host, port));
@@ -53,8 +53,8 @@ public class TcpConnection {
         Logger.logFuncEnd();
     }
 
-    public synchronized void sendObject(SendObject sendObject) {
-        Logger.logDebug("sendObject:" + sendObject);
+    public synchronized void sendObject(final SendObject sendObject) {
+        Logger.logFuncStart("sendObject:" + sendObject);
         try {
             objectOutputStream.writeObject(sendObject);
             objectOutputStream.flush();
@@ -86,12 +86,14 @@ public class TcpConnection {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("TcpConnection[");
-        sb.append("tcpSocketListener:" + tcpSocketListener);
-        sb.append(",socket:" + socket);
         if (full) {
+            sb.append("tcpSocketListener:" + tcpSocketListener);
+            sb.append(",socket:" + socket);
             sb.append(",thread:" + thread);
             sb.append(",objectInputStream:" + objectInputStream);
             sb.append(",objectOutputStream:" + objectOutputStream);
+        } else {
+            sb.append("inetAddress:" + socket.getInetAddress());
         }
         sb.append("]");
         return sb.toString();

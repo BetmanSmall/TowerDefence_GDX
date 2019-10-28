@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
-import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -19,6 +18,7 @@ import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.render.GameFieldRenderer;
 import com.betmansmall.screens.AbstractScreen;
+import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.util.logging.Logger;
 
 public class GameScreen extends AbstractScreen {
@@ -33,13 +33,17 @@ public class GameScreen extends AbstractScreen {
         super(gameMaster);
         Logger.logFuncStart();
         gameMaster.sessionSettings.sessionType = SessionType.CLIENT_STANDALONE;
-        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, gameMaster.factionsManager,null);
+
+        game.userAccount.loginName = "ClientStandalone";
+        game.userAccount.factionName = game.factionsManager.getFactionsNames().random();
+//        game.userAccount.accountID = "accID_12345";
+        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, gameMaster.factionsManager, game.userAccount);
     }
 
-    public GameScreen(GameMaster gameMaster, Player player) {
+    public GameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster);
         Logger.logFuncStart();
-        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, gameMaster.factionsManager, player);
+        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, gameMaster.factionsManager, userAccount);
     }
 
     @Override
@@ -78,7 +82,7 @@ public class GameScreen extends AbstractScreen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
                 Logger.logDebug("-- Gdx.input.isKeyJustPressed(Input.Keys.C && ALT_LEFT)");
-                gameInterface.playersViewTable.scrollPane.setVisible(!gameInterface.playersViewTable.scrollPane.isVisible());
+                gameInterface.playersViewTable.setVisible(!gameInterface.playersViewTable.isVisible());
             }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.MINUS)");
@@ -315,7 +319,7 @@ public class GameScreen extends AbstractScreen {
                 }
                 return tower;
             } else if (cell.getTower() != null) {
-                gameField.removeTower(buildX, buildY);
+                gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
             }
         }
         return null;
@@ -327,9 +331,9 @@ public class GameScreen extends AbstractScreen {
 //    }
 
 //    public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
-////        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
-////        return gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower, player);
-////    }
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
+//        return gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower, player);
+//    }
 
     public String toString() {
         return toString(true);
