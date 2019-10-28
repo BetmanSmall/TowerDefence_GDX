@@ -73,6 +73,13 @@ public class TowersManager {
         towers.removeValue(getTower(cell), false);
     }
 
+    /**
+     * Selects tower if it belongs to player.
+     */
+    public void selectTower(Player player, Tower tower) {
+        if(tower.player == player) player.selectedTower = tower;
+    }
+
     public String toString() {
         return toString(false);
     }

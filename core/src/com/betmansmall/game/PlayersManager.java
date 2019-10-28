@@ -16,14 +16,14 @@ public class PlayersManager {
         this.players = new Array<>();
 
         if (sessionType == SessionType.SERVER_STANDALONE) {
-            this.localServer = new Player(null, Player.Type.SERVER, 0);
+            this.localServer = new Player(null, PlayerType.SERVER, 0);
             this.localServer.name = "ServerStandalone";
             this.localServer.gold = 999999;
             this.players.add(localServer);
 
             this.localPlayer = null;
         } else if (sessionType == SessionType.SERVER_AND_CLIENT) {
-            this.localServer = new Player(null, Player.Type.SERVER, 0);
+            this.localServer = new Player(null, PlayerType.SERVER, 0);
             this.localServer.name = "ServerByClient";
             this.localServer.gold = 999999;
             this.players.add(localServer);
@@ -34,12 +34,12 @@ public class PlayersManager {
             this.localServer = null;
             this.localPlayer = localPlayer;
         } else if (sessionType == SessionType.CLIENT_STANDALONE) {
-            this.localServer = new Player(null, Player.Type.SERVER, 0);
+            this.localServer = new Player(null, PlayerType.SERVER, 0);
             this.localServer.name = "Server_ClientStandalone";
             this.localServer.gold = 999999;
             this.players.add(localServer);
 
-            this.localPlayer = new Player(null, Player.Type.CLIENT, 1);
+            this.localPlayer = new Player(null, PlayerType.CLIENT, 1);
             this.localPlayer.name = "ClientStandalone";
             this.localPlayer.gold = 9999;
 //            this.localPlayer.faction;
@@ -56,7 +56,7 @@ public class PlayersManager {
     }
 
     public boolean addPlayer(Player player) {
-        if (player.playerID == 0 && player.type == Player.Type.SERVER) {
+        if (player.playerID == 0 && player.type == PlayerType.SERVER) {
             localServer = player;
         }
         if (!players.contains(player, false)) { // TODO or true?

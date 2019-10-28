@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.PlayerType;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -68,7 +69,7 @@ public class ClientSettingsScreen extends AbstractScreen {
                 game.sessionSettings.port = Integer.parseInt(portField.getText());
                 game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
 
-                Player player = new Player(null, Player.Type.CLIENT, null);
+                Player player = new Player(null, PlayerType.CLIENT, null);
                 player.name = nameField.getText();
                 player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
                 game.addScreen(new ClientGameScreen(game, player));

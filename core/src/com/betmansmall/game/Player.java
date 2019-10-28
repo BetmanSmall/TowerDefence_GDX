@@ -2,20 +2,17 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.Cell;
+import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.server.networking.TcpConnection;
 
 public class Player {
-    public enum Type {
-        SERVER,
-        CLIENT,
-        SPECTATOR
-    }
     public TcpConnection connection;
-    public Player.Type type;
+    public PlayerType type;
     public Integer playerID;
     public String name;
     public Faction faction;
+    public Tower selectedTower;
     public int gold = 10000;
 
     public Cell cellSpawnHero;
@@ -24,7 +21,7 @@ public class Player {
     public int maxOfMissedUnits = 100;
     public int missedUnits = 0;
 
-    public Player(TcpConnection connection, Player.Type type, Integer playerID) {
+    public Player(TcpConnection connection, PlayerType type, Integer playerID) {
         this.connection = connection;
         this.type = type;
         this.playerID = playerID;

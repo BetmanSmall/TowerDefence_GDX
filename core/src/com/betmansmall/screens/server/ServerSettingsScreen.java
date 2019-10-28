@@ -11,6 +11,7 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.PlayerType;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
@@ -109,7 +110,7 @@ public class ServerSettingsScreen extends AbstractScreen {
 
                 Player player = null;
                 if (withControlCheckBox.isChecked()) {
-                    player = new Player(null, Player.Type.CLIENT, 1);
+                    player = new Player(null, PlayerType.CLIENT, 1);
                     player.name = nameField.getText();
                     player.faction = game.factionsManager.getFactionByName(factionSelectBox.getSelected());
 
