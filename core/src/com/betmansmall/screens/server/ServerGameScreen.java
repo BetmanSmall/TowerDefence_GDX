@@ -9,6 +9,7 @@ import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.server.ServerSessionThread;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.BuildTowerData;
+import com.betmansmall.server.data.GameFieldData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.util.logging.Logger;
@@ -35,11 +36,17 @@ public class ServerGameScreen extends GameScreen {
     }
 
     @Override
+    public void sendGameFieldVariables() {
+        serverSessionThread.sendObject(new SendObject(new GameFieldData(gameField)));
+    }
+
+    @Override
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
         Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
         if (tower != null) {
             serverSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+            return tower;
         }
         return null;
     }

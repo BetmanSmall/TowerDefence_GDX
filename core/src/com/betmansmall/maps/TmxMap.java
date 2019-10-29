@@ -14,6 +14,7 @@ public class TmxMap extends TiledMap { // how good? 1
     public int width, height;
     public int tileWidth, tileHeight;
     public boolean isometric;
+    public boolean turnedMap = false;
 
     public TmxMap(TiledMap tiledMap, String mapPath) { // how good? 44444? // without MapLoader.loadTilemap()||loadTiledMap()
         Logger.logFuncStart("tiledMap:" + tiledMap + ", mapPath:" + mapPath);
@@ -61,6 +62,7 @@ public class TmxMap extends TiledMap { // how good? 1
         sb.append(",height:" + height);
         sb.append(",isometric:" + isometric);
         if (full) {
+            sb.append(",turnedMap:" + turnedMap);
             sb.append(",tileWidth:" + tileWidth);
             sb.append(",tileHeight:" + tileHeight);
             sb.append(",tiledMap:" + tiledMap);

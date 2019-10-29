@@ -13,6 +13,8 @@ public class SendObject implements Serializable {
         PLAYER_DISCONNECTED,
         PLAYER_BUILD_TOWER,
         PLAYER_REMOVE_TOWER,
+//        PAUSED_GAME_FIELD,
+        GAME_FIELD_INITIALIZED,
     }
 
     public SendObjectEnum sendObjectEnum;
@@ -41,6 +43,9 @@ public class SendObject implements Serializable {
             } else if (networkPackage instanceof RemoveTowerData) {
                 this.sendObjectEnum = SendObjectEnum.PLAYER_REMOVE_TOWER;
                 this.networkPackages.add(networkPackage);
+            } else if (networkPackage instanceof GameFieldData) {
+                this.sendObjectEnum = SendObjectEnum.UPDATE_PLAYER_INFO_DATA;
+                this.networkPackages.add(networkPackage);
             } else {
                 this.networkPackages.add(networkPackage);
             }
@@ -56,9 +61,9 @@ public class SendObject implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("SendObject[");
         sb.append("sendObjectEnum:" + sendObjectEnum);
-        sb.append(",networkPackages[0]:" + networkPackages.get(0));
+        sb.append(",networkPackages.size():" + networkPackages.size());
         if (full) {
-            for (int n = 1; n < networkPackages.size(); n++) {
+            for (int n = 0; n < networkPackages.size(); n++) {
                 sb.append(",networkPackages[" + n + "]:" + networkPackages.get(n));
             }
         }

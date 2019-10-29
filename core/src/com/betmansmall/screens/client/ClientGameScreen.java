@@ -8,6 +8,7 @@ import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.server.accouting.UserAccount;
+import com.betmansmall.server.data.GameFieldData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.BuildTowerData;
@@ -37,10 +38,16 @@ public class ClientGameScreen extends GameScreen {
         if (clientSessionThread.sessionState == SessionState.RECEIVED_SERVER_INFO_DATA) {
             this.initGameField();
             clientSessionThread.sessionState = SessionState.INITIALIZED;
+            clientSessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_INITIALIZED));
         }
         if (clientSessionThread.sessionState == SessionState.INITIALIZED) {
             super.render(delta);
         }
+    }
+
+    @Override
+    public void sendGameFieldVariables() {
+        clientSessionThread.sendObject(new SendObject(new GameFieldData(gameField)));
     }
 
     @Override
@@ -49,6 +56,7 @@ public class ClientGameScreen extends GameScreen {
         Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
         if (tower != null) {
             clientSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+            return tower;
         }
         return null;
     }

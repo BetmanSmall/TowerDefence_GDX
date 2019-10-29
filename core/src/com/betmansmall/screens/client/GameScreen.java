@@ -96,6 +96,7 @@ public class GameScreen extends AbstractScreen {
             if (gameField.gameSpeed > 0.1f) {
                 gameField.gameSpeed -= 0.1f;
             }
+            this.sendGameFieldVariables();
             gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.gameSpeed:" + gameField.gameSpeed);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
@@ -107,6 +108,7 @@ public class GameScreen extends AbstractScreen {
             gameInterface.addActionToHistory("-- cameraController.camera.zoom:" + cameraController.camera.zoom);
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.camera.zoom:" + cameraController.camera.zoom);
             gameField.gameSpeed += 0.1f;
+            this.sendGameFieldVariables();
             gameInterface.addActionToHistory("-- gameField.gameSpeed:" + gameField.gameSpeed);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.gameSpeed:" + gameField.gameSpeed);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
@@ -119,7 +121,6 @@ public class GameScreen extends AbstractScreen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- Gdx.input.isKeyJustPressed(Input.Keys.SPACE)");
             gameInterface.startAndPauseButton.toggle();
-//            gameField.gamePaused = !gameField.gamePaused;
             gameInterface.addActionToHistory("-- gameField.gamePaused:" + gameField.gamePaused);
             Gdx.app.log("GameScreen::inputHandler()", "-- gameField.gamePaused:" + gameField.gamePaused);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
@@ -307,6 +308,9 @@ public class GameScreen extends AbstractScreen {
             cameraController.camera.viewportWidth = width;
             cameraController.camera.update();
         }
+    }
+
+    public void sendGameFieldVariables() {
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {

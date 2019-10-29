@@ -1,16 +1,19 @@
 package com.betmansmall.game;
 
 import com.betmansmall.enums.SessionState;
+import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.ClientGameScreen;
 import com.betmansmall.server.SessionSettings;
 import com.betmansmall.server.data.BuildTowerData;
+import com.betmansmall.server.data.GameFieldData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.ServerInfoData;
+import com.betmansmall.server.data.TowersManagerData;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.server.networking.TcpSocketListener;
 import com.betmansmall.util.logging.Logger;
@@ -60,19 +63,21 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
     @Override
     public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) {
         Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
-        switch (sendObject.sendObjectEnum) {
-            case SERVER_INFO_DATA: {
-                for (NetworkPackage networkPackage : sendObject.networkPackages) {
-                    if (networkPackage instanceof ServerInfoData) {
-                        ServerInfoData serverInfoData = (ServerInfoData) networkPackage;
-                        clientGameScreen.game.sessionSettings.gameSettings.mapPath = serverInfoData.mapPath;
-                        clientGameScreen.game.sessionSettings.gameSettings.gameType = serverInfoData.gameType;
-                        sessionState = SessionState.RECEIVED_SERVER_INFO_DATA;
-                    } else if (networkPackage instanceof PlayerInfoData) {
-                        PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+        if (sendObject.sendObjectEnum != null) {
+            switch (sendObject.sendObjectEnum) {
+                case SERVER_INFO_DATA: {
+                    for (NetworkPackage networkPackage : sendObject.networkPackages) {
+                        if (networkPackage instanceof ServerInfoData) {
+                            ServerInfoData serverInfoData = (ServerInfoData) networkPackage;
+                            clientGameScreen.game.sessionSettings.gameSettings.mapPath = serverInfoData.mapPath;
+                            clientGameScreen.game.sessionSettings.gameSettings.gameType = serverInfoData.gameType;
+                            sessionState = SessionState.RECEIVED_SERVER_INFO_DATA;
+                        } else if (networkPackage instanceof PlayerInfoData) {
+                            PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
 
-                        Faction serverFaction = clientGameScreen.game.factionsManager.getServerFaction();
-                        clientGameScreen.playersManager.setServer(new Player(playerInfoData, serverFaction));
+                            Faction serverFaction = clientGameScreen.game.factionsManager.getServerFaction();
+                            clientGameScreen.playersManager.setServer(new Player(playerInfoData, serverFaction));
+                        }
                     }
                 }
             }
@@ -100,6 +105,21 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
 
                 Player player = clientGameScreen.playersManager.getPlayer(removeTowerData.playerID);
                 clientGameScreen.gameField.removeTowerWithGold(removeTowerData.removeX, removeTowerData.removeY, player);
+            } else if (networkPackage instanceof GameFieldData) {
+                GameFieldData gameFieldData = (GameFieldData) networkPackage;
+
+                clientGameScreen.gameField.updateGameFieldVariables(gameFieldData);
+            } else if (networkPackage instanceof TowersManagerData) {
+                TowersManagerData towersManagerData = (TowersManagerData) networkPackage;
+
+                for (TowersManagerData.TowerData towerData : towersManagerData.towers) {
+                    Player player = clientGameScreen.playersManager.getPlayer(towerData.playerID);
+                    TemplateForTower templateForTower = player.faction.getTemplateForTower(towerData.templateName);
+
+                    Tower tower = clientGameScreen.gameField.createTower(towerData.cellX, towerData.cellY, templateForTower, player);
+                    tower.hp = towerData.hp;
+                    tower.elapsedReloadTime = towerData.elapsedReloadTime;
+                }
             }
         }
     }

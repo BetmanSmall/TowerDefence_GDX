@@ -775,7 +775,7 @@ public class GameFieldRenderer {
 
         Array<GridPoint2> spawnPoints = gameField.waveManager.getAllSpawnPoint();
         cameraController.shapeRenderer.setColor(new Color(0f, 255f, 204f, 255f));
-        if (!gameField.turnedMap) {
+        if (!gameField.tmxMap.turnedMap) {
             for (GridPoint2 spawnPoint : spawnPoints) {
                 Cell cell = gameField.getCell(spawnPoint.x, spawnPoint.y); // ArrayIndexOutOfBoundsException x==31 because turn x==16 && y==31 // turnedMap kostbIl
                 if (cell != null) { // TODO need in turnAndFlip() convert. and this point and other
@@ -796,7 +796,7 @@ public class GameFieldRenderer {
 
         Array<GridPoint2> exitPoints = gameField.waveManager.getAllExitPoint();
         cameraController.shapeRenderer.setColor(new Color(255f, 0f, 102f, 255f));
-        if (!gameField.turnedMap) {
+        if (!gameField.tmxMap.turnedMap) {
             for (GridPoint2 exitPoint : exitPoints) {
                 Cell cell = gameField.getCell(exitPoint.x, exitPoint.y);
                 if (cameraController.isDrawableGridNav == 5) {

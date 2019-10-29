@@ -265,12 +265,14 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
-                gameScreen.gameField.gamePaused = pauseMenuButton.isChecked();
-                pauseMenuTable.setVisible(gameScreen.gameField.gamePaused);
-                tableWithSelectors.setVisible(!gameScreen.gameField.gamePaused);
-                tableWithButtons.setVisible(!gameScreen.gameField.gamePaused);
-                playersViewTable.setVisible((!gameScreen.gameField.gamePaused));
+                boolean gamePaused = pauseMenuButton.isChecked();
+                gameScreen.gameField.gamePaused = gamePaused;
+                pauseMenuTable.setVisible(gamePaused);
+                tableWithSelectors.setVisible(!gamePaused);
+                tableWithButtons.setVisible(!gamePaused);
+                playersViewTable.setVisible((!gamePaused));
                 interfaceTouched = true;
+                gameScreen.sendGameFieldVariables();
             }
         });
         gameSpeedMinus.addListener(new ChangeListener() {
@@ -279,6 +281,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedMinus.isChecked():" + gameSpeedMinus.isChecked());
                 if (gameScreen.gameField.gameSpeed > 0.1f) {
                     gameScreen.gameField.gameSpeed -= 0.1f;
+                    gameScreen.sendGameFieldVariables();
                 }
             }
         });
@@ -308,6 +311,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                     gameScreen.gameField.gamePaused = false;
                 }
 //                }
+                gameScreen.sendGameFieldVariables();
                 interfaceTouched = true;
             }
         });
@@ -316,6 +320,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedPlus.isChecked():" + gameSpeedPlus.isChecked());
                 gameScreen.gameField.gameSpeed += 0.1f;
+                gameScreen.sendGameFieldVariables();
             }
         });
     }
@@ -658,7 +663,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             return; // It'is really need???
         }
         Batch batch = getBatch(); // Need have own batch. mb get from GameScreen
-        Gdx.app.log("GameInterface::renderEndGame()", "-- batch:" + batch);
+        Gdx.app.log("GameInterface::renderEndGame()", "-- gameState:" + gameState);
         batch.begin();
         if(gameState == GameState.WIN) {
             batch.draw(winTexture, 0, 0, getWidth(), getHeight());

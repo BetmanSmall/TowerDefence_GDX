@@ -18,8 +18,6 @@ public class TcpConnection {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
-//    public Player player;
-
     public TcpConnection(TcpSocketListener tcpSocketListener, String host, int port) throws IOException {
         this(tcpSocketListener, new Socket(host, port));
         Logger.logFuncEnd();

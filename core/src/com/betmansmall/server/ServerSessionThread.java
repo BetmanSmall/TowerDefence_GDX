@@ -7,11 +7,13 @@ import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.server.ServerGameScreen;
 import com.betmansmall.server.data.BuildTowerData;
+import com.betmansmall.server.data.GameFieldData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.ServerInfoData;
+import com.betmansmall.server.data.TowersManagerData;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.server.networking.TcpSocketListener;
 import com.betmansmall.util.logging.Logger;
@@ -94,6 +96,13 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     @Override
     public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) {
         Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
+        if (sendObject.sendObjectEnum != null) {
+            switch (sendObject.sendObjectEnum) {
+                case GAME_FIELD_INITIALIZED: {
+                    tcpConnection.sendObject(new SendObject(new TowersManagerData(serverGameScreen.gameField.towersManager)));
+                }
+            }
+        }
         for (NetworkPackage networkPackage : sendObject.networkPackages) {
             if (networkPackage instanceof PlayerInfoData) {
                 PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
@@ -102,7 +111,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
                 sessionState = SessionState.PLAYER_CONNECTED;
 
                 tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.UPDATE_PLAYER_INFO_DATA, new PlayerInfoData(player)));
-                sendObject(new SendObject(new PlayerInfoData(player)), tcpConnection);
+                this.sendObject(new SendObject(new PlayerInfoData(player)), tcpConnection);
             } else if (networkPackage instanceof BuildTowerData) {
                 BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
 
@@ -123,6 +132,12 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
                 this.sendObject(new SendObject(removeTowerData), tcpConnection);
 //                 or
 //                this.sendObject(new SendObject(new RemoveTowerData(removeTowerData.removeX, removeTowerData.removeY, player)), tcpConnection);
+            } else if (networkPackage instanceof GameFieldData) {
+                GameFieldData gameFieldData = (GameFieldData) networkPackage;
+
+                serverGameScreen.gameField.updateGameFieldVariables(gameFieldData);
+
+                this.sendObject(new SendObject(gameFieldData), tcpConnection);
             }
         }
     }

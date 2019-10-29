@@ -23,6 +23,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
+import com.betmansmall.server.data.GameFieldData;
 import com.betmansmall.util.logging.Logger;
 
 import java.util.ArrayDeque;
@@ -38,7 +39,6 @@ public class GameField {
     public TowersManager towersManager;
     public UnitsManager unitsManager; // For Bullet
     public TmxMap tmxMap;
-    public boolean turnedMap = false; // костыль. нужно допиливать поворт карты. если этот функционал дествительно нужен.
     private Cell[][] field;
     private PathFinder pathFinder;
     private UnderConstruction underConstruction;
@@ -48,7 +48,6 @@ public class GameField {
     public float gameSpeed;
     public boolean gamePaused;
     public boolean unitsSpawn;
-//    public int gamerGold;
 
     public GameField(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -61,8 +60,6 @@ public class GameField {
         tmxMap = (TmxMap)new MapLoader().load(gameSettings.mapPath);
         Gdx.app.log("GameField::GameField()", "-- tmxMap:" + tmxMap);
 
-        underConstruction = null;
-
         createField();
         if (tmxMap.isometric) {
             flipY();
@@ -71,6 +68,8 @@ public class GameField {
         pathFinder = new PathFinder(this);
         pathFinder.loadCharMatrix(getCharMatrix());
         Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
+
+        underConstruction = null;
 
 //        gamerGold = 100000;
         timeOfGame = 0.0f;
@@ -494,7 +493,7 @@ public class GameField {
         return createTower(buildX, buildY, templateForTower, localPlayer);
     }
 
-    private Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
+    public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
         if (player == null) {
             player = gameScreen.playersManager.getLocalServer(); // ComputerPlayer0 inst;
@@ -939,6 +938,13 @@ public class GameField {
         return waveManager.getNumberOfActions() + unitsManager.units.size;
     }
 
+    public void updateGameFieldVariables(GameFieldData gameFieldData) {
+        this.timeOfGame = gameFieldData.timeOfGame;
+        this.gameSpeed = gameFieldData.gameSpeed;
+        this.gamePaused = gameFieldData.gamePaused;
+        this.unitsSpawn = gameFieldData.unitsSpawn;
+    }
+
     public GameState getGameState() {
 //        Logger.logDebug("missedUnitsForPlayer1:" + gameScreen.playersManager.getLocalPlayer().missedUnits);
 //        Logger.logDebug("maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits);
@@ -995,7 +1001,7 @@ public class GameField {
         }
         // delete field; // TODO need this make or not?
         field = newCells;
-        turnedMap = !turnedMap;
+        tmxMap.turnedMap = !tmxMap.turnedMap;
     }
 
     public void turnLeft() {
@@ -1011,7 +1017,7 @@ public class GameField {
         }
         // delete field;
         field = newCells;
-        turnedMap = !turnedMap;
+        tmxMap.turnedMap = !tmxMap.turnedMap;
     }
 
     /**
@@ -1056,7 +1062,6 @@ public class GameField {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("GameField[");
-//        sb.append("gamerGold:" + gamerGold);
         sb.append("unitsSpawn:" + unitsSpawn);
         sb.append(",gamePaused:" + gamePaused);
         sb.append(",gameSpeed:" + gameSpeed);
@@ -1065,7 +1070,6 @@ public class GameField {
             sb.append(",underConstruction:" + underConstruction);
             sb.append(",pathFinder:" + pathFinder);
             sb.append(",field.length:" + ( (field!=null) ? field.length : "null"));
-            sb.append(",turnedMap:" + turnedMap);
             sb.append(",tmxMap:" + tmxMap);
             sb.append(",unitsManager:" + unitsManager);
             sb.append(",towersManager:" + towersManager);
