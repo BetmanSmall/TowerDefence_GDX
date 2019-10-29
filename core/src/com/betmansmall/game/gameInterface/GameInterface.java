@@ -160,7 +160,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         addActor(tableWithButtons);
 
         Table horizontalGroupTop = new Table(skin);
-        tableWithButtons.add(horizontalGroupTop).expandY().top();
+        tableWithButtons.add(horizontalGroupTop).expandY().top().row();
 
         playersViewButton = new TextButton("PLAYERS", skin);
         horizontalGroupTop.add(playersViewButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
@@ -267,8 +267,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
                 gameScreen.gameField.gamePaused = pauseMenuButton.isChecked();
                 pauseMenuTable.setVisible(gameScreen.gameField.gamePaused);
-                tableWithSelectors.setVisible(!pauseMenuButton.isChecked());
-                tableWithButtons.setVisible(!pauseMenuButton.isChecked());
+                tableWithSelectors.setVisible(!gameScreen.gameField.gamePaused);
+                tableWithButtons.setVisible(!gameScreen.gameField.gamePaused);
+                playersViewTable.setVisible((!gameScreen.gameField.gamePaused));
                 interfaceTouched = true;
             }
         });

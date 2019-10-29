@@ -215,8 +215,8 @@ public class GameScreen extends AbstractScreen {
             }
             gameInterface.addActionToHistory("-- cameraController.drawOrder:" + cameraController.drawOrder);
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.drawOrder:" + cameraController.drawOrder);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE)");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK)");
             game.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER)");
