@@ -460,10 +460,10 @@ public class GameField {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         if (underConstruction != null) {
             underConstruction.setEndCoors(buildX, buildY);
-            createTowerWithGoldCheck(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower);
+            gameScreen.createTowerWithGoldCheck(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower);
             for (int k = 0; k < underConstruction.coorsX.size; k++) {
 //            for(int k = underConstruction.coorsX.size-1; k >= 0; k--) {
-                createTowerWithGoldCheck(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower);
+                gameScreen.createTowerWithGoldCheck(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower);
             }
             underConstruction.clearStartCoors();
             rerouteAllUnits();

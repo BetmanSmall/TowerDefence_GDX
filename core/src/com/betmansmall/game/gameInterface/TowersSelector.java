@@ -348,8 +348,10 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
         if (gameField.gameSettings.verticalSelector) {
             if (gameField.gameSettings.topBottomLeftRightSelector) {
                 if (coordinateX >= selectorBorderVertical + (selectorPrefWidth / 2) ) {
-                    coordinateX = getParent().getWidth();
-                    gameField.cancelUnderConstruction();
+                    if (coordinateX < getParent().getWidth()) {
+                        coordinateX = getParent().getWidth();
+                        gameField.cancelUnderConstruction();
+                    }
                 } else {
                     coordinateX = selectorBorderVertical;
                 }
@@ -357,15 +359,19 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
                 if (coordinateX+ selectorPrefWidth >= selectorBorderVertical - (selectorPrefWidth / 2) ) {
                     coordinateX = 0;
                 } else {
-                    coordinateX = -selectorPrefWidth;
-                    gameField.cancelUnderConstruction();
+                    if (coordinateX > -selectorPrefWidth) {
+                        coordinateX = -selectorPrefWidth;
+                        gameField.cancelUnderConstruction();
+                    }
                 }
             }
         } else {
             if (gameField.gameSettings.topBottomLeftRightSelector) {
                 if (coordinateY- selectorPrefHeight >= selectorBorderHorizontal + (selectorPrefHeight / 2) ) {
-                    coordinateY = parentHeight + selectorPrefHeight; // or sectionHeight???
-                    gameField.cancelUnderConstruction();
+                    if (coordinateY > parentHeight+selectorPrefHeight) {
+                        coordinateY = parentHeight + selectorPrefHeight; // or sectionHeight???
+                        gameField.cancelUnderConstruction();
+                    }
                 } else {
                     coordinateY = parentHeight;
                 }
@@ -373,8 +379,10 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
                 if (coordinateY >= selectorBorderHorizontal - (selectorPrefHeight / 2) ) {
                     coordinateY = selectorBorderHorizontal;
                 } else {
-                    coordinateY = 0;
-                    gameField.cancelUnderConstruction();
+                    if (coordinateY < 0) {
+                        coordinateY = 0;
+                        gameField.cancelUnderConstruction();
+                    }
                 }
             }
         }

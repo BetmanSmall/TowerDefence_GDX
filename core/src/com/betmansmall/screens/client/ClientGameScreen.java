@@ -6,6 +6,7 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
@@ -43,6 +44,16 @@ public class ClientGameScreen extends GameScreen {
     }
 
     @Override
+    public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
+        Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
+        if (tower != null) {
+            clientSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+        }
+        return null;
+    }
+
+    @Override
     public Tower towerToggle(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         Cell cell = gameField.getCell(buildX, buildY);
@@ -65,20 +76,4 @@ public class ClientGameScreen extends GameScreen {
         }
         return null;
     }
-
-//    @Override
-//    public Tower buildTower(int buildX, int buildY) {
-//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
-//        Player player = playersManager.localPlayer;
-//        return tryCreateTower(buildX, buildY, player.faction.getTemplateForTowers().random(), player);
-//    }
-//
-//    @Override
-//    public Tower tryCreateTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
-//        Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower, player);
-//        if (tower != null) {
-//            clientSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
-//        }
-//        return tower;
-//    }
 }

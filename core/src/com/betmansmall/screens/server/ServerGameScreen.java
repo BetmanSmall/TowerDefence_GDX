@@ -4,6 +4,7 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.server.ServerSessionThread;
 import com.betmansmall.server.accouting.UserAccount;
@@ -31,6 +32,16 @@ public class ServerGameScreen extends GameScreen {
         Logger.logFuncStart();
         super.dispose();
         serverSessionThread.dispose();
+    }
+
+    @Override
+    public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
+        Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
+        if (tower != null) {
+            serverSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+        }
+        return null;
     }
 
     public Tower towerToggle(int buildX, int buildY) {

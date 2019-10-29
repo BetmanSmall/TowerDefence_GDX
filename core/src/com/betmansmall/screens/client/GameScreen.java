@@ -16,6 +16,7 @@ import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.render.GameFieldRenderer;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.server.accouting.UserAccount;
@@ -308,6 +309,11 @@ public class GameScreen extends AbstractScreen {
         }
     }
 
+    public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
+        return gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
+    }
+
     public Tower towerToggle(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         Cell cell = gameField.getCell(buildX, buildY);
@@ -324,16 +330,6 @@ public class GameScreen extends AbstractScreen {
         }
         return null;
     }
-
-//    public Tower buildTower(int buildX, int buildY) {
-//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
-//        return null;
-//    }
-
-//    public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
-//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
-//        return gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower, player);
-//    }
 
     public String toString() {
         return toString(true);

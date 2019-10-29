@@ -203,12 +203,10 @@ public class CameraController extends AbstractCameraController {
             if (gameField.getUnderConstruction() != null) {
                 if (button == 0) {
                     if (whichCell(touch, isDrawableTowers)) {
-//                        gameScreen.buildTower((int)touch.x, (int)touch.y);
                         gameField.buildTowersWithUnderConstruction((int) touch.x, (int) touch.y);
                     }
                 } else if (button == 1) {
                     gameField.cancelUnderConstruction();
-//                    gameField.removeTower((int) touch.x, (int) touch.y);
                 }
             } else {
 //            int tmpCellX = screenX;
