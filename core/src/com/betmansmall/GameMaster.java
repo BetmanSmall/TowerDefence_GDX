@@ -131,9 +131,9 @@ public class GameMaster extends Game {
             exeption.printStackTrace();
         }
 
-        if (cmd.hasOption("server")) {
+        if (cmd != null && cmd.hasOption("server")) {
             addScreen(new ServerSettingsScreen(this));
-        } else if (cmd.hasOption("client")) {
+        } else if (cmd != null && cmd.hasOption("client")) {
             addScreen(new ClientSettingsScreen(this));
         } else {
             addScreen(mainMenuScreen);

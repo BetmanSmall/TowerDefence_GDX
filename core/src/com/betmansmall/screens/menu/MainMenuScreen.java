@@ -247,8 +247,8 @@ public class MainMenuScreen extends AbstractScreen {
 
     private void inputHandler(float delta) {
 //        Gdx.app.log("MainMenuScreen::inputHandler(" + delta + ");");
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE);");
             menuLvl--;
             if(menuLvl == -1) {
                 game.dispose();

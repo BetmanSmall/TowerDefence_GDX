@@ -41,9 +41,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     private Skin skin;
 
+    public PlayersViewTable playersViewTable;
     public Table tableWithButtons, tableWithSelectors, tableConsoleLog, tableInfoTablo, pauseMenuTable, optionTable;
     public Table infoTabloTable;
-    public PlayersViewTable playersViewTable;
 
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
@@ -56,6 +56,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private Label actionsHistoryLabel;
     // Console need
 
+    public TextButton playersViewButton;
     public TextButton pauseMenuButton;
     public TextButton startAndPauseButton;
     public TextButton gameSpeedMinus, gameSpeedPlus;
@@ -150,24 +151,34 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         actionsHistoryLabel = new Label("actionsHistoryLabel", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tableConsoleLog.add(actionsHistoryLabel).expand().left();
 
+        playersViewTable = new PlayersViewTable(gameScreen.playersManager, skin);
+        playersViewTable.setFillParent(true);
+        addActor(playersViewTable.scrollPane);
+
         tableWithButtons = new Table(skin);
         tableWithButtons.setFillParent(true);
         addActor(tableWithButtons);
 
-        pauseMenuButton = new TextButton("||", skin);
-        tableWithButtons.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY().top().row();
+        Table horizontalGroupTop = new Table(skin);
+        tableWithButtons.add(horizontalGroupTop).expandY().top();
 
-        Table horizontalGroup = new Table(skin);
-        tableWithButtons.add(horizontalGroup).expandY().bottom();
+        playersViewButton = new TextButton("PLAYERS", skin);
+        horizontalGroupTop.add(playersViewButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
+
+        pauseMenuButton = new TextButton("||", skin);
+        horizontalGroupTop.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
+
+        Table horizontalGroupBottom = new Table(skin);
+        tableWithButtons.add(horizontalGroupBottom).expandY().bottom();
 
         gameSpeedMinus = new TextButton("<<", skin);
-        horizontalGroup.add(gameSpeedMinus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
+        horizontalGroupBottom.add(gameSpeedMinus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
         startAndPauseButton = new TextButton("startAndPauseButton", skin, "default");
-        horizontalGroup.add(startAndPauseButton).prefWidth(Gdx.graphics.getWidth()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.1f);
+        horizontalGroupBottom.add(startAndPauseButton).prefWidth(Gdx.graphics.getWidth()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
         gameSpeedPlus = new TextButton(">>", skin);
-        horizontalGroup.add(gameSpeedPlus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
+        horizontalGroupBottom.add(gameSpeedPlus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
         tableInfoTablo = new Table(skin);
         tableInfoTablo.setFillParent(true);
@@ -208,10 +219,6 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(gamePaused).left().row();
 
-        playersViewTable = new PlayersViewTable(gameScreen.playersManager, skin);
-        playersViewTable.setFillParent(true);
-        addActor(playersViewTable.scrollPane);
-
         tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableWithSelectors.setFillParent(true);
         addActor(tableWithSelectors);
@@ -219,6 +226,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     public void addListeners() {
         Gdx.app.log("GameInterface::addListeners()", "--");
+        playersViewButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- playersViewButton.isChecked():" + playersViewButton.isChecked());
+                playersViewTable.setVisible(!playersViewTable.isVisible());
+            }
+        });
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
