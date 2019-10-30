@@ -2,7 +2,6 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
@@ -27,6 +26,7 @@ import com.betmansmall.server.data.GameFieldData;
 import com.betmansmall.util.logging.Logger;
 
 import java.util.ArrayDeque;
+import java.util.Random;
 
 /**
  * Created by betmansmall on 08.02.2016.
@@ -48,6 +48,8 @@ public class GameField {
     public float gameSpeed;
     public boolean gamePaused;
     public boolean unitsSpawn;
+
+    private Random random;
 
     public GameField(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -71,7 +73,6 @@ public class GameField {
 
         underConstruction = null;
 
-//        gamerGold = 100000;
         timeOfGame = 0.0f;
         gameSpeed = 1.0f;
         gamePaused = false;
@@ -82,8 +83,8 @@ public class GameField {
             int randomEnemyCount = gameSettings.enemyCount;
             Gdx.app.log("GameField::GameField()", "-- randomEnemyCount:" + randomEnemyCount);
             for (int k = 0; k < randomEnemyCount; k++) {
-                int randomX = (int)(Math.random() * tmxMap.width);
-                int randomY = (int)(Math.random() * tmxMap.height);
+                int randomX = random.nextInt(tmxMap.width);
+                int randomY = random.nextInt(tmxMap.height);
                 Gdx.app.log("GameField::GameField()", "-- k:" + k);
                 Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
                 Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
@@ -98,8 +99,8 @@ public class GameField {
             int randomTowerCount = gameSettings.towersCount;
             Gdx.app.log("GameField::GameField()", "-- randomTowerCount:" + randomTowerCount);
             for (int k = 0; k < randomTowerCount; k++) {
-                int randomX = (int)(Math.random() * tmxMap.width);
-                int randomY = (int)(Math.random() * tmxMap.height);
+                int randomX = random.nextInt(tmxMap.width);
+                int randomY = random.nextInt(tmxMap.height);
                 Gdx.app.log("GameField::GameField()", "-- k:" + k);
                 Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
                 Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
@@ -116,8 +117,8 @@ public class GameField {
             waveManager.validationPoints(field, tmxMap.width, tmxMap.height);
             if (waveManager.waves.size == 0) {
                 for (int w = 0; w < 10; w++) {
-                    GridPoint2 spawnPoint = new GridPoint2((int) (Math.random() * tmxMap.width), (int) (Math.random() * tmxMap.height));
-                    GridPoint2 exitPoint = new GridPoint2((int) (Math.random() * tmxMap.width), (int) (Math.random() * tmxMap.height));
+                    GridPoint2 spawnPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
+                    GridPoint2 exitPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
                     Cell spawnCell = getCell(spawnPoint.x, spawnPoint.y);
                     Cell exitCell = getCell(exitPoint.x, exitPoint.y);
                     if (spawnCell != null && spawnCell.isEmpty()) {
@@ -134,23 +135,10 @@ public class GameField {
 
             }
             waveManager.checkRoutes(pathFinder);
-            MapProperties mapProperties = tmxMap.getProperties();
-            Gdx.app.log("GameField::GameField()", "-- mapProperties:" + mapProperties);
-//            if (mapProperties.containsKey("gamerGold")) {
-//                gameScreen.playersManager.getLocalPlayer().gold = Integer.parseInt(mapProperties.get("gamerGold").toString()); // HARD GAME | one gold = one unit for computer!!!
-//            }
-//            gameScreen.playersManager.getLocalServer().maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForComputer0", gameScreen.playersManager.getLocalPlayer().gold, Integer.class); // Игрок может сразу выиграть если у него не будет голды. так как @ref2
-//            gameScreen.playersManager.getLocalServer().missedUnits = 0;
-//            if (gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits == 0) {
-//                gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits = mapProperties.get("maxOfMissedUnitsForPlayer1", waveManager.getNumberOfActions() / 8, Integer.class); // it is not true | need implement getNumberOfUnits()
-//            }
-//            gameScreen.playersManager.getLocalPlayer().missedUnits = 0;
-//            Gdx.app.log("GameField::GameField()", "-- gamerGold:" + gameScreen.playersManager.getLocalPlayer().gold);
-//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForComputer0:" + gameScreen.playersManager.getLocalServer().maxOfMissedUnits);
-//            Gdx.app.log("GameField::GameField()", "-- gameSettings.maxOfMissedUnitsForPlayer1:" + gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits);
         } else {
             Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
+        random = new Random();
         Gdx.app.log("GameField::GameField()", "-end-");
     }
 
@@ -242,16 +230,15 @@ public class GameField {
 
     public boolean landscapeGenerator(String mapPath) {
         Gdx.app.log("GameField::landscapeGenerator()", "-- mapPath:" + mapPath);
-//    int terrainType = rand()%2;
         if (mapPath.contains("randomMap")) {
             for (int x = 0; x < tmxMap.width; x++) {
                 for (int y = 0; y < tmxMap.height; y++) {
-                    if( (Math.random()*100) < 30 ) {
+                    if(random.nextInt(10) < 3) {
                         if (getCellNoCheck(x, y).isEmpty()) {
                             TiledMapTileSet tiledMapTileSet = tmxMap.getTileSets().getTileSet(1);
                             int firstgid = tiledMapTileSet.getProperties().get("firstgid", Integer.class);
 
-                            int randNumber = (int) (firstgid + 43 + (Math.random()*4)); // bricks from TileObjectsRubbleWalls.tsx
+                            int randNumber = (firstgid + 43 + random.nextInt(4)); // bricks from TileObjectsRubbleWalls.tsx
                             TiledMapTile tile = tiledMapTileSet.getTile(randNumber);
                             Logger.logDebug("tile:" + tile);
                             getCellNoCheck(x, y).setTerrain(tile);
@@ -385,8 +372,8 @@ public class GameField {
 
     public Unit spawnCompUnitToRandomExit(int x, int y) {
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- x:" + x + " y:" + y);
-        int randomX = (int)(Math.random() * tmxMap.width);
-        int randomY = (int)(Math.random() * tmxMap.height);
+        int randomX = random.nextInt(tmxMap.width);
+        int randomY = random.nextInt(tmxMap.height);
         Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
         return createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), 0, null);
     }
@@ -803,8 +790,8 @@ public class GameField {
                                     Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(tower):");
                                 } else {
                                     if (unit.route == null || unit.route.isEmpty()) {
-                                        int randomX = (int) (Math.random() * tmxMap.width);
-                                        int randomY = (int) (Math.random() * tmxMap.height);
+                                        int randomX = random.nextInt(tmxMap.width);
+                                        int randomY = random.nextInt(tmxMap.height);
                                         unit.route = pathFinder.route(nextCurrentCell.cellX, nextCurrentCell.cellY, randomX, randomY); // nextCurrentCell -?- currentCell
                                         if (unit.route != null && !unit.route.isEmpty()) {
                                             unit.route.removeFirst();

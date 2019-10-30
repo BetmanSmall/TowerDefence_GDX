@@ -566,19 +566,22 @@ public class GameFieldRenderer {
         // todo fix this shit 1 || this fix bug with transparent when select tower
         cameraController.spriteBatch.end();
         cameraController.shapeRenderer.end();
-        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
+        cameraController.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         Color oldColor = cameraController.shapeRenderer.getColor();
         cameraController.shapeRenderer.setColor(Color.WHITE);
-        if (cameraController.prevCellX == cell.cellX && cameraController.prevCellY == cell.cellY) {
+
+        Player player = cameraController.gameField.gameScreen.playersManager.getLocalPlayer();
+        if (player.playerID == tower.player.playerID && player.selectedTower == tower) {
             cameraController.shapeRenderer.circle(tower.radiusDetectionCircle.x, tower.radiusDetectionCircle.y, tower.radiusDetectionCircle.radius);
         }
-        cameraController.shapeRenderer.setColor(oldColor);
 
+        cameraController.shapeRenderer.setColor(oldColor);
         cameraController.shapeRenderer.end();
+
         cameraController.spriteBatch.begin();
         // todo fix this shit 2
-        towerPos = null; // delete towerPos;
+//        towerPos = null; // delete towerPos;
     }
 
     private void drawForeGrounds(GameField gameField) {

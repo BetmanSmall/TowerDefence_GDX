@@ -32,18 +32,18 @@ public class PlayersManager {
             Player server = new Player("ServerByClient", factionsManager.getServerFaction());
             server.gold = 999999;
             this.setServer(server);
-            this.setLocalPlayer(new Player(Player.Type.CLIENT, userAccount, factionsManager.getFactionByName(userAccount.factionName)));
+            this.setLocalPlayer(new Player(PlayerType.CLIENT, userAccount, factionsManager.getFactionByName(userAccount.factionName)));
             this.connectedCount++;
         } else if (sessionType == SessionType.CLIENT_ONLY) {
             this.players.add(null);
 //            this.setServer(null);
-            this.setLocalPlayer(new Player(Player.Type.CLIENT, userAccount, factionsManager.getFactionByName(userAccount.factionName)));
+            this.setLocalPlayer(new Player(PlayerType.CLIENT, userAccount, factionsManager.getFactionByName(userAccount.factionName)));
         } else if (sessionType == SessionType.CLIENT_STANDALONE) {
             Player server = new Player("Server_ClientStandalone", factionsManager.getServerFaction());
             server.gold = 999999;
             this.setServer(server);
 
-            Player player = new Player(Player.Type.CLIENT, userAccount, factionsManager.getServerFaction());
+            Player player = new Player(PlayerType.CLIENT, userAccount, factionsManager.getServerFaction());
             player.gold = 9999;
             this.setLocalPlayer(player);
         }
@@ -58,7 +58,7 @@ public class PlayersManager {
     }
 
     public Player setServer(Player player) {
-        if (player != null && player.playerID == 0 && player.type == Player.Type.SERVER) {
+        if (player != null && player.playerID == 0 && player.type == PlayerType.SERVER) {
             if (players.size > 0) {
                 players.set(0, player);
                 return player;
@@ -71,7 +71,7 @@ public class PlayersManager {
     }
 
     public Player setLocalPlayer(Player player) {
-        if (player != null && player.type == Player.Type.CLIENT) {
+        if (player != null && player.type == PlayerType.CLIENT) {
             if (players.size > 1) {
                 players.set(1, player);
                 return player;

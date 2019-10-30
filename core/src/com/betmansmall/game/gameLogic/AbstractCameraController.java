@@ -3,9 +3,10 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.util.logging.Logger;
 
-public abstract class AbstractCameraController implements GestureDetector.GestureListener, InputProcessor {
+public abstract class AbstractCameraController implements GestureDetector.GestureListener, InputProcessor, Disposable {
     @Override
     public boolean keyDown(int keycode) {
         Logger.logFuncStart("keycode:" + keycode);
@@ -38,13 +39,13 @@ public abstract class AbstractCameraController implements GestureDetector.Gestur
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Logger.logFuncStart("screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
+//        Logger.logFuncStart("screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        Logger.logFuncStart("screenX:" + screenX + " screenY:" + screenY);
+//        Logger.logFuncStart("screenX:" + screenX + " screenY:" + screenY);
         return false;
     }
 
@@ -80,7 +81,7 @@ public abstract class AbstractCameraController implements GestureDetector.Gestur
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Logger.logFuncStart("x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
+//        Logger.logFuncStart("x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
         return false;
     }
 

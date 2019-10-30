@@ -2,10 +2,11 @@ package com.betmansmall.server.data;
 
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.PlayerType;
 import com.betmansmall.util.logging.Logger;
 
 public class PlayerInfoData implements NetworkPackage {
-    public Player.Type type;
+    public PlayerType type;
     public String accountID;
     public Integer playerID;
     public String name;

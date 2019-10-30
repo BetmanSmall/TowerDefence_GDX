@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
-import com.betmansmall.game.Player;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.util.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisLabel;

@@ -14,6 +14,8 @@ import com.betmansmall.enums.GameType;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
+import java.util.Random;
+
 /**
  * Created by betma on 16.11.2018.
  */
@@ -29,6 +31,7 @@ public class CameraController extends AbstractCameraController {
 //    public float cameraX = 800;
 //    public float cameraY = 0;
     public OrthographicCamera camera;
+
     public int mapWidth, mapHeight;
 //    public float viewportWidth = 0;
 //    public float viewportHeight = 0;
@@ -55,8 +58,8 @@ public class CameraController extends AbstractCameraController {
     public float zoomMax = 5.0f;
     public float zoomMin = 0.1f;
 //    public float zoom = 1;
-    public float borderLeftX = 0.0f, borderRightX = 0.0f;
-    public float borderUpY = 0.0f, borderDownY = 0.0f;
+    private float borderLeftX = 0.0f, borderRightX = 0.0f;
+    private float borderUpY = 0.0f, borderDownY = 0.0f;
 
     public boolean panLeftMouseButton = true;
     public boolean panMidMouseButton = true;
@@ -64,7 +67,7 @@ public class CameraController extends AbstractCameraController {
     public boolean paning = false;
     public int touchDownX, touchDownY;
     public int prevMouseX, prevMouseY;
-    public int prevCellX, prevCellY;
+    private Random random;
 
     public CameraController(GameScreen gameScreen) {
         Logger.logFuncStart("gameScreen:" + gameScreen);
@@ -84,15 +87,11 @@ public class CameraController extends AbstractCameraController {
         this.sizeCellY = gameField.tmxMap.tileHeight;
         this.halfSizeCellX = sizeCellX/2;
         this.halfSizeCellY = sizeCellY/2;
-
-//        this.borderLeftX  = (0 - (halfSizeCellX * mapHeight));
-//        this.borderRightX = (0 + (halfSizeCellX * mapWidth));
-//        this.borderUpY    = (0);
-//        this.borderDownY  = (0 - (sizeCellY * (mapWidth>mapHeight ? mapWidth : mapHeight)));
+        random = new Random();
 //        Gdx.input.setCursorCatched(true);
     }
 
-//    @Override
+    @Override
     public void dispose() {
         Gdx.app.log("CameraController::dispose()", "--");
         shapeRenderer.dispose();
@@ -105,19 +104,31 @@ public class CameraController extends AbstractCameraController {
         camera = null;
     }
 
-//    void setBorders(float borderLeftX, float borderRightX, float borderUpY, float borderDownY);
+    void setBorders() {
+        float borderLeftX  = (0 - (halfSizeCellX * mapHeight));
+        float borderRightX = (0 + (halfSizeCellX * mapWidth));
+        float borderUpY    = (0);
+        float borderDownY  = (0 - (sizeCellY * (mapWidth>mapHeight ? mapWidth : mapHeight)));
+        this.setBorders(borderLeftX, borderRightX, borderUpY, borderDownY);
+    }
+
+    void setBorders(float borderLeftX, float borderRightX, float borderUpY, float borderDownY) {
+        this.borderLeftX  = borderLeftX;
+        this.borderRightX = borderRightX;
+        this.borderUpY    = borderUpY;
+        this.borderDownY  = borderDownY;
+    }
 
     @Override
     public boolean longPress(float x, float y) {
-        Gdx.app.log("CameraController::longPress()", "-- x:" + x + " y:" + y);
+        super.longPress(x, y);
 //        if (!gameInterface.interfaceTouched) {
             Vector3 touch = new Vector3(x, y, 0.0f);
             whichCell(touch, isDrawableTowers);
-            if (((int) (Math.random() * 2) == 0)) {
-//                gameField.towerActions((int) touch.x, (int) touch.y);
+            if (random.nextBoolean()) {
                 gameScreen.towerToggle((int) touch.x, (int) touch.y);
             } else {
-                if (((int) (Math.random() * 5) == 0) && gameField.gameSettings.gameType == GameType.LittleGame) {
+                if (random.nextInt(5) == 0 && gameField.gameSettings.gameType == GameType.LittleGame) {
                     gameField.spawnHero((int) touch.x, (int) touch.y);
                 } else {
                     gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
@@ -129,20 +140,18 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        Gdx.app.log("CameraController::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY + " button:" + button);
+        super.fling(velocityX, velocityY, button);
 //        if (!gameInterface.interfaceTouched) {
             flinging = true;
             velX = camera.zoom * velocityX * 0.5f;
             velY = camera.zoom * velocityY * 0.5f;
 //        }
-        Gdx.app.log("CameraController::fling()", "-- velX:" + velX + " velY:" + velY);
         return false;
     }
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        Gdx.app.log("CameraController::zoom()", "-- initialDistance:" + initialDistance + " distance:" + distance);
-        Gdx.app.log("CameraController::zoom()", "-- initialScale:" + initialScale);
+        super.zoom(initialDistance, distance);
         float ratio = initialDistance / distance;
         float newZoom = initialScale * ratio;
         if (newZoom < zoomMax && newZoom > zoomMin) {
@@ -153,12 +162,12 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("CameraController::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+        super.touchDown(screenX, screenY, pointer, button);
         this.touchDownX = screenX;
         this.touchDownY = screenY;
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
-        whichPrevCell(screenX, screenY, 5);
+        selectTower(screenX, screenY);
         if ( ( (panLeftMouseButton && button == 0) ||
                 (panRightMouseButton && button == 1) ||
                 (panMidMouseButton && button == 2) ) ) {
@@ -187,7 +196,7 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("CameraController::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
+        super.touchUp(screenX, screenY, pointer, button);
         if (paning) {
             if ( ( (panLeftMouseButton && button == 0) ||
                     (panRightMouseButton && button == 1) ||
@@ -222,7 +231,7 @@ public class CameraController extends AbstractCameraController {
                             if (whichCell(touch, isDrawableGround)) {
                                 Cell cell = gameField.getCell((int) touch.x, (int) touch.y);
                                 if (cell.isTerrain()) {
-                                    cell.removeTerrain((((int) (Math.random() * 2)) == 0) ? true : false);
+                                    cell.removeTerrain(random.nextBoolean());
                                     Gdx.app.log("CameraController::touchUp", "-- x:" + cell.cellX + " y:" + cell.cellY + " cell.isTerrain():" + cell.isTerrain());
                                 } else if (cell.getTower() != null) {
                                     Tower tower = cell.getTower();
@@ -231,15 +240,15 @@ public class CameraController extends AbstractCameraController {
                                 } else if (cell.isEmpty()) {
 //                                gameField.towerActions(cell.cellX, cell.cellY);
                                     gameField.createTower(cell.cellX, cell.cellY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction());
-                                    if ((((int) (Math.random() * 2)) == 0) ? true : false) {
-                                        int randNumber = (125 + (int) (Math.random() * 2));
+                                    if (random.nextBoolean()) {
+                                        int randNumber = (125 + random.nextInt(2));
                                         cell.setTerrain(gameField.tmxMap.getTileSets().getTileSet(0).getTile(randNumber), true, true);
                                     }
                                 }
                             }
                         } else if (button == 2) {
                             if (whichCell(touch, isDrawableUnits)) {
-                                if (((int) (Math.random() * 5) == 0)) {
+                                if (random.nextInt(5) == 0) {
                                     gameField.spawnHero((int) touch.x, (int) touch.y);
                                 } else {
                                     gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
@@ -270,6 +279,7 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        super.touchDragged(screenX, screenY, pointer);
         if (gameField != null) {
             UnderConstruction underConstruction = gameField.getUnderConstruction();
             if (underConstruction != null) {
@@ -281,7 +291,6 @@ public class CameraController extends AbstractCameraController {
 
             if (underConstruction == null || Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
                 if (paning) {
-//                    whichPrevCell(screenX, screenY, 5);
                     float deltaX = this.prevMouseX - screenX;
                     float deltaY = this.prevMouseY - screenY;
                     prevMouseX = screenX;
@@ -319,8 +328,7 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-//        Gdx.app.log("CameraController::mouseMoved()", "-- screenX:" + screenX + " screenY:" + screenY);
-//        whichPrevCell(screenX, screenY, 5);
+        super.mouseMoved(screenX, screenY);
 //        float deltaX = this.prevMouseX - screenX;
 //        float deltaY = this.prevMouseY - screenY;
 ////        pan(screenX, screenY, deltaX, deltaY/*, buttons*/);
@@ -340,7 +348,7 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean scrolled(int amount) {
-        Gdx.app.log("CameraController::scrolled()", "-- amount:" + amount);
+        super.scrolled(amount);
 //        if (gameInterface.scrolled(amount)) {
 //            return false;
 //        }
@@ -357,7 +365,6 @@ public class CameraController extends AbstractCameraController {
     }
 
     public void update(float deltaTime) {
-//    Gdx.app.log("CameraController::update()", "-- deltaTime:" + deltaTime);
         try {
             if (gameField.getUnderConstruction() == null) {
                 if (flinging) {
@@ -399,18 +406,23 @@ public class CameraController extends AbstractCameraController {
 ////    Gdx.app.log("CameraController::unproject()", "-- prevMouseX:" + prevMouseX + " prevMouseY:" + prevMouseY + " cameraX:" + cameraX + " cameraY:" + cameraY);
 //    }
 
-    Vector3 whichPrevCell(final int screenX, final int screenY, int map) {
-        Vector3 mouse = new Vector3(screenX, screenY, 0);
-        if (whichCell(mouse, map)) {
-            prevCellX = (int)mouse.x;
-            prevCellY = (int)mouse.y;
-            return mouse;
+    /**
+     * Selects tower in touched cell, if there is one.
+     */
+    private void selectTower(final int screenX, final int screenY) {
+        Vector3 vector = new Vector3(screenX, screenY, 0);
+        if (!whichCell(vector, 5)) return;
+        Tower tower = gameField.getCell((int) vector.x, (int) vector.y).tower;
+        if (tower != null) {
+            gameField.towersManager.selectTower(gameScreen.playersManager.getLocalPlayer(), tower);
         }
-        mouse = null;
-        return null;
     }
 
-    boolean whichCell(Vector3 mouse, int map) {
+    /**
+     * Calculates coordinates of touched cell, returning them in given vector.
+     * Returns false, touch was out of map.
+     */
+    private boolean whichCell(Vector3 mouse, int map) {
 //        Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);
         camera.unproject(mouse);
 //        Gdx.app.log("CameraController::whichCell()", "-grph- mouseX:" + mouse.x + " mouseY:" + mouse.y);
