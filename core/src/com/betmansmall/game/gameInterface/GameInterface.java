@@ -65,7 +65,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             towersSelectorCoord,
             selectorBorderVertical, selectorBorderHorizontal;
 
-    public TowersSelector towersSelector;
+    public InterfaceSelector interfaceSelector;
     public UnitsSelector unitsSelector;
 
     private Texture winTexture, loseTexture;
@@ -556,8 +556,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         }
 
         if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
-            towersSelector = new TowersSelector(gameScreen.gameField, bitmapFont, skin, this);
-            tableWithSelectors.add(towersSelector).expand();
+            interfaceSelector = new InterfaceSelector(gameScreen.gameField, bitmapFont, skin, this);
+            tableWithSelectors.add(interfaceSelector).expand();
 
             towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
             infoTabloTable.add(towersSelectorCoord).left().row();
@@ -625,10 +625,10 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         nextUnitSpawnLabel.setText("NextUnitSpawnAfter:" + ((gameScreen.gameField.waveManager.waitForNextSpawnUnit > 0f) ? String.format("%.2f", gameScreen.gameField.waveManager.waitForNextSpawnUnit) + "sec" : "PRESS_PLAY_BUTTON"));
         unitsSpawn.setText("unitsSpawn:" + gameScreen.gameField.unitsSpawn);
         gamePaused.setText("gamePaused:" + gameScreen.gameField.gamePaused);
-        if (towersSelector != null) {
-            towersSelectorCoord.setText("towersSelectorCoord:" + towersSelector.coordinateX + "," + towersSelector.coordinateY);
-            selectorBorderVertical.setText("selectorBorderVertical:" + towersSelector.selectorBorderVertical);
-            selectorBorderHorizontal.setText("selectorBorderHorizontal:" + towersSelector.selectorBorderHorizontal);
+        if (interfaceSelector != null) {
+            towersSelectorCoord.setText("towersSelectorCoord:" + interfaceSelector.coordinateX + "," + interfaceSelector.coordinateY);
+            selectorBorderVertical.setText("selectorBorderVertical:" + interfaceSelector.selectorBorderVertical);
+            selectorBorderHorizontal.setText("selectorBorderHorizontal:" + interfaceSelector.selectorBorderHorizontal);
         }
 
         startAndPauseButton.setText((gameScreen.gameField.gamePaused) ? "PLAY" : (gameScreen.gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : (gameScreen.gameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : "START NEXT WAVE");
@@ -687,8 +687,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("GameInterface::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
-        if (towersSelector != null) {
-            return towersSelector.fling(velocityX, velocityY, button);
+        if (interfaceSelector != null) {
+            return interfaceSelector.fling(velocityX, velocityY, button);
         }
         return false;
     }
@@ -702,8 +702,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         Gdx.app.log("GameInterface::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        if (towersSelector != null) {
-            return towersSelector.panStop(x, y, pointer, button); // it is not good mb!?!?!
+        if (interfaceSelector != null) {
+            return interfaceSelector.panStop(x, y, pointer, button); // it is not good mb!?!?!
         }
         return false;
     }
@@ -757,8 +757,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 return true;
             }
         }
-        if(towersSelector != null) {
-            if (towersSelector.touchDown(screenX, screenY, pointer, button)) {
+        if(interfaceSelector != null) {
+            if (interfaceSelector.touchDown(screenX, screenY, pointer, button)) {
                 return true;
             }
         }
@@ -775,8 +775,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 return true;
             }
         }
-        if(towersSelector != null) {
-            if(towersSelector.panStop(screenX, screenY, pointer, button)) {
+        if(interfaceSelector != null) {
+            if(interfaceSelector.panStop(screenX, screenY, pointer, button)) {
                 return true;
             }
         }
@@ -797,8 +797,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 return true;
             }
         }
-        if(towersSelector != null) {
-            if (towersSelector.pan(screenX, screenY, deltaX, deltaY)) {
+        if(interfaceSelector != null) {
+            if (interfaceSelector.pan(screenX, screenY, deltaX, deltaY)) {
                 return true;
             }
         }
@@ -819,8 +819,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //                return true;
 //            }
 //        }
-        if(towersSelector != null) {
-            if(towersSelector.scrolled(amount)) {
+        if(interfaceSelector != null) {
+            if(interfaceSelector.scrolled(amount)) {
                 return true;
             }
         }
@@ -836,8 +836,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         }
         getViewport().update(width, height, true);
 //        cameraController.camera.update(); // I don't know need this or not.
-        if (towersSelector != null) {
-            towersSelector.resize(width, height);
+        if (interfaceSelector != null) {
+            interfaceSelector.resize(width, height);
         }
 //        if (unitsSelector!= null) {
 //            unitsSelector.resize(width, height);

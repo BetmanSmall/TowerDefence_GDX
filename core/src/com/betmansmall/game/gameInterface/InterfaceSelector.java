@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 
-public class TowersSelector extends Table { // implements GestureDetector.GestureListener {
+public class InterfaceSelector extends Table { // implements GestureDetector.GestureListener {
 //    public float sectionWidth, sectionHeight;
     public float parentWidth, parentHeight;
     public float selectorPrefWidth, selectorPrefHeight;
@@ -47,13 +47,13 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
     public Array<TemplateForTower> templateForTowers;
     public GameInterface gameInterface; // NOT GOOD MB
 
-    public TowersSelector(GameField gameField, BitmapFont bitmapFont, Skin skin, GameInterface gameInterface) {
+    public InterfaceSelector(GameField gameField, BitmapFont bitmapFont, Skin skin, GameInterface gameInterface) {
         this.gameField = gameField;
         this.bitmapFont = bitmapFont;
         this.gameInterface = gameInterface; // NOT GOOD MB
 
         templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
-        Gdx.app.log("TowersSelector::TowersSelector()", "-- templateForTowers:" + templateForTowers);
+        Gdx.app.log("InterfaceSelector::InterfaceSelector()", "-- templateForTowers:" + templateForTowers);
 
         for (int towerIndex = 0; towerIndex < templateForTowers.size; towerIndex++) {
             TemplateForTower templateForTower = templateForTowers.get(towerIndex);
@@ -101,33 +101,33 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
     }
 
     public void dispose() {
-        Gdx.app.log("TowersSelector::dispose()", "--");
+        Gdx.app.log("InterfaceSelector::dispose()", "--");
     }
 
 //    @Override
     public void resize(int width, int height) {
-        Gdx.app.log("TowersSelector::resize()", "-- width:" + width + " height:" + height);
+        Gdx.app.log("InterfaceSelector::resize()", "-- width:" + width + " height:" + height);
         Group groupParent = getParent(); // mb it is not good!
         parentWidth = groupParent.getWidth(); // mb need set simple // parentWidth = width;
         parentHeight = groupParent.getHeight(); // mb need set simple // parentHeight = height;
-        Gdx.app.log("TowersSelector::resize()", "-- parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
-        Gdx.app.log("TowersSelector::resize()", "-- getMaxWidth():" + getMaxWidth());
-        Gdx.app.log("TowersSelector::resize()", "-- getMaxHeight():" + getMaxHeight());
-        Gdx.app.log("TowersSelector::resize()", "-- getWidth():" + getWidth());
-        Gdx.app.log("TowersSelector::resize()", "-- getHeight():" + getHeight());
-        Gdx.app.log("TowersSelector::resize()", "-- getMinWidth():" + getMinWidth());
-        Gdx.app.log("TowersSelector::resize()", "-- getMinHeight():" + getMinHeight());
-        Gdx.app.log("TowersSelector::resize()", "-- getPrefWidth():" + getPrefWidth());
-        Gdx.app.log("TowersSelector::resize()", "-- getPrefHeight():" + getPrefHeight());
-        Gdx.app.log("TowersSelector::resize()", "-- getColumnWidth():" + getColumnWidth(0));
-        Gdx.app.log("TowersSelector::resize()", "-- getRowHeight():" + getRowHeight(0));
-        Gdx.app.log("TowersSelector::resize()", "-- getX:" + getX());
-        Gdx.app.log("TowersSelector::resize()", "-- getY:" + getY());
+        Gdx.app.log("InterfaceSelector::resize()", "-- parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
+        Gdx.app.log("InterfaceSelector::resize()", "-- getMaxWidth():" + getMaxWidth());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getMaxHeight():" + getMaxHeight());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getWidth():" + getWidth());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getHeight():" + getHeight());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getMinWidth():" + getMinWidth());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getMinHeight():" + getMinHeight());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getPrefWidth():" + getPrefWidth());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getPrefHeight():" + getPrefHeight());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getColumnWidth():" + getColumnWidth(0));
+        Gdx.app.log("InterfaceSelector::resize()", "-- getRowHeight():" + getRowHeight(0));
+        Gdx.app.log("InterfaceSelector::resize()", "-- getX:" + getX());
+        Gdx.app.log("InterfaceSelector::resize()", "-- getY:" + getY());
 
         selectorPrefWidth = getPrefWidth();
         selectorPrefHeight = getPrefHeight();
-        Gdx.app.log("TowersSelector::resize()", "-- selectorPrefWidth:" + selectorPrefWidth);
-        Gdx.app.log("TowersSelector::resize()", "-- selectorPrefHeight:" + selectorPrefHeight);
+        Gdx.app.log("InterfaceSelector::resize()", "-- selectorPrefWidth:" + selectorPrefWidth);
+        Gdx.app.log("InterfaceSelector::resize()", "-- selectorPrefHeight:" + selectorPrefHeight);
 //        setStopSection(calculateCurrentSection() - 1);
 
         // need change row in table cells! row or not row!
@@ -165,18 +165,18 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
                 }
             }
         }
-        Gdx.app.log("TowersSelector::resize()", "-- selectorBorderVertical:" + selectorBorderVertical);
-        Gdx.app.log("TowersSelector::resize()", "-- selectorBorderHorizontal:" + selectorBorderHorizontal);
-        Gdx.app.log("TowersSelector::resize()", "-- coordinateX:" + coordinateX);
-        Gdx.app.log("TowersSelector::resize()", "-- coordinateY:" + coordinateY);
+        Gdx.app.log("InterfaceSelector::resize()", "-- selectorBorderVertical:" + selectorBorderVertical);
+        Gdx.app.log("InterfaceSelector::resize()", "-- selectorBorderHorizontal:" + selectorBorderHorizontal);
+        Gdx.app.log("InterfaceSelector::resize()", "-- coordinateX:" + coordinateX);
+        Gdx.app.log("InterfaceSelector::resize()", "-- coordinateY:" + coordinateY);
     }
 
 //    @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-//        Gdx.app.log("TowersSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
-//        Gdx.app.log("TowersSelector::isPanning()", "-- coordinateX:" + coordinateX + " coordinateY:" + coordinateY);
-//        Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
-//        Gdx.app.log("TowersSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight + " parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
+//        Gdx.app.log("InterfaceSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+//        Gdx.app.log("InterfaceSelector::isPanning()", "-- coordinateX:" + coordinateX + " coordinateY:" + coordinateY);
+//        Gdx.app.log("InterfaceSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
+//        Gdx.app.log("InterfaceSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight + " parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
 
         float deltaXabs = Math.abs(deltaX);
         float deltaYabs = Math.abs(deltaY);
@@ -344,7 +344,7 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
 
 //    @Override
     public boolean panStop(float x, float y, int pointer, int button) {
-        Gdx.app.log("TowersSelector::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        Gdx.app.log("InterfaceSelector::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         if (gameField.gameSettings.verticalSelector) {
             if (gameField.gameSettings.topBottomLeftRightSelector) {
                 if (coordinateX >= selectorBorderVertical + (selectorPrefWidth / 2) ) {
@@ -392,7 +392,7 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
 
 //    @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        Gdx.app.log("TowersSelector::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
+        Gdx.app.log("InterfaceSelector::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
         flinging = false;
         if (gameField.gameSettings.verticalSelector) {
             if (gameField.gameSettings.topBottomLeftRightSelector) {
@@ -448,28 +448,28 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
 
 //    @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        Gdx.app.log("TowersSelector::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        Gdx.app.log("InterfaceSelector::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
 //        if ( event.getTarget().getClass() == LevelIcon.class ) {
 //            touchFocusedChild = event.getTarget();
 //        }
 
         for (Actor actor : getChildren()) {
-//            Gdx.app.log("TowersSelector::touchDown()", "-- actor:" + actor);
+//            Gdx.app.log("InterfaceSelector::touchDown()", "-- actor:" + actor);
             if (actor instanceof Button) {
                 Button buttonActor = (Button)actor;
-//                Gdx.app.log("TowersSelector::touchDown()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
+//                Gdx.app.log("InterfaceSelector::touchDown()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
                 if(buttonActor.isPressed()) {
                     Integer towerIndex = (Integer) buttonActor.getUserObject();
                     if (towerIndex != null) {
-                        Gdx.app.log("TowersSelector::touchDown()", "-- towerIndex:" + towerIndex);
+                        Gdx.app.log("InterfaceSelector::touchDown()", "-- towerIndex:" + towerIndex);
                         gameField.createdUnderConstruction(templateForTowers.get(towerIndex));
                     }
-//                    Gdx.app.log("TowersSelector::touchDown()", "-- return true");
+//                    Gdx.app.log("InterfaceSelector::touchDown()", "-- return true");
                     return true;
                 }
             }
         }
-//        Gdx.app.log("TowersSelector::touchDown()", "-- return false");
+//        Gdx.app.log("InterfaceSelector::touchDown()", "-- return false");
         return false;
     }
 
@@ -634,7 +634,7 @@ public class TowersSelector extends Table { // implements GestureDetector.Gestur
 //    }
 
     public boolean scrolled(int amount) {
-        Gdx.app.log("TowersSelector::scrolled()", "-- amount:" + amount);
+        Gdx.app.log("InterfaceSelector::scrolled()", "-- amount:" + amount);
 //        int x = gameInterface.prevMouseX;
 //        int y = gameInterface.prevMouseY;
         int x = Gdx.input.getX();
