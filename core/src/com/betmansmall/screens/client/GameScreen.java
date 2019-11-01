@@ -54,6 +54,7 @@ public class GameScreen extends AbstractScreen {
         gameInterface.dispose();
         cameraController.dispose();
         gameFieldRenderer.dispose();
+        playersManager.dispose();
     }
 
     public void initGameField() {
@@ -61,7 +62,7 @@ public class GameScreen extends AbstractScreen {
         gameField = new GameField(this);
         gameInterface = new GameInterface(this);
         cameraController = new CameraController(this);
-        gameFieldRenderer = new GameFieldRenderer(cameraController);
+        gameFieldRenderer = new GameFieldRenderer(gameField, cameraController);
         gameInterface.setCameraController(cameraController);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -282,7 +283,7 @@ public class GameScreen extends AbstractScreen {
         if (gameState == GameState.IN_PROGRESS) {
             cameraController.update(delta);
             gameField.update(delta, cameraController);
-            gameFieldRenderer.render(gameField);
+            gameFieldRenderer.render();
             gameInterface.render(delta);
         } else if (gameState == GameState.LOSE || gameState == GameState.WIN) {
 //            gameField.dispose();

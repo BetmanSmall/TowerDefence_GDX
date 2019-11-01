@@ -31,11 +31,8 @@ import com.betmansmall.game.gameLogic.UnderConstruction;
  * This class provides elements which placed on game screen.
  * Changed by nMukhin on 2019
  */
-public class GameInterface extends Stage implements GestureDetector.GestureListener/*, InputProcessor*/ {
-    private GameScreen gameScreen;
-//    private GameField gameField;
-//    private ShapeRenderer shapeRenderer;
-//    private SpriteBatch spriteBatch;
+public class GameInterface extends Stage implements GestureDetector.GestureListener {
+    private final GameScreen gameScreen;
     private BitmapFont bitmapFont;
     private CameraController cameraController;
 
@@ -78,11 +75,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     public GameInterface(final GameScreen gameScreen) {
         super(new ScreenViewport());
-//        Gdx.app.log("GameInterface::GameInterface(" + gameField + "," + bitmapFont + ")", "-- Called!");
         this.gameScreen = gameScreen;
-//        this.gameField = gameField;
-//        this.shapeRenderer = shapeRenderer;
-//        this.spriteBatch = spriteBatch;
         this.bitmapFont = new BitmapFont();
         this.bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
 
@@ -108,12 +101,17 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public void dispose() {
         Gdx.app.log("GameInterface::dispose()", "-- Called!");
-//        bitmapFont.dispose();
-//        dispose();
-//        towersSelector.dispose();
-//        unitsSelector.dispose();
-        winTexture.dispose();
-        loseTexture.dispose();
+//        this.gameScreen.dispose();
+        this.bitmapFont.dispose();
+//        this.cameraController.dispose();
+
+        this.skin.dispose();
+
+        super.dispose();
+
+        this.arrayActionsHistory.clear();
+        this.winTexture.dispose();
+        this.loseTexture.dispose();
     }
 
     public void initInterface() {
@@ -153,6 +151,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
         playersViewTable = new PlayersViewTable(gameScreen.playersManager, skin);
         playersViewTable.setFillParent(true);
+        playersViewTable.setVisible(false);
         addActor(playersViewTable.scrollPane);
 
         tableWithButtons = new Table(skin);

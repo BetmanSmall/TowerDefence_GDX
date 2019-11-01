@@ -3,9 +3,6 @@ package com.betmansmall.game.gameLogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -20,10 +17,6 @@ import java.util.Random;
  * Created by betma on 16.11.2018.
  */
 public class CameraController extends AbstractCameraController {
-    public ShapeRenderer shapeRenderer;
-    public SpriteBatch spriteBatch;
-    public BitmapFont bitmapFont;
-
     public GameScreen gameScreen;
     public GameField gameField;
     public GameInterface gameInterface;
@@ -71,10 +64,6 @@ public class CameraController extends AbstractCameraController {
 
     public CameraController(GameScreen gameScreen) {
         Logger.logFuncStart("gameScreen:" + gameScreen);
-        this.shapeRenderer = new ShapeRenderer();
-        this.spriteBatch = new SpriteBatch();
-        this.bitmapFont = new BitmapFont();
-        this.bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
 
         this.gameScreen = gameScreen;
         this.gameField = gameScreen.gameField;
@@ -94,9 +83,6 @@ public class CameraController extends AbstractCameraController {
     @Override
     public void dispose() {
         Gdx.app.log("CameraController::dispose()", "--");
-        shapeRenderer.dispose();
-        spriteBatch.dispose();
-        bitmapFont.dispose();
 
         gameScreen = null;
         gameField = null;
