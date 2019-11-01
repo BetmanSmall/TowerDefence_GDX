@@ -55,20 +55,20 @@ public class Logger {
         instance().log("[" + simpleDateFormat.format(System.currentTimeMillis()) + "] -- " + convert(strings), ANSI_BLACK);
     }
 
-    public static void logError(String message) {
-        instance().log(message, ANSI_RED);
+    public static void logError(String ... strings) {
+        instance().log(convert(strings), ANSI_RED);
     }
 
-    public static void logWarn(String message) {
-        instance().log(message, ANSI_YELLOW);
+    public static void logWarn(String ... strings) {
+        instance().log(convert(strings), ANSI_YELLOW);
     }
 
-    public static void logInfo(String message) {
-        instance().log(message, ANSI_WHITE);
+    public static void logInfo(String ... strings) {
+        instance().log(convert(strings), ANSI_WHITE);
     }
 
-    public static void logDebug(String message) {
-        instance().log(message, ANSI_GREEN);
+    public static void logDebug(String ... strings) {
+        instance().log(convert(strings), ANSI_GREEN);
     }
 
     public static Logger instance() {

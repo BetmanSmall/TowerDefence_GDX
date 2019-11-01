@@ -17,11 +17,11 @@ import java.awt.Toolkit;
 
 public class DesktopLauncher {
     public static void main(String[] args) {
+        Logger.logFuncStart(args);
         Options options = new Options()
-                .addOption("help", false,
-                        "prints this message")
-                .addOption("c", "client", false, "start ClientGameScreen")
-                .addOption("s", "server", false, "start ServerGameScreen");
+                .addOption("help", false, "prints this message")
+                .addOption("c", "client", false, "Start ClientGameScreen")
+                .addOption("s", "server", false, "Start ServerGameScreen");
 
         CommandLine cmd = null;
         try {
@@ -39,7 +39,6 @@ public class DesktopLauncher {
                 }
             }
         }
-        Logger.logDebug(cmd.toString());
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();

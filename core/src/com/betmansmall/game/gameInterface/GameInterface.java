@@ -65,13 +65,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             towersSelectorCoord,
             selectorBorderVertical, selectorBorderHorizontal;
 
-    public boolean interfaceTouched;
     public TowersSelector towersSelector;
     public UnitsSelector unitsSelector;
 
     private Texture winTexture, loseTexture;
     private float currentTextureTime, maxTextureTime;
     public int prevMouseX, prevMouseY;
+    public boolean interfaceTouched;
 
     public GameInterface(final GameScreen gameScreen) {
         super(new ScreenViewport());
@@ -90,12 +90,6 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
         initInterface();
         addListeners();
-//        setCameraController(cameraController); // need set draw settings to optionTable
-
-//        setDebugAll(true);
-//        setDebugUnderMouse(true);
-//        setDebugTableUnderMouse(true);
-//        setDebugParentUnderMouse(true);
     }
 
     @Override

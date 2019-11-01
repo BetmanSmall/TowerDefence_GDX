@@ -46,6 +46,7 @@ public class GameMaster extends Game {
 
     public GameMaster(CommandLine cmd) {
         Logger.logFuncStart("cmd.getArgs().length:" + cmd.getArgs().length);
+        Logger.logFuncStart("cmd.getOptions().length:" + cmd.getOptions().length);
         this.cmd = cmd;
     }
 
