@@ -1,144 +1,76 @@
 package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.GameField;
-import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
+import com.betmansmall.util.logging.Logger;
 
-public class InterfaceSelector extends Table { // implements GestureDetector.GestureListener {
-//    public float sectionWidth, sectionHeight;
-    public float parentWidth, parentHeight;
-    public float selectorPrefWidth, selectorPrefHeight;
-    public float selectorBorderVertical;
-    public float selectorBorderHorizontal;
+public class InterfaceSelector extends Table {
+    protected GameField gameField;
+    protected BitmapFont bitmapFont;
+    protected GameInterface gameInterface;
 
-    public boolean flinging;
-    public float flingVelocityX, flingVelocityY;
+    protected boolean vertical;
+    protected boolean topBottomLeftRight;
+    protected boolean smoothFling;
 
-    // Смещение контейнера sections
+    protected float parentWidth, parentHeight;
+    protected float selectorPrefWidth, selectorPrefHeight;
+    protected float selectorBorderVertical;
+    protected float selectorBorderHorizontal;
+
+    protected boolean flinging;
+    protected float flingVelocityX, flingVelocityY;
+
     private boolean open = true;
-    public float coordinateX = 0;
-    public float coordinateY = 0;
-    // Направление движения секций
-    private int transmission   = 0;
-    private float stopSection  = 0;
-    private float speed        = 1500;
+    protected float coordinateX = 0;
+    protected float coordinateY = 0;
 
-    private int currentSection = 1;
-    // Скорость пиксель/секунда после которой считаем, что пользователь хочет перейти к следующей секции
-    private float flingSpeed   = 1000;
-    private float overscrollDistance = 500;
     private boolean isPanning;
 
-    public GameField gameField;
-    public BitmapFont bitmapFont;
-    public Array<TemplateForTower> templateForTowers;
-    public GameInterface gameInterface; // NOT GOOD MB
-
-    public InterfaceSelector(GameField gameField, BitmapFont bitmapFont, Skin skin, GameInterface gameInterface) {
-        this.gameField = gameField;
-        this.bitmapFont = bitmapFont;
-        this.gameInterface = gameInterface; // NOT GOOD MB
-
-        templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
-        Gdx.app.log("InterfaceSelector::InterfaceSelector()", "-- templateForTowers:" + templateForTowers);
-
-        for (int towerIndex = 0; towerIndex < templateForTowers.size; towerIndex++) {
-            TemplateForTower templateForTower = templateForTowers.get(towerIndex);
-            String nameTower = templateForTower.name;
-            String attackTower = templateForTower.damage.toString();
-            String radiusDetectionTower = templateForTower.radiusDetection.toString();
-            String costTower = templateForTower.cost.toString();
-            Label nameTowerLabel = new Label(nameTower, new Label.LabelStyle(bitmapFont, Color.WHITE));
-            Label attackTowerLabel = new Label(attackTower, new Label.LabelStyle(bitmapFont, Color.RED));
-            Label radiusDetectionTowerLabel = new Label(radiusDetectionTower, new Label.LabelStyle(bitmapFont, Color.GREEN));
-            Label costTowerLabel = new Label(costTower, new Label.LabelStyle(bitmapFont, Color.YELLOW));
-            nameTowerLabel.setName("nameTowerLabel");
-            attackTowerLabel.setName("attackTowerLabel");
-            radiusDetectionTowerLabel.setName("radiusDetectionTowerLabel");
-            costTowerLabel.setName("costTowerLabel");
-
-            Table towerTable = new Table();
-
-            towerTable.add(nameTowerLabel).colspan(2).row();
-            Image templateButton = new Image(templateForTower.idleTile.getTextureRegion());
-            towerTable.add(templateButton).expand();
-
-            Table tableWithCharacteristics = new Table();
-            tableWithCharacteristics.add(attackTowerLabel).row();
-            tableWithCharacteristics.add(radiusDetectionTowerLabel).row();
-            tableWithCharacteristics.add(costTowerLabel).row();
-            towerTable.add(tableWithCharacteristics).expandY().right();
-
-            Button button = new Button(towerTable, skin);
-            button.setName(nameTower);
-            button.setUserObject(towerIndex);
-            Cell<Button> cellButton = this.add(button).expand().fill();
-            if (gameField.gameSettings.verticalSelector) {
-                cellButton.row();//.minHeight(Gdx.graphics.getHeight()*0.2f).row();
-            }
-        }
-//        this.clearChildren();
-        this.setDebug(true);
-//        this.addListener(new EventListener() {
-//            @Override
-//            public boolean handle(Event event) {
-//                return true;
-//            }
-//        });
+    public void initButtons() {
+        Logger.logFuncStart();
     }
 
-    public void dispose() {
-        Gdx.app.log("InterfaceSelector::dispose()", "--");
+    public boolean buttonPressed(Integer index) {
+        Logger.logFuncStart("index:" + index);
+        return false;
     }
 
-//    @Override
+    public void selectorClosed() {
+        Logger.logFuncStart();
+    }
+
     public void resize(int width, int height) {
-        Gdx.app.log("InterfaceSelector::resize()", "-- width:" + width + " height:" + height);
-        Group groupParent = getParent(); // mb it is not good!
-        parentWidth = groupParent.getWidth(); // mb need set simple // parentWidth = width;
-        parentHeight = groupParent.getHeight(); // mb need set simple // parentHeight = height;
-        Gdx.app.log("InterfaceSelector::resize()", "-- parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
-        Gdx.app.log("InterfaceSelector::resize()", "-- getMaxWidth():" + getMaxWidth());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getMaxHeight():" + getMaxHeight());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getWidth():" + getWidth());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getHeight():" + getHeight());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getMinWidth():" + getMinWidth());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getMinHeight():" + getMinHeight());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getPrefWidth():" + getPrefWidth());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getPrefHeight():" + getPrefHeight());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getColumnWidth():" + getColumnWidth(0));
-        Gdx.app.log("InterfaceSelector::resize()", "-- getRowHeight():" + getRowHeight(0));
-        Gdx.app.log("InterfaceSelector::resize()", "-- getX:" + getX());
-        Gdx.app.log("InterfaceSelector::resize()", "-- getY:" + getY());
+        updateBorders(vertical, topBottomLeftRight, smoothFling);
+    }
 
+    public void updateBorders(boolean vertical, boolean topBottomLeftRight, boolean smoothFling) {
+        Logger.logFuncStart("vertical:" + vertical, "topBottomLeftRight:" + topBottomLeftRight, "smoothFling:" + smoothFling);
+        Group groupParent = getParent(); // mb it is not good!
+        if (groupParent != null) {
+            parentWidth = groupParent.getWidth(); // mb need set simple // parentWidth = width;
+            parentHeight = groupParent.getHeight(); // mb need set simple // parentHeight = height;
+            Gdx.app.log("InterfaceSelector::resize()", "-- parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
+        }
         selectorPrefWidth = getPrefWidth();
         selectorPrefHeight = getPrefHeight();
-        Gdx.app.log("InterfaceSelector::resize()", "-- selectorPrefWidth:" + selectorPrefWidth);
-        Gdx.app.log("InterfaceSelector::resize()", "-- selectorPrefHeight:" + selectorPrefHeight);
-//        setStopSection(calculateCurrentSection() - 1);
+        Gdx.app.log("InterfaceSelector::resize()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
 
-        // need change row in table cells! row or not row!
-        if (gameField.gameSettings.verticalSelector) {
+        if (vertical) {
+            selectorBorderHorizontal = 0;
             coordinateY = parentHeight;
-            if (gameField.gameSettings.topBottomLeftRightSelector) {
-                selectorBorderVertical = width - selectorPrefWidth;
+            if (topBottomLeftRight) {
+                selectorBorderVertical = parentWidth - selectorPrefWidth;
                 if (open) {
                     coordinateX = selectorBorderVertical;
                 } else {
-                    coordinateX = width;
+                    coordinateX = parentWidth;
                 }
             } else {
                 selectorBorderVertical = selectorPrefWidth;
@@ -149,12 +81,14 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                 }
             }
         } else {
-            if (gameField.gameSettings.topBottomLeftRightSelector) {
-                selectorBorderHorizontal = height - selectorPrefHeight;
+            selectorBorderVertical = 0;
+            coordinateX = 0;
+            if (topBottomLeftRight) {
+                selectorBorderHorizontal = parentHeight - selectorPrefHeight;
                 if (open) {
-                    coordinateY = height;
+                    coordinateY = parentHeight;
                 } else {
-                    coordinateY = height + selectorPrefHeight;
+                    coordinateY = parentHeight + selectorPrefHeight;
                 }
             } else {
                 selectorBorderHorizontal = selectorPrefHeight;
@@ -169,30 +103,49 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
         Gdx.app.log("InterfaceSelector::resize()", "-- selectorBorderHorizontal:" + selectorBorderHorizontal);
         Gdx.app.log("InterfaceSelector::resize()", "-- coordinateX:" + coordinateX);
         Gdx.app.log("InterfaceSelector::resize()", "-- coordinateY:" + coordinateY);
+        if (vertical != this.vertical || topBottomLeftRight != this.topBottomLeftRight || smoothFling != this.smoothFling) {
+            this.vertical = vertical;
+            this.topBottomLeftRight = topBottomLeftRight;
+            this.smoothFling = smoothFling;
+            this.initButtons();
+            this.updateBorders(vertical, topBottomLeftRight, smoothFling);
+        }
     }
 
-//    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-//        Gdx.app.log("InterfaceSelector::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
-//        Gdx.app.log("InterfaceSelector::isPanning()", "-- coordinateX:" + coordinateX + " coordinateY:" + coordinateY);
-//        Gdx.app.log("InterfaceSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
-//        Gdx.app.log("InterfaceSelector::isPanning()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight + " parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        Gdx.app.log("InterfaceSelector::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        for (Actor actor : getChildren()) {
+            if (actor instanceof Button) {
+                Button buttonActor = (Button)actor;
+                if(buttonActor.isPressed()) {
+                    Integer towerIndex = (Integer) buttonActor.getUserObject();
+                    if (towerIndex != null) {
+                        buttonPressed(towerIndex);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Logger.logFuncStart("x:" + x, "y:" + y, "deltaX:" + deltaX, "deltaY:" + deltaY);
         float deltaXabs = Math.abs(deltaX);
         float deltaYabs = Math.abs(deltaY);
         if (deltaXabs > deltaYabs) {// && !isPanning) { // select direction
 //            coordinateX += deltaX;
-            if (gameField.gameSettings.verticalSelector) {
+            if (vertical) {
                 if (deltaX > 0) {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && x >= coordinateX) {
+                    if (topBottomLeftRight && x >= coordinateX) {
                         coordinateX += deltaX;
                         if (coordinateX > parentWidth) {
                             coordinateX = parentWidth;
-                            gameField.cancelUnderConstruction();
+                            this.selectorClosed();
                         }
 //                        isPanning = false;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && x <= selectorBorderVertical) {
+                    } else if (!topBottomLeftRight && x <= selectorBorderVertical) {
                         coordinateX += deltaX;
                         if (coordinateX > 0) {
                             coordinateX = 0;
@@ -201,18 +154,18 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                         return true;
                     }
                 } else {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && x >= selectorBorderVertical) {
+                    if (topBottomLeftRight && x >= selectorBorderVertical) {
                         coordinateX += deltaX;
                         if (coordinateX < selectorBorderVertical) {
                             coordinateX = selectorBorderVertical;
                         }
 //                        isPanning = true;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && x <= coordinateX+ selectorPrefWidth) {
+                    } else if (!topBottomLeftRight && x <= coordinateX+ selectorPrefWidth) {
                         coordinateX += deltaX;
                         if (coordinateX < 0 - selectorPrefWidth) {
                             coordinateX = 0 - selectorPrefWidth;
-                            gameField.cancelUnderConstruction();
+                            this.selectorClosed();
                         }
 //                        isPanning = true;
                         return true;
@@ -220,14 +173,14 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                 }
             } else {
                 if (deltaX > 0) {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && y >= coordinateY- selectorPrefHeight) {
+                    if (topBottomLeftRight && y >= coordinateY- selectorPrefHeight) {
                         coordinateX += deltaX;
                         if (coordinateX > 0) {
                             coordinateX = 0;
                         }
 //                        isPanning = ???;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && y <= coordinateY){
+                    } else if (!topBottomLeftRight && y <= coordinateY){
                         coordinateX += deltaX;
                         if (coordinateX > 0) {
                             coordinateX = 0;
@@ -236,14 +189,14 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                         return true;
                     }
                 } else {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && y >= coordinateY- selectorPrefHeight) {
+                    if (topBottomLeftRight && y >= coordinateY- selectorPrefHeight) {
                         coordinateX += deltaX;
                         if (coordinateX+ selectorPrefWidth < parentWidth) {
                             coordinateX = parentWidth- selectorPrefWidth;
                         }
 //                        isPanning = true;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && y <= coordinateY) {
+                    } else if (!topBottomLeftRight && y <= coordinateY) {
                         coordinateX += deltaX;
                         if (coordinateX+ selectorPrefWidth < parentWidth) {
                             coordinateX = parentWidth- selectorPrefWidth;
@@ -255,16 +208,16 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
             }
         } else {
 //            coordinateY += deltaY;
-            if (gameField.gameSettings.verticalSelector) {
+            if (vertical) {
                 if (deltaY > 0) {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && x >= coordinateX) {
+                    if (topBottomLeftRight && x >= coordinateX) {
                         coordinateY += deltaY;
                         if (coordinateY- selectorPrefHeight > 0) {
                             coordinateY = selectorPrefHeight;
                         }
 //                        isPanning = false;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && x <= coordinateX+ selectorPrefWidth) {
+                    } else if (!topBottomLeftRight && x <= coordinateX+ selectorPrefWidth) {
                         coordinateY += deltaY;
                         if (coordinateY- selectorPrefHeight > 0) {
                             coordinateY = selectorPrefHeight;
@@ -273,14 +226,14 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                         return true;
                     }
                 } else {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && x >= coordinateX) {
+                    if (topBottomLeftRight && x >= coordinateX) {
                         coordinateY += deltaY;
                         if (coordinateY < parentHeight) {
                             coordinateY = parentHeight;
                         }
 //                        isPanning = true;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && x <= coordinateX+ selectorPrefWidth) {
+                    } else if (!topBottomLeftRight && x <= coordinateX+ selectorPrefWidth) {
                         coordinateY += deltaY;
                         if (coordinateY < parentHeight) {
                             coordinateY = parentHeight;
@@ -291,15 +244,15 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                 }
             } else {
                 if (deltaY > 0) {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && y >= coordinateY- selectorPrefHeight) {
+                    if (topBottomLeftRight && y >= coordinateY- selectorPrefHeight) {
                         coordinateY += deltaY;
                         if (coordinateY- selectorPrefHeight > parentHeight) {
                             coordinateY = parentHeight+ selectorPrefHeight;
-                            gameField.cancelUnderConstruction();
+                            this.selectorClosed();
                         }
 //                        isPanning = ???;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && y <= selectorBorderHorizontal){
+                    } else if (!topBottomLeftRight && y <= selectorBorderHorizontal){
                         coordinateY += deltaY;
                         if (coordinateY > selectorBorderHorizontal) {
                             coordinateY = selectorBorderHorizontal;
@@ -308,18 +261,18 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                         return true;
                     }
                 } else {
-                    if (gameField.gameSettings.topBottomLeftRightSelector && y >= selectorBorderHorizontal) {
+                    if (topBottomLeftRight && y >= selectorBorderHorizontal) {
                         coordinateY += deltaY;
                         if (coordinateY- selectorPrefHeight < selectorBorderHorizontal) {
                             coordinateY = parentHeight;
                         }
 //                        isPanning = true;
                         return true;
-                    } else if (!gameField.gameSettings.topBottomLeftRightSelector && y <= coordinateY) {
+                    } else if (!topBottomLeftRight && y <= coordinateY) {
                         coordinateY += deltaY;
                         if (coordinateY < 0) {
                             coordinateY = 0;
-                            gameField.cancelUnderConstruction();
+                            this.selectorClosed();
                         }
 //                        isPanning = true;
                         return true;
@@ -327,75 +280,70 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                 }
             }
         }
-
-//        Gdx.app.log("SlidingTable::isPanning()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-//        if ( coordinateX < -overscrollDistance ) {
-//            return false;
-//        }
-//        if ( coordinateX > (getChildren().size - 1) * sectionWidth + overscrollDistance) {
-//            return false;
-//        }
-//
-//        isPanning = true;
-//        coordinateX -= deltaX;
-//        cancelTouchFocusedChild();
         return false;
     }
 
-//    @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         Gdx.app.log("InterfaceSelector::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        if (gameField.gameSettings.verticalSelector) {
-            if (gameField.gameSettings.topBottomLeftRightSelector) {
+        boolean panStop = false;
+        if (vertical) {
+            if (topBottomLeftRight) {
                 if (coordinateX >= selectorBorderVertical + (selectorPrefWidth / 2) ) {
-                    if (coordinateX < getParent().getWidth()) {
-                        coordinateX = getParent().getWidth();
-                        gameField.cancelUnderConstruction();
+                    if (coordinateX < parentWidth) {
+                        coordinateX = parentWidth;
+                        this.selectorClosed();
+                        panStop = true;
                     }
                 } else {
                     coordinateX = selectorBorderVertical;
+                    panStop = true;
                 }
             } else {
                 if (coordinateX+ selectorPrefWidth >= selectorBorderVertical - (selectorPrefWidth / 2) ) {
                     coordinateX = 0;
+                    panStop = true;
                 } else {
                     if (coordinateX > -selectorPrefWidth) {
                         coordinateX = -selectorPrefWidth;
-                        gameField.cancelUnderConstruction();
+                        this.selectorClosed();
+                        panStop = true;
                     }
                 }
             }
         } else {
-            if (gameField.gameSettings.topBottomLeftRightSelector) {
-                if (coordinateY- selectorPrefHeight >= selectorBorderHorizontal + (selectorPrefHeight / 2) ) {
-                    if (coordinateY > parentHeight+selectorPrefHeight) {
-                        coordinateY = parentHeight + selectorPrefHeight; // or sectionHeight???
-                        gameField.cancelUnderConstruction();
+            if (topBottomLeftRight) {
+                if (coordinateY-selectorPrefHeight >= selectorBorderHorizontal + (selectorPrefHeight / 2) ) {
+                    if (coordinateY-selectorPrefHeight < parentHeight) {
+                        coordinateY = parentHeight + selectorPrefHeight;
+                        this.selectorClosed();
+                        panStop = true;
                     }
                 } else {
                     coordinateY = parentHeight;
+                    panStop = true;
                 }
             } else {
                 if (coordinateY >= selectorBorderHorizontal - (selectorPrefHeight / 2) ) {
                     coordinateY = selectorBorderHorizontal;
+                    panStop = true;
                 } else {
-                    if (coordinateY < 0) {
+                    if (coordinateY > 0) {
                         coordinateY = 0;
-                        gameField.cancelUnderConstruction();
+                        this.selectorClosed();
+                        panStop = true;
                     }
                 }
             }
         }
-        isPanning = false;
-        return false;
+        this.isPanning = false;
+        return panStop;
     }
 
-//    @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("InterfaceSelector::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
-        flinging = false;
-        if (gameField.gameSettings.verticalSelector) {
-            if (gameField.gameSettings.topBottomLeftRightSelector) {
+        this.flinging = false;
+        if (vertical) {
+            if (topBottomLeftRight) {
                 if (gameInterface.prevMouseX > selectorBorderVertical) {
                     flinging = true;
                 }
@@ -405,7 +353,7 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                 }
             }
         } else {
-            if (gameField.gameSettings.topBottomLeftRightSelector) {
+            if (topBottomLeftRight) {
                 if (gameInterface.prevMouseY > selectorBorderHorizontal) {
                     flinging = true;
                 }
@@ -415,157 +363,55 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
                 }
             }
         }
-        if (gameField.gameSettings.smoothFlingSelector && flinging) { // smoothFlingSelector - плавное движение селектора
+        if (smoothFling && flinging) { // smoothFlingSelector - плавное движение селектора
             flingVelocityX = velocityX * 0.5f;
             flingVelocityY = velocityY * 0.5f;
-            return true;
         } else { // если smoothFlingSelector=false значит нужно рывками сдвигать по секциям. как в help SlidingTable
             flinging = false; // TODO work need
         }
-//        if ( < selectorBorderVertical) {
-//            if (Math.abs(velocityX) > flingSpeed) {
-//                if (velocityX > 0) {
-//                    coordinateX = getWidth();
-//                closeSelector();
-//                setStopSection(currentSection - 2);
-//                } else {
-//                    coordinateX = getWidth() - sectionWidth * 2f; // todo need fix why *2f?
-//                openSelector()
-//                setStopSection(currentSection);
-//                }
-//            }
-//            if (Math.abs(velocityY) > flingSpeed) {
-//                if (velocityY > 0) {
-//                    setStopSection(currentSection - 2);
-//                } else {
-//                    setStopSection(currentSection);
-//                }
-//            }
-//        }
-//        cancelTouchFocusedChild();
-        return false;
+        return flinging;
     }
 
-//    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        Gdx.app.log("InterfaceSelector::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-//        if ( event.getTarget().getClass() == LevelIcon.class ) {
-//            touchFocusedChild = event.getTarget();
-//        }
-
-        for (Actor actor : getChildren()) {
-//            Gdx.app.log("InterfaceSelector::touchDown()", "-- actor:" + actor);
-            if (actor instanceof Button) {
-                Button buttonActor = (Button)actor;
-//                Gdx.app.log("InterfaceSelector::touchDown()", "-- buttonActor.isPressed():" + buttonActor.isPressed());
-                if(buttonActor.isPressed()) {
-                    Integer towerIndex = (Integer) buttonActor.getUserObject();
-                    if (towerIndex != null) {
-                        Gdx.app.log("InterfaceSelector::touchDown()", "-- towerIndex:" + towerIndex);
-                        gameField.createdUnderConstruction(templateForTowers.get(towerIndex));
-                    }
-//                    Gdx.app.log("InterfaceSelector::touchDown()", "-- return true");
+    public boolean scrolled(int amount) {
+        Gdx.app.log("InterfaceSelector::scrolled()", "-- amount:" + amount);
+        int x = gameInterface.prevMouseX;
+        int y = gameInterface.prevMouseY;
+        if (vertical) {
+            if (topBottomLeftRight) {
+                if (x >= selectorBorderVertical) {
+                    coordinateY += amount*20f;
+                    return true;
+                }
+            } else {
+                if (x < selectorBorderVertical) {
+                    coordinateY += amount*20f;
+                    return true;
+                }
+            }
+        } else {
+            if (topBottomLeftRight) {
+                if (y >= selectorBorderHorizontal) {
+                    coordinateX += amount*20f;
+                    return true;
+                }
+            } else {
+                if (y < selectorBorderHorizontal) {
+                    coordinateX += amount*20f;
                     return true;
                 }
             }
         }
-//        Gdx.app.log("InterfaceSelector::touchDown()", "-- return false");
         return false;
     }
-
-//    @Override
-    public boolean tap(float x, float y, int count, int button) {
-        return false;
-    }
-
-//    @Override
-    public boolean longPress(float x, float y) {
-        return false;
-    }
-
-//    @Override
-    public boolean zoom(float initialDistance, float distance) {
-        return false;
-    }
-
-//    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        return false;
-    }
-
-//    @Override
-    public void pinchStop() {
-
-    }
-
-//    public int getSectionsCount() {
-//        return templateForTowers.size;
-////        return getChildren().size;
-//    }
-
-//    // Вычисление текущей секции на основании смещения контейнера sections
-//    public int calculateCurrentSection() {
-//        // Текущая секция = (Текущее смещение / длинну секции) + 1, т.к наши секции нумеруются с 1
-//        int section = Math.round( getY() / sectionHeight ) + 1;
-//        //Проверяем адекватность полученного значения, вхождение в интервал [1, количество секций]
-//        if ( section > getChildren().size ) return getChildren().size;
-//        if ( section < 1 ) return 1;
-//        return section;
-//    }
-
-//    public void setStopSection(int stoplineSection) {
-//        if ( stoplineSection < 0 ) {
-//            stoplineSection = 0;
-//        }
-//        if ( stoplineSection > this.getSectionsCount() - 1 ) {
-//            stoplineSection = this.getSectionsCount() - 1;
-//        }
-//
-//        stopSection = stoplineSection * sectionHeight;
-//
-//        // Определяем направление движения
-//        // transmission ==  1 - вправо
-//        // transmission == -1 - влево
-//        if ( getY() < stopSection) {
-//            transmission = 1;
-//        } else {
-//            transmission = -1;
-//        }
-//    }
-
-//    private void move(float delta) {
-//        // Определяем направление смещения
-//        if ( getY() < stopSection) {
-////             Двигаемся вправо
-////             Если попали сюда, а при этом должны были двигаться влево
-////             значит пора остановиться
-//            if ( transmission == -1 ) {
-//                setY(stopSection);
-////                 Фиксируем номер текущей секции
-//                currentSection = calculateCurrentSection();
-//                return;
-//            }
-////             Смещаем
-//            setY(getY()+ speed * delta);
-//        } else if( getY() > stopSection) {
-//            if ( transmission == 1 ) {
-//                setY(stopSection);
-//                currentSection = calculateCurrentSection();
-//                return;
-//            }
-//            setY(getY() - speed * delta);
-//        }
-//    }
 
     @Override
     public void act(float delta) {
-        // Смещаем контейнер с секциями
         if (flinging) {
             flingVelocityX *= 0.98f;
             flingVelocityY *= 0.98f;
             float newX = coordinateX + (flingVelocityX * delta);
             float newY = coordinateY + (flingVelocityY * delta);
-            if (gameField.gameSettings.verticalSelector) {
+            if (vertical) {
                 if (newY > parentHeight && newY - selectorPrefHeight < 0) {
                     coordinateY = newY;
                 }
@@ -579,89 +425,13 @@ public class InterfaceSelector extends Table { // implements GestureDetector.Ges
             if (flingVelocityX == 0.0 && flingVelocityY == 0.0) {
                 flinging = false;
             }
-//                    Gdx.app.log("CameraController::update()", "-- velX:" + velX + " velY:" + velY);
-//                    Gdx.app.log("CameraController::update()", "-- newCameraX:" + newCameraX + " newCameraY:" + newCameraY);
         }
         setX(coordinateX);
         setY( -(coordinateY-parentHeight) ); // pizdec libgdx draw ui from leftDown but mouse Coord from leftUp
-
-//        cullingArea.set( -sections.getX() + 50, sections.getY(), sectionWidth - 100, sections.getHeight() );
-//        sections.setCullingArea(cullingArea);
-
-        // Если водим пальцем по экрану
-//        if (this.isPanning) {
-//        if ( actorGestureListener.getGestureDetector().isPanning() ) {
-            // Устанавливаем границу, к которой будем анимировать движение
-//             граница = номер предыдущей секции
-//            setStopSection(calculateCurrentSection() - 1);
-//        } else {
-            // Если палец далеко от экрана - анимируем движение в заданную точку
-//            move( delta );
-//        }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-
-//        for (int i=1; i<= getSectionsCount(); i++) {
-//            if ( i == calculateCurrentSection() ) {
-//                batch.draw( naviActive, Gdx.app.getGraphics().getWidth()/2 - getSectionsCount()*20/2 + i*20 , 50);
-//            } else {
-//                batch.draw( naviPassive, Gdx.app.getGraphics().getWidth()/2 - getSectionsCount()*20/2 + i*20 , 50);
-//            }
-//        }
-    }
-
-//    void cancelTouchFocusedChild () {
-//        if (touchFocusedChild == null) {
-//            return;
-//        }
-//        try {
-//            this.getStage().cancelTouchFocus(touchFocusedChild);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        touchFocusedChild = null;
-//    }
-
-//    public void addWidget(Actor widget) {
-//        widget.setX( this.sections.getChildren().size * sectionWidth);
-//        widget.setY( 0 );
-//        widget.setWidth( sectionWidth );
-//        widget.setHeight( Gdx.graphics.getHeight() );
-//        sections.addActor( widget );
-//    }
-
-    public boolean scrolled(int amount) {
-        Gdx.app.log("InterfaceSelector::scrolled()", "-- amount:" + amount);
-//        int x = gameInterface.prevMouseX;
-//        int y = gameInterface.prevMouseY;
-        int x = Gdx.input.getX();
-        int y = Gdx.input.getY();
-        if (gameField.gameSettings.verticalSelector) {
-            if (gameField.gameSettings.topBottomLeftRightSelector) {
-                if (x >= selectorBorderVertical) {
-                    coordinateY += amount*20f;
-                    return true;
-                }
-            } else {
-                if (x < selectorBorderVertical) {
-                    coordinateY += amount*20f;
-                    return true;
-                }
-            }
-        } else if (gameField.gameSettings.topBottomLeftRightSelector) {
-            if (y >= selectorBorderHorizontal) {
-                coordinateX += amount*20f;
-                return true;
-            }
-        } else {
-            if (y < selectorBorderHorizontal) {
-                coordinateX += amount*20f;
-                return true;
-            }
-        }
-        return false;
     }
 }

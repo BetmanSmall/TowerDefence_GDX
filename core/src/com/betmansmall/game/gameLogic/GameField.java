@@ -39,6 +39,7 @@ public class GameField {
     public TowersManager towersManager;
     public UnitsManager unitsManager; // For Bullet
     public TmxMap tmxMap;
+    private Random random;
     private Cell[][] field;
     private PathFinder pathFinder;
     private UnderConstruction underConstruction;
@@ -48,8 +49,6 @@ public class GameField {
     public float gameSpeed;
     public boolean gamePaused;
     public boolean unitsSpawn;
-
-    private Random random;
 
     public GameField(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -61,6 +60,7 @@ public class GameField {
 
         tmxMap = (TmxMap)new MapLoader().load(gameSettings.mapPath);
         Gdx.app.log("GameField::GameField()", "-- tmxMap:" + tmxMap);
+        random = new Random();
 
         createField();
         if (tmxMap.isometric) {
@@ -138,7 +138,6 @@ public class GameField {
         } else {
             Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }
-        random = new Random();
         Gdx.app.log("GameField::GameField()", "-end-");
     }
 
@@ -423,10 +422,13 @@ public class GameField {
     }
 
     public UnderConstruction createdUnderConstruction(TemplateForTower templateForTower) {
-        if (underConstruction != null) {
-            underConstruction.dispose();
+        if (templateForTower != null) {
+            if (underConstruction != null) {
+                underConstruction.dispose();
+            }
+            return underConstruction = new UnderConstruction(templateForTower);
         }
-        return underConstruction = new UnderConstruction(templateForTower);
+        return null;
     }
 
     public boolean cancelUnderConstruction() {
