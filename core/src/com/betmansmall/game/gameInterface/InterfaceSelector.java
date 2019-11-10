@@ -131,6 +131,7 @@ public class InterfaceSelector extends Table {
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Logger.logFuncStart("x:" + x, "y:" + y, "deltaX:" + deltaX, "deltaY:" + deltaY);
+        this.isPanning = false;
         float deltaXabs = Math.abs(deltaX);
         float deltaYabs = Math.abs(deltaY);
         if (deltaXabs > deltaYabs) {// && !isPanning) { // select direction
@@ -143,15 +144,13 @@ public class InterfaceSelector extends Table {
                             coordinateX = parentWidth;
                             this.selectorClosed();
                         }
-//                        isPanning = false;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && x <= selectorBorderVertical) {
                         coordinateX += deltaX;
                         if (coordinateX > 0) {
                             coordinateX = 0;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     }
                 } else {
                     if (topBottomLeftRight && x >= selectorBorderVertical) {
@@ -159,16 +158,14 @@ public class InterfaceSelector extends Table {
                         if (coordinateX < selectorBorderVertical) {
                             coordinateX = selectorBorderVertical;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && x <= coordinateX+ selectorPrefWidth) {
                         coordinateX += deltaX;
                         if (coordinateX < 0 - selectorPrefWidth) {
                             coordinateX = 0 - selectorPrefWidth;
                             this.selectorClosed();
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     }
                 }
             } else {
@@ -178,15 +175,13 @@ public class InterfaceSelector extends Table {
                         if (coordinateX > 0) {
                             coordinateX = 0;
                         }
-//                        isPanning = ???;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && y <= coordinateY){
                         coordinateX += deltaX;
                         if (coordinateX > 0) {
                             coordinateX = 0;
                         }
-//                        isPanning = ???;
-                        return true;
+                        isPanning = true;
                     }
                 } else {
                     if (topBottomLeftRight && y >= coordinateY- selectorPrefHeight) {
@@ -194,15 +189,13 @@ public class InterfaceSelector extends Table {
                         if (coordinateX+ selectorPrefWidth < parentWidth) {
                             coordinateX = parentWidth- selectorPrefWidth;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && y <= coordinateY) {
                         coordinateX += deltaX;
                         if (coordinateX+ selectorPrefWidth < parentWidth) {
                             coordinateX = parentWidth- selectorPrefWidth;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     }
                 }
             }
@@ -215,15 +208,13 @@ public class InterfaceSelector extends Table {
                         if (coordinateY- selectorPrefHeight > 0) {
                             coordinateY = selectorPrefHeight;
                         }
-//                        isPanning = false;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && x <= coordinateX+ selectorPrefWidth) {
                         coordinateY += deltaY;
                         if (coordinateY- selectorPrefHeight > 0) {
                             coordinateY = selectorPrefHeight;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     }
                 } else {
                     if (topBottomLeftRight && x >= coordinateX) {
@@ -231,15 +222,13 @@ public class InterfaceSelector extends Table {
                         if (coordinateY < parentHeight) {
                             coordinateY = parentHeight;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && x <= coordinateX+ selectorPrefWidth) {
                         coordinateY += deltaY;
                         if (coordinateY < parentHeight) {
                             coordinateY = parentHeight;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     }
                 }
             } else {
@@ -250,15 +239,13 @@ public class InterfaceSelector extends Table {
                             coordinateY = parentHeight+ selectorPrefHeight;
                             this.selectorClosed();
                         }
-//                        isPanning = ???;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && y <= selectorBorderHorizontal){
                         coordinateY += deltaY;
                         if (coordinateY > selectorBorderHorizontal) {
                             coordinateY = selectorBorderHorizontal;
                         }
-//                        isPanning = ???;
-                        return true;
+                        isPanning = true;
                     }
                 } else {
                     if (topBottomLeftRight && y >= selectorBorderHorizontal) {
@@ -266,21 +253,19 @@ public class InterfaceSelector extends Table {
                         if (coordinateY- selectorPrefHeight < selectorBorderHorizontal) {
                             coordinateY = parentHeight;
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     } else if (!topBottomLeftRight && y <= coordinateY) {
                         coordinateY += deltaY;
                         if (coordinateY < 0) {
                             coordinateY = 0;
                             this.selectorClosed();
                         }
-//                        isPanning = true;
-                        return true;
+                        isPanning = true;
                     }
                 }
             }
         }
-        return false;
+        return isPanning;
     }
 
     public boolean panStop(float x, float y, int pointer, int button) {
