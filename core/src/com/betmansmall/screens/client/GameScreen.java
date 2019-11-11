@@ -279,20 +279,21 @@ public class GameScreen extends AbstractScreen {
 
         inputHandler(delta);
 
-        GameState gameState = gameField.getGameState(); // Need change to enum GameState
-        if (gameState == GameState.IN_PROGRESS) {
-            cameraController.update(delta);
-            gameField.update(delta, cameraController);
-            gameFieldRenderer.render();
-            gameInterface.render(delta);
-        } else if (gameState == GameState.LOSE || gameState == GameState.WIN) {
-//            gameField.dispose();
-            gameInterface.renderEndGame(delta, gameState);
-        } else if (gameState == GameState.LITTLE_GAME_WIN) {
-            gameField.dispose();
-            gameInterface.renderEndGame(delta, gameState);
-        } else {
-            Gdx.app.log("GameScreen::render()", "-- Not get normal gameState:" + gameState);
+        GameState gameState = gameField.getGameState();
+        switch(gameField.getGameState()) {
+            case IN_PROGRESS:
+                cameraController.update(delta);
+                gameField.update(delta, cameraController);
+//                gameFieldRenderer.render();
+                gameInterface.render(delta);
+                break;
+            case LOSE:
+            case WIN:
+                gameInterface.renderEndGame(delta, gameState);
+                break;
+            case LITTLE_GAME_WIN:
+                gameField.dispose();
+                gameInterface.renderEndGame(delta, gameState);
         }
     }
 
