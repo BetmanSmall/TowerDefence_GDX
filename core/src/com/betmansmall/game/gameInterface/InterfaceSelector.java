@@ -7,20 +7,27 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.playerTemplates.Template;
+import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
-public class InterfaceSelector extends Table {
+import java.util.List;
+
+public class InterfaceSelector<T extends Template> extends Table {
+    protected final GameSettings gameSettings;
     protected GameField gameField;
     protected BitmapFont bitmapFont;
     protected GameInterface gameInterface;
+    protected List<T> templates;
 
     protected boolean vertical;
     protected boolean topBottomLeftRight;
     protected boolean smoothFling;
 
     protected float parentWidth, parentHeight;
-    protected float selectorPrefWidth, selectorPrefHeight;
+    private float selectorPrefWidth, selectorPrefHeight;
     protected float selectorBorderVertical;
     protected float selectorBorderHorizontal;
 
@@ -32,6 +39,17 @@ public class InterfaceSelector extends Table {
     protected float coordinateY = 0;
 
     private boolean isPanning;
+
+    public InterfaceSelector(GameScreen gameScreen, List<T> templates) {
+        this.gameField = gameScreen.gameField;
+        this.bitmapFont = gameScreen.gameInterface.bitmapFont;
+        this.gameInterface = gameScreen.gameInterface;
+        this.gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        this.templates = templates;
+        Logger.logDebug("templates" + templates);
+        initButtons();
+        setDebug(true);
+    }
 
     public void initButtons() {
         Logger.logFuncStart();

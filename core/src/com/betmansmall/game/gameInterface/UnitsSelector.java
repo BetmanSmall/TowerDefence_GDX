@@ -1,43 +1,27 @@
 package com.betmansmall.game.gameInterface;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
-import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
-public class UnitsSelector extends InterfaceSelector {
-    public Array<TemplateForUnit> templateForUnits;
+public class UnitsSelector extends InterfaceSelector<TemplateForUnit> {
 
     public UnitsSelector(GameScreen gameScreen) {
-        this.gameField = gameScreen.gameField;
-        this.bitmapFont = gameScreen.gameInterface.bitmapFont;
-        this.gameInterface = gameScreen.gameInterface;
-
-        this.templateForUnits = gameField.factionsManager.getAllTemplateForUnits();
-        Gdx.app.log("UnitsSelector::UnitsSelector()", "-- templateForUnits:" + templateForUnits);
-        this.setDebug(true);
-        GameSettings gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        super(gameScreen, gameScreen.gameField.factionsManager.getAllTemplateForUnits());
         updateBorders(gameSettings.verticalSelector, !gameSettings.topBottomLeftRightSelector, gameSettings.smoothFlingSelector);
-        initButtons();
-    }
-
-    public void dispose() {
-        Gdx.app.log("UnitsSelector::dispose()", "--");
     }
 
     @Override
     public void initButtons() {
         this.clear();
-        for (int unitIndex = 0; unitIndex < templateForUnits.size; unitIndex++) {
-            TemplateForUnit templateForUnit = templateForUnits.get(unitIndex);
+        for (int unitIndex = 0; unitIndex < templates.size(); unitIndex++) {
+            TemplateForUnit templateForUnit = templates.get(unitIndex);
             String nameUnit = templateForUnit.name;
             String hpUnit = templateForUnit.healthPoints.toString();
             String speedUnit = templateForUnit.speed.toString();
@@ -76,10 +60,8 @@ public class UnitsSelector extends InterfaceSelector {
     @Override
     public boolean buttonPressed(Integer index) {
         Logger.logFuncStart("index:" + index);
-        if (index != null) {
-            if (index >= 0 && index < templateForUnits.size) {
-                return (gameField.spawnUnitFromUser(templateForUnits.get(index)) != null);
-            }
+        if (index != null && index >= 0 && index < templates.size()) {
+                return (gameField.spawnUnitFromUser(templates.get(index)) != null);
         }
         return false;
     }

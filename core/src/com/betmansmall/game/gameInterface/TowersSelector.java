@@ -1,43 +1,27 @@
 package com.betmansmall.game.gameInterface;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
-import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
-public class TowersSelector extends InterfaceSelector {
-    public Array<TemplateForTower> templateForTowers;
+public class TowersSelector extends InterfaceSelector<TemplateForTower> {
 
     public TowersSelector(GameScreen gameScreen) {
-        this.gameField = gameScreen.gameField;
-        this.bitmapFont = gameScreen.gameInterface.bitmapFont;
-        this.gameInterface = gameScreen.gameInterface;
-
-        this.templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
-        Gdx.app.log("TowersSelector::TowersSelector()", "-- templateForTowers:" + templateForTowers);
-        this.setDebug(true);
-        GameSettings gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        super(gameScreen, gameScreen.gameField.factionsManager.getAllTemplateForTowers());
         updateBorders(gameSettings.verticalSelector, gameSettings.topBottomLeftRightSelector, gameSettings.smoothFlingSelector);
-        initButtons();
-    }
-
-    public void dispose() {
-        Gdx.app.log("TowersSelector::dispose()", "--");
     }
 
     @Override
     public void initButtons() {
         this.clear();
-        for (int towerIndex = 0; towerIndex < templateForTowers.size; towerIndex++) {
-            TemplateForTower templateForTower = templateForTowers.get(towerIndex);
+        for (int towerIndex = 0; towerIndex < templates.size(); towerIndex++) {
+            TemplateForTower templateForTower = templates.get(towerIndex);
             String nameTower = templateForTower.name;
             String attackTower = templateForTower.damage.toString();
             String radiusDetectionTower = templateForTower.radiusDetection.toString();
@@ -76,10 +60,8 @@ public class TowersSelector extends InterfaceSelector {
     @Override
     public boolean buttonPressed(Integer index) {
         Logger.logFuncStart("index:" + index);
-        if (index != null) {
-            if (index >= 0 && index < templateForTowers.size) {
-                return (gameField.createdUnderConstruction(templateForTowers.get(index)) != null);
-            }
+        if (index != null && index >= 0 && index < templates.size()) {
+            return (gameField.createdUnderConstruction(templates.get(index)) != null);
         }
         return false;
     }

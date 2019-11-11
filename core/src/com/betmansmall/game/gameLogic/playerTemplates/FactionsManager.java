@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.betmansmall.util.logging.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
@@ -36,6 +39,7 @@ public class FactionsManager {
     public static Float defBounty = 50f;
     public static Float defCost = 50f;
     public static Float defSpeed = 1f;
+    private Random random;
 
     public FactionsManager() throws Exception {
         Gdx.app.log("FactionsManager::FactionsManager()", "-- :");
@@ -75,6 +79,7 @@ public class FactionsManager {
             allFactionsInOne.getTemplateForTowers().addAll(faction.getTemplateForTowers());
             allFactionsInOne.getTemplateForUnits().addAll(faction.getTemplateForUnits());
         }
+        random = new Random();
     }
 
     public TemplateForUnit getRandomTemplateForUnitFromFirstFaction() {
@@ -111,11 +116,11 @@ public class FactionsManager {
     }
 
     public TemplateForTower getRandomTemplateForTowerFromAllFaction() {
-        Array<TemplateForTower> allTowers = getAllTemplateForTowers();
+        List<TemplateForTower> allTowers = getAllTemplateForTowers();
 //        int r = 0 + (int) (Math.random() * allTowers.size);
 //        Gdx.app.log("TemplateForTower", "getRandomTemplateForTowerFromAllFaction(); -- r:" + r);
 //        return allTowers.get(r);
-        return allTowers.random();
+        return allTowers.get(random.nextInt(allTowers.size()));
     }
     public TemplateForUnit getTemplateForUnitFromFirstFactionByIndex(int index) {
         Faction faction = factions.first();
@@ -161,8 +166,8 @@ public class FactionsManager {
         return factions.first().getTemplateForTowers();
     }
 
-    public Array<TemplateForTower> getAllTemplateForTowers() {
-        Array<TemplateForTower> allTowers = new Array<TemplateForTower>();
+    public List<TemplateForTower> getAllTemplateForTowers() {
+        List<TemplateForTower> allTowers = new ArrayList<>();
         for (Faction faction : factions) {
             for (TemplateForTower template : faction.getTemplateForTowers()) {
                 allTowers.add(template);
@@ -171,8 +176,8 @@ public class FactionsManager {
         return allTowers;
     }
 
-    public Array<TemplateForUnit> getAllTemplateForUnits() {
-        Array<TemplateForUnit> allTowers = new Array<TemplateForUnit>();
+    public List<TemplateForUnit> getAllTemplateForUnits() {
+        List<TemplateForUnit> allTowers = new ArrayList<>();
         for (Faction faction : factions) {
             for (TemplateForUnit template : faction.getTemplateForUnits()) {
                 allTowers.add(template);
