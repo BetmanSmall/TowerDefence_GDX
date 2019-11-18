@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.Template;
@@ -23,25 +22,8 @@ public abstract class Selector<T extends Template> extends ScrollPane {
     protected GameField gameField;
     protected BitmapFont bitmapFont;
     protected GameInterface gameInterface;
-    protected List<T> templates;
 
     protected boolean vertical;
-    protected boolean topBottomLeftRight;
-    protected boolean smoothFling;
-
-    protected float parentWidth, parentHeight;
-    private float selectorPrefWidth, selectorPrefHeight;
-    protected float selectorBorderVertical;
-    protected float selectorBorderHorizontal;
-
-    protected boolean flinging;
-    protected float flingVelocityX, flingVelocityY;
-
-    private boolean open = true;
-    protected float coordinateX = 0;
-    protected float coordinateY = 0;
-
-    private boolean isPanning;
 
     public Selector(GameScreen gameScreen, List<T> templates) {
         super(new Table());
@@ -50,6 +32,7 @@ public abstract class Selector<T extends Template> extends ScrollPane {
         bitmapFont = gameScreen.gameInterface.bitmapFont;
         gameInterface = gameScreen.gameInterface;
         gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        vertical = gameSettings.verticalSelector;
         Logger.logDebug("templates" + templates);
         initButtons(templates);
         setDebug(true);
@@ -59,8 +42,8 @@ public abstract class Selector<T extends Template> extends ScrollPane {
         Logger.logFuncStart();
     }
 
-    public boolean buttonPressed(Integer index) {
-        Logger.logFuncStart("index:" + index);
+    public boolean buttonPressed(T template) {
+        Logger.logFuncStart("Selected template:" + template);
         return false;
     }
 

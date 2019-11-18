@@ -50,8 +50,7 @@ public class MainMenuScreen extends AbstractScreen {
 //        skin.newDrawable("default-round-down");
 
         stage = new Stage(new ScreenViewport());
-//        stage.addActor(game.backgroundImages.get(0));
-//        stage.setDebugAll(true);
+        stage.addActor(game.backgroundImages.get(0));
         stage.setDebugUnderMouse(true);
         stage.setDebugParentUnderMouse(true);
 

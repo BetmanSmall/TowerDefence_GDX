@@ -1,12 +1,13 @@
 package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
-import com.betmansmall.util.logging.Logger;
 
 import java.util.List;
 
@@ -19,13 +20,17 @@ public class UnitsSelector extends Selector<TemplateForUnit> {
     @Override
     public void initButtons(List<TemplateForUnit> templates) {
         this.clear();
-        for (int index = 0; index < templates.size(); index++) {
-            TemplateForUnit template = templates.get(index);
+        for (TemplateForUnit template : templates) {
             Button button = new Button(createButtonTable(template), gameInterface.skin);
             button.setName(template.name);
-            button.setUserObject(index);
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    buttonPressed(template);
+                }
+            });
             table.add(button).expand().fill();
-            if(vertical) table.row();
+            if (vertical) table.row();
         }
     }
 
@@ -38,12 +43,8 @@ public class UnitsSelector extends Selector<TemplateForUnit> {
     }
 
     @Override
-    public boolean buttonPressed(Integer index) {
-        Logger.logFuncStart("index:" + index);
-        if (index != null && index >= 0 && index < templates.size()) {
-                return (gameField.spawnUnitFromUser(templates.get(index)) != null);
-        }
-        return false;
+    public boolean buttonPressed(TemplateForUnit template) {
+        return (gameField.spawnUnitFromUser(template) != null);
     }
 
     protected Table createCharacteristicsTable(TemplateForUnit template) {

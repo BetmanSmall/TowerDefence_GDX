@@ -14,7 +14,7 @@ public class GameSettings {
     public int enemyCount;
     public int towersCount;
     public boolean topBottomLeftRightSelector; // Top - false, Bottom - true, Left - false, Right - true;
-    public boolean verticalSelector;
+    public boolean verticalSelector; // unit and tower selector will be vertical
     public boolean smoothFlingSelector;
     public boolean panLeftMouseButton;
     public boolean panMidMouseButton;
@@ -30,7 +30,7 @@ public class GameSettings {
         this.towersCount = 10;
 
         this.topBottomLeftRightSelector = true;
-        this.verticalSelector = true;
+        verticalSelector = true;
         this.smoothFlingSelector = true;
         this.panLeftMouseButton = true;
         this.panMidMouseButton = false;
