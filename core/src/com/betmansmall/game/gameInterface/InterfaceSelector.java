@@ -1,15 +1,17 @@
 package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.Template;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
@@ -433,8 +435,9 @@ public class InterfaceSelector<T extends Template> extends Table {
         setY( -(coordinateY-parentHeight) ); // pizdec libgdx draw ui from leftDown but mouse Coord from leftUp
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
+    protected Label createLabel(String text, Color color) {
+        Label label = new Label(text, gameInterface.skin);
+        label.setColor(color);
+        return label;
     }
 }

@@ -2,9 +2,7 @@ package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
@@ -20,40 +18,17 @@ public class TowersSelector extends InterfaceSelector<TemplateForTower> {
     @Override
     public void initButtons() {
         this.clear();
-        for (int towerIndex = 0; towerIndex < templates.size(); towerIndex++) {
-            TemplateForTower templateForTower = templates.get(towerIndex);
-            String nameTower = templateForTower.name;
-            String attackTower = templateForTower.damage.toString();
-            String radiusDetectionTower = templateForTower.radiusDetection.toString();
-            String costTower = templateForTower.cost.toString();
-            Label nameTowerLabel = new Label(nameTower, new Label.LabelStyle(bitmapFont, Color.WHITE));
-            Label attackTowerLabel = new Label(attackTower, new Label.LabelStyle(bitmapFont, Color.RED));
-            Label radiusDetectionTowerLabel = new Label(radiusDetectionTower, new Label.LabelStyle(bitmapFont, Color.GREEN));
-            Label costTowerLabel = new Label(costTower, new Label.LabelStyle(bitmapFont, Color.YELLOW));
-            nameTowerLabel.setName("nameTowerLabel");
-            attackTowerLabel.setName("attackTowerLabel");
-            radiusDetectionTowerLabel.setName("radiusDetectionTowerLabel");
-            costTowerLabel.setName("costTowerLabel");
-
-            Table towerTable = new Table();
-
-            towerTable.add(nameTowerLabel).colspan(2).row();
-            Image templateButton = new Image(templateForTower.idleTile.getTextureRegion());
-            towerTable.add(templateButton).expand();
-
-            Table tableWithCharacteristics = new Table();
-            tableWithCharacteristics.add(attackTowerLabel).row();
-            tableWithCharacteristics.add(radiusDetectionTowerLabel).row();
-            tableWithCharacteristics.add(costTowerLabel).row();
-            towerTable.add(tableWithCharacteristics).expandY().right();
-
-            Button button = new Button(towerTable, gameInterface.skin);
-            button.setName(nameTower);
-            button.setUserObject(towerIndex);
-            Cell<Button> cellButton = this.add(button).expand().fill();
-            if (vertical) {
-                cellButton.row();//.minHeight(Gdx.graphics.getHeight()*0.2f).row();
-            }
+        for (int index = 0; index < templates.size(); index++) {
+            TemplateForTower template = templates.get(index);
+            Table table = new Table();
+            table.add(createLabel(template.name, Color.WHITE)).colspan(2).row();
+            table.add(new Image(template.idleTile.getTextureRegion())).expand();
+            table.add(createCharacteristicsTable(template)).expandY().right();
+            Button button = new Button(table, gameInterface.skin);
+            button.setName(template.name);
+            button.setUserObject(index);
+            add(button).expand().fill();
+            if(vertical) row();
         }
     }
 
@@ -69,5 +44,13 @@ public class TowersSelector extends InterfaceSelector<TemplateForTower> {
     @Override
     public void selectorClosed() {
         gameField.cancelUnderConstruction();
+    }
+
+    protected Table createCharacteristicsTable(TemplateForTower template) {
+        Table table = new Table();
+        table.add(createLabel(template.damage.toString(), Color.RED)).row();
+        table.add(createLabel(template.radiusDetection.toString(), Color.GREEN)).row();
+        table.add(createLabel(template.cost.toString(), Color.YELLOW)).row();
+        return table;
     }
 }

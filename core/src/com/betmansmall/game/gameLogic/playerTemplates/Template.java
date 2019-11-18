@@ -17,7 +17,6 @@ import com.betmansmall.maps.MapLoader;
 /**
  * Created by betma on 06.11.2018.
  */
-
 public class Template {
     public String templateName;
     public ObjectMap<String, String> properties;
@@ -27,9 +26,9 @@ public class Template {
     public Template() {
         Gdx.app.log("Template::Template()", "-- ");
         templateName = "NULL";
-        properties = new ObjectMap<String, String>();
-        tiles = new ObjectMap<Integer, TiledMapTile>();
-        animatedTiles = new ObjectMap<Integer, AnimatedTiledMapTile>();
+        properties = new ObjectMap<>();
+        tiles = new ObjectMap<>();
+        animatedTiles = new ObjectMap<>();
     }
 
     public void dispose() {

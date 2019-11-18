@@ -2,9 +2,7 @@ package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
@@ -20,40 +18,17 @@ public class UnitsSelector extends InterfaceSelector<TemplateForUnit> {
     @Override
     public void initButtons() {
         this.clear();
-        for (int unitIndex = 0; unitIndex < templates.size(); unitIndex++) {
-            TemplateForUnit templateForUnit = templates.get(unitIndex);
-            String nameUnit = templateForUnit.name;
-            String hpUnit = templateForUnit.healthPoints.toString();
-            String speedUnit = templateForUnit.speed.toString();
-            String costUnit = templateForUnit.cost.toString();
-            Label nameUnitLabel = new Label(nameUnit, new Label.LabelStyle(bitmapFont, Color.WHITE));
-            Label hpUnitLabel = new Label(hpUnit, new Label.LabelStyle(bitmapFont, Color.RED));
-            Label speedUnitLabel = new Label(speedUnit, new Label.LabelStyle(bitmapFont, Color.GREEN));
-            Label costUnitLabel = new Label(costUnit, new Label.LabelStyle(bitmapFont, Color.YELLOW));
-            nameUnitLabel.setName("nameUnitLabel");
-            hpUnitLabel.setName("hpUnitLabel");
-            speedUnitLabel.setName("speedUnitLabel");
-            costUnitLabel.setName("costUnitLabel");
-
-            Table unitTable = new Table();
-
-            unitTable.add(nameUnitLabel).colspan(2).row();
-            Image templateButton = new Image(templateForUnit.animations.values().toArray().get(6).getTextureRegion());
-            unitTable.add(templateButton).expand();
-
-            Table verticalGroupHar = new Table();
-            verticalGroupHar.add(hpUnitLabel).row();
-            verticalGroupHar.add(speedUnitLabel).row();
-            verticalGroupHar.add(costUnitLabel).row();
-            unitTable.add(verticalGroupHar).expandY().left();
-
-            Button button = new Button(unitTable, gameInterface.skin);
-            button.setName(nameUnit);
-            button.setUserObject(unitIndex);
-            Cell<Button> cellButton = this.add(button).expand().fill();
-            if (vertical) {
-                cellButton.row();//.minHeight(Gdx.graphics.getHeight()*0.2f).row();
-            }
+        for (int index = 0; index < templates.size(); index++) {
+            TemplateForUnit template = templates.get(index);
+            Table table = new Table();
+            table.add(createLabel(template.name, Color.WHITE)).colspan(2).row();
+            table.add(new Image(template.animations.values().toArray().get(6).getTextureRegion())).expand();
+            table.add(createCharacteristicsTable(template)).expandY().left();
+            Button button = new Button(table, gameInterface.skin);
+            button.setName(template.name);
+            button.setUserObject(index);
+            add(button).expand().fill();
+            if(vertical) row();
         }
     }
 
@@ -69,5 +44,13 @@ public class UnitsSelector extends InterfaceSelector<TemplateForUnit> {
     @Override
     public void selectorClosed() {
         Logger.logFuncStart();
+    }
+
+    protected Table createCharacteristicsTable(TemplateForUnit template) {
+        Table table = new Table();
+        table.add(createLabel(template.healthPoints.toString(), Color.RED)).row();
+        table.add(createLabel(template.speed.toString(), Color.GREEN)).row();
+        table.add(createLabel(template.cost.toString(), Color.YELLOW)).row();
+        return table;
     }
 }
