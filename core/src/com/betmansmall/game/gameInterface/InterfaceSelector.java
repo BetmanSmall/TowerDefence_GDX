@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.Template;
-import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
@@ -433,11 +432,5 @@ public class InterfaceSelector<T extends Template> extends Table {
         }
         setX(coordinateX);
         setY( -(coordinateY-parentHeight) ); // pizdec libgdx draw ui from leftDown but mouse Coord from leftUp
-    }
-
-    protected Label createLabel(String text, Color color) {
-        Label label = new Label(text, gameInterface.skin);
-        label.setColor(color);
-        return label;
     }
 }

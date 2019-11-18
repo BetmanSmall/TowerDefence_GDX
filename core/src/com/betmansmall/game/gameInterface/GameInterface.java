@@ -9,13 +9,9 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -26,6 +22,7 @@ import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.util.logging.Logger;
+import org.lwjgl.openal.AL;
 
 /**
  * Created by Transet/AndeyA on 07.02.2016. (GovnoDoderbI)
@@ -533,16 +530,16 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
                 gameScreen.gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
-                if (unitsSelector != null) {
-                    unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
-                            !gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
-                            gameScreen.gameField.gameSettings.smoothFlingSelector);
-                }
-                if (towersSelector != null) {
-                    towersSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
-                            gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
-                            gameScreen.gameField.gameSettings.smoothFlingSelector);
-                }
+//                if (unitsSelector != null) {
+//                    unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
+//                            !gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
+//                            gameScreen.gameField.gameSettings.smoothFlingSelector);
+//                }
+//                if (towersSelector != null) {
+//                    towersSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
+//                            gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
+//                            gameScreen.gameField.gameSettings.smoothFlingSelector);
+//                }
             }
         });
         optionTable.add(topBottomLeftRightSelector).colspan(2).fill().row();
@@ -557,16 +554,16 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
                 gameScreen.gameField.gameSettings.verticalSelector = verticalSelector.isChecked();
-                if (unitsSelector != null) {
-                    unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
-                            !gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
-                            gameScreen.gameField.gameSettings.smoothFlingSelector);
-                }
-                if (towersSelector != null) {
-                    towersSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
-                            gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
-                            gameScreen.gameField.gameSettings.smoothFlingSelector);
-                }
+//                if (unitsSelector != null) {
+//                    unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
+//                            !gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
+//                            gameScreen.gameField.gameSettings.smoothFlingSelector);
+//                }
+//                if (towersSelector != null) {
+//                    towersSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
+//                            gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
+//                            gameScreen.gameField.gameSettings.smoothFlingSelector);
+//                }
             }
         });
         optionTable.add(verticalSelector).colspan(2).fill();
@@ -581,16 +578,16 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface::setCameraController()", "-- smoothFlingSelector.isChecked():" + smoothFlingSelector.isChecked());
                 gameScreen.gameField.gameSettings.smoothFlingSelector = smoothFlingSelector.isChecked();
-                if (unitsSelector != null) {
-                    unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
-                            !gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
-                            gameScreen.gameField.gameSettings.smoothFlingSelector);
-                }
-                if (towersSelector != null) {
-                    towersSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
-                            gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
-                            gameScreen.gameField.gameSettings.smoothFlingSelector);
-                }
+//                if (unitsSelector != null) {
+//                    unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
+//                            !gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
+//                            gameScreen.gameField.gameSettings.smoothFlingSelector);
+//                }
+//                if (towersSelector != null) {
+//                    towersSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
+//                            gameScreen.gameField.gameSettings.topBottomLeftRightSelector,
+//                            gameScreen.gameField.gameSettings.smoothFlingSelector);
+//                }
             }
         });
         optionTable.add(smoothFlingSelector).colspan(2).fill();
@@ -602,8 +599,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
         if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
             towersSelector = new TowersSelector(gameScreen);
-            tableWithSelectors.add(towersSelector).expand();
-
+            towersSelector.setDebug(true, true);
+            towersSelector.setSize(200, 200);
+            Container<Selector> container = new Container<>(towersSelector);
+            container.align(Align.right);
+            container.setDebug(true, true);
+            container.setFillParent(true);
+            addActor(container);
             towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
             infoTabloTable.add(towersSelectorCoord).left().row();
             selectorBorderVertical = new Label("selectorBorderVertical:", new Label.LabelStyle(bitmapFont, Color.WHITE));
@@ -722,18 +724,18 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("GameInterface::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
-        if (unitsSelector != null) {
-             if (unitsSelector.fling(velocityX, velocityY, button)) {
-//                 this.interfaceTouched = true;
-                 return true;
-             }
-        }
-        if (towersSelector != null) {
-            if (towersSelector.fling(velocityX, velocityY, button)) {
-//                this.interfaceTouched = true;
-                return true;
-            }
-        }
+//        if (unitsSelector != null) {
+//             if (unitsSelector.fling(velocityX, velocityY, button)) {
+////                 this.interfaceTouched = true;
+//                 return true;
+//             }
+//        }
+//        if (towersSelector != null) {
+//            if (towersSelector.fling(velocityX, velocityY, button)) {
+////                this.interfaceTouched = true;
+//                return true;
+//            }
+//        }
         return false;
     }
 
@@ -746,16 +748,16 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         Gdx.app.log("GameInterface::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        if (unitsSelector != null) {
-            if (unitsSelector.panStop(x, y, pointer, button)) {
-//                return true;
-            }
-        }
-        if (towersSelector != null) {
-            if (towersSelector.panStop(x, y, pointer, button)) {
-//                return true;
-            }
-        }
+//        if (unitsSelector != null) {
+//            if (unitsSelector.panStop(x, y, pointer, button)) {
+////                return true;
+//            }
+//        }
+//        if (towersSelector != null) {
+//            if (towersSelector.panStop(x, y, pointer, button)) {
+////                return true;
+//            }
+//        }
         return false;
     }
 
@@ -801,16 +803,16 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         this.prevMouseY = screenY;
         boolean returnSuperTouchDown = super.touchDown(screenX, screenY, pointer, button);
         Gdx.app.log("GameInterface::touchDown()", "-- returnSuperTouchDown :" + returnSuperTouchDown);
-        if (unitsSelector != null) {
-            if (unitsSelector.touchDown(screenX, screenY, pointer, button)) {
-                return true;
-            }
-        }
-        if (towersSelector != null) {
-            if (towersSelector.touchDown(screenX, screenY, pointer, button)) {
-                return true;
-            }
-        }
+//        if (unitsSelector != null) {
+//            if (unitsSelector.touchDown(screenX, screenY, pointer, button)) {
+//                return true;
+//            }
+//        }
+//        if (towersSelector != null) {
+//            if (towersSelector.touchDown(screenX, screenY, pointer, button)) {
+//                return true;
+//            }
+//        }
         return returnSuperTouchDown;
     }
 
@@ -819,16 +821,16 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         Gdx.app.log("GameInterface::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
         boolean returnSuperTouchUp = super.touchUp(screenX, screenY, pointer, button);
         Gdx.app.log("GameInterface::touchUp()", "-- returnSuperTouchUp:" + returnSuperTouchUp);
-        if (unitsSelector != null) {
-            if (unitsSelector.panStop(screenX, screenY, pointer, button)) {
-//                return true;
-            }
-        }
-        if (towersSelector != null) {
-            if (towersSelector.panStop(screenX, screenY, pointer, button)) {
-//                return true;
-            }
-        }
+//        if (unitsSelector != null) {
+//            if (unitsSelector.panStop(screenX, screenY, pointer, button)) {
+////                return true;
+//            }
+//        }
+//        if (towersSelector != null) {
+//            if (towersSelector.panStop(screenX, screenY, pointer, button)) {
+////                return true;
+//            }
+//        }
         return returnSuperTouchUp;
     }
 
@@ -841,16 +843,16 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         this.prevMouseY = screenY;
         boolean returnSuperTouchDragged = super.touchDragged(screenX, screenY, pointer);
         Gdx.app.log("GameInterface::touchDragged()", "-- returnSuperTouchDown:" + returnSuperTouchDragged);
-        if (unitsSelector != null) {
-            if (unitsSelector.pan(screenX, screenY, deltaX, deltaY)) {
-                return true;
-            }
-        }
-        if (towersSelector != null) {
-            if (towersSelector.pan(screenX, screenY, deltaX, deltaY)) {
-                return true;
-            }
-        }
+//        if (unitsSelector != null) {
+//            if (unitsSelector.pan(screenX, screenY, deltaX, deltaY)) {
+//                return true;
+//            }
+//        }
+//        if (towersSelector != null) {
+//            if (towersSelector.pan(screenX, screenY, deltaX, deltaY)) {
+//                return true;
+//            }
+//        }
         return returnSuperTouchDragged;
     }
 
@@ -865,34 +867,34 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean scrolled(int amount) {
         Gdx.app.log("GameInterface::scrolled()", "-- amount:" + amount);
-        if (unitsSelector != null) {
-            if (unitsSelector.scrolled(amount)) {
-                return true;
-            }
-        }
-        if (towersSelector != null) {
-            if (towersSelector.scrolled(amount)) {
-                return true;
-            }
-        }
+//        if (unitsSelector != null) {
+//            if (unitsSelector.scrolled(amount)) {
+//                return true;
+//            }
+//        }
+//        if (towersSelector != null) {
+//            if (towersSelector.scrolled(amount)) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
     public void resize(int width, int height) {
         Gdx.app.log("GameInterface::resize()", "-- width:" + width + " height:" + height);
-        for (Actor actor : getActors()) {
-            if (actor instanceof Table) {
-                actor.setSize(width, height);
-            }
-        }
+//        for (Actor actor : getActors()) {
+//            if (actor instanceof Table) {
+//                actor.setSize(width, height);
+//            }
+//        }
         super.getViewport().update(width, height, true);
 
-        if (unitsSelector!= null) {
-            unitsSelector.resize(width, height);
-        }
-        if (towersSelector != null) {
-            towersSelector.resize(width, height);
-        }
+//        if (unitsSelector!= null) {
+//            unitsSelector.resize(width, height);
+//        }
+//        if (towersSelector != null) {
+//            towersSelector.resize(width, height);
+//        }
     }
 
     public String toString() {

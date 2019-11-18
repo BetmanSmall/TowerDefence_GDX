@@ -8,28 +8,33 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
-public class UnitsSelector extends InterfaceSelector<TemplateForUnit> {
+import java.util.List;
+
+public class UnitsSelector extends Selector<TemplateForUnit> {
 
     public UnitsSelector(GameScreen gameScreen) {
         super(gameScreen, gameScreen.gameField.factionsManager.getAllTemplateForUnits());
-        updateBorders(gameSettings.verticalSelector, !gameSettings.topBottomLeftRightSelector, gameSettings.smoothFlingSelector);
     }
 
     @Override
-    public void initButtons() {
+    public void initButtons(List<TemplateForUnit> templates) {
         this.clear();
         for (int index = 0; index < templates.size(); index++) {
             TemplateForUnit template = templates.get(index);
-            Table table = new Table();
-            table.add(createLabel(template.name, Color.WHITE)).colspan(2).row();
-            table.add(new Image(template.animations.values().toArray().get(6).getTextureRegion())).expand();
-            table.add(createCharacteristicsTable(template)).expandY().left();
-            Button button = new Button(table, gameInterface.skin);
+            Button button = new Button(createButtonTable(template), gameInterface.skin);
             button.setName(template.name);
             button.setUserObject(index);
-            add(button).expand().fill();
-            if(vertical) row();
+            table.add(button).expand().fill();
+            if(vertical) table.row();
         }
+    }
+
+    public Table createButtonTable(TemplateForUnit template) {
+        Table table = new Table();
+        table.add(createLabel(template.name, Color.WHITE)).colspan(2).row();
+        table.add(new Image(template.animations.values().toArray().get(6).getTextureRegion())).expand();
+        table.add(createCharacteristicsTable(template)).expandY().left();
+        return table;
     }
 
     @Override
@@ -39,11 +44,6 @@ public class UnitsSelector extends InterfaceSelector<TemplateForUnit> {
                 return (gameField.spawnUnitFromUser(templates.get(index)) != null);
         }
         return false;
-    }
-
-    @Override
-    public void selectorClosed() {
-        Logger.logFuncStart();
     }
 
     protected Table createCharacteristicsTable(TemplateForUnit template) {
