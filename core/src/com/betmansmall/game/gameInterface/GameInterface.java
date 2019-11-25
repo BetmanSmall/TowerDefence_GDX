@@ -17,10 +17,12 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.enums.GameState;
+import com.betmansmall.game.gameInterface.widget.OrientationPicker;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.util.OrientationEnum;
 import com.betmansmall.util.logging.Logger;
 
 /**
@@ -42,7 +44,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
     public Slider drawGrid, drawUnits, drawTowers, drawBackground, drawGround, drawForeground, drawGridNav, drawRoutes, drawOrder, drawAll;
-    public CheckBox topBottomLeftRightSelector, verticalSelector, smoothFlingSelector;
+    public CheckBox smoothFlingSelector;
+    private OrientationPicker selectorOrientationPicker;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -515,33 +518,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         drawAll.setValue(cameraController.isDrawableGrid);
         optionTable.add(drawAll).fill().row();
 
-        topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
-        topBottomLeftRightSelector.setChecked(gameScreen.gameField.gameSettings.topBottomLeftRightSelector);
-        topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
-        topBottomLeftRightSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
-        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        topBottomLeftRightSelector.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
-                gameScreen.gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
-            }
-        });
-        optionTable.add(topBottomLeftRightSelector).colspan(2).fill().row();
 
-        verticalSelector = new CheckBox("verticalSelector", skin);
-        verticalSelector.setChecked(gameScreen.gameField.gameSettings.verticalSelector);
-        verticalSelector.getImage().setScaling(Scaling.stretch);
-        verticalSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
-        verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        verticalSelector.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
-                gameScreen.gameField.gameSettings.verticalSelector = verticalSelector.isChecked();
-            }
-        });
-        optionTable.add(verticalSelector).colspan(2).fill();
+        selectorOrientationPicker = new OrientationPicker(skin, orientation -> gameScreen.gameField.gameSettings.towerSelectorOrientation = orientation);
+//        selectorOrientationPicker .setChecked(OrientationEnum.UP);
+//        topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
+//        topBottomLeftRightSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
+//        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+//        optionTable.add(topBottomLeftRightSelector).colspan(2).fill().row();
 
         smoothFlingSelector = new CheckBox("smoothFlingSelector", skin);
         smoothFlingSelector.setChecked(gameScreen.gameField.gameSettings.smoothFlingSelector);

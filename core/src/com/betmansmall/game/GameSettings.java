@@ -14,8 +14,7 @@ public class GameSettings {
     public float difficultyLevel;
     public int enemyCount;
     public int towersCount;
-    public boolean topBottomLeftRightSelector; // Top - false, Bottom - true, Left - false, Right - true;
-    public boolean verticalSelector; // unit and tower selector will be vertical
+    public OrientationEnum towerSelectorOrientation; // unit selector will have opposite orientation
     public boolean smoothFlingSelector;
     public boolean panLeftMouseButton;
     public boolean panMidMouseButton;

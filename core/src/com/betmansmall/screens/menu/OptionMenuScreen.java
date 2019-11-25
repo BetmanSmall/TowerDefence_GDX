@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.GameSettings;
+import com.betmansmall.game.gameInterface.widget.OrientationPicker;
+import com.betmansmall.util.OrientationEnum;
 
 /**
  * Created by betma on 04.12.2018.
@@ -27,8 +29,7 @@ public class OptionMenuScreen implements Screen {
 
     private Stage stage;
 
-    private CheckBox topBottomLeftRightSelector;
-    private CheckBox verticalSelector;
+    OrientationPicker selectorOrientationPicker;
     private CheckBox smoothFlingSelector;
     private CheckBox checkBoxSound;
     private Slider sliderSound;
@@ -58,35 +59,13 @@ public class OptionMenuScreen implements Screen {
 
         Table rightTable = new Table(skin);
 
-        topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
-        topBottomLeftRightSelector.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::topBottomLeftRightSelector::changed()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
-                gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
-            }
-        });
-        topBottomLeftRightSelector.setChecked(gameSettings.topBottomLeftRightSelector);
-        topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
-        topBottomLeftRightSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        topBottomLeftRightSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(topBottomLeftRightSelector).expand().fill().left().colspan(2).row();
-
-        verticalSelector = new CheckBox("verticalSelector", skin);
-        verticalSelector.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::verticalSelector::changed()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
-                gameSettings.verticalSelector = verticalSelector.isChecked();
-            }
-        });
-        verticalSelector.setChecked(gameSettings.verticalSelector);
-        verticalSelector.getImage().setScaling(Scaling.stretch);
-        verticalSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        verticalSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(verticalSelector).expand().fill().left().colspan(2).row();
+        selectorOrientationPicker = new OrientationPicker(skin, orientation -> gameSettings.towerSelectorOrientation = orientation);
+        selectorOrientationPicker.setChecked(OrientationEnum.UP);
+//        topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
+//        topBottomLeftRightSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
+//        topBottomLeftRightSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
+//        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+//        rightTable.add(topBottomLeftRightSelector).expand().fill().left().colspan(2).row();
 
         smoothFlingSelector = new CheckBox("smoothFlingSelector", skin);
         smoothFlingSelector.addListener(new ChangeListener() {
