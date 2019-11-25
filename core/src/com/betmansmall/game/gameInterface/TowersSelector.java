@@ -29,7 +29,6 @@ public class TowersSelector extends Selector<TemplateForTower> {
                 }
             });
             table.add(button).expand().fill();
-            if (vertical) table.row();
         }
     }
 

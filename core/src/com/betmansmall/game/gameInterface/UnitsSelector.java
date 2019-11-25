@@ -30,7 +30,6 @@ public class UnitsSelector extends Selector<TemplateForUnit> {
                 }
             });
             table.add(button).expand().fill();
-            if (vertical) table.row();
         }
     }
 

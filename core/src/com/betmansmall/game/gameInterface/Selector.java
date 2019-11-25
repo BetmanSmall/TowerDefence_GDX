@@ -23,8 +23,6 @@ public abstract class Selector<T extends Template> extends ScrollPane {
     protected BitmapFont bitmapFont;
     protected GameInterface gameInterface;
 
-    protected boolean vertical;
-
     public Selector(GameScreen gameScreen, List<T> templates) {
         super(new Table());
         table = (Table) getActor();
@@ -32,7 +30,6 @@ public abstract class Selector<T extends Template> extends ScrollPane {
         bitmapFont = gameScreen.gameInterface.bitmapFont;
         gameInterface = gameScreen.gameInterface;
         gameSettings = gameScreen.game.sessionSettings.gameSettings;
-        vertical = gameSettings.verticalSelector;
         Logger.logDebug("templates" + templates);
         initButtons(templates);
         setDebug(true);

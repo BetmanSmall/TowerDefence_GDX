@@ -560,7 +560,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         if (cameraController.gameField.waveManager.wavesForUser.size > 0) {
             unitsSelector = new UnitsSelector(gameScreen);
             Container container = new Container<>(unitsSelector);
-            container.align(unitsSelector.vertical ? Align.right : Align.bottom);
+            container.align(Align.left);
             container.setFillParent(true);
             addActor(container);
         }
@@ -568,7 +568,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
             towersSelector = new TowersSelector(gameScreen);
             Container container = new Container<>(towersSelector);
-            container.align(towersSelector.vertical ? Align.right : Align.bottom);
+            container.align(Align.right);
             container.setFillParent(true);
             addActor(container);
 

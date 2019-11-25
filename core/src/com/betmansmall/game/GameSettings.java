@@ -3,6 +3,7 @@ package com.betmansmall.game;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.Cell;
+import com.betmansmall.util.OrientationEnum;
 
 /**
  * Created by betma on 17.11.2018.
@@ -29,8 +30,6 @@ public class GameSettings {
         this.enemyCount = 20;
         this.towersCount = 10;
 
-        this.topBottomLeftRightSelector = true;
-        verticalSelector = true;
         this.smoothFlingSelector = true;
         this.panLeftMouseButton = true;
         this.panMidMouseButton = false;
@@ -66,8 +65,6 @@ public class GameSettings {
         sb.append(",enemyCount:" + enemyCount);
         sb.append(",towersCount:" + towersCount);
         if (full) {
-            sb.append(",topBottomLeftRightSelector:" + topBottomLeftRightSelector);
-            sb.append(",verticalSelector:" + verticalSelector);
             sb.append(",smoothFlingSelector:" + smoothFlingSelector);
             sb.append(",panLeftMouseButton:" + panLeftMouseButton);
             sb.append(",panMidMouseButton:" + panMidMouseButton);
