@@ -22,7 +22,10 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
-import com.betmansmall.server.data.GameFieldData;
+import com.betmansmall.server.data.CreateUnitData;
+import com.betmansmall.server.data.GameFieldVariablesData;
+import com.betmansmall.server.data.UnitInstanceData;
+import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.util.logging.Logger;
 
 import java.util.ArrayDeque;
@@ -89,7 +92,7 @@ public class GameField {
                 Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
                 Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
                 if (getCell(randomX, randomY).isEmpty()) {
-                    if (spawnCompUnitToRandomExit(randomX, randomY) == null) {
+                    if (spawnServerUnitToRandomExit(randomX, randomY) == null) {
                         k--;
                     }
                 } else {
@@ -275,7 +278,9 @@ public class GameField {
         deltaTime = deltaTime * gameSpeed;
         if (!gamePaused) {
             timeOfGame += deltaTime;
-            spawnUnits(deltaTime);
+            if (gameScreen.spawnUnitFromServerScreenByWaves()) {
+                spawnUnits(deltaTime);
+            }
             stepAllUnits(deltaTime, cameraController);
             shotAllTowers(deltaTime, cameraController);
             moveAllShells(deltaTime, cameraController);
@@ -289,7 +294,7 @@ public class GameField {
             for (Wave wave : waveManager.wavesForUser) {
                 Cell spawnCell = getCell(wave.spawnPoint.x, wave.spawnPoint.y);
                 Cell destExitCell = getCell(wave.exitPoint.x, wave.exitPoint.y);
-                return createUnit(spawnCell, destExitCell, templateForUnit, 1, destExitCell); // create Player1 Unit
+                return gameScreen.createUnit(spawnCell, destExitCell, templateForUnit, destExitCell, gameScreen.playersManager.getLocalPlayer()); // create Player1 Unit
             }
         }
         return null;
@@ -300,7 +305,7 @@ public class GameField {
             if (waveManager.allTogether) {
                 Array<WaveManager.TemplateNameAndPoints> allUnitsForSpawn = waveManager.getAllUnitsForSpawn(delta);
                 for (WaveManager.TemplateNameAndPoints templateNameAndPoints : allUnitsForSpawn) {
-                    spawnUnit(templateNameAndPoints);
+                    spawnUnitByWave(templateNameAndPoints);
                 }
             } else {
                 if (waveManager.currentWave == null) {
@@ -314,22 +319,22 @@ public class GameField {
                 } else {
                     WaveManager.TemplateNameAndPoints templateNameAndPoints = waveManager.getUnitForSpawn(delta);
                     if (templateNameAndPoints != null) {
-                        spawnUnit(templateNameAndPoints);
+                        spawnUnitByWave(templateNameAndPoints);
                     }
                 }
             }
         }
     }
 
-    private Unit spawnUnit(WaveManager.TemplateNameAndPoints templateNameAndPoints) {
+    private Unit spawnUnitByWave(WaveManager.TemplateNameAndPoints templateNameAndPoints) {
         if (templateNameAndPoints != null) {
             TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(templateNameAndPoints.templateName);
             if (templateForUnit != null) {
                 Cell spawnCell = getCell(templateNameAndPoints.spawnPoint.x, templateNameAndPoints.spawnPoint.y);
                 Cell destExitCell = getCell(templateNameAndPoints.exitPoint.x, templateNameAndPoints.exitPoint.y);
-                return createUnit(spawnCell, destExitCell, templateForUnit, 0, destExitCell); // create Computer0 Unit
+                return gameScreen.createUnit(spawnCell, destExitCell, templateForUnit, destExitCell, gameScreen.playersManager.getLocalServer()); // create Computer0 Unit
             } else {
-                Gdx.app.error("GameField::spawnUnit()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
+                Gdx.app.error("GameField::spawnUnitByWave()", "-- templateForUnit == null | templateName:" + templateNameAndPoints.templateName);
             }
         }
         return null;
@@ -342,26 +347,27 @@ public class GameField {
             gameSettings.cellExitHero.removeTerrain(true);
             removeTower(gameSettings.cellSpawnHero.cellX, gameSettings.cellSpawnHero.cellY);
             removeTower(gameSettings.cellExitHero.cellX, gameSettings.cellExitHero.cellY);
-            return createUnit(gameSettings.cellSpawnHero, gameSettings.cellExitHero, factionsManager.getTemplateForUnitByName("unit3_footman"), 1, gameSettings.cellExitHero); // player1 = hero
+            TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName("unit3_footman");
+            return createUnit(gameSettings.cellSpawnHero, gameSettings.cellExitHero, templateForUnit, gameSettings.cellExitHero, gameScreen.playersManager.getLocalPlayer()); // player1 = hero
         }
         return null;
     }
 
-    public Unit spawnHero(int cellX, int cellY) {
-        Gdx.app.log("GameField::spawnHero()", "-- cellX:" + cellX + " cellY:" + cellY);
-        Gdx.app.log("GameField::spawnHero()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero);
+    public Unit spawnLocalHero(int cellX, int cellY) {
+        Gdx.app.log("GameField::spawnLocalHero()", "-- cellX:" + cellX + " cellY:" + cellY);
+        Gdx.app.log("GameField::spawnLocalHero()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero);
         if (gameSettings.cellExitHero != null) {
             Cell cell = getCell(cellX, cellY);
             if (cell != null) {
                 cell.removeTerrain(true);
                 removeTower(cell.cellX, cell.cellY);
-                return createUnit(cell, cell, factionsManager.getTemplateForUnitByName("unit3_footman"), 1, gameSettings.cellExitHero); // player1 = hero
+                return createUnit(cell, cell, factionsManager.getTemplateForUnitByName("unit3_footman"), gameSettings.cellExitHero, gameScreen.playersManager.getLocalPlayer()); // player1 = hero
             }
         } else {
             int randomX = (int)(Math.random() * tmxMap.width);
             int randomY = (int)(Math.random() * tmxMap.height);
             gameSettings.cellExitHero = getCell(randomX, randomY);
-            Unit hero = spawnHero(cellX, cellY);
+            Unit hero = spawnLocalHero(cellX, cellY);
             if (hero == null) {
                 gameSettings.cellExitHero = null;
             }
@@ -369,29 +375,28 @@ public class GameField {
         return null;
     }
 
-    public Unit spawnCompUnitToRandomExit(int x, int y) {
-        Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- x:" + x + " y:" + y);
+    public Unit spawnServerUnitToRandomExit(int x, int y) {
+        Gdx.app.log("GameField::spawnServerUnitToRandomExit()", "-- x:" + x + " y:" + y);
         int randomX = random.nextInt(tmxMap.width);
         int randomY = random.nextInt(tmxMap.height);
-        Gdx.app.log("GameField::spawnCompUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
-        return createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), 0, null);
+        Gdx.app.log("GameField::spawnServerUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
+        return gameScreen.createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), null, gameScreen.playersManager.getLocalServer());
     }
 
-    private Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, int playerInt, Cell exitCell) {
-//        Gdx.app.log("GameField::createUnit()", "-- spawnCell:" + spawnCell);
-//        Gdx.app.log("GameField::createUnit()", "-- destCell:" + destCell);
-//        Gdx.app.log("GameField::createUnit()", "-- templateForUnit:" + templateForUnit.toString());
-//        Gdx.app.log("GameField::createUnit()", "-- player:" + player);
-//        Gdx.app.log("GameField::createUnit()", "-- exitCell:" + exitCell);
-//        if (destCell == null) {
-//            destCell = waveManager.lastExitCell;
-//        }
-        Player player = null;
-        if (playerInt == 0) {
-            player = gameScreen.playersManager.getLocalServer();
-        } else if (playerInt == 1) {
-            player = gameScreen.playersManager.getLocalPlayer();
-        }
+//    private Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell) {
+//        return gameScreen.createUnit(spawnCell, destCell, templateForUnit, exitCell, gameScreen.playersManager.getLocalServer());
+//    }
+    public Unit createUnit(CreateUnitData createUnitData) {
+        Cell spawnCell = getCell(createUnitData.spawnCell.x, createUnitData.spawnCell.y);
+        Cell destCell = getCell(createUnitData.destCell.x, createUnitData.destCell.y);
+        TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(createUnitData.templateForUnit);
+        Cell exitCell = getCell(createUnitData.exitCell.x, createUnitData.exitCell.y);
+        Player player = gameScreen.playersManager.getPlayer(createUnitData.player.playerID);
+//        if ()
+        return createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
+    }
+
+    public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
         Unit unit = null;
         if (spawnCell != null && destCell != null && pathFinder != null) {
 //            pathFinder.loadCharMatrix(getCharMatrix());
@@ -414,6 +419,44 @@ public class GameField {
         } else {
             Gdx.app.log("GameField::createUnit()", "-- Bad spawnCell:" + spawnCell + " || destCell:" + destCell + " || pathFinder:" + pathFinder);
             return null;
+        }
+    }
+
+    public Unit createUnit(UnitInstanceData unitInstanceData) {
+        GridPoint2 spawnGP2 = unitInstanceData.route.get(0);
+        GridPoint2 destGP2 = unitInstanceData.route.get(unitInstanceData.route.size()-1);
+        Cell spawnCell = getCell(spawnGP2.x, spawnGP2.y);
+        Cell destCell = getCell(destGP2.x, destGP2.y);
+        Unit unit = null;
+        if (spawnCell != null && destCell != null && pathFinder != null) {
+            ArrayDeque<Cell> route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
+            if (unitInstanceData.route != null) {
+                TemplateForUnit templateForUnit = gameScreen.game.factionsManager.getTemplateForUnitByName(unitInstanceData.templateForUnit);
+                Player player = gameScreen.playersManager.getPlayer(unitInstanceData.playerInfoData.playerID);
+                Cell exitCell = null;
+                if (unitInstanceData.exitCell != null) {
+                    exitCell = getCell(unitInstanceData.exitCell.x, unitInstanceData.exitCell.y);
+                }
+                unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
+                spawnCell.setUnit(unit);
+                unit.updateData(unitInstanceData);
+                Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
+            } else {
+                Gdx.app.log("GameField::createUnit()", "-- Not found route for createUnit!");
+                return null;
+            }
+            return unit;
+        } else {
+            Gdx.app.log("GameField::createUnit()", "-- Bad spawnCell:" + spawnCell + " || destCell:" + destCell + " || pathFinder:" + pathFinder);
+            return null;
+        }
+    }
+
+    public void updateUnitsManager(UnitsManagerData unitsManagerData) {
+        for (UnitInstanceData unitInstanceData : unitsManagerData.units) {
+            if (unitsManager.updateUnit(unitInstanceData)) {
+
+            }
         }
     }
 
@@ -927,11 +970,11 @@ public class GameField {
         return waveManager.getNumberOfActions() + unitsManager.units.size;
     }
 
-    public void updateGameFieldVariables(GameFieldData gameFieldData) {
-        this.timeOfGame = gameFieldData.timeOfGame;
-        this.gameSpeed = gameFieldData.gameSpeed;
-        this.gamePaused = gameFieldData.gamePaused;
-        this.unitsSpawn = gameFieldData.unitsSpawn;
+    public void updateGameFieldVariables(GameFieldVariablesData gameFieldVariablesData) {
+        this.timeOfGame = gameFieldVariablesData.timeOfGame;
+        this.gameSpeed = gameFieldVariablesData.gameSpeed;
+        this.gamePaused = gameFieldVariablesData.gamePaused;
+        this.unitsSpawn = gameFieldVariablesData.unitsSpawn;
     }
 
     public GameState getGameState() {

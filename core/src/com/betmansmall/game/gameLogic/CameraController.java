@@ -115,9 +115,9 @@ public class CameraController extends AbstractCameraController {
                 gameScreen.towerToggle((int) touch.x, (int) touch.y);
             } else {
                 if (random.nextInt(5) == 0 && gameField.gameSettings.gameType == GameType.LittleGame) {
-                    gameField.spawnHero((int) touch.x, (int) touch.y);
+                    gameField.spawnLocalHero((int) touch.x, (int) touch.y);
                 } else {
-                    gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
+                    gameField.spawnServerUnitToRandomExit((int) touch.x, (int) touch.y);
                 }
             }
 //        }
@@ -235,9 +235,9 @@ public class CameraController extends AbstractCameraController {
                         } else if (button == 2) {
                             if (whichCell(touch, isDrawableUnits)) {
                                 if (random.nextInt(5) == 0) {
-                                    gameField.spawnHero((int) touch.x, (int) touch.y);
+                                    gameField.spawnLocalHero((int) touch.x, (int) touch.y);
                                 } else {
-                                    gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
+                                    gameField.spawnServerUnitToRandomExit((int) touch.x, (int) touch.y);
                                 }
                             }
                         }
@@ -248,7 +248,7 @@ public class CameraController extends AbstractCameraController {
                             }
                         } else if (button == 2) {
                             if (whichCell(touch, isDrawableUnits)) {
-                                gameField.spawnCompUnitToRandomExit((int) touch.x, (int) touch.y);
+                                gameField.spawnServerUnitToRandomExit((int) touch.x, (int) touch.y);
                             }
                         } else if (button == 4) {
                             if (whichCell(touch, isDrawableUnits)) {

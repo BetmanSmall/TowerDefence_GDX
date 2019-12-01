@@ -15,6 +15,8 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Circle;
 import com.betmansmall.game.gameLogic.playerTemplates.UnitAttack;
+import com.betmansmall.server.data.UnitInstanceData;
+import com.betmansmall.util.logging.Logger;
 
 import java.util.ArrayDeque;
 
@@ -22,6 +24,7 @@ import java.util.ArrayDeque;
  * Created by betmansmall on 22.09.2015.
  */
 public class Unit {
+    public int id;
     public ArrayDeque<Cell> route;
     public TemplateForUnit templateForUnit;
     public Player player;
@@ -42,10 +45,6 @@ public class Unit {
     public Vector2 velocity;
     public Vector2 displacement;
 
-//    public Circle circle1;
-//    public Circle circle2;
-//    public Circle circle3;
-//    public Circle circle4;
     public Array<Circle> circles;
 
     public Array<TowerShellEffect> shellEffectTypes;
@@ -53,8 +52,9 @@ public class Unit {
     public Direction direction;
     private Animation animation;
 
-    public Unit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, Player player, Cell exitCell) {
+    public Unit(int id, ArrayDeque<Cell> route, TemplateForUnit templateForUnit, Player player, Cell exitCell) {
         if(route != null) {
+            this.id = id;
             this.route = route;
             this.templateForUnit = templateForUnit;
             this.player = player;
@@ -75,10 +75,6 @@ public class Unit {
             this.velocity = new Vector2();
             this.displacement = new Vector2();
 
-//            this.circle1 = new Circle(0, 0, 16f);
-//            this.circle2 = new Circle(0, 0, 16f);
-//            this.circle3 = new Circle(0, 0, 16f);
-//            this.circle4 = new Circle(0, 0, 16f);
             this.circles = new Array<Circle>(4);
             this.circles.add(new Circle(0, 0, 16f));
             this.circles.add(new Circle(0, 0, 16f));
@@ -122,10 +118,6 @@ public class Unit {
         this.velocity = null;
         this.displacement = null;
 
-//        this.circle1 = null;
-//        this.circle2 = null;
-//        this.circle3 = null;
-//        this.circle4 = null;
         this.circles.clear();
         this.circles = null;
 
@@ -135,6 +127,28 @@ public class Unit {
         this.bullets = null;
         this.direction = null;
         this.animation = null;
+    }
+
+    public void updateData(UnitInstanceData unitInstanceData) {
+        Logger.logFuncStart("unitInstanceData:" + unitInstanceData);
+//        this.id = unitInstanceData.id;
+//        this.route = unitInstanceData.route;
+//        this.templateForUnit = unitInstanceData.templateForUnit;
+//        this.player = unitInstanceData.playerInfoData;
+
+//        this.currentCell = unitInstanceData.currentCell.
+
+        this.hp = unitInstanceData.hp;
+        this.speed = unitInstanceData.speed;
+        this.stepsInTime = unitInstanceData.stepsInTime;
+        this.deathElapsedTime = unitInstanceData.deathElapsedTime;
+
+//        this.towerAttack = ...
+        this.shellEffectTypes = new Array<>(unitInstanceData.shellEffectTypes.size());
+        for (TowerShellEffect towerShellEffect : unitInstanceData.shellEffectTypes) {
+            this.shellEffectTypes.add(towerShellEffect);
+        }
+//        this.bullets = ...
     }
 
     private void setAnimation(String action) { // Action transform to Enum
@@ -816,17 +830,22 @@ public class Unit {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
         sb.append("Unit[");
-//        sb.append("route:" + route);
-        sb.append("currentCell:" + currentCell);
-        sb.append(",nextCell:" + nextCell);
+        sb.append("id:" + id);
+        if (full) {
+            sb.append(",route:" + route);
+            sb.append(",templateForUnit:" + templateForUnit);
+            sb.append(",player:" + player);
+        }
         sb.append(",exitCell:" + (exitCell!=null) );
+        sb.append(",currentCell:" + currentCell);
+        sb.append(",nextCell:" + nextCell);
+
         sb.append(",hp:" + hp);
         sb.append(",speed:" + speed);
         if (full) {
             sb.append(",stepsInTime:" + stepsInTime);
             sb.append(",deathElapsedTime:" + deathElapsedTime);
 
-            sb.append(",player:" + player);
             sb.append(",towerAttack:" + towerAttack);
             sb.append(",unitAttack:" + unitAttack);
             sb.append(",currentPoint:" + currentPoint);
@@ -834,10 +853,6 @@ public class Unit {
             sb.append(",velocity:" + velocity);
             sb.append(",displacement:" + displacement);
 
-//            sb.append(",circle1:" + circle1);
-//            sb.append(",circle2:" + circle2);
-//            sb.append(",circle3:" + circle3);
-//            sb.append(",circle4:" + circle4);
             sb.append(",circles:" + circles);
 
             sb.append(",shellEffectTypes:" + shellEffectTypes);
@@ -845,7 +860,6 @@ public class Unit {
             sb.append(",direction:" + direction);
             sb.append(",animation:" + animation);
         }
-        sb.append(",templateForUnit:" + templateForUnit);
         sb.append("]");
         return sb.toString();
     }

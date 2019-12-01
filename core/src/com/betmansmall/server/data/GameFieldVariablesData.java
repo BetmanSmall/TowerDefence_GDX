@@ -3,13 +3,13 @@ package com.betmansmall.server.data;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.GameField;
 
-public class GameFieldData implements NetworkPackage {
+public class GameFieldVariablesData implements NetworkPackage {
     public float timeOfGame;
     public float gameSpeed;
     public boolean gamePaused;
     public boolean unitsSpawn;
 
-    public GameFieldData(GameField gameField) {
+    public GameFieldVariablesData(GameField gameField) {
         this.timeOfGame = gameField.timeOfGame;
         this.gameSpeed = gameField.gameSpeed;
         this.gamePaused = gameField.gamePaused;
@@ -23,7 +23,7 @@ public class GameFieldData implements NetworkPackage {
 
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
-        sb.append("GameFieldData[");
+        sb.append("GameFieldVariablesData[");
         sb.append("timeOfGame:" + timeOfGame);
         sb.append(",gameSpeed:" + gameSpeed);
         sb.append(",gamePaused:" + gamePaused);

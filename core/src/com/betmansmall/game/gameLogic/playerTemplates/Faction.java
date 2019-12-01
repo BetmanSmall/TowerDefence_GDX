@@ -26,6 +26,15 @@ public class Faction {
         return templateForUnits;
     }
 
+    public TemplateForUnit getTemplateForUnit(String templateName) {
+        for (TemplateForUnit templateForUnit : templateForUnits) {
+            if (templateForUnit.templateName.equals(templateName)) {
+                return templateForUnit;
+            }
+        }
+        return null;
+    }
+
     public Array<TemplateForTower> getTemplateForTowers() {
         return templateForTowers;
     }

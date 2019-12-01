@@ -6,9 +6,12 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
+import com.betmansmall.game.gameLogic.Unit;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.server.accouting.UserAccount;
-import com.betmansmall.server.data.GameFieldData;
+import com.betmansmall.server.data.CreateUnitData;
+import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.BuildTowerData;
@@ -34,6 +37,11 @@ public class ClientGameScreen extends GameScreen {
     }
 
     @Override
+    public boolean spawnUnitFromServerScreenByWaves() {
+        return false;
+    }
+
+    @Override
     public void render(float delta) {
         if (clientSessionThread.sessionState == SessionState.RECEIVED_SERVER_INFO_DATA) {
             this.initGameField();
@@ -47,7 +55,7 @@ public class ClientGameScreen extends GameScreen {
 
     @Override
     public void sendGameFieldVariables() {
-        clientSessionThread.sendObject(new SendObject(new GameFieldData(gameField)));
+        clientSessionThread.sendObject(new SendObject(new GameFieldVariablesData(gameField)));
     }
 
     @Override
@@ -83,5 +91,13 @@ public class ClientGameScreen extends GameScreen {
             }
         }
         return null;
+    }
+
+    public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
+        Unit unit = super.createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
+        if (unit != null) {
+            clientSessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
+        }
+        return unit;
     }
 }

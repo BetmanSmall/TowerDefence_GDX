@@ -6,17 +6,20 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
+import com.betmansmall.server.data.UnitInstanceData;
 
 import java.util.ArrayDeque;
 
 public class UnitsManager {
+    public int unitsCount; // unsigned int
     public Array<Unit> hero;
     public Array<Unit> units;
 
     public UnitsManager() {
         Gdx.app.log("UnitsManager::UnitsManager()", "-- ");
-        hero = new Array<Unit>();
-        units = new Array<Unit>();
+        this.unitsCount = 0;
+        this.hero = new Array<>();
+        this.units = new Array<>();
     }
 
     public void dispose() {
@@ -26,7 +29,8 @@ public class UnitsManager {
     }
 
     public Unit createUnit(ArrayDeque<Cell> route, TemplateForUnit templateForUnit, Player player, Cell exitCell) {
-        Unit unit = new Unit(route, templateForUnit, player, exitCell);
+        Unit unit = new Unit(unitsCount, route, templateForUnit, player, exitCell);
+        unitsCount++;
         units.add(unit);
         if (player.playerID != 0) {
             hero.add(unit);
@@ -34,8 +38,25 @@ public class UnitsManager {
         return unit;
     }
 
-    public Unit getUnit(int id) {
-        return units.get(id);
+    public boolean updateUnit(UnitInstanceData unitInstanceData) {
+        Unit mbUnit = getUnitById(unitInstanceData.id);
+        if (mbUnit != null) {
+            mbUnit.updateData(unitInstanceData);
+        }
+        return false;
+    }
+
+    public Unit getUnitById(int id) { // need optimization!
+        for (Unit unit : units) {
+            if (unit.id == id) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    public Unit getUnitByIndexInArray(int index) {
+        return units.get(index);
     }
 
     public int getUnit(Unit unit) {

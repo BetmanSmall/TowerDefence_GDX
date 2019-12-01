@@ -7,13 +7,15 @@ import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.server.ServerGameScreen;
 import com.betmansmall.server.data.BuildTowerData;
-import com.betmansmall.server.data.GameFieldData;
+import com.betmansmall.server.data.CreateUnitData;
+import com.betmansmall.server.data.GameFieldVariablesData;
+import com.betmansmall.server.data.GameSettingsData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
-import com.betmansmall.server.data.ServerInfoData;
 import com.betmansmall.server.data.TowersManagerData;
+import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.server.networking.TcpSocketListener;
 import com.betmansmall.util.logging.Logger;
@@ -82,9 +84,9 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     public void onConnectionReady(TcpConnection tcpConnection) {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
-        NetworkPackage serverInfoData = new ServerInfoData(sessionSettings.gameSettings);
+        NetworkPackage serverInfoData = new GameSettingsData(sessionSettings.gameSettings);
         NetworkPackage serverPlayerInfoData = new PlayerInfoData(serverGameScreen.playersManager.getLocalServer());
-        tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.SERVER_INFO_DATA, serverInfoData, serverPlayerInfoData));
+        tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_SETTINGS_AND_SERVER_PLAYER_DATA, serverInfoData, serverPlayerInfoData));
 
         for (Player player : serverGameScreen.playersManager.getPlayers()) {
             if (player.playerID != 0) {
@@ -99,45 +101,59 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         if (sendObject.sendObjectEnum != null) {
             switch (sendObject.sendObjectEnum) {
                 case GAME_FIELD_INITIALIZED: {
-                    tcpConnection.sendObject(new SendObject(new TowersManagerData(serverGameScreen.gameField.towersManager)));
+                    tcpConnection.sendObject(new SendObject(
+                            SendObject.SendObjectEnum.GAME_FIELD_VARIABLES,
+                            new GameFieldVariablesData(serverGameScreen.gameField)));
+
+//                    tcpConnection.sendObject(new SendObject(
+//                            SendObject.SendObjectEnum.SERVER_TOWERS_UNITS_MANAGERS,
+//                            new TowersManagerData(serverGameScreen.gameField.towersManager),
+//                            new UnitsManagerData(serverGameScreen.gameField.unitsManager)
+//                        )
+//                    );
                 }
             }
-        }
-        for (NetworkPackage networkPackage : sendObject.networkPackages) {
-            if (networkPackage instanceof PlayerInfoData) {
-                PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+        } else { // i think all time networkPackages.length == 1
+            for (NetworkPackage networkPackage : sendObject.networkPackages) {
+                if (networkPackage instanceof PlayerInfoData) {
+                    PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
 
-                Player player = serverGameScreen.playersManager.addPlayerByServer(tcpConnection, playerInfoData);
-                sessionState = SessionState.PLAYER_CONNECTED;
+                    Player player = serverGameScreen.playersManager.addPlayerByServer(tcpConnection, playerInfoData);
+                    sessionState = SessionState.PLAYER_CONNECTED;
 
-                tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.UPDATE_PLAYER_INFO_DATA, new PlayerInfoData(player)));
-                this.sendObject(new SendObject(new PlayerInfoData(player)), tcpConnection);
-            } else if (networkPackage instanceof BuildTowerData) {
-                BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
+                    tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_DATA, new PlayerInfoData(player)));
+                    this.sendObject(new SendObject(new PlayerInfoData(player)), tcpConnection);
+                } else if (networkPackage instanceof BuildTowerData) {
+                    BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
 
-                Player player = serverGameScreen.playersManager.getPlayer(buildTowerData.playerID);
-                TemplateForTower templateForTower = player.faction.getTemplateForTower(buildTowerData.templateName);
+                    Player player = serverGameScreen.playersManager.getPlayer(buildTowerData.playerID);
+                    TemplateForTower templateForTower = player.faction.getTemplateForTower(buildTowerData.templateName);
 //                TemplateForTower templateForTower = tcpConnection.player.faction.getTemplateForTower(buildTowerData.templateName);
-                Tower tower = serverGameScreen.gameField.createTowerWithGoldCheck(buildTowerData.buildX, buildTowerData.buildY, templateForTower, player);
+                    Tower tower = serverGameScreen.gameField.createTowerWithGoldCheck(buildTowerData.buildX, buildTowerData.buildY, templateForTower, player);
 
-                if (tower != null) {
-                    this.sendObject(new SendObject(new BuildTowerData(tower)), tcpConnection);
-                }
-            } else if (networkPackage instanceof RemoveTowerData) {
-                RemoveTowerData removeTowerData = (RemoveTowerData) networkPackage;
+                    if (tower != null) {
+                        this.sendObject(new SendObject(new BuildTowerData(tower)), tcpConnection);
+                    }
+                } else if (networkPackage instanceof RemoveTowerData) {
+                    RemoveTowerData removeTowerData = (RemoveTowerData) networkPackage;
 
-                Player player = serverGameScreen.playersManager.getPlayer(removeTowerData.playerID);
-                serverGameScreen.gameField.removeTowerWithGold(removeTowerData.removeX, removeTowerData.removeY, player);
+                    Player player = serverGameScreen.playersManager.getPlayer(removeTowerData.playerID);
+                    serverGameScreen.gameField.removeTowerWithGold(removeTowerData.removeX, removeTowerData.removeY, player);
 
-                this.sendObject(new SendObject(removeTowerData), tcpConnection);
+                    this.sendObject(new SendObject(removeTowerData), tcpConnection);
 //                 or
 //                this.sendObject(new SendObject(new RemoveTowerData(removeTowerData.removeX, removeTowerData.removeY, player)), tcpConnection);
-            } else if (networkPackage instanceof GameFieldData) {
-                GameFieldData gameFieldData = (GameFieldData) networkPackage;
+                } else if (networkPackage instanceof GameFieldVariablesData) {
+                    GameFieldVariablesData gameFieldVariablesData = (GameFieldVariablesData) networkPackage;
+                    Logger.logDebug("gameFieldVariablesData:" + gameFieldVariablesData);
+                    serverGameScreen.gameField.updateGameFieldVariables(gameFieldVariablesData);
 
-                serverGameScreen.gameField.updateGameFieldVariables(gameFieldData);
-
-                this.sendObject(new SendObject(gameFieldData), tcpConnection);
+                    this.sendObject(new SendObject(gameFieldVariablesData), tcpConnection);
+                } else if (networkPackage instanceof CreateUnitData) {
+                    CreateUnitData createUnitData = (CreateUnitData) networkPackage;
+                    serverGameScreen.gameField.createUnit(createUnitData);
+                    this.sendObject(new SendObject(createUnitData), tcpConnection);
+                }
             }
         }
     }

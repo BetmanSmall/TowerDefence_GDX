@@ -31,11 +31,11 @@ public class PlayersViewTable extends Table {
     }
 
     public void updateView() {
-        Logger.logFuncStart(playersManager.getPlayers().toString());
+//        Logger.logFuncStart(playersManager.getPlayers().toString());
         clear();
         for (Player player : playersManager.getPlayers()) {
             if (player != null) {
-                Logger.logDebug("player:" + player);
+//                Logger.logDebug("player:" + player);
                 Table table = new Table();
 
                 if (player.connection != null) {
