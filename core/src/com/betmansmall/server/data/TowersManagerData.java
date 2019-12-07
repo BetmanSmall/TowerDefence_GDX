@@ -68,7 +68,7 @@ public class TowersManagerData implements NetworkPackage {
         sb.append("TowersManagerData[");
         sb.append("towers.size():" + towers.size());
         if (full) {
-            for (TowerData towerData: towers) {
+            for (TowerData towerData : towers) {
                 sb.append("," + towerData);
             }
         }

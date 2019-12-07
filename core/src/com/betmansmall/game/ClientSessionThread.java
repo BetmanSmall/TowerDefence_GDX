@@ -10,6 +10,7 @@ import com.betmansmall.server.data.BuildTowerData;
 import com.betmansmall.server.data.CreateUnitData;
 import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.GameSettingsData;
+import com.betmansmall.server.data.PlayersManagerData;
 import com.betmansmall.server.data.UnitInstanceData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
@@ -59,42 +60,41 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
     public void onConnectionReady(TcpConnection tcpConnection) {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         this.connection = tcpConnection;
+        tcpConnection.sendObject(new SendObject(
+//                SendObject.SendObjectEnum.PLAYER_CONNECTED_DATA,
+                new PlayerInfoData(clientGameScreen.playersManager.getLocalPlayer()))
+        );
         sessionState = SessionState.CONNECTED;
-        tcpConnection.sendObject(new SendObject(new PlayerInfoData(clientGameScreen.playersManager.getLocalPlayer())));
     }
 
     @Override
     public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) {
         Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
         if (sendObject.sendObjectEnum != null) {
-            switch (sendObject.sendObjectEnum) {
-                case GAME_SETTINGS_AND_SERVER_PLAYER_DATA: {
-                    for (NetworkPackage networkPackage : sendObject.networkPackages) {
+            for (NetworkPackage networkPackage : sendObject.networkPackages) {
+                switch (sendObject.sendObjectEnum) {
+                    case GAME_SETTINGS_AND_SERVER_PLAYER_DATA: {
                         if (networkPackage instanceof GameSettingsData) {
                             GameSettingsData gameSettingsData = (GameSettingsData) networkPackage;
-                            clientGameScreen.game.sessionSettings.gameSettings.mapPath = gameSettingsData.mapPath;
-                            clientGameScreen.game.sessionSettings.gameSettings.gameType = gameSettingsData.gameType;
-                            sessionState = SessionState.RECEIVED_SERVER_INFO_DATA;
+                            clientGameScreen.game.sessionSettings.gameSettings.updateGameSettings(gameSettingsData);
                         } else if (networkPackage instanceof PlayerInfoData) {
                             PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
 
                             Faction serverFaction = clientGameScreen.game.factionsManager.getServerFaction();
                             clientGameScreen.playersManager.setServer(new Player(playerInfoData, serverFaction));
                         }
+                        sessionState = SessionState.RECEIVED_SERVER_INFO_DATA;
+                        break;
                     }
-                }
-                case GAME_FIELD_VARIABLES: {
-                    for (NetworkPackage networkPackage : sendObject.networkPackages) {
+                    case GAME_FIELD_VARIABLES_AND_MANAGERS_DATA: {
                         if (networkPackage instanceof GameFieldVariablesData) {
                             GameFieldVariablesData gameFieldVariablesData = (GameFieldVariablesData) networkPackage;
                             Logger.logDebug("gameFieldVariablesData:" + gameFieldVariablesData);
                             clientGameScreen.gameField.updateGameFieldVariables(gameFieldVariablesData);
-                        }
-                    }
-                }
-                case SERVER_TOWERS_UNITS_MANAGERS: {
-                    for (NetworkPackage networkPackage : sendObject.networkPackages) {
-                        if (networkPackage instanceof TowersManagerData) {
+                        } else if (networkPackage instanceof PlayersManagerData) {
+                            PlayersManagerData playersManagerData = (PlayersManagerData) networkPackage;
+                            clientGameScreen.playersManager.updatePlayers(playersManagerData);
+                        } else if (networkPackage instanceof TowersManagerData) {
                             TowersManagerData towersManagerData = (TowersManagerData) networkPackage;
                             for (TowersManagerData.TowerData towerData : towersManagerData.towers) {
                                 Player player = clientGameScreen.playersManager.getPlayer(towerData.playerID);
@@ -110,30 +110,45 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
                                 clientGameScreen.gameField.createUnit(unitInstanceData);
                             }
                         }
+                        break;
                     }
-                }
-                case UPDATE_UNITS_MANAGER: {
-                    for (NetworkPackage networkPackage : sendObject.networkPackages) {
-                        if (networkPackage instanceof UnitsManagerData) {
-                            UnitsManagerData unitsManagerData = (UnitsManagerData) networkPackage;
-                            clientGameScreen.gameField.updateUnitsManager(unitsManagerData);
-                        }
+                    case PLAYER_CONNECTED_DATA: {
+//                        if (networkPackage instanceof PlayerInfoData) {
+                            PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+                            clientGameScreen.playersManager.addPlayerByClient(playerInfoData);
+//                        }
+                        break;
+                    }
+                    case PLAYER_UPDATE_DATA: {
+//                        if (networkPackage instanceof PlayerInfoData) {
+                            PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+                            clientGameScreen.playersManager.updatePlayerInfoByAccID(playerInfoData);
+//                        }
+                        break;
+                    }
+                    case PLAYER_DISCONNECTED_DATA: {
+//                        if (networkPackage instanceof PlayerInfoData) {
+                            PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+                            clientGameScreen.playersManager.removePlayerByID(playerInfoData.playerID);
+//                        }
+                        break;
                     }
                 }
             }
         } else {
             for (NetworkPackage networkPackage : sendObject.networkPackages) {
-                if (networkPackage instanceof PlayerInfoData) {
-                    PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
-
-                    if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.PLAYER_DISCONNECTED) {
-                        clientGameScreen.playersManager.removePlayerByID(playerInfoData.playerID);
-                    } else if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.GAME_FIELD_DATA) {
-                        clientGameScreen.playersManager.updatePlayerInfo(playerInfoData);
-                    } else if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.ADD_PLAYER_INFO_DATA) {
-                        clientGameScreen.playersManager.addPlayerByClient(playerInfoData);
-                    }
-                } else if (networkPackage instanceof BuildTowerData) {
+//                if (networkPackage instanceof PlayerInfoData) {
+//                    PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
+//
+//                    if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.PLAYER_DISCONNECTED_DATA) {
+//                        clientGameScreen.playersManager.removePlayerByID(playerInfoData.playerID);
+//                    } else if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.PLAYER_UPDATE_DATA) {
+//                        clientGameScreen.playersManager.updatePlayerInfoByAccID(playerInfoData);
+//                    } else if (sendObject.sendObjectEnum == SendObject.SendObjectEnum.PLAYER_CONNECTED_DATA) {
+//                        clientGameScreen.playersManager.addPlayerByClient(playerInfoData);
+//                    }
+//                } else
+                if (networkPackage instanceof BuildTowerData) {
                     BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
 
                     Player player = clientGameScreen.playersManager.getPlayer(buildTowerData.playerID);
@@ -148,6 +163,10 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
                     GameFieldVariablesData gameFieldVariablesData = (GameFieldVariablesData) networkPackage;
                     Logger.logDebug("gameFieldVariablesData:" + gameFieldVariablesData);
                     clientGameScreen.gameField.updateGameFieldVariables(gameFieldVariablesData);
+
+                } else if (networkPackage instanceof UnitsManagerData) {
+                    UnitsManagerData unitsManagerData = (UnitsManagerData) networkPackage;
+                    clientGameScreen.gameField.updateUnitsManager(unitsManagerData);
                 } else if (networkPackage instanceof CreateUnitData) {
                     CreateUnitData createUnitData = (CreateUnitData) networkPackage;
                     clientGameScreen.gameField.createUnit(createUnitData);

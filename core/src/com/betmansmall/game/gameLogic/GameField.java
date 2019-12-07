@@ -423,7 +423,9 @@ public class GameField {
     }
 
     public Unit createUnit(UnitInstanceData unitInstanceData) {
-        GridPoint2 spawnGP2 = unitInstanceData.route.get(0);
+        Logger.logFuncStart("unitInstanceData:" + unitInstanceData.toString(true));
+//        GridPoint2 spawnGP2 = unitInstanceData.route.get(0);
+        GridPoint2 spawnGP2 = unitInstanceData.currentCell;
         GridPoint2 destGP2 = unitInstanceData.route.get(unitInstanceData.route.size()-1);
         Cell spawnCell = getCell(spawnGP2.x, spawnGP2.y);
         Cell destCell = getCell(destGP2.x, destGP2.y);

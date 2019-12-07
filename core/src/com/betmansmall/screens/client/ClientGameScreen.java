@@ -45,8 +45,8 @@ public class ClientGameScreen extends GameScreen {
     public void render(float delta) {
         if (clientSessionThread.sessionState == SessionState.RECEIVED_SERVER_INFO_DATA) {
             this.initGameField();
-            clientSessionThread.sessionState = SessionState.INITIALIZED;
             clientSessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_INITIALIZED));
+            clientSessionThread.sessionState = SessionState.INITIALIZED;
         }
         if (clientSessionThread.sessionState == SessionState.INITIALIZED) {
             super.render(delta);

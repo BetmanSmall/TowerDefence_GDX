@@ -69,12 +69,12 @@ public class UnitInstanceData implements NetworkPackage {
         sb.append("UnitInstanceData[");
         sb.append("id:" + id);
         if (full) {
-            sb.append("route:" + route);
+            sb.append(",route:" + route);
             sb.append(",templateForUnit:" + templateForUnit);
             sb.append(",playerInfoData:" + playerInfoData);
         }
-        sb.append(",exitCell:" + (exitCell!=null) );
-        sb.append("currentCell:" + currentCell);
+        sb.append(",exitCell:" + ( (exitCell!=null) ? exitCell : null ) );
+        sb.append(",currentCell:" + currentCell);
         sb.append(",nextCell:" + nextCell);
 
         sb.append(",hp:" + hp);

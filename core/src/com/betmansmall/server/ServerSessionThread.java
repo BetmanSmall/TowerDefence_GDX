@@ -12,6 +12,7 @@ import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.GameSettingsData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
+import com.betmansmall.server.data.PlayersManagerData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.TowersManagerData;
@@ -86,13 +87,8 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         connections.add(tcpConnection);
         NetworkPackage serverInfoData = new GameSettingsData(sessionSettings.gameSettings);
         NetworkPackage serverPlayerInfoData = new PlayerInfoData(serverGameScreen.playersManager.getLocalServer());
-        tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_SETTINGS_AND_SERVER_PLAYER_DATA, serverInfoData, serverPlayerInfoData));
 
-        for (Player player : serverGameScreen.playersManager.getPlayers()) {
-            if (player.playerID != 0) {
-                tcpConnection.sendObject(new SendObject(new PlayerInfoData(player)));
-            }
-        }
+        tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_SETTINGS_AND_SERVER_PLAYER_DATA, serverInfoData, serverPlayerInfoData));
     }
 
     @Override
@@ -102,15 +98,13 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
             switch (sendObject.sendObjectEnum) {
                 case GAME_FIELD_INITIALIZED: {
                     tcpConnection.sendObject(new SendObject(
-                            SendObject.SendObjectEnum.GAME_FIELD_VARIABLES,
-                            new GameFieldVariablesData(serverGameScreen.gameField)));
-
-//                    tcpConnection.sendObject(new SendObject(
-//                            SendObject.SendObjectEnum.SERVER_TOWERS_UNITS_MANAGERS,
-//                            new TowersManagerData(serverGameScreen.gameField.towersManager),
-//                            new UnitsManagerData(serverGameScreen.gameField.unitsManager)
-//                        )
-//                    );
+                            SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
+                            new GameFieldVariablesData(serverGameScreen.gameField),
+                            new PlayersManagerData(serverGameScreen.playersManager),
+                            new TowersManagerData(serverGameScreen.gameField.towersManager),
+                            new UnitsManagerData(serverGameScreen.gameField.unitsManager)
+                        )
+                    );
                 }
             }
         } else { // i think all time networkPackages.length == 1
@@ -121,8 +115,8 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
                     Player player = serverGameScreen.playersManager.addPlayerByServer(tcpConnection, playerInfoData);
                     sessionState = SessionState.PLAYER_CONNECTED;
 
-                    tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_DATA, new PlayerInfoData(player)));
-                    this.sendObject(new SendObject(new PlayerInfoData(player)), tcpConnection);
+                    tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_UPDATE_DATA, new PlayerInfoData(player)));
+                    this.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_CONNECTED_DATA, new PlayerInfoData(player)), tcpConnection);
                 } else if (networkPackage instanceof BuildTowerData) {
                     BuildTowerData buildTowerData = (BuildTowerData) networkPackage;
 
@@ -164,7 +158,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         connections.removeValue(tcpConnection, true);
         Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
         for (TcpConnection connection : connections) {
-            connection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_DISCONNECTED, new PlayerInfoData(player)));
+            connection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_DISCONNECTED_DATA, new PlayerInfoData(player)));
         }
         serverGameScreen.playersManager.removePlayer(player);
 //        gameServer.playerDisconnect(tcpConnection);

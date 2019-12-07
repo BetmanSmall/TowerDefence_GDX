@@ -3,6 +3,7 @@ package com.betmansmall.game;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.Cell;
+import com.betmansmall.server.data.GameSettingsData;
 
 /**
  * Created by betma on 17.11.2018.
@@ -51,6 +52,11 @@ public class GameSettings {
         } else {
             gameType = GameType.TowerDefence;
         }
+    }
+
+    public void updateGameSettings(GameSettingsData gameSettingsData) {
+        this.mapPath = gameSettingsData.mapPath;
+        this.gameType = gameSettingsData.gameType;
     }
 
     public String toString() {

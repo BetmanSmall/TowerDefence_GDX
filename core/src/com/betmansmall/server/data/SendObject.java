@@ -9,13 +9,14 @@ public class SendObject implements Serializable {
     public enum SendObjectEnum implements Serializable {
         GAME_SETTINGS_AND_SERVER_PLAYER_DATA,
 
-        SERVER_TOWERS_UNITS_MANAGERS,
-        UPDATE_UNITS_MANAGER,
+        GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
+//        GAME_FIELD_VARIABLES,
+//        SERVER_TOWERS_UNITS_MANAGERS,
+//        UPDATE_UNITS_MANAGER,
 
-        ADD_PLAYER_INFO_DATA,
-        GAME_FIELD_VARIABLES,
-        GAME_FIELD_DATA,
-        PLAYER_DISCONNECTED,
+        PLAYER_CONNECTED_DATA,
+        PLAYER_UPDATE_DATA,
+        PLAYER_DISCONNECTED_DATA,
 
         BUILD_TOWER_DATA,
         REMOVE_TOWER_DATA,
@@ -31,12 +32,12 @@ public class SendObject implements Serializable {
 
     public SendObject(SendObjectEnum sendObjectEnum, NetworkPackage ... networkPackages) {
         this.sendObjectEnum = sendObjectEnum;
-        if (networkPackages.length != 0) {
+//        if (networkPackages.length != 0) {
             this.networkPackages = new ArrayList<>();
             for (NetworkPackage networkPackage : networkPackages) {
                 this.networkPackages.add(networkPackage);
             }
-        }
+//        }
     }
 
     public SendObject(NetworkPackage networkPackage) {

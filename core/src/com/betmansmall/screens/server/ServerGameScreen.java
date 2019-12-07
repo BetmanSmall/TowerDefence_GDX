@@ -46,9 +46,9 @@ public class ServerGameScreen extends GameScreen {
 
     @Override
     public void sendGameFieldVariables() {
-        serverSessionThread.sendObject(new SendObject(new GameFieldVariablesData(gameField)));
-        updateUnitsManager();
-//        serverSessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.UPDATE_UNITS_MANAGER, new UnitsManagerData(gameField.unitsManager)));
+        serverSessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
+                new GameFieldVariablesData(gameField),
+                new UnitsManagerData(gameField.unitsManager))); // бага, там создаются а нужно апдейтить уже существующих
     }
 
     @Override
@@ -91,9 +91,5 @@ public class ServerGameScreen extends GameScreen {
             serverSessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
         }
         return unit;
-    }
-
-    public void updateUnitsManager() {
-        serverSessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.UPDATE_UNITS_MANAGER, new UnitsManagerData(gameField.unitsManager)));
     }
 }

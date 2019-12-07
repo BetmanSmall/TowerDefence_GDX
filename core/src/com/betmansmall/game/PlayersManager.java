@@ -7,6 +7,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.PlayerInfoData;
+import com.betmansmall.server.data.PlayersManagerData;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.util.logging.Logger;
 
@@ -122,16 +123,24 @@ public class PlayersManager {
         return null;
     }
 
-    public boolean updatePlayerInfo(PlayerInfoData playerInfoData) {
+    public boolean updatePlayerInfoByAccID(PlayerInfoData playerInfoData) {
         Logger.logFuncStart("playerInfoData:" + playerInfoData);
         Logger.logDebug("players:" + players);
         for (Player player : players) {
             if (player.accountID.equals(playerInfoData.accountID)) {
-                player.playerID = playerInfoData.playerID;
+                player.updateData(playerInfoData);
                 return true;
             }
         }
         return false;
+    }
+
+    public void updatePlayers(PlayersManagerData playersManagerData) {
+        for (PlayerInfoData playerInfoData : playersManagerData.players) {
+            if (!updatePlayerInfoByAccID(playerInfoData)) {
+                this.addPlayerByClient(playerInfoData);
+            }
+        }
     }
 
     public boolean removePlayerByID(Integer playerID) {
@@ -153,6 +162,7 @@ public class PlayersManager {
                 return player;
             }
         }
+        Logger.logError("not found playerID:" + playerID + " | we have players:" + players);
         return null;
     }
 
