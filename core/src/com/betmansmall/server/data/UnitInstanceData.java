@@ -3,9 +3,12 @@ package com.betmansmall.server.data;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.Cell;
+import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.Unit;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
+import com.betmansmall.util.logging.Logger;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +19,6 @@ public class UnitInstanceData implements NetworkPackage {
     public PlayerInfoData playerInfoData; // mb more useless info
 
     public GridPoint2 exitCell;
-    public GridPoint2 currentCell;
-    public GridPoint2 nextCell;
 
     public float hp;
     public float speed;
@@ -32,6 +33,8 @@ public class UnitInstanceData implements NetworkPackage {
     public UnitInstanceData(Unit unit) {
         this.id = unit.id;
         this.route = new ArrayList<>(unit.route.size());
+//        this.route.add(new GridPoint2(unit.currentCell.cellX, unit.currentCell.cellY)); // need? or not?
+        this.route.add(new GridPoint2(unit.nextCell.cellX, unit.nextCell.cellY));
         for (Cell cell : unit.route) {
             this.route.add(new GridPoint2(cell.cellX, cell.cellY));
         }
@@ -41,8 +44,6 @@ public class UnitInstanceData implements NetworkPackage {
         if (unit.exitCell != null) {
             this.exitCell = new GridPoint2(unit.exitCell.cellX, unit.exitCell.cellY);
         }
-        this.currentCell = new GridPoint2(unit.currentCell.cellX, unit.currentCell.cellY);
-        this.nextCell = new GridPoint2(unit.nextCell.cellX, unit.nextCell.cellY);
 
         this.hp = unit.hp;
         this.speed = unit.speed;
@@ -60,6 +61,25 @@ public class UnitInstanceData implements NetworkPackage {
 //        this.bullets = ...
     }
 
+    public ArrayDeque<Cell> getRoute(GameField gameField) {
+        if (this.route != null && this.route.size() != 0) {
+            ArrayDeque<Cell> route = new ArrayDeque<>();
+            for (GridPoint2 gridPoint2 : this.route) {
+                Cell cell = gameField.getCell(gridPoint2.x, gridPoint2.y);
+                if (cell != null) {
+                    route.addLast(cell);
+                } else {
+                    Logger.logError("no cell by gridPoint2:" + gridPoint2);
+                }
+            }
+            if (route.size() != 0) {
+                return route;
+            }
+        }
+        Logger.logError("this.route:" + this.route);
+        return null;
+    }
+
     public String toString() {
         return toString(false);
     }
@@ -74,8 +94,6 @@ public class UnitInstanceData implements NetworkPackage {
             sb.append(",playerInfoData:" + playerInfoData);
         }
         sb.append(",exitCell:" + ( (exitCell!=null) ? exitCell : null ) );
-        sb.append(",currentCell:" + currentCell);
-        sb.append(",nextCell:" + nextCell);
 
         sb.append(",hp:" + hp);
         sb.append(",speed:" + speed);

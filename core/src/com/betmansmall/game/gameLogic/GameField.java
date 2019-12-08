@@ -392,7 +392,6 @@ public class GameField {
         TemplateForUnit templateForUnit = factionsManager.getTemplateForUnitByName(createUnitData.templateForUnit);
         Cell exitCell = getCell(createUnitData.exitCell.x, createUnitData.exitCell.y);
         Player player = gameScreen.playersManager.getPlayer(createUnitData.player.playerID);
-//        if ()
         return createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
     }
 
@@ -424,30 +423,28 @@ public class GameField {
 
     public Unit createUnit(UnitInstanceData unitInstanceData) {
         Logger.logFuncStart("unitInstanceData:" + unitInstanceData.toString(true));
-//        GridPoint2 spawnGP2 = unitInstanceData.route.get(0);
-        GridPoint2 spawnGP2 = unitInstanceData.currentCell;
+        GridPoint2 spawnGP2 = unitInstanceData.route.get(0);
         GridPoint2 destGP2 = unitInstanceData.route.get(unitInstanceData.route.size()-1);
         Cell spawnCell = getCell(spawnGP2.x, spawnGP2.y);
         Cell destCell = getCell(destGP2.x, destGP2.y);
-        Unit unit = null;
         if (spawnCell != null && destCell != null && pathFinder != null) {
-            ArrayDeque<Cell> route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
-            if (unitInstanceData.route != null) {
+            ArrayDeque<Cell> route = unitInstanceData.getRoute(this);
+            if (route != null) {
                 TemplateForUnit templateForUnit = gameScreen.game.factionsManager.getTemplateForUnitByName(unitInstanceData.templateForUnit);
                 Player player = gameScreen.playersManager.getPlayer(unitInstanceData.playerInfoData.playerID);
                 Cell exitCell = null;
                 if (unitInstanceData.exitCell != null) {
                     exitCell = getCell(unitInstanceData.exitCell.x, unitInstanceData.exitCell.y);
                 }
-                unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
+                Unit unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
                 unit.updateData(unitInstanceData);
                 Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
+                return unit;
             } else {
                 Gdx.app.log("GameField::createUnit()", "-- Not found route for createUnit!");
                 return null;
             }
-            return unit;
         } else {
             Gdx.app.log("GameField::createUnit()", "-- Bad spawnCell:" + spawnCell + " || destCell:" + destCell + " || pathFinder:" + pathFinder);
             return null;
@@ -456,8 +453,13 @@ public class GameField {
 
     public void updateUnitsManager(UnitsManagerData unitsManagerData) {
         for (UnitInstanceData unitInstanceData : unitsManagerData.units) {
-            if (unitsManager.updateUnit(unitInstanceData)) {
-
+            ArrayDeque<Cell> route = unitInstanceData.getRoute(this);
+            if (route != null) {
+                if (!unitsManager.updateUnit(unitInstanceData, route)) {
+                    this.createUnit(unitInstanceData);
+                }
+            } else {
+                Logger.logError("route:null unitInstanceData:" + unitInstanceData);
             }
         }
     }

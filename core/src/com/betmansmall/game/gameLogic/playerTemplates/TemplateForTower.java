@@ -76,7 +76,6 @@ public class TemplateForTower extends Template {
                     String tileName = animatedTile.getProperties().get("tileName", null);
                     if (tileName != null) {
                         if (tileName.equals("burning_")) {
-                            Logger.logDebug("this.burningAnimations.size:" + this.burningsTemplates.size);
                             animations.put("burning_" + this.burningsTemplates.size, animatedTile);
                             this.burningsTemplates.add(simpleTemplate);
                         }

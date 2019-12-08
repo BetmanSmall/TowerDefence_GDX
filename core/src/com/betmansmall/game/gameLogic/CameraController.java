@@ -78,6 +78,8 @@ public class CameraController extends AbstractCameraController {
         this.halfSizeCellY = sizeCellY/2;
         random = new Random();
 //        Gdx.input.setCursorCatched(true);
+        camera.position.set(185, -110, 0);
+        camera.zoom = 0.5f;
     }
 
     @Override

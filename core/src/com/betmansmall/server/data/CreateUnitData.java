@@ -17,7 +17,9 @@ public class CreateUnitData implements NetworkPackage {
         this.spawnCell = new GridPoint2(spawnCell.cellX, spawnCell.cellY);
         this.destCell = new GridPoint2(destCell.cellX, destCell.cellY);
         this.templateForUnit = templateForUnit.templateName;
-        this.exitCell = new GridPoint2(exitCell.cellX, exitCell.cellY);
+        if (exitCell != null) {
+            this.exitCell = new GridPoint2(exitCell.cellX, exitCell.cellY);
+        }
         this.player = new PlayerInfoData(player);
     }
 

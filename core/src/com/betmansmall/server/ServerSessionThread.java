@@ -95,6 +95,11 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) {
         Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
         if (sendObject.sendObjectEnum != null) {
+//            if (sendObject.networkPackages != null && sendObject.networkPackages.size() != 0) {
+//                for (NetworkPackage networkPackage : sendObject.networkPackages) {
+// FOR FUTURE
+//                }
+//            }
             switch (sendObject.sendObjectEnum) {
                 case GAME_FIELD_INITIALIZED: {
                     tcpConnection.sendObject(new SendObject(
@@ -142,7 +147,11 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
                     Logger.logDebug("gameFieldVariablesData:" + gameFieldVariablesData);
                     serverGameScreen.gameField.updateGameFieldVariables(gameFieldVariablesData);
 
-                    this.sendObject(new SendObject(gameFieldVariablesData), tcpConnection);
+                    this.sendObject(new SendObject(
+                            SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
+                            new GameFieldVariablesData(serverGameScreen.gameField),
+                            new UnitsManagerData(serverGameScreen.gameField.unitsManager)
+                    ));
                 } else if (networkPackage instanceof CreateUnitData) {
                     CreateUnitData createUnitData = (CreateUnitData) networkPackage;
                     serverGameScreen.gameField.createUnit(createUnitData);

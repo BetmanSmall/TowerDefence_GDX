@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
@@ -15,6 +16,8 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
+
+import java.net.InetAddress;
 
 public class ClientSettingsScreen extends AbstractScreen {
     private Stage stage;
@@ -30,6 +33,22 @@ public class ClientSettingsScreen extends AbstractScreen {
         this.stage.dispose();
     }
 
+    public Array<String> getHosts(String subnet) {
+        Array<String> hosts = new Array<>();
+        try {
+            int timeout = 10;
+            for (int i = 1; i < 255; i++) {
+                String host = subnet + "." + i;
+                if (InetAddress.getByName(host).isReachable(timeout)) {
+                    hosts.add(host);
+                }
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
+        return hosts;
+    }
+
     public void createUI() {
         this.stage = new Stage(new ScreenViewport());
 //        this.stage.setDebugAll(true);
@@ -40,7 +59,13 @@ public class ClientSettingsScreen extends AbstractScreen {
         VisLabel hostLabel = new VisLabel("host:");
         rootTable.add(hostLabel);
 
-        VisTextField hostField = new VisTextField("127.0.0.1"); // or localhost ?
+//        Array<String> hosts = getHosts("192.168.0");
+//        VisSelectBox<String> hostField = new VisSelectBox<>();
+//        hostField.setItems(hosts);
+//        hostField.setSelected(hosts.peek());
+//        rootTable.add(hostField).row();
+
+        VisTextField hostField = new VisTextField("192.168.0."); // or localhost ?
         rootTable.add(hostField).row();
 
         VisLabel portLabel = new VisLabel("port:");
@@ -63,6 +88,7 @@ public class ClientSettingsScreen extends AbstractScreen {
         connectToServer.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+//                game.sessionSettings.host = hostField.getSelected();
                 game.sessionSettings.host = hostField.getText();
                 game.sessionSettings.port = Integer.parseInt(portField.getText());
                 game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;

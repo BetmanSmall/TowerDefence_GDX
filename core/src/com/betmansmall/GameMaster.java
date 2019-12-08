@@ -45,6 +45,7 @@ public class GameMaster extends Game {
     public GameMaster() {}
 
     public GameMaster(CommandLine cmd) {
+        Logger.instance().setCmd(cmd);
         Logger.logFuncStart("cmd.getArgs().length:" + cmd.getArgs().length);
         Logger.logFuncStart("cmd.getOptions().length:" + cmd.getOptions().length);
         this.cmd = cmd;
@@ -159,6 +160,7 @@ public class GameMaster extends Game {
         helpMenuScreen.dispose();
 //        removeAllScreens();
 //        Gdx.app.exit();
+        Logger.instance().dispose();
     }
 
     @Override

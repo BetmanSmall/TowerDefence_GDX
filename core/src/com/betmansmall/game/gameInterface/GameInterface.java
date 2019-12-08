@@ -53,6 +53,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private float deleteActionThrough, actionInHistoryTime;
     private Label actionsHistoryLabel;
     private Label connectedPlayerCount;
+    private Label unitsCount; // duplicate unitsManagerSize
     // Console need
 
     public TextButton playersViewButton;
@@ -164,7 +165,10 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         horizontalGroupTop.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY().row();
 
         connectedPlayerCount = new Label("players:{players.size}", skin);
-        horizontalGroupTop.add(connectedPlayerCount).colspan(2);
+        horizontalGroupTop.add(connectedPlayerCount).colspan(2).row();
+
+        unitsCount = new Label("unitsCount:{unitsCount}", skin);
+        horizontalGroupTop.add(unitsCount).colspan(2).row();
 
         Table horizontalGroupBottom = new Table(skin);
         tableWithButtons.add(horizontalGroupBottom).expandY().bottom();
@@ -681,6 +685,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             connectedPlayerCount.setText("players:" + playersViewTable.playersManager.getPlayers().size);
             playersViewTable.updateView(); // real time update if new player connected!
         }
+        unitsCount.setText("unitsCount:" + gameScreen.gameField.unitsManager.units.size);
     }
 
     public void draw() {

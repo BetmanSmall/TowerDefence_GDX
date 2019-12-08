@@ -8,14 +8,17 @@ import java.util.ArrayList;
 
 public class UnitsManagerData implements NetworkPackage {
     public ArrayList<UnitInstanceData> units;
+    public boolean hardOrSoftUpdate; // in future | not work in this time
 
     public UnitsManagerData(UnitsManager unitsManager) {
         this.units = new ArrayList<>(unitsManager.units.size);
-
-        for (Unit unit : unitsManager.units) {
+        for (int u = 0; u < unitsManager.units.size; u++) {
+            Unit unit = unitsManager.units.get(u);
+//        for (Unit unit : unitsManager.units) { // pizda baga || GdxRuntimeException: #iterator() cannot be used nested
             UnitInstanceData unitData = new UnitInstanceData(unit);
             this.units.add(unitData);
         }
+        this.hardOrSoftUpdate = true;
     }
 
     @Override

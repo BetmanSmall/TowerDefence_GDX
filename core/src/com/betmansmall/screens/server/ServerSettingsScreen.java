@@ -62,7 +62,9 @@ public class ServerSettingsScreen extends AbstractScreen {
             for (NetworkInterface ni : Collections.list(interfaces)){
                 for (InetAddress address : Collections.list(ni.getInetAddresses())) {
                     if (address instanceof Inet4Address){
-                        addresses.add(address.getHostAddress());
+                        if (!address.getHostAddress().equals("127.0.0.1")) {
+                            addresses.add(address.getHostAddress());
+                        }
                     }
                 }
             }
@@ -72,6 +74,7 @@ public class ServerSettingsScreen extends AbstractScreen {
 
         VisSelectBox<String> hostField = new VisSelectBox<>();
         hostField.setItems(addresses);
+        hostField.setSelected(addresses.peek());
         rootTable.add(hostField).row();
 
         VisLabel portLabel = new VisLabel("port:");

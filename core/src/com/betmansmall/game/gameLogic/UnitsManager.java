@@ -38,16 +38,19 @@ public class UnitsManager {
         return unit;
     }
 
-    public boolean updateUnit(UnitInstanceData unitInstanceData) {
+    public boolean updateUnit(UnitInstanceData unitInstanceData, ArrayDeque<Cell> route) {
         Unit mbUnit = getUnitById(unitInstanceData.id);
         if (mbUnit != null) {
-            mbUnit.updateData(unitInstanceData);
+            mbUnit.updateData(unitInstanceData, route);
+            return true;
         }
         return false;
     }
 
     public Unit getUnitById(int id) { // need optimization!
-        for (Unit unit : units) {
+        for (int u = 0; u < units.size; u++) {
+            Unit unit = units.get(u);
+//        for (Unit unit : units) { // pizda baga || GdxRuntimeException: #iterator() cannot be used nested
             if (unit.id == id) {
                 return unit;
             }

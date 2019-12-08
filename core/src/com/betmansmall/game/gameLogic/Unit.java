@@ -60,7 +60,7 @@ public class Unit {
             this.player = player;
 
             this.exitCell = exitCell;
-            this.currentCell = route.peekFirst();
+            this.currentCell = route.pollFirst(); // or route.peekFirst(); // mb create spawn anim
             this.nextCell = route.pollFirst();
 
             this.hp = templateForUnit.healthPoints;
@@ -129,15 +129,17 @@ public class Unit {
         this.animation = null;
     }
 
-    public void updateData(UnitInstanceData unitInstanceData) {
-        Logger.logFuncStart("unitInstanceData:" + unitInstanceData);
+    public void updateData(UnitInstanceData unitInstanceData, ArrayDeque<Cell> route) {
 //        this.id = unitInstanceData.id;
-//        this.route = unitInstanceData.route;
+//        this.currentCell = route.pollFirst(); // or simple?? // route.pollFirst();
+        this.nextCell = route.pollFirst();
+        this.route = route;
 //        this.templateForUnit = unitInstanceData.templateForUnit;
 //        this.player = unitInstanceData.playerInfoData;
+        updateData(unitInstanceData);
+    }
 
-//        this.currentCell = unitInstanceData.currentCell.
-
+    public void updateData(UnitInstanceData unitInstanceData) {
         this.hp = unitInstanceData.hp;
         this.speed = unitInstanceData.speed;
         this.stepsInTime = unitInstanceData.stepsInTime;
