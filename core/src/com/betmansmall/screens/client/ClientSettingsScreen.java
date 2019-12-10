@@ -1,5 +1,6 @@
 package com.betmansmall.screens.client;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -65,7 +66,13 @@ public class ClientSettingsScreen extends AbstractScreen {
 //        hostField.setSelected(hosts.peek());
 //        rootTable.add(hostField).row();
 
-        VisTextField hostField = new VisTextField("192.168.0."); // or localhost ?
+        String host = "localhost";
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            host = "192.168.0.";
+        } else if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            host = "127.0.0.1";
+        }
+        VisTextField hostField = new VisTextField(host);
         rootTable.add(hostField).row();
 
         VisLabel portLabel = new VisLabel("port:");

@@ -20,7 +20,7 @@ public class DesktopLauncher {
         Logger.logFuncStart(args);
         Options options = new Options()
                 .addOption("help", false, "prints this message")
-                .addOption("c", "client", false, "Start ClientGameScreen")
+                .addOption("c", "client", true, "Start ClientGameScreen")
                 .addOption("s", "server", false, "Start ServerGameScreen");
 
         CommandLine cmd = null;
@@ -54,9 +54,21 @@ public class DesktopLauncher {
             config.width = (int)width/2;
             config.height = (int)height/2;
         } else if (cmd.hasOption("client")) {
-            config.x += (int)width/2;
-            config.width = (int)width/2;
-            config.height = (int)height/2;
+            String value = cmd.getOptionValue("client");
+            if (value.equals("1")) {
+                config.x += (int) width / 2;
+                config.width = (int) width / 2;
+                config.height = (int) height / 2;
+            } else if (value.equals("2")) {
+                config.x += (int) width / 2;
+                config.y = (int) height / 2;
+                config.width = (int) width / 2;
+                config.height = (int) height / 2;
+            } else if (value.equals("3")) {
+                config.y = (int) height / 2;
+                config.width = (int) width / 2;
+                config.height = (int) height / 2;
+            }
         }
 //        config.useGL30 = true;
 //        config.fullscreen = true;
