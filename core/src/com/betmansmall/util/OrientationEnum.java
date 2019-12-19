@@ -1,7 +1,7 @@
 package com.betmansmall.util;
 
 /**
- * @author Alexander_Kuzyakov on 25.11.2019.
+ * @author Alexander on 25.11.2019.
  */
 public enum OrientationEnum {
     UP("Up"),
@@ -10,13 +10,14 @@ public enum OrientationEnum {
     RIGHT("Right");
 
     public final String VALUE;
+    public final OrientationEnum OPPOSITE;
 
     OrientationEnum(String value) {
         VALUE = value;
+        OPPOSITE = getOpposite(this);
     }
 
-    public static OrientationEnum getOpposite(OrientationEnum base) {
-        if(base == null) throw new NullPointerException("No opposite orientation for null");
+    private static OrientationEnum getOpposite(OrientationEnum base) {
         switch(base) {
             case UP:
                 return DOWN;
@@ -27,6 +28,6 @@ public enum OrientationEnum {
             case RIGHT:
                 return LEFT;
         }
-        throw new IllegalArgumentException("Given orientation is not valid");
+        return null;
     }
 }
