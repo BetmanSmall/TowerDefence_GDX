@@ -25,7 +25,7 @@ public class ClientGameScreen extends GameScreen {
         Logger.logFuncStart();
 
         this.clientSessionThread = new ClientSessionThread(this);
-        clientSessionThread.start();
+        this.clientSessionThread.start();
 
         Logger.logFuncEnd();
     }
@@ -33,7 +33,7 @@ public class ClientGameScreen extends GameScreen {
     @Override
     public void dispose() {
         super.dispose();
-        clientSessionThread.dispose();
+        this.clientSessionThread.dispose();
     }
 
     @Override

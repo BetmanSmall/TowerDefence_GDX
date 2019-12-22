@@ -63,3 +63,8 @@ build/
 
 ## Doxygen folder
 doxygen
+
+## my specific files
+android/assets/version.properties
+android/assets/client*Log.st
+android/assets/serverLog.st

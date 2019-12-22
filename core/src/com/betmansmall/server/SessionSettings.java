@@ -7,14 +7,17 @@ import com.betmansmall.game.GameSettings;
 public class SessionSettings {
     public SessionType sessionType;
     public String host;
-    public Integer port;
+    public Integer authServerPort;
+    public Integer gameServerPort;
+//    public Integer defPort; // need mb?
 
     public GameSettings gameSettings;
 
     public SessionSettings() {
         this.sessionType = SessionType.SERVER_STANDALONE;
         this.host = "localhost";
-        this.port = 48999;
+        this.authServerPort = 48999;
+        this.gameServerPort = 48998;
 
         this.gameSettings = new GameSettings();
     }
@@ -34,7 +37,8 @@ public class SessionSettings {
         sb.append("sessionType:" + sessionType);
         if (full) {
             sb.append(",host:" + host);
-            sb.append(",port:" + port);
+            sb.append(",authServerPort:" + authServerPort);
+            sb.append(",gameServerPort:" + gameServerPort);
             sb.append(",gameSettings:" + gameSettings);
         }
         sb.append("]");

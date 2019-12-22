@@ -1018,7 +1018,9 @@ public class GameFieldRenderer {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         float gridNavRadius = cameraController.sizeCellX/22f;
-        for (Unit unit : gameField.unitsManager.units) {
+        for (int u = 0; u < gameField.unitsManager.units.size; u++) {
+            Unit unit = gameField.unitsManager.units.get(u);
+//        for (Unit unit : gameField.unitsManager.units) {
             if (unit.player == gameField.gameScreen.playersManager.getLocalPlayer()) {
                 shapeRenderer.setColor(Color.WHITE);
             } else {

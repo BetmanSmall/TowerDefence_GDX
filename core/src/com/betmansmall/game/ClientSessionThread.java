@@ -11,7 +11,6 @@ import com.betmansmall.server.data.CreateUnitData;
 import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.GameSettingsData;
 import com.betmansmall.server.data.PlayersManagerData;
-import com.betmansmall.server.data.UnitInstanceData;
 import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.RemoveTowerData;
@@ -40,15 +39,15 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
 
     public void dispose() {
         Logger.logFuncStart();
-        connection.disconnect();
+        this.connection.disconnect();
         this.interrupt();
     }
 
     @Override
     public void run() {
-        Logger.logInfo("Try connect to:" + sessionSettings.host + ":" + sessionSettings.port);
+        Logger.logInfo("Try connect to:" + sessionSettings.host + ":" + sessionSettings.gameServerPort);
         try {
-            new TcpConnection(this, sessionSettings.host, sessionSettings.port);
+            new TcpConnection(this, sessionSettings.host, sessionSettings.gameServerPort);
         } catch (IOException exception) {
             Logger.logError("exception:" + exception);
             clientGameScreen.game.removeTopScreen(); // TODO mb not good!

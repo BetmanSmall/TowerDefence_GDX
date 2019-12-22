@@ -1,6 +1,7 @@
 package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.enums.SessionState;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.Tower;
@@ -24,7 +25,7 @@ import com.betmansmall.util.logging.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class ServerSessionThread extends Thread implements TcpSocketListener {
+public class ServerSessionThread extends Thread implements TcpSocketListener, Disposable {
     private ServerGameScreen serverGameScreen;
     private SessionSettings sessionSettings;
     private ServerSocket serverSocket;
@@ -41,14 +42,15 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
         Logger.logFuncEnd();
     }
 
+    @Override
     public void dispose() {
         Logger.logFuncStart();
         try {
-            serverSocket.close();
+            this.serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for(TcpConnection socket : connections) {
+        for (TcpConnection socket : connections) {
             socket.disconnect();
         }
         this.interrupt();
@@ -57,10 +59,10 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
     @Override
     public void run() {
         Logger.logFuncStart();
-//        try ( ServerSocket serverSocket = new ServerSocket(sessionSettings.port) ) {
+//        try ( ServerSocket serverSocket = new ServerSocket(sessionSettings.gameServerPort) ) {
 //            this.serverSocket = serverSocket;
         try {
-            this.serverSocket = new ServerSocket(sessionSettings.port);
+            this.serverSocket = new ServerSocket(sessionSettings.gameServerPort);
             this.sessionState = SessionState.WAIT_CONNECTIONS;
             while (!this.isInterrupted()) {
                 try {
@@ -129,6 +131,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener {
                     TemplateForTower templateForTower = player.faction.getTemplateForTower(buildTowerData.templateName);
 //                TemplateForTower templateForTower = tcpConnection.player.faction.getTemplateForTower(buildTowerData.templateName);
                     Tower tower = serverGameScreen.gameField.createTowerWithGoldCheck(buildTowerData.buildX, buildTowerData.buildY, templateForTower, player);
+                    serverGameScreen.gameField.rerouteAllUnits();
 
                     if (tower != null) {
                         this.sendObject(new SendObject(new BuildTowerData(tower)), tcpConnection);

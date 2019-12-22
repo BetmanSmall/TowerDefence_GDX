@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class SendObject implements Serializable {
     public enum SendObjectEnum implements Serializable {
+        SERVER_VERSION_AND_BASE_INFO_DATA,
         GAME_SETTINGS_AND_SERVER_PLAYER_DATA,
 
         GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,

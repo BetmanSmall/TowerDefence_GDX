@@ -18,6 +18,7 @@ import com.betmansmall.screens.menu.OptionMenuScreen;
 import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.server.SessionSettings;
 import com.betmansmall.server.accouting.UserAccount;
+import com.betmansmall.util.Version;
 import com.betmansmall.util.logging.Logger;
 import com.kotcrab.vis.ui.VisUI;
 
@@ -27,6 +28,7 @@ import org.apache.commons.cli.CommandLine;
  * Created by BetmanSmall on 13.10.201x.
  */
 public class GameMaster extends Game {
+    public Version version;
     private Array<Screen> screensStack;
 
     public Array<Image> backgroundImages;
@@ -55,6 +57,7 @@ public class GameMaster extends Game {
     public void create() {
         Logger.logFuncStart();
         VisUI.load();
+        this.version = new Version();
         screensStack = new Array<>();
 
         backgroundImages = new Array<>();

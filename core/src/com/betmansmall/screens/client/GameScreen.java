@@ -312,8 +312,8 @@ public class GameScreen extends AbstractScreen {
         }
 
         if (cameraController != null) {
-            cameraController.camera.viewportHeight = height;
             cameraController.camera.viewportWidth = width;
+            cameraController.camera.viewportHeight = height;
             cameraController.camera.update();
         }
     }

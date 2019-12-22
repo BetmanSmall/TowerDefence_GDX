@@ -8,6 +8,7 @@ import com.betmansmall.game.gameLogic.Unit;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
+import com.betmansmall.server.AuthServerThread;
 import com.betmansmall.server.ServerSessionThread;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.BuildTowerData;
@@ -19,13 +20,17 @@ import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.util.logging.Logger;
 
 public class ServerGameScreen extends GameScreen {
+    public AuthServerThread authServerThread;
     public ServerSessionThread serverSessionThread;
 
     public ServerGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
         Logger.logFuncStart();
 
+        this.authServerThread = new AuthServerThread(this);
         this.serverSessionThread = new ServerSessionThread(this);
+
+        this.authServerThread.start();
         this.serverSessionThread.start();
         super.initGameField();
 
@@ -36,7 +41,8 @@ public class ServerGameScreen extends GameScreen {
     public void dispose() {
         Logger.logFuncStart();
         super.dispose();
-        serverSessionThread.dispose();
+        this.authServerThread.dispose();
+        this.serverSessionThread.dispose();
     }
 
     @Override

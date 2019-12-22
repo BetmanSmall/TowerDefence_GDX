@@ -11,6 +11,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
 import com.betmansmall.screens.AbstractScreen;
+import com.betmansmall.server.ServerInformation;
+import com.betmansmall.server.ServersSearchThread;
+import com.betmansmall.server.data.NetworkPackage;
 import com.betmansmall.util.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
@@ -18,36 +21,30 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 
-import java.net.InetAddress;
+import java.util.List;
 
 public class ClientSettingsScreen extends AbstractScreen {
+//    private Array<ServerInformation> serverInformations;
     private Stage stage;
+    private VisTextField nameField;
+    private VisSelectBox<String> factionSelectBox;
+    public VisLabel currentSearchLabel;
+    private VisTable serverBrowserTable;
     private VisTextButton connectToServer;
+
+    private ServersSearchThread serversSearchThread;
 
     public ClientSettingsScreen(GameMaster gameMaster) {
         super(gameMaster);
+//        this.serverInformations = new Array<>();
         createUI();
+        this.serversSearchThread = new ServersSearchThread(this);
+        this.serversSearchThread.start();
     }
 
     @Override
     public void dispose() {
         this.stage.dispose();
-    }
-
-    public Array<String> getHosts(String subnet) {
-        Array<String> hosts = new Array<>();
-        try {
-            int timeout = 10;
-            for (int i = 1; i < 255; i++) {
-                String host = subnet + "." + i;
-                if (InetAddress.getByName(host).isReachable(timeout)) {
-                    hosts.add(host);
-                }
-            }
-        } catch (Exception exp) {
-            exp.printStackTrace();
-        }
-        return hosts;
     }
 
     public void createUI() {
@@ -57,14 +54,29 @@ public class ClientSettingsScreen extends AbstractScreen {
         VisTable rootTable = new VisTable();
         rootTable.setFillParent(true);
 
-        VisLabel hostLabel = new VisLabel("host:");
-        rootTable.add(hostLabel);
+        VisTable leftTable = new VisTable();
+        rootTable.add(leftTable);
 
-//        Array<String> hosts = getHosts("192.168.0");
-//        VisSelectBox<String> hostField = new VisSelectBox<>();
-//        hostField.setItems(hosts);
-//        hostField.setSelected(hosts.peek());
-//        rootTable.add(hostField).row();
+        currentSearchLabel = new VisLabel("currentSearch:");
+        leftTable.add(currentSearchLabel).bottom().row();
+
+        serverBrowserTable = new VisTable();
+        leftTable.add(serverBrowserTable).top().row();
+
+        VisTable rightTable = new VisTable();
+        rootTable.add(rightTable);
+
+        rightTable.add(new VisLabel("name:"));
+        nameField = new VisTextField("Player");
+        rightTable.add(nameField).row();
+
+        rightTable.add(new VisLabel("faction:"));
+        factionSelectBox = new VisSelectBox();
+        factionSelectBox.setItems(game.factionsManager.getFactionsNames());
+        rightTable.add(factionSelectBox).row();
+
+        VisLabel hostLabel = new VisLabel("host:");
+        rightTable.add(hostLabel);
 
         String host = "localhost";
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -73,23 +85,13 @@ public class ClientSettingsScreen extends AbstractScreen {
             host = "127.0.0.1";
         }
         VisTextField hostField = new VisTextField(host);
-        rootTable.add(hostField).row();
+        rightTable.add(hostField).row();
 
-        VisLabel portLabel = new VisLabel("port:");
-        rootTable.add(portLabel);
+        VisLabel portLabel = new VisLabel("gameServerPort:");
+        rightTable.add(portLabel);
 
-        VisTextField portField = new VisTextField("48999");
-        rootTable.add(portField).row();
-
-        rootTable.add(new VisLabel("name:"));
-        VisTextField nameField = new VisTextField("Player");
-        rootTable.add(nameField).row();
-
-        rootTable.add(new VisLabel("faction:"));
-
-        VisSelectBox<String> factionSelectBox = new VisSelectBox();
-        factionSelectBox.setItems(game.factionsManager.getFactionsNames());
-        rootTable.add(factionSelectBox).row();
+        VisTextField portField = new VisTextField(game.sessionSettings.gameServerPort.toString());
+        rightTable.add(portField).row();
 
         connectToServer = new VisTextButton("CONNECT TO SERVER");
         connectToServer.addListener(new ChangeListener() {
@@ -97,7 +99,7 @@ public class ClientSettingsScreen extends AbstractScreen {
             public void changed(ChangeEvent event, Actor actor) {
 //                game.sessionSettings.host = hostField.getSelected();
                 game.sessionSettings.host = hostField.getText();
-                game.sessionSettings.port = Integer.parseInt(portField.getText());
+                game.sessionSettings.gameServerPort = Integer.parseInt(portField.getText());
                 game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
 
                 game.userAccount.loginName = nameField.getText();
@@ -105,9 +107,57 @@ public class ClientSettingsScreen extends AbstractScreen {
                 game.addScreen(new ClientGameScreen(game, game.userAccount));
             }
         });
-        rootTable.add(connectToServer).colspan(2);
+        rightTable.add(connectToServer).colspan(2).row();
+
+        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
+        rightTable.add(versionLabel).colspan(2).row();
 
         stage.addActor(rootTable);
+    }
+
+    public void addSimpleHost(String host) {
+        serverBrowserTable.add(new VisLabel(host)).row();
+    }
+
+    public void addServerBaseInfo(List<NetworkPackage> networkPackages) {
+        VisTable serverInfoRowTable = new VisTable();
+
+        ServerInformation serverInformation = new ServerInformation(networkPackages);
+
+        VisLabel hostLabel = new VisLabel(serverInformation.inetSocketAddress.toString());
+        serverInfoRowTable.add(hostLabel);
+
+        VisLabel mapPathLabel = new VisLabel("mapPath:" + serverInformation.mapPath);
+        serverInfoRowTable.add(mapPathLabel).row();
+
+        VisLabel versionLabel = new VisLabel(serverInformation.versionAndGitHash);
+        serverInfoRowTable.add(versionLabel);
+
+        VisLabel gameTypeLabel = new VisLabel("gameType:" + serverInformation.gameType);
+        serverInfoRowTable.add(gameTypeLabel).row();
+
+        VisLabel playersCountLabel = new VisLabel("playersCount:" + serverInformation.playersSize);
+        serverInfoRowTable.add(playersCountLabel);
+
+        VisTextButton joinBtn = new VisTextButton("JOIN");
+        joinBtn.setUserObject(serverInformation);
+        joinBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                ServerInformation serverInformation = (ServerInformation)actor.getUserObject();
+                Logger.logFuncStart("serverInformation:" + serverInformation);
+                game.sessionSettings.host = serverInformation.inetSocketAddress.getHostString();
+                game.sessionSettings.gameServerPort = serverInformation.inetSocketAddress.getPort();
+                game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
+
+                game.userAccount.loginName = nameField.getText();
+                game.userAccount.factionName = factionSelectBox.getSelected();
+                game.addScreen(new ClientGameScreen(game, game.userAccount));
+            }
+        });
+        serverInfoRowTable.add(joinBtn).row();
+
+        serverBrowserTable.add(serverInfoRowTable).row();
     }
 
     @Override
