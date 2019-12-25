@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
+import com.betmansmall.widget.Selector;
 
 import java.util.List;
 
@@ -44,11 +45,6 @@ public class TowersSelector extends Selector<TemplateForTower> {
     public boolean buttonPressed(TemplateForTower template) {
         super.buttonPressed(template);
         return (gameField.createdUnderConstruction(template) != null);
-    }
-
-    @Override
-    public void selectorClosed() {
-        gameField.cancelUnderConstruction();
     }
 
     protected Table createCharacteristicsTable(TemplateForTower template) {

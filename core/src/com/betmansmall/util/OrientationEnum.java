@@ -10,11 +10,9 @@ public enum OrientationEnum {
     RIGHT("Right");
 
     public final String VALUE;
-    public final OrientationEnum OPPOSITE;
 
     OrientationEnum(String value) {
         VALUE = value;
-        OPPOSITE = getOpposite(this);
     }
 
     private static OrientationEnum getOpposite(OrientationEnum base) {

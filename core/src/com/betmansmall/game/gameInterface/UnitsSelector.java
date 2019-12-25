@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
+import com.betmansmall.widget.Selector;
 
 import java.util.List;
 

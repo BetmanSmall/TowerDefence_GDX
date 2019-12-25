@@ -1,4 +1,4 @@
-package com.betmansmall.game.gameInterface;
+package com.betmansmall.widget;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.betmansmall.game.GameSettings;
+import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.playerTemplates.Template;
 import com.betmansmall.screens.client.GameScreen;

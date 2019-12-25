@@ -291,7 +291,7 @@ public class GameScreen extends AbstractScreen {
             case IN_PROGRESS:
                 cameraController.update(delta);
                 gameField.update(delta, cameraController);
-//                gameFieldRenderer.render();
+                gameFieldRenderer.render();
                 gameInterface.render(delta);
                 break;
             case LOSE:
