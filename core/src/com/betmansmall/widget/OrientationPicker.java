@@ -1,4 +1,4 @@
-package com.betmansmall.game.gameInterface.widget;
+package com.betmansmall.widget;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;

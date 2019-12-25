@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.enums.GameState;
-import com.betmansmall.game.gameInterface.widget.OrientationPicker;
+import com.betmansmall.widget.OrientationPicker;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -633,10 +633,6 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         unitsCount.setText("unitsCount:" + gameScreen.gameField.unitsManager.units.size);
     }
 
-    public void draw() {
-        super.draw();
-    }
-
     public void renderEndGame(float delta, GameState gameState) {
         currentTextureTime += delta;
         if (currentTextureTime > maxTextureTime) {
@@ -705,62 +701,26 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     }
 
     @Override
-    public boolean keyDown(int keyCode) {
-//        Gdx.app.log("GameInterface::keyDown()", "-- keyCode:" + keyCode);
-        return super.keyDown(keyCode);
-    }
-
-    @Override
-    public boolean keyUp(int keyCode) {
-//        Gdx.app.log("GameInterface::keyUp()", "-- keyCode:" + keyCode);
-        return super.keyUp(keyCode);
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-//        Gdx.app.log("GameInterface::keyTyped()", "-- character:" + character);
-        return super.keyTyped(character);
-    }
-
-    @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//        Gdx.app.log("GameInterface::touchDown()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-        this.prevMouseX = screenX;
-        this.prevMouseY = screenY;
-        boolean returnSuperTouchDown = super.touchDown(screenX, screenY, pointer, button);
-//        Gdx.app.log("GameInterface::touchDown()", "-- returnSuperTouchDown :" + returnSuperTouchDown);
-        return returnSuperTouchDown;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-//        Gdx.app.log("GameInterface::touchUp()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer + " button:" + button);
-        boolean returnSuperTouchUp = super.touchUp(screenX, screenY, pointer, button);
-//        Gdx.app.log("GameInterface::touchUp()", "-- returnSuperTouchUp:" + returnSuperTouchUp);
-        return returnSuperTouchUp;
+        saveMousePosition(screenX, screenY);
+        return super.touchDown(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-//        Gdx.app.log("GameInterface::touchDragged()", "-- screenX:" + screenX + " screenY:" + screenY + " pointer:" + pointer);
-        this.prevMouseX = screenX;
-        this.prevMouseY = screenY;
-        boolean returnSuperTouchDragged = super.touchDragged(screenX, screenY, pointer);
-//        Gdx.app.log("GameInterface::touchDragged()", "-- returnSuperTouchDown:" + returnSuperTouchDragged);
-        return returnSuperTouchDragged;
+        saveMousePosition(screenX, screenY);
+        return super.touchDragged(screenX, screenY, pointer);
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        this.prevMouseX = screenX;
-        this.prevMouseY = screenY;
+        saveMousePosition(screenX, screenY);
         return super.mouseMoved(screenX, screenY);
     }
 
-    @Override
-    public boolean scrolled(int amount) {
-//        Gdx.app.log("GameInterface::scrolled()", "-- amount:" + amount);
-        return false;
+    private void saveMousePosition(int screenX, int screenY) {
+        prevMouseX = screenX;
+        prevMouseY = screenY;
     }
 
     public void resize(int width, int height) {

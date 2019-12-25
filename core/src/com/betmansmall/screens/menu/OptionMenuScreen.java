@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.GameSettings;
-import com.betmansmall.game.gameInterface.widget.OrientationPicker;
+import com.betmansmall.widget.OrientationPicker;
 import com.betmansmall.util.OrientationEnum;
 
 /**
