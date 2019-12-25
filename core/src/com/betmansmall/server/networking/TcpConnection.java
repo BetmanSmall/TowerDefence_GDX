@@ -75,6 +75,10 @@ public class TcpConnection {
         return socket.getRemoteSocketAddress().toString();
     }
 
+    public String getRemoteHost() {
+        return socket.getInetAddress().getHostAddress();
+    }
+
     @Override
     public String toString() {
         return toString(false);

@@ -24,7 +24,6 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 import java.util.List;
 
 public class ClientSettingsScreen extends AbstractScreen {
-//    private Array<ServerInformation> serverInformations;
     private Stage stage;
     private VisTextField nameField;
     private VisSelectBox<String> factionSelectBox;
@@ -32,19 +31,26 @@ public class ClientSettingsScreen extends AbstractScreen {
     private VisTable serverBrowserTable;
     private VisTextButton connectToServer;
 
-    private ServersSearchThread serversSearchThread;
+    private Array<ServersSearchThread> serversSearchThreads;
 
     public ClientSettingsScreen(GameMaster gameMaster) {
         super(gameMaster);
-//        this.serverInformations = new Array<>();
         createUI();
-        this.serversSearchThread = new ServersSearchThread(this);
-        this.serversSearchThread.start();
+        this.serversSearchThreads = new Array<>();
+        for (int k = 0; k <= 10; k++) {
+            this.serversSearchThreads.add(new ServersSearchThread((25*k)+1, (25*k)+25, this));
+            this.serversSearchThreads.peek().start();
+        }
     }
 
     @Override
     public void dispose() {
+        Logger.logFuncStart();
         this.stage.dispose();
+        for (ServersSearchThread serversSearchThread : serversSearchThreads) {
+            serversSearchThread.dispose();
+        }
+        serversSearchThreads.clear();
     }
 
     public void createUI() {
@@ -115,14 +121,14 @@ public class ClientSettingsScreen extends AbstractScreen {
         stage.addActor(rootTable);
     }
 
-    public void addSimpleHost(String host) {
+    public synchronized void addSimpleHost(String host) {
         serverBrowserTable.add(new VisLabel(host)).row();
     }
 
-    public void addServerBaseInfo(List<NetworkPackage> networkPackages) {
+    public synchronized void addServerBaseInfo(String host, List<NetworkPackage> networkPackages) {
         VisTable serverInfoRowTable = new VisTable();
 
-        ServerInformation serverInformation = new ServerInformation(networkPackages);
+        ServerInformation serverInformation = new ServerInformation(host, networkPackages);
 
         VisLabel hostLabel = new VisLabel(serverInformation.inetSocketAddress.toString());
         serverInfoRowTable.add(hostLabel);
@@ -160,9 +166,22 @@ public class ClientSettingsScreen extends AbstractScreen {
         serverBrowserTable.add(serverInfoRowTable).row();
     }
 
+    public synchronized void setProgressSearch(String text) {
+        currentSearchLabel.setText(text);
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
+    public void hide() {
+        Logger.logFuncStart();
+        for (ServersSearchThread serversSearchThread : serversSearchThreads) {
+            serversSearchThread.dispose();
+        }
+        serversSearchThreads.clear();
     }
 
     @Override

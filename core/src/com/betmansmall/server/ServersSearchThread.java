@@ -1,6 +1,7 @@
 package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.networking.TcpConnection;
@@ -11,24 +12,40 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 
-public class ServersSearchThread extends Thread implements TcpSocketListener {
+public class ServersSearchThread extends Thread implements TcpSocketListener, Disposable {
     private ClientSettingsScreen clientSettingsScreen;
     private Array<TcpConnection> connections;
 
     private int authPort = 48999;
     private int timeout = 1000;
 
-    public ServersSearchThread(ClientSettingsScreen clientSettingsScreen) {
+    private int from, to;
+
+    public ServersSearchThread(int from, int to, ClientSettingsScreen clientSettingsScreen) {
         Logger.logFuncStart();
         this.clientSettingsScreen = clientSettingsScreen;
         this.connections = new Array<TcpConnection>();
+
+        this.from = from;
+        this.to = to;
         Logger.logFuncEnd();
+    }
+
+    @Override
+    public void dispose() {
+        Logger.logFuncStart();
+        this.clientSettingsScreen = null; // if set null || in run()->tryConnectToHost() throw NullPointer after check interrupted(). потому что не успевает. он проскакиевает проверку.
+        for (TcpConnection connection : connections) {
+            connection.disconnect();
+        }
+        this.connections.clear();
+        this.interrupt();
     }
 
     private void tryConnectToHost(String host) {
         try {
             Logger.logInfo("host:" + host);
-            clientSettingsScreen.currentSearchLabel.setText("currentSearchLabel:" + host);
+            clientSettingsScreen.setProgressSearch("currentSearchLabel:" + host);
             if (InetAddress.getByName(host).isReachable(timeout)) {
                 Logger.logFuncStart("getCanonicalHostName:" + InetAddress.getByName(host).getCanonicalHostName());
 //                Logger.logFuncStart("getHostAddress:" + InetAddress.getByName(host).getHostAddress());
@@ -54,11 +71,20 @@ public class ServersSearchThread extends Thread implements TcpSocketListener {
     @Override
     public void run() {
         Logger.logFuncStart();
-        tryConnectToHost("127.0.0.1");
-        String subnet = "192.168.0";
-        for (int i = 1; i <= 255; i++) {
-            String host = subnet + "." + i;
-            tryConnectToHost(host);
+        if (from == 1) {
+            tryConnectToHost("127.0.0.1");
+        }
+        if (to <= 255) {
+            String subnet = "192.168.0";
+            for (int i = from; i <= to; i++) {
+//                if (!isInterrupted()) {
+                if (!interrupted()) {
+                    String host = subnet + "." + i;
+                    tryConnectToHost(host);
+                } else {
+                    break;
+                }
+            }
         }
         Logger.logFuncEnd();
     }
@@ -78,7 +104,7 @@ public class ServersSearchThread extends Thread implements TcpSocketListener {
         if (sendObject.sendObjectEnum != null) {
             switch (sendObject.sendObjectEnum) {
                 case SERVER_VERSION_AND_BASE_INFO_DATA: {
-                    clientSettingsScreen.addServerBaseInfo(sendObject.networkPackages);
+                    clientSettingsScreen.addServerBaseInfo(tcpConnection.getRemoteHost(), sendObject.networkPackages);
                 }
             }
         } else {

@@ -71,7 +71,7 @@ public class AuthServerThread extends Thread implements TcpSocketListener, Dispo
         NetworkPackage versionData = new VersionData(serverGameScreen.game.version);
         NetworkPackage gameSettingsData = new GameSettingsData(sessionSettings.gameSettings);
         NetworkPackage playersManagerData = new PlayersManagerData(serverGameScreen.playersManager);
-        NetworkPackage gameServerNetworkData = new GameServerNetworkData(serverSocket.getInetAddress().getHostName(), sessionSettings.gameServerPort);
+        NetworkPackage gameServerNetworkData = new GameServerNetworkData(serverSocket.getInetAddress().getHostAddress(), sessionSettings.gameServerPort);
 
         tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.SERVER_VERSION_AND_BASE_INFO_DATA, versionData, gameSettingsData, playersManagerData, gameServerNetworkData));
     }

@@ -18,7 +18,7 @@ public class ServerInformation {
     public String gameType;
     public String playersSize;
 
-    public ServerInformation(List<NetworkPackage> networkPackages) {
+    public ServerInformation(String host, List<NetworkPackage> networkPackages) {
         for (NetworkPackage networkPackage : networkPackages) {
             if (networkPackage instanceof VersionData) {
                 VersionData versionData = (VersionData)networkPackage;
@@ -32,7 +32,7 @@ public class ServerInformation {
                 this.playersSize = String.valueOf(playersManagerData.players.size());
             } else if (networkPackage instanceof GameServerNetworkData) {
                 GameServerNetworkData gameServerNetworkData = (GameServerNetworkData)networkPackage;
-                this.inetSocketAddress = new InetSocketAddress(gameServerNetworkData.host, gameServerNetworkData.port);
+                this.inetSocketAddress = new InetSocketAddress(host, gameServerNetworkData.port);
             }
         }
     }

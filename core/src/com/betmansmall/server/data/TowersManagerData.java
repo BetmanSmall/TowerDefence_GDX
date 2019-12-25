@@ -52,7 +52,9 @@ public class TowersManagerData implements NetworkPackage {
     public TowersManagerData(TowersManager towersManager) {
         this.towers = new ArrayList<>(towersManager.towers.size);
 
-        for (Tower tower : towersManager.towers) {
+        for (int t = 0; t < towersManager.towers.size; t++) {
+            Tower tower = towersManager.towers.get(t);
+//        for (Tower tower : towersManager.towers) {
             TowerData towerData = new TowerData(tower);
             this.towers.add(towerData);
         }

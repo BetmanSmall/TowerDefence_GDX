@@ -1,12 +1,14 @@
 package com.betmansmall.server.data;
 
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.util.logging.Logger;
 
 public class GameServerNetworkData implements NetworkPackage {
     public String host;
     public Integer port;
 
     public GameServerNetworkData(String host, Integer port) {
+        Logger.logFuncStart("host:" + host, "port:" + port);
         this.host = host;
         this.port = port;
     }
