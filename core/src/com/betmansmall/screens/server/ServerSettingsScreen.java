@@ -62,7 +62,9 @@ public class ServerSettingsScreen extends AbstractScreen {
             for (NetworkInterface ni : Collections.list(interfaces)){
                 for (InetAddress address : Collections.list(ni.getInetAddresses())) {
                     if (address instanceof Inet4Address){
-                        addresses.add(address.getHostAddress());
+                        if (!address.getHostAddress().equals("127.0.0.1")) {
+                            addresses.add(address.getHostAddress());
+                        }
                     }
                 }
             }
@@ -72,13 +74,20 @@ public class ServerSettingsScreen extends AbstractScreen {
 
         VisSelectBox<String> hostField = new VisSelectBox<>();
         hostField.setItems(addresses);
+        hostField.setSelected(addresses.peek());
         rootTable.add(hostField).row();
 
-        VisLabel portLabel = new VisLabel("port:");
-        rootTable.add(portLabel);
+        VisLabel authServerPortLabel = new VisLabel("authServerPort:");
+        rootTable.add(authServerPortLabel);
 
-        VisTextField portField = new VisTextField("48999");
-        rootTable.add(portField).row();
+        VisTextField authServerPortField = new VisTextField(game.sessionSettings.authServerPort.toString());
+        rootTable.add(authServerPortField).row();
+
+        VisLabel gameServerPortLabel = new VisLabel("gameServerPort:");
+        rootTable.add(gameServerPortLabel);
+
+        VisTextField gameServerPortField = new VisTextField(game.sessionSettings.gameServerPort.toString());
+        rootTable.add(gameServerPortField).row();
 
         VisLabel gameTypeLabel = new VisLabel("gameType:");
         rootTable.add(gameTypeLabel);
@@ -102,7 +111,8 @@ public class ServerSettingsScreen extends AbstractScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 Logger.logFuncStart("event:" + event + ", actor:" + actor);
                 game.sessionSettings.host = hostField.getSelected();
-                game.sessionSettings.port = Integer.parseInt(portField.getText());
+                game.sessionSettings.authServerPort = Integer.parseInt(authServerPortField.getText());
+                game.sessionSettings.gameServerPort = Integer.parseInt(gameServerPortField.getText());
                 game.sessionSettings.gameSettings.gameType = gameTypeSelectBox.getSelected();
                 game.sessionSettings.gameSettings.mapPath = mapSelectBox.getSelected();
 
@@ -138,6 +148,9 @@ public class ServerSettingsScreen extends AbstractScreen {
         playerSettings.add(factionSelectBox).row();
 
         rootTable.add(playerSettings).colspan(2).row();
+
+        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
+        rootTable.add(versionLabel).colspan(2).row();
 
         stage.addActor(rootTable);
     }

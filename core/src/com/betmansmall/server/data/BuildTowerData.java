@@ -9,6 +9,7 @@ public class BuildTowerData implements NetworkPackage {
     public int buildY;
     public String templateName;
     public String factionName;
+//    public boolean reroute;
 
     public BuildTowerData(Tower tower) {
         this.playerID = tower.player.playerID;
@@ -16,6 +17,7 @@ public class BuildTowerData implements NetworkPackage {
         this.buildY = tower.cell.cellY;
         this.templateName = tower.templateForTower.templateName;
         this.factionName = tower.templateForTower.factionName;
+//        this.reroute = true;
     }
 
     @Override

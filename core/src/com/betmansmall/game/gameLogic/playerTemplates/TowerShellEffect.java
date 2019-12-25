@@ -3,11 +3,13 @@ package com.betmansmall.game.gameLogic.playerTemplates;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import java.io.Serializable;
+
 /**
  * Created by betma on 19.01.2017.
  */
 
-public class TowerShellEffect {
+public class TowerShellEffect implements Serializable {
     public enum ShellEffectEnum {
         FreezeEffect("FreezeEffect"),
         FireEffect("FireEffect");

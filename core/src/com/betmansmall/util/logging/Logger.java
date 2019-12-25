@@ -1,7 +1,13 @@
 package com.betmansmall.util.logging;
 
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import org.apache.commons.cli.CommandLine;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
@@ -12,21 +18,25 @@ import java.util.HashMap;
  *
  * @author Alexander Kuzyakov on 22.04.2019.
  */
-public class Logger {
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-    public static Logger instance = new Logger();
+public class Logger implements Disposable {
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_PURPLE = "\u001B[35m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_WHITE = "\u001B[37m";
+    private boolean useColors = true;
+
+    private static SimpleDateFormat simpleDateFormat;
+    private static Logger instance = new Logger();
     private HashMap<String, String> classNamesCache;
     private String threadClassName;
 
-    private static SimpleDateFormat simpleDateFormat;
+    private CommandLine cmd;
+    private BufferedWriter bufferedWriter;
 
     private static String convert(String ... strings) {
         StringBuilder sb = new StringBuilder();
@@ -79,7 +89,39 @@ public class Logger {
     public Logger() {
         classNamesCache = new HashMap<String, String>();
         threadClassName = Thread.class.getName();
-        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss.SSS");//yyyy-MM-dd 'at' HH:mm:ss z");
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss.SSS");//yyyy-MM-dd 'at' HH:mm:ss z");
+    }
+
+    @Override
+    public void dispose() {
+        if (bufferedWriter != null) {
+            try {
+                bufferedWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setCmd(CommandLine cmd) {
+        this.cmd = cmd;
+        try {
+            if (cmd.hasOption("server")) {
+                this.bufferedWriter = new BufferedWriter(new FileWriter("serverLog.st"));
+            } else {
+                if (cmd.hasOption("client")) {
+                    String value = cmd.getOptionValue("client");
+                    if (value != null) {
+                        Integer intValue = Integer.parseInt(value);
+                        if (intValue != null) {
+                            this.bufferedWriter = new BufferedWriter(new FileWriter("client" + intValue + "Log.st"));
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,7 +130,18 @@ public class Logger {
     private void log(String message, String color) {
         StackTraceElement callerElement = getCallerElement(Thread.currentThread().getStackTrace());
         if (callerElement == null) return;
-        System.out.println(color + getClassName(callerElement) +"::" + callerElement.getMethodName() + "();" + ANSI_RESET + " -- " + message);
+        String outStr = ((useColors == true) ? color : "") +
+                getClassName(callerElement) + "::" + callerElement.getMethodName() + "();" +
+                ((useColors == true) ? ANSI_RESET : "") + " -- " + message;
+        System.out.println(outStr);
+//        System.out.println(color + getClassName(callerElement) + "::" + callerElement.getMethodName() + "();" + ANSI_RESET + " -- " + message);
+        if (bufferedWriter != null) {
+            try {
+                bufferedWriter.write(getClassName(callerElement) + "::" + callerElement.getMethodName() + "(); -- " + message + "\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

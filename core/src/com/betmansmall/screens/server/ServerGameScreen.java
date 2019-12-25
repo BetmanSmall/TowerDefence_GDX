@@ -4,24 +4,33 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
+import com.betmansmall.game.gameLogic.Unit;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
+import com.betmansmall.server.AuthServerThread;
 import com.betmansmall.server.ServerSessionThread;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.BuildTowerData;
-import com.betmansmall.server.data.GameFieldData;
+import com.betmansmall.server.data.CreateUnitData;
+import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
+import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.util.logging.Logger;
 
 public class ServerGameScreen extends GameScreen {
+    public AuthServerThread authServerThread;
     public ServerSessionThread serverSessionThread;
 
     public ServerGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
         Logger.logFuncStart();
 
+        this.authServerThread = new AuthServerThread(this);
         this.serverSessionThread = new ServerSessionThread(this);
+
+        this.authServerThread.start();
         this.serverSessionThread.start();
         super.initGameField();
 
@@ -32,12 +41,21 @@ public class ServerGameScreen extends GameScreen {
     public void dispose() {
         Logger.logFuncStart();
         super.dispose();
-        serverSessionThread.dispose();
+        this.authServerThread.dispose();
+        this.serverSessionThread.dispose();
+    }
+
+    @Override
+    public boolean spawnUnitFromServerScreenByWaves() {
+        return true;
     }
 
     @Override
     public void sendGameFieldVariables() {
-        serverSessionThread.sendObject(new SendObject(new GameFieldData(gameField)));
+        serverSessionThread.sendObject(new SendObject(
+                SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
+                new GameFieldVariablesData(gameField),
+                new UnitsManagerData(gameField.unitsManager)));
     }
 
     @Override
@@ -72,5 +90,13 @@ public class ServerGameScreen extends GameScreen {
             }
         }
         return null;
+    }
+
+    public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
+        Unit unit = super.createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
+        if (unit != null) {
+            serverSessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
+        }
+        return unit;
     }
 }

@@ -33,7 +33,7 @@ public class InterfaceSelector<T extends Template> extends Table {
     protected boolean flinging;
     protected float flingVelocityX, flingVelocityY;
 
-    private boolean open = true;
+    private boolean open = false;
     protected float coordinateX = 0;
     protected float coordinateY = 0;
 
@@ -130,7 +130,7 @@ public class InterfaceSelector<T extends Template> extends Table {
     }
 
     public boolean touchDown(float x, float y, int pointer, int button) {
-        Gdx.app.log("InterfaceSelector::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+//        Gdx.app.log("InterfaceSelector::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         for (Actor actor : getChildren()) {
             if (actor instanceof Button) {
                 Button buttonActor = (Button)actor;
@@ -147,7 +147,7 @@ public class InterfaceSelector<T extends Template> extends Table {
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Logger.logFuncStart("x:" + x, "y:" + y, "deltaX:" + deltaX, "deltaY:" + deltaY);
+//        Logger.logFuncStart("x:" + x, "y:" + y, "deltaX:" + deltaX, "deltaY:" + deltaY);
         this.isPanning = false;
         float deltaXabs = Math.abs(deltaX);
         float deltaYabs = Math.abs(deltaY);
@@ -286,7 +286,7 @@ public class InterfaceSelector<T extends Template> extends Table {
     }
 
     public boolean panStop(float x, float y, int pointer, int button) {
-        Gdx.app.log("InterfaceSelector::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+//        Gdx.app.log("InterfaceSelector::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         boolean panStop = false;
         if (vertical) {
             if (topBottomLeftRight) {
@@ -342,7 +342,7 @@ public class InterfaceSelector<T extends Template> extends Table {
     }
 
     public boolean fling(float velocityX, float velocityY, int button) {
-        Gdx.app.log("InterfaceSelector::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
+//        Gdx.app.log("InterfaceSelector::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
         this.flinging = false;
         if (vertical) {
             if (topBottomLeftRight) {
@@ -375,7 +375,7 @@ public class InterfaceSelector<T extends Template> extends Table {
     }
 
     public boolean scrolled(int amount) {
-        Gdx.app.log("InterfaceSelector::scrolled()", "-- amount:" + amount);
+//        Gdx.app.log("InterfaceSelector::scrolled()", "-- amount:" + amount);
         int x = gameInterface.prevMouseX;
         int y = gameInterface.prevMouseY;
         if (vertical) {

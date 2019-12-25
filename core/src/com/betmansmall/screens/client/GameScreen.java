@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -16,7 +17,9 @@ import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.game.gameLogic.Unit;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.render.GameFieldRenderer;
 import com.betmansmall.screens.AbstractScreen;
 import com.betmansmall.server.accouting.UserAccount;
@@ -267,6 +270,10 @@ public class GameScreen extends AbstractScreen {
         }
     }
 
+    public boolean spawnUnitFromServerScreenByWaves() {
+        return true; // useless;
+    }
+
     @Override
     public void render(float delta) {
 //      Gdx.app.log("GameScreen::render()", "-- delta:" + delta + " FPS:" + Gdx.graphics.getFramesPerSecond());
@@ -306,8 +313,8 @@ public class GameScreen extends AbstractScreen {
         }
 
         if (cameraController != null) {
-            cameraController.camera.viewportHeight = height;
             cameraController.camera.viewportWidth = width;
+            cameraController.camera.viewportHeight = height;
             cameraController.camera.update();
         }
     }
@@ -335,6 +342,10 @@ public class GameScreen extends AbstractScreen {
             }
         }
         return null;
+    }
+
+    public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
+        return gameField.createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
     }
 
     public String toString() {

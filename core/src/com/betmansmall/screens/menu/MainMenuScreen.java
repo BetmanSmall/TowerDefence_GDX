@@ -119,7 +119,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                SessionSettings sessionSettings = new SessionSettings(game.gameSettings);
 //                sessionSettings.localServer = false;
 //                sessionSettings.host = "localhost";
-//                sessionSettings.port = 48999;
+//                sessionSettings.gameServerPort = 48999;
 //                game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
 //                game.sessionSettings.gameSettings.gameType = GameType.TowerDefence;
 //                game.addScreen(new LoadingScreen(game, new GameClientScreen(game)));
@@ -133,8 +133,11 @@ public class MainMenuScreen extends AbstractScreen {
         sizeLabel = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
         sizeLabel.setFontScale(Gdx.graphics.getHeight()*0.01f);
 //        sizeLabel.setFHeight(Gdx.graphics.getHeight()*0.3f);
-        middleTable.add(sizeLabel).center();
-        rootTable.add(middleTable).top();
+        middleTable.add(sizeLabel).expand().top().row();
+
+        Label versionLabel = new Label(gameMaster.version.getVersionAndHash(), skin);
+        middleTable.add(versionLabel);
+        rootTable.add(middleTable).center().expand().fill();
 
         Table rightTable = new Table(skin);
         playButton = new TextButton("PLAY", skin);

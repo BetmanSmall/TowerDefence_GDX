@@ -4,9 +4,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
-import com.betmansmall.util.logging.Logger;
 
 public class PlayersViewTable extends Table {
     public PlayersManager playersManager;
@@ -31,11 +31,12 @@ public class PlayersViewTable extends Table {
     }
 
     public void updateView() {
-        Logger.logFuncStart(playersManager.getPlayers().toString());
         clear();
-        for (Player player : playersManager.getPlayers()) {
+        Array<Player> players = playersManager.getPlayers();
+        for (int p = 0; p < players.size; p++) {
+            Player player = players.get(p);
+//        for (Player player : playersManager.getPlayers()) {
             if (player != null) {
-                Logger.logDebug("player:" + player);
                 Table table = new Table();
 
                 if (player.connection != null) {

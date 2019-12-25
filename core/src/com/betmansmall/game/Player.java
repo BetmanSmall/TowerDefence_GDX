@@ -65,11 +65,16 @@ public class Player {
 
     public void init(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) {
         this.connection = tcpConnection;
+        this.updateData(playerInfoData);
+        this.faction = faction;
+    }
+
+    public void updateData(PlayerInfoData playerInfoData) {
         this.type = playerInfoData.type;
         this.accountID = playerInfoData.accountID;
         this.playerID = playerInfoData.playerID;
         this.name = playerInfoData.name;
-        this.faction = faction;
+//        this.faction = playerInfoData.factionName;
         this.gold = playerInfoData.gold;
     }
 

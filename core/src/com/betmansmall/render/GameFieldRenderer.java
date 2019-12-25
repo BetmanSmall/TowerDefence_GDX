@@ -944,13 +944,40 @@ public class GameFieldRenderer {
         shapeRenderer.end();
 
         spriteBatch.begin();
+        bitmapFont.setColor(Color.WHITE);
+        bitmapFont.getData().setScale(0.5f);
+        for (Unit unit : gameField.unitsManager.units) {
+            if(cameraController.isDrawableGridNav == 5) {
+                if(cameraController.isDrawableUnits == 5) {
+                    for (int m = 1; m <= cameraController.isDrawableUnits; m++) {
+                        Circle circle = unit.getCircle(m);
+                        bitmapFont.draw(spriteBatch, String.valueOf(unit.currentCell), circle.x, circle.y+20);
+                        bitmapFont.draw(spriteBatch, String.valueOf(unit.nextCell), circle.x, circle.y+10);
+                        bitmapFont.draw(spriteBatch, String.valueOf(unit.stepsInTime), circle.x, circle.y);
+                    }
+                } else if(cameraController.isDrawableUnits != 0) {
+                    Circle circle = unit.getCircle(cameraController.isDrawableUnits);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.currentCell), circle.x, circle.y+20);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.nextCell), circle.x, circle.y+10);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.stepsInTime), circle.x, circle.y);
+                }
+            } else if(cameraController.isDrawableGridNav != 0) {
+                if(cameraController.isDrawableGridNav == cameraController.isDrawableUnits) {
+                    Circle circle = unit.getCircle(cameraController.isDrawableUnits);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.currentCell), circle.x, circle.y+20);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.nextCell), circle.x, circle.y+10);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.stepsInTime), circle.x, circle.y);
+                }
+            }
+        }
+
         for (Tower tower : gameField.towersManager.towers) { // Draw pit capacity value || players ID
             if (tower.templateForTower.towerAttackType == TowerAttackType.Pit) {
                 bitmapFont.setColor(Color.YELLOW);
                 bitmapFont.getData().setScale(0.5f);
                 float halfSizeCellY = cameraController.halfSizeCellY/2;
                 if(cameraController.isDrawableGridNav == 5) {
-                    if(cameraController.isDrawableTowers == 5) {
+                    if(cameraController.isDrawableTowers  == 5) {
                         for (int m = 1; m <= cameraController.isDrawableTowers; m++) {
                             bitmapFont.draw(spriteBatch, String.valueOf(tower.capacity), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+halfSizeCellY);
                         }
@@ -991,7 +1018,9 @@ public class GameFieldRenderer {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         float gridNavRadius = cameraController.sizeCellX/22f;
-        for (Unit unit : gameField.unitsManager.units) {
+        for (int u = 0; u < gameField.unitsManager.units.size; u++) {
+            Unit unit = gameField.unitsManager.units.get(u);
+//        for (Unit unit : gameField.unitsManager.units) {
             if (unit.player == gameField.gameScreen.playersManager.getLocalPlayer()) {
                 shapeRenderer.setColor(Color.WHITE);
             } else {

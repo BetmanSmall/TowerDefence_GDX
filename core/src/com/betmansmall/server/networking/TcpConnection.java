@@ -1,7 +1,6 @@
 package com.betmansmall.server.networking;
 
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.game.Player;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.util.logging.Logger;
 
