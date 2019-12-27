@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
@@ -17,7 +14,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.enums.GameState;
-import com.betmansmall.widget.OrientationPicker;
+import com.betmansmall.util.GestureStage;
+import com.betmansmall.widget.*;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -29,7 +27,7 @@ import com.betmansmall.util.logging.Logger;
  * This class provides elements which placed on game screen.
  * Changed by nMukhin on 2019
  */
-public class GameInterface extends Stage implements GestureDetector.GestureListener {
+public class GameInterface extends GestureStage {
     private CameraController cameraController;
     private final GameScreen gameScreen;
     public BitmapFont bitmapFont;
@@ -557,9 +555,11 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
         if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
             towersSelector = new TowersSelector(gameScreen);
-            Container container = new Container<>(towersSelector);
+            Sidebar<Selector> sidebar = new Sidebar<>(towersSelector, Align.right, 0.8f);
+            Container container = new Container<>(sidebar);
             container.align(Align.right);
             container.setFillParent(true);
+            container.fillY();
             addActor(container);
 
             towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
@@ -647,57 +647,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     }
 
     @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-//        Gdx.app.log("GameInterface::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        return false;
-    }
-
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
-//        Gdx.app.log("GameInterface::tap()", "-- x:" + x + " y:" + y + " count:" + count + " button:" + button);
-        return false;
-    }
-
-    @Override
     public boolean longPress(float x, float y) {
-//        Gdx.app.log("GameInterface::longPress()", "-- x:" + x + " y:" + y);
         Logger.logDebug("x:" + x, "y:" + y);
         return false;
-    }
-
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
-//        Gdx.app.log("GameInterface::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
-        return false;
-    }
-
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-//        Gdx.app.log("GameInterface::pan()", "-- x:" + x + " y:" + y + " deltaX:" + deltaX + " deltaY:" + deltaY);
-        return false;
-    }
-
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
-//        Gdx.app.log("GameInterface::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
-        return false;
-    }
-
-    @Override
-    public boolean zoom(float initialDistance, float distance) {
-//        Gdx.app.log("GameInterface::zoom()", "-- initialDistance:" + initialDistance + " distance:" + distance);
-        return false;
-    }
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-//        Gdx.app.log("GameInterface::pinch()", "-- initialPointer1:" + initialPointer1 + " initialPointer2:" + initialPointer2 + " pointer1:" + pointer1 + " pointer2:" + pointer2);
-        return false;
-    }
-
-    @Override
-    public void pinchStop() {
-//        Gdx.app.log("GameInterface::pinchStop()", "--");
     }
 
     @Override

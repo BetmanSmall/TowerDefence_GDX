@@ -1,4 +1,4 @@
-package com.betmansmall.game.gameInterface;
+package com.betmansmall.widget;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
-import com.betmansmall.widget.Selector;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class TowersSelector extends Selector<TemplateForTower> {
     @Override
     public void initButtons(List<TemplateForTower> templates) {
         for (TemplateForTower template : templates) {
-            Button button = new Button(createButtonTable(template), gameInterface.skin);
+            Button button = createButtonTable(template);
             button.setName(template.name);
             button.addListener(new ChangeListener() {
                 @Override
@@ -29,22 +28,23 @@ public class TowersSelector extends Selector<TemplateForTower> {
                     buttonPressed(template);
                 }
             });
-            table.add(button).expand().fill();
+            table.add(button).expand().fillX().row();
         }
-    }
-
-    public Table createButtonTable(TemplateForTower template) {
-        Table table = new Table();
-        table.add(createLabel(template.name, Color.WHITE)).colspan(2).row();
-        table.add(new Image(template.idleTile.getTextureRegion())).expand();
-        table.add(createCharacteristicsTable(template)).expandY().right();
-        return table;
+        setDebug(true, true);
     }
 
     @Override
     public boolean buttonPressed(TemplateForTower template) {
         super.buttonPressed(template);
         return (gameField.createdUnderConstruction(template) != null);
+    }
+
+    public Button createButtonTable(TemplateForTower template) {
+        Button button = new Button(gameInterface.skin);
+        button.add(createLabel(template.name, Color.WHITE)).colspan(2).expandX().row();
+        button.add(new Image(template.idleTile.getTextureRegion()));
+        button.add(createCharacteristicsTable(template)).fillX().expand().right();
+        return button;
     }
 
     protected Table createCharacteristicsTable(TemplateForTower template) {
