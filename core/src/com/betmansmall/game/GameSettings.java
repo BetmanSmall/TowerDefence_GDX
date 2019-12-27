@@ -15,7 +15,7 @@ public class GameSettings {
     public float difficultyLevel;
     public int enemyCount;
     public int towersCount;
-    public OrientationEnum towerSelectorOrientation; // unit selector will have opposite orientation
+    public OrientationEnum towerSelectorOrientation = OrientationEnum.RIGHT; // unit selector will have opposite orientation
     public boolean smoothFlingSelector;
     public boolean panLeftMouseButton;
     public boolean panMidMouseButton;

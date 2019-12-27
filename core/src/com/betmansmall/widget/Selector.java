@@ -27,17 +27,21 @@ public abstract class Selector<T extends Template> extends ScrollPane {
     protected BitmapFont bitmapFont;
     protected GameInterface gameInterface;
     protected OrientationEnum orientation;
+    protected boolean vertical;
 
-    public Selector(GameScreen gameScreen, List<T> templates) {
+    public Selector(GameScreen gameScreen, boolean vertical, List<T> templates) {
         super(new Container<>());
+        this.vertical = vertical;
         container = (Container<Table>) getActor();
         container.setActor(table = new Table());
         gameField = gameScreen.gameField;
         bitmapFont = gameScreen.gameInterface.bitmapFont;
         gameInterface = gameScreen.gameInterface;
         gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        getListeners().removeIndex(getListeners().size - 1);
         Logger.logDebug("templates" + templates);
         initButtons(templates);
+
     }
 
     public void initButtons(List<T> templates) {

@@ -13,8 +13,8 @@ import java.util.List;
 
 public class UnitsSelector extends Selector<TemplateForUnit> {
 
-    public UnitsSelector(GameScreen gameScreen) {
-        super(gameScreen, gameScreen.gameField.factionsManager.getAllTemplateForUnits());
+    public UnitsSelector(GameScreen gameScreen, boolean vertical) {
+        super(gameScreen, vertical, gameScreen.gameField.factionsManager.getAllTemplateForUnits());
     }
 
     @Override

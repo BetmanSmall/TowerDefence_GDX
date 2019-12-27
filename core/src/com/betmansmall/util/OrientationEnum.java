@@ -3,22 +3,29 @@ package com.betmansmall.util;
 import com.badlogic.gdx.utils.Align;
 
 /**
+ * Enum of four orientation sides.
+ * Can give opposite side and be translated from/to LibGDX {@link Align}.
+ *
  * @author Alexander on 25.11.2019.
  */
 public enum OrientationEnum {
-    UP("Up"),
-    DOWN("Down"),
-    LEFT("Left"),
-    RIGHT("Right");
+    UP("Up", Align.top, false),
+    DOWN("Down", Align.bottom, false),
+    LEFT("Left", Align.left, true),
+    RIGHT("Right", Align.right, true);
 
     public final String VALUE;
+    public final int ALIGN;
+    public final boolean VERTICAL;
 
-    OrientationEnum(String value) {
+    OrientationEnum(String value, int align, boolean vertical) {
         VALUE = value;
+        ALIGN = align;
+        VERTICAL = vertical;
     }
 
-    private static OrientationEnum getOpposite(OrientationEnum base) {
-        switch(base) {
+    private OrientationEnum getOpposite() {
+        switch (this) {
             case UP:
                 return DOWN;
             case DOWN:
@@ -27,8 +34,9 @@ public enum OrientationEnum {
                 return RIGHT;
             case RIGHT:
                 return LEFT;
+            default:
+                return null;
         }
-        return null;
     }
 
     public static OrientationEnum fromAlign(int align) {
@@ -47,6 +55,5 @@ public enum OrientationEnum {
                 return DOWN;
         }
         throw new IllegalArgumentException("Value " + align + " is not part of com.badlogic.gdx.utils.Align");
-
     }
 }

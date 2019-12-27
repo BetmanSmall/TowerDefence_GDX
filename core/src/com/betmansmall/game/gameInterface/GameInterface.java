@@ -14,7 +14,9 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.enums.GameState;
+import com.betmansmall.game.GameSettings;
 import com.betmansmall.util.GestureStage;
+import com.betmansmall.util.OrientationEnum;
 import com.betmansmall.widget.*;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.enums.GameType;
@@ -546,7 +548,7 @@ public class GameInterface extends GestureStage {
         optionTable.add(smoothFlingSelector).colspan(2).fill();
 
         if (cameraController.gameField.waveManager.wavesForUser.size > 0) {
-            unitsSelector = new UnitsSelector(gameScreen);
+            unitsSelector = new UnitsSelector(gameScreen, true);
             Container container = new Container<>(unitsSelector);
             container.align(Align.left);
             container.setFillParent(true);
@@ -554,20 +556,14 @@ public class GameInterface extends GestureStage {
         }
 
         if (cameraController.gameField.gameSettings.gameType == GameType.TowerDefence) {
-            towersSelector = new TowersSelector(gameScreen);
-            Sidebar<Selector> sidebar = new Sidebar<>(towersSelector, Align.right, 0.8f);
+            OrientationEnum orientation = cameraController.gameField.gameSettings.towerSelectorOrientation;
+            towersSelector = new TowersSelector(gameScreen, orientation.VERTICAL);
+            Sidebar<Selector> sidebar = new Sidebar<>(towersSelector, orientation.ALIGN, 0.8f);
             Container container = new Container<>(sidebar);
-            container.align(Align.right);
+            container.align(orientation.ALIGN);
             container.setFillParent(true);
             container.fillY();
             addActor(container);
-
-            towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
-            infoTabloTable.add(towersSelectorCoord).left().row();
-            selectorBorderVertical = new Label("selectorBorderVertical:", new Label.LabelStyle(bitmapFont, Color.WHITE));
-            infoTabloTable.add(selectorBorderVertical).left().row();
-            selectorBorderHorizontal = new Label("selectorBorderHorizontal:", new Label.LabelStyle(bitmapFont, Color.WHITE));
-            infoTabloTable.add(selectorBorderHorizontal).left().row();
         }
     }
 
