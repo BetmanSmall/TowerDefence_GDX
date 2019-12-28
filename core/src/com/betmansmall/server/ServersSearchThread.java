@@ -45,7 +45,7 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
     private void tryConnectToHost(String host) {
         try {
             Logger.logInfo("host:" + host);
-            clientSettingsScreen.setProgressSearch("currentSearchLabel:" + host);
+//            clientSettingsScreen.setProgressSearch("currentSearchLabel:" + host);
             if (InetAddress.getByName(host).isReachable(timeout)) {
                 Logger.logFuncStart("getCanonicalHostName:" + InetAddress.getByName(host).getCanonicalHostName());
 //                Logger.logFuncStart("getHostAddress:" + InetAddress.getByName(host).getHostAddress());

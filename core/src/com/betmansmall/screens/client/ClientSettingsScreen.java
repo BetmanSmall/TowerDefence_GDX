@@ -166,9 +166,9 @@ public class ClientSettingsScreen extends AbstractScreen {
         serverBrowserTable.add(serverInfoRowTable).row();
     }
 
-    public synchronized void setProgressSearch(String text) {
-        currentSearchLabel.setText(text);
-    }
+//    public synchronized void setProgressSearch(String text) {
+//        currentSearchLabel.setText(text);
+//    }
 
     @Override
     public void show() {
