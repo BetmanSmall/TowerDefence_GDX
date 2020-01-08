@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameInterface;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -166,13 +167,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         horizontalGroupTop.add(playersViewButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
 
         pauseMenuButton = new TextButton("||", skin);
-        horizontalGroupTop.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY().row();
-
-        connectedPlayerCount = new Label("players:{players.size}", skin);
-        horizontalGroupTop.add(connectedPlayerCount).colspan(3).row();
-
-        unitsCount = new Label("unitsCount:{unitsCount}", skin);
-        horizontalGroupTop.add(unitsCount).colspan(3).row();
+        horizontalGroupTop.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
 
         gridNav1 = new TextButton("gNv1", skin);
         horizontalGroupTop.add(gridNav1).prefWidth(Gdx.graphics.getWidth()*0.01f).prefHeight(Gdx.graphics.getHeight()*0.01f);
@@ -181,7 +176,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         horizontalGroupTop.add(gridNav2).prefWidth(Gdx.graphics.getWidth()*0.02f).prefHeight(Gdx.graphics.getHeight()*0.01f);
 
         gridNav3 = new TextButton("gridNav2", skin);
-        horizontalGroupTop.add(gridNav3).prefWidth(Gdx.graphics.getWidth()*0.01f).prefHeight(Gdx.graphics.getHeight()*0.01f);
+        horizontalGroupTop.add(gridNav3).prefWidth(Gdx.graphics.getWidth()*0.01f).prefHeight(Gdx.graphics.getHeight()*0.01f).row();
+
+        connectedPlayerCount = new Label("players:{players.size}", skin);
+        horizontalGroupTop.add(connectedPlayerCount).colspan(3).row();
+
+        unitsCount = new Label("unitsCount:{unitsCount}", skin);
+        horizontalGroupTop.add(unitsCount).colspan(3).row();
 
         Table horizontalGroupBottom = new Table(skin);
         tableWithButtons.add(horizontalGroupBottom).expandY().bottom();
@@ -237,6 +238,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableWithSelectors.setFillParent(true);
         addActor(tableWithSelectors);
+        resize();
     }
 
     public void addListeners() {
@@ -291,6 +293,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 cameraController.isDrawableGrid++;
                 if (cameraController.isDrawableGrid > 5) {
                     cameraController.isDrawableGrid = 0;
+                    gridNav1.setVisible(true);
+                    gridNav2.setVisible(true);
+                    gridNav3.setVisible(true);
                 }
             }
         });
@@ -299,6 +304,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav2.isChecked():" + gridNav2.isChecked());
                 gameScreen.cameraController.isDrawableGridNav = 5;
+                gridNav2.setVisible(false);
             }
         });
         gridNav3.addListener(new ChangeListener() {
@@ -306,6 +312,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav3.isChecked():" + gridNav3.isChecked());
                 gameScreen.cameraController.isDrawableGridNav = 0;
+                gridNav3.setVisible(false);
             }
         });
         pauseMenuButton.addListener(new ChangeListener() {
@@ -934,6 +941,22 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             }
         }
         return false;
+    }
+
+    public void resize() {
+        Logger.logFuncStart("skin:" + skin);
+        if (skin != null) {
+//            Logger.logInfo("cellsSize:" + cellsSize);
+//            Logger.logInfo("sizeFont2:" + sizeFont2);
+//            if (Gdx.app.getType() == Application.ApplicationType.Android && sizeFont2 < 1) {
+            skin.getFont("default-font").getData().setScale(2f, 2f);
+//                skin.getFont("default-font").getData().setScale(7.25f, 7.25f);
+//            skin.getFont("default-font").getData().setScale(Gdx.graphics.getHeight() * 0.001f, Gdx.graphics.getHeight() * 0.001f);
+//            } else {
+//                skin.getFont("default-font").getData().setScale(sizeFont2, sizeFont2);
+//            }
+            resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
     }
 
     public void resize(int width, int height) {

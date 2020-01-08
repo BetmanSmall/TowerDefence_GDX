@@ -73,7 +73,11 @@ public class ClientSettingsScreen extends AbstractScreen {
         rootTable.add(rightTable);
 
         rightTable.add(new VisLabel("name:"));
-        nameField = new VisTextField("Player_" + game.cmd.getOptionValue("client"));
+        if (game != null && game.cmd != null) {
+            nameField = new VisTextField("Player_Desktop" + (game.cmd.hasOption("client") ? game.cmd.getOptionValue("client") : "_"));
+        } else {
+            nameField = new VisTextField("Player_Android");
+        }
         rightTable.add(nameField).row();
 
         rightTable.add(new VisLabel("faction:"));
