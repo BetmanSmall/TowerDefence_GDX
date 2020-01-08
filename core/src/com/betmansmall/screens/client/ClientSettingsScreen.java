@@ -46,11 +46,11 @@ public class ClientSettingsScreen extends AbstractScreen {
     @Override
     public void dispose() {
         Logger.logFuncStart();
-        this.stage.dispose();
         for (ServersSearchThread serversSearchThread : serversSearchThreads) {
             serversSearchThread.dispose();
         }
         serversSearchThreads.clear();
+        this.stage.dispose();
     }
 
     public void createUI() {
@@ -73,7 +73,7 @@ public class ClientSettingsScreen extends AbstractScreen {
         rootTable.add(rightTable);
 
         rightTable.add(new VisLabel("name:"));
-        nameField = new VisTextField("Player");
+        nameField = new VisTextField("Player_" + game.cmd.getOptionValue("client"));
         rightTable.add(nameField).row();
 
         rightTable.add(new VisLabel("faction:"));

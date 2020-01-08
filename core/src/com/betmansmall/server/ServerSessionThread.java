@@ -94,7 +94,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener, Di
     }
 
     @Override
-    public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) {
+    public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) { // need create stackArray receive SendObjects and in other thread work with it;
         Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
         if (sendObject.sendObjectEnum != null) {
 //            if (sendObject.networkPackages != null && sendObject.networkPackages.size() != 0) {
@@ -141,10 +141,12 @@ public class ServerSessionThread extends Thread implements TcpSocketListener, Di
 
                     Player player = serverGameScreen.playersManager.getPlayer(removeTowerData.playerID);
                     serverGameScreen.gameField.removeTowerWithGold(removeTowerData.removeX, removeTowerData.removeY, player);
+//                    serverGameScreen.gameField.rerouteAllUnits(); // need or not?
 
                     this.sendObject(new SendObject(removeTowerData), tcpConnection);
-//                 or
-//                this.sendObject(new SendObject(new RemoveTowerData(removeTowerData.removeX, removeTowerData.removeY, player)), tcpConnection);
+//                     or
+//                    this.sendObject(networkPackage, tcpConnection);
+//                    this.sendObject(new SendObject(new RemoveTowerData(removeTowerData.removeX, removeTowerData.removeY, player)), tcpConnection);
                 } else if (networkPackage instanceof GameFieldVariablesData) {
                     GameFieldVariablesData gameFieldVariablesData = (GameFieldVariablesData) networkPackage;
                     Logger.logDebug("gameFieldVariablesData:" + gameFieldVariablesData);
@@ -179,7 +181,7 @@ public class ServerSessionThread extends Thread implements TcpSocketListener, Di
     @Override
     public void onException(TcpConnection tcpConnection, Exception exception) {
         Logger.logError("tcpConnection:" + tcpConnection + ", exception:" + exception);
-        exception.printStackTrace();
+//        exception.printStackTrace();
     }
 
     public synchronized void sendObject(final SendObject sendObject, TcpConnection tcpConnection) {

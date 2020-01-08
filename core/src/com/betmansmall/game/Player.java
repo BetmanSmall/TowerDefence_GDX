@@ -37,16 +37,16 @@ public class Player {
         this.cellExitHero = null;
     }
 
-    public Player(PlayerType type, UserAccount userAccount, Faction faction) {
+    public Player(UserAccount userAccount, Faction faction) {
         this.connection = null;
-        this.type = type;
+        this.type = PlayerType.CLIENT;
         this.accountID = userAccount.accountID;
-//        this.playerID = type.ordinal();
-        if (type == PlayerType.SERVER) {
-            this.playerID = 0;
-        } else if (type == PlayerType.CLIENT) {
-            this.playerID = 1;
-        }
+        this.playerID = type.ordinal();
+//        if (type == PlayerType.SERVER) {
+//            this.playerID = 0;
+//        } else if (type == PlayerType.CLIENT) {
+//            this.playerID = 1;
+//        }
         this.name = userAccount.loginName;
         this.faction = faction;
 

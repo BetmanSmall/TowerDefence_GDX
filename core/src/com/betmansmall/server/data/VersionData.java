@@ -9,7 +9,7 @@ public class VersionData implements NetworkPackage {
     public String gitHash;
 
     public VersionData(Version version) {
-        Logger.logFuncStart("version:" + version);
+//        Logger.logFuncStart("version:" + version);
         this.version = version.version;
         this.gitHash = version.gitHash;
     }

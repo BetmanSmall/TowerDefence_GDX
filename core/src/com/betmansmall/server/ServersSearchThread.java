@@ -34,12 +34,12 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
     @Override
     public void dispose() {
         Logger.logFuncStart();
+        this.interrupt();
         this.clientSettingsScreen = null; // if set null || in run()->tryConnectToHost() throw NullPointer after check interrupted(). потому что не успевает. он проскакиевает проверку.
         for (TcpConnection connection : connections) {
             connection.disconnect();
         }
         this.connections.clear();
-        this.interrupt();
     }
 
     private void tryConnectToHost(String host) {
@@ -57,8 +57,9 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
                     new TcpConnection(this, host, authPort);
                 } catch (ConnectException exp) {
                     Logger.logError("exp:" + exp);
-//                        exp.printStackTrace();
-                    clientSettingsScreen.addSimpleHost(host);
+                    if (clientSettingsScreen != null) {
+                        clientSettingsScreen.addSimpleHost(host);
+                    }
                 }
             }
         } catch (IOException exception) {
@@ -114,11 +115,11 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
 
     @Override
     public void onDisconnect(TcpConnection tcpConnection) {
-
+        Logger.logInfo("tcpConnection:" + tcpConnection);
     }
 
     @Override
-    public void onException(TcpConnection tcpConnection, Exception e) {
-
+    public void onException(TcpConnection tcpConnection, Exception exception) {
+        Logger.logError("tcpConnection:" + tcpConnection + ", exception:" + exception);
     }
 }

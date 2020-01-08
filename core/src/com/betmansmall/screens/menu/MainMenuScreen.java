@@ -1,14 +1,18 @@
 package com.betmansmall.screens.menu;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -20,6 +24,7 @@ import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.util.logging.Logger;
 
 public class MainMenuScreen extends AbstractScreen {
+    private Skin skin;
     private Stage stage;
 
     private TextButton helpButton;
@@ -31,15 +36,22 @@ public class MainMenuScreen extends AbstractScreen {
     private TextButton serverButton;
     private TextButton clientButton;
 
-    private Label sizeLabel;
-
     private int menuLvl;
+    private Label sizeLabel1;
+    private Label sizeLabel2;
+    private Label sizeLabel3;
+    private Slider slider1;
+    private Slider slider2;
+    private Slider slider3;
+    private float cellsSize = 0.001f;
+    private float sizeFont2 = 2.5f;
+    private float sizeFont3 = 0.01f;
 
     public MainMenuScreen(GameMaster gameMaster) {
         super(gameMaster);
         Logger.logFuncStart();
 
-        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 //        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
 //        Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
 //        textButtonStyle.font = skin.getFont("default-font");
@@ -48,6 +60,7 @@ public class MainMenuScreen extends AbstractScreen {
 //        textButtonStyle.up = Color.RED;
 //        textButtonStyle.downFontColor = Color.RED;
 //        skin.newDrawable("default-round-down");
+//        skin.getFont("default-font").getData().setScale(cellsSize, cellsSize);
 
         stage = new Stage(new ScreenViewport());
         stage.addActor(game.backgroundImages.get(0));
@@ -60,130 +73,206 @@ public class MainMenuScreen extends AbstractScreen {
         stage.addActor(rootTable);
 
         Table leftTable = new Table(skin);
-        helpButton = new TextButton("HELP", skin);
-//        helpButton.setScale(Gdx.graphics.getHeight()*0.01f);
-        helpButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                game.addScreen(game.helpMenuScreen);
-            }
-        });
-        leftTable.add(helpButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
+        helpButton = new TextButton("HELP", skin); {
+            helpButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    game.addScreen(game.helpMenuScreen);
+                }
+            });
+        }
+        leftTable.add(helpButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).colspan(2).row();
 
-        backButton = new TextButton("BACK", skin);
-//        backButton.setScale(Gdx.graphics.getHeight()*0.1f);
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::backButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                if (menuLvl > 0) {
-                    menuLvl -= 1;
+        backButton = new TextButton("BACK", skin); {
+            backButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::backButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    if (menuLvl > 0) {
+                        menuLvl -= 1;
+                        switchMenuButtons();
+                    }
+                }
+            });
+        }
+        leftTable.add(backButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize);
+
+        homeButton = new TextButton("HOME", skin); {
+            homeButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::homeButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    menuLvl = 0;
                     switchMenuButtons();
                 }
-            }
-        });
-        leftTable.add(backButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
+            });
+        }
+        leftTable.add(homeButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).row();
 
-        homeButton = new TextButton("HOME", skin);
-//        homeButton.setScale(Gdx.graphics.getHeight()*0.01f);
-        homeButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::homeButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                menuLvl = 0;
-                switchMenuButtons();
-            }
-        });
-        leftTable.add(homeButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
+        serverButton = new TextButton("GameServerScreen", skin); {
+            serverButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    game.addScreen(new ServerSettingsScreen(game));
+                }
+            });
+        }
+        leftTable.add(serverButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).colspan(2).row();
 
-        serverButton = new TextButton("GameServerScreen", skin);
-        serverButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                game.addScreen(new ServerSettingsScreen(game));
-            }
-        });
-        leftTable.add(serverButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
-
-        clientButton = new TextButton("GameClientScreen", skin);
-        clientButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::clientButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-//                SessionSettings sessionSettings = new SessionSettings(game.gameSettings);
-//                sessionSettings.localServer = false;
-//                sessionSettings.host = "localhost";
-//                sessionSettings.gameServerPort = 48999;
-//                game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
-//                game.sessionSettings.gameSettings.gameType = GameType.TowerDefence;
-//                game.addScreen(new LoadingScreen(game, new GameClientScreen(game)));
-                game.addScreen(new ClientSettingsScreen(game));
-            }
-        });
-        leftTable.add(clientButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight()*0.1f).pad(Gdx.graphics.getHeight()*0.01f).colspan(2).row();
+        clientButton = new TextButton("GameClientScreen", skin); {
+            clientButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::clientButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    game.addScreen(new ClientSettingsScreen(game));
+                }
+            });
+        }
+        leftTable.add(clientButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).colspan(2).row();
         rootTable.add(leftTable).expandX().fillX().left();
 
         Table middleTable = new Table(skin);
-        sizeLabel = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
-        sizeLabel.setFontScale(Gdx.graphics.getHeight()*0.01f);
-//        sizeLabel.setFHeight(Gdx.graphics.getHeight()*0.3f);
-        middleTable.add(sizeLabel).expand().top().row();
 
-        Label versionLabel = new Label(gameMaster.version.getVersionAndHash(), skin);
-        middleTable.add(versionLabel);
+        sizeLabel1 = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
+        sizeLabel1.setFontScale(Gdx.graphics.getHeight() * cellsSize);
+        middleTable.add(sizeLabel1).row();
+
+        sizeLabel2 = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
+        sizeLabel2.setFontScale(Gdx.graphics.getHeight() * sizeFont2);
+        middleTable.add(sizeLabel2).row();
+
+        sizeLabel3 = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
+        sizeLabel3.setFontScale(Gdx.graphics.getHeight() * sizeFont3);
+        middleTable.add(sizeLabel3).row();
+
+        slider1 = new Slider(-0.1f, 0.1f, 0.001f, false, skin);
+        slider1.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                cellsSize = slider1.getValue();
+                Gdx.app.log("MainMenuScreen::slider1::changed()", "-- cellsSize:" + cellsSize);
+                if (cellsSize != 0) {
+                    sizeLabel1.setText("cellsSize:" + cellsSize);
+                }
+            }
+        });
+        slider1.setValue(cellsSize);
+        middleTable.add(slider1).row();
+
+        slider2 = new Slider(0.01f, 5f, 0.015f, false, skin);
+        slider2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                sizeFont2 = slider2.getValue();
+                Gdx.app.log("MainMenuScreen::slider2::changed()", "-- sizeFont2:" + sizeFont2);
+//                sizeLabel2.setFontScale( (Gdx.graphics.getHeight() * sizeFont2 == 0) ? 0.001f : Gdx.graphics.getHeight() * sizeFont2);
+                if (sizeFont2 != 0) {
+                    sizeLabel2.setFontScale(sizeFont2);
+//                    cellsSize = sizeFont2;
+                    resize();
+                }
+//                sizeLabel2.setText("cellsSize:" + cellsSize);
+                sizeLabel3.setText("sizeFont2:" + sizeFont2);
+            }
+        });
+        slider2.setValue(sizeFont2);
+        middleTable.add(slider2).row();
+
+        slider3 = new Slider(-1f, 1f, 0.001f, false, skin);
+        slider3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                sizeFont3 = slider3.getValue();
+                Gdx.app.log("MainMenuScreen::slider3::changed()", "-- sizeFont3:" + sizeFont3);
+                sizeLabel3.setFontScale( (Gdx.graphics.getHeight() * sizeFont3 == 0) ? 0.001f : Gdx.graphics.getHeight() * sizeFont3);
+                if (sizeFont3 != 0) {
+                    sizeLabel3.setFontScale(sizeFont3);
+                    cellsSize = sizeFont3;
+                    resize();
+                }
+            }
+        });
+        slider3.setValue(sizeFont3);
+        middleTable.add(slider3).row();
+
         rootTable.add(middleTable).center().expand().fill();
 
         Table rightTable = new Table(skin);
-        playButton = new TextButton("PLAY", skin);
-//        playButton.setScale(Gdx.graphics.getHeight()*0.01f);
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                clickAnalyzer((short) 1);
-            }
-        });
-        rightTable.add(playButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
+        playButton = new TextButton("PLAY", skin); {
+//            Label playText = new Label("PLAY", skin);
+//            playText.setFontScale(Gdx.graphics.getHeight() * cellsSize);
+//            playButton.add(playText).expand().top().row();
+            playButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    clickAnalyzer((short) 1);
+                }
+            });
+        }
+        rightTable.add(playButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).row();
 
-        secondButton = new TextButton("OPTION", skin);
-//        secondButton.setScale(Gdx.graphics.getHeight()*0.01f);
-        secondButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::secondButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                clickAnalyzer((short) 2);
-            }
-        });
-        rightTable.add(secondButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f).row();
+        secondButton = new TextButton("OPTIONS", skin); {
+//            Label playText = new Label("OPTIONS", skin);
+//            playText.setFontScale(Gdx.graphics.getHeight() * cellsSize);
+//            secondButton.add(playText).expand();
+            secondButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::secondButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    clickAnalyzer((short) 2);
+                }
+            });
+        }
+        rightTable.add(secondButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).row();
 
-        exitButton = new TextButton("EXIT", skin);
-//        exitButton.setScale(Gdx.graphics.getHeight()*0.01f);
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::exitButton::clicked()", "-- event:" + event);
-                super.clicked(event, x, y);
-                clickAnalyzer((short) 3);
-            }
-        });
-        rightTable.add(exitButton).expand().fill().prefHeight(Gdx.graphics.getHeight()*0.3f).pad(Gdx.graphics.getHeight()*0.01f);
+        exitButton = new TextButton("EXIT", skin); {
+//            Label playText = new Label("EXIT", skin);
+//            playText.setFontScale(Gdx.graphics.getHeight() * cellsSize);
+//            exitButton.add(playText).expand();
+            exitButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::exitButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    clickAnalyzer((short) 3);
+                }
+            });
+        }
+        rightTable.add(exitButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize);
         rootTable.add(rightTable).expand().fillX().right();
+
+//        resize();
     }
 
     @Override
     public void show() {
         Gdx.app.log("MainMenuScreen::show()", "-- Called!");
-//        TTW.input.addProcessor(stage);
         Gdx.input.setInputProcessor(stage);
+//        resize();
+    }
+
+    public void resize() {
+        Logger.logFuncStart("skin:" + skin);
+        if (skin != null) {
+            Logger.logInfo("cellsSize:" + cellsSize);
+            Logger.logInfo("sizeFont2:" + sizeFont2);
+            if (Gdx.app.getType() == Application.ApplicationType.Android && sizeFont2 < 1) {
+                skin.getFont("default-font").getData().setScale(7.25f, 7.25f);
+            } else {
+                skin.getFont("default-font").getData().setScale(sizeFont2, sizeFont2);
+            }
+            resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
     }
 
     @Override
@@ -210,7 +299,7 @@ public class MainMenuScreen extends AbstractScreen {
     public void resize(int width, int height) {
         Gdx.app.log("MainMenuScreen::resize(" + width + ", " + height + ")", "--");
         stage.getViewport().update(width, height, true);
-        sizeLabel.setText(width + "x" + height);
+        sizeLabel1.setText(width + "x" + height);
 
 //        for (Actor actor : stage.getActors()) {
 //            if (actor instanceof Button) {
@@ -253,7 +342,7 @@ public class MainMenuScreen extends AbstractScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE);");
             menuLvl--;
-            if(menuLvl == -1) {
+            if (menuLvl == -1) {
                 game.dispose();
             }
             switchMenuButtons();
@@ -262,13 +351,13 @@ public class MainMenuScreen extends AbstractScreen {
             game.addScreen(game.helpMenuScreen);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
-            clickAnalyzer((short)1);
+            clickAnalyzer((short) 1);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_2 || Input.Keys.NUM_2);");
-            clickAnalyzer((short)2);
+            clickAnalyzer((short) 2);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_3 || Input.Keys.NUM_3);");
-            clickAnalyzer((short)3);
+            clickAnalyzer((short) 3);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER || Input.Keys.SPACE);");
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + game.gameLevelMaps.toString());
@@ -312,7 +401,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            game.setScreen(new MapEditorScreen(game, fileName));
 //                        } else {
-                            game.addScreen(new MapEditorScreen(game, "maps/aaagen.tmx"));
+                        game.addScreen(new MapEditorScreen(game, "maps/aaagen.tmx"));
 //                        }
                         break;
                 }

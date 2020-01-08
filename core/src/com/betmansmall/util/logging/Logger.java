@@ -57,6 +57,10 @@ public class Logger implements Disposable {
         instance().log("[START] -- " + convert(strings), ANSI_BLUE);
     }
 
+    public static void logFuncEnd(String ... strings) {
+        instance().log("[END] -- " + convert(strings), ANSI_CYAN);
+    }
+
     public static void logFuncEnd() {
         instance().log("[END]", ANSI_CYAN);
     }

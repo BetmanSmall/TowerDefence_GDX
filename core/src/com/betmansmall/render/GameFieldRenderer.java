@@ -951,12 +951,14 @@ public class GameFieldRenderer {
                 if(cameraController.isDrawableUnits == 5) {
                     for (int m = 1; m <= cameraController.isDrawableUnits; m++) {
                         Circle circle = unit.getCircle(m);
+                        bitmapFont.draw(spriteBatch, String.valueOf(unit.hp), circle.x, circle.y+30);
                         bitmapFont.draw(spriteBatch, String.valueOf(unit.currentCell), circle.x, circle.y+20);
                         bitmapFont.draw(spriteBatch, String.valueOf(unit.nextCell), circle.x, circle.y+10);
                         bitmapFont.draw(spriteBatch, String.valueOf(unit.stepsInTime), circle.x, circle.y);
                     }
                 } else if(cameraController.isDrawableUnits != 0) {
                     Circle circle = unit.getCircle(cameraController.isDrawableUnits);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.hp), circle.x, circle.y+30);
                     bitmapFont.draw(spriteBatch, String.valueOf(unit.currentCell), circle.x, circle.y+20);
                     bitmapFont.draw(spriteBatch, String.valueOf(unit.nextCell), circle.x, circle.y+10);
                     bitmapFont.draw(spriteBatch, String.valueOf(unit.stepsInTime), circle.x, circle.y);
@@ -964,6 +966,7 @@ public class GameFieldRenderer {
             } else if(cameraController.isDrawableGridNav != 0) {
                 if(cameraController.isDrawableGridNav == cameraController.isDrawableUnits) {
                     Circle circle = unit.getCircle(cameraController.isDrawableUnits);
+                    bitmapFont.draw(spriteBatch, String.valueOf(unit.hp), circle.x, circle.y+30);
                     bitmapFont.draw(spriteBatch, String.valueOf(unit.currentCell), circle.x, circle.y+20);
                     bitmapFont.draw(spriteBatch, String.valueOf(unit.nextCell), circle.x, circle.y+10);
                     bitmapFont.draw(spriteBatch, String.valueOf(unit.stepsInTime), circle.x, circle.y);
@@ -992,9 +995,11 @@ public class GameFieldRenderer {
             }
             bitmapFont.getData().setScale(0.9f);
             if (tower.player == gameField.gameScreen.playersManager.getLocalServer()) {
-                bitmapFont.setColor(Color.RED);
+                bitmapFont.setColor(Color.GRAY);
             } else if (tower.player == gameField.gameScreen.playersManager.getLocalPlayer()) {
                 bitmapFont.setColor(Color.BLUE);
+            } else {
+                bitmapFont.setColor(Color.RED);
             }
             if(cameraController.isDrawableGridNav == 5) {
                 if(cameraController.isDrawableTowers == 5) {
@@ -1007,6 +1012,30 @@ public class GameFieldRenderer {
             } else if(cameraController.isDrawableGridNav != 0) {
                 if(cameraController.isDrawableGridNav == cameraController.isDrawableTowers) {
                     bitmapFont.draw(spriteBatch, String.valueOf(tower.player.playerID), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y);
+                }
+            }
+        }
+
+        bitmapFont.setColor(Color.WHITE);
+        bitmapFont.getData().setScale(0.5f);
+        for (Tower tower : gameField.towersManager.towers) { // Draw tower specific information for multiplayer
+            if(cameraController.isDrawableGridNav == 5) {
+                if(cameraController.isDrawableTowers == 5) {
+                    for (int m = 1; m <= cameraController.isDrawableTowers; m++) {
+                        bitmapFont.draw(spriteBatch, String.valueOf(tower.hp), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+30);
+                        bitmapFont.draw(spriteBatch, "B:" +tower.bullets.size, tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+20);
+                        bitmapFont.draw(spriteBatch, String.valueOf(tower.cell), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+10);
+                    }
+                } else if(cameraController.isDrawableTowers != 0) {
+                    bitmapFont.draw(spriteBatch, String.valueOf(tower.hp), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+30);
+                    bitmapFont.draw(spriteBatch, "B:" +tower.bullets.size, tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+20);
+                    bitmapFont.draw(spriteBatch, String.valueOf(tower.cell), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+10);
+                }
+            } else if(cameraController.isDrawableGridNav != 0) {
+                if(cameraController.isDrawableGridNav == cameraController.isDrawableTowers) {
+                    bitmapFont.draw(spriteBatch, String.valueOf(tower.hp), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+30);
+                    bitmapFont.draw(spriteBatch, "B:" +tower.bullets.size, tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+20);
+                    bitmapFont.draw(spriteBatch, String.valueOf(tower.cell), tower.centerGraphicCoordinates.x, tower.centerGraphicCoordinates.y+10);
                 }
             }
         }
@@ -1120,7 +1149,7 @@ public class GameFieldRenderer {
                     drawTowerUnderConstruction(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower, enoughGold);
                     for (int k = 0; k < underConstruction.coorsX.size; k++) {
                         goldNeed += underConstruction.templateForTower.cost;
-                        enoughGold = (gameField.gameScreen.playersManager.getLocalPlayer().gold >= goldNeed) ? true : false;
+                        enoughGold = (gameField.gameScreen.playersManager.getLocalPlayer().gold >= goldNeed);// ? true : false;
                         drawTowerUnderConstruction(underConstruction.coorsX.get(k), underConstruction.coorsY.get(k), underConstruction.templateForTower, enoughGold);
                     }
                 }

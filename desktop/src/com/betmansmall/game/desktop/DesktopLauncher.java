@@ -48,8 +48,8 @@ public class DesktopLauncher {
         config.title = "Tower Defence";
         config.x = -3;
         config.y = 0;
-        config.width = 1280;
-        config.height = 720;
+        config.width = 1000;
+        config.height = 500;
         if (cmd.hasOption("server")) {
             config.width = (int)width/2;
             config.height = (int)height/2;

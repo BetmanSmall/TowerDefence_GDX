@@ -71,7 +71,7 @@ public class GameField {
         }
         landscapeGenerator(tmxMap.mapPath);
         pathFinder = new PathFinder(this);
-        pathFinder.loadCharMatrix(getCharMatrix());
+        pathFinder.loadCharMatrix(getCharMatrix(false));
         Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
 
         underConstruction = null;
@@ -380,7 +380,8 @@ public class GameField {
         int randomX = random.nextInt(tmxMap.width);
         int randomY = random.nextInt(tmxMap.height);
         Gdx.app.log("GameField::spawnServerUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
-        return gameScreen.createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), null, gameScreen.playersManager.getLocalServer());
+//        return gameScreen.createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), null, gameScreen.playersManager.getLocalServer());
+        return createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), null, gameScreen.playersManager.getLocalServer());
     }
 
 //    private Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell) {
@@ -398,8 +399,12 @@ public class GameField {
     public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
         Unit unit = null;
         if (spawnCell != null && destCell != null && pathFinder != null) {
-//            pathFinder.loadCharMatrix(getCharMatrix());
+            pathFinder.loadCharMatrix(getCharMatrix(true));
             ArrayDeque<Cell> route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
+            if (route == null) {
+                pathFinder.loadCharMatrix(getCharMatrix(false));
+                route = pathFinder.route(spawnCell.cellX, spawnCell.cellY, destCell.cellX, destCell.cellY);
+            }
             if (route != null) {
                 unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
@@ -675,23 +680,30 @@ public class GameField {
     public void updatePathFinderWalls() {
         Gdx.app.log("GameField::updatePathFinderWalls()", "-start- pathFinder.walls.size():" + pathFinder.nodeMatrix.length);
 //        pathFinder.clearCollisions();
-        pathFinder.loadCharMatrix(getCharMatrix());
+        pathFinder.loadCharMatrix(getCharMatrix(false));
         Gdx.app.log("GameField::updatePathFinderWalls()", "-end- pathFinder.walls.size():" + pathFinder.nodeMatrix.length);
     }
 
-    public char[][] getCharMatrix() {
+    public char[][] getCharMatrix(boolean towers) {
         if (field != null) {
             char[][] charMatrix = new char[tmxMap.height][tmxMap.width];
             for (int y = 0; y < tmxMap.height; y++) {
                 for (int x = 0; x < tmxMap.width; x++) {
-                    if (field[x][y].isTerrain() || field[x][y].getTower() != null) {
-                        if (field[x][y].getTower() != null && field[x][y].getTower().templateForTower.towerAttackType == TowerAttackType.Pit) {
-                            charMatrix[y][x] = '.';
+                    if (towers) {
+                        if (field[x][y].isTerrain() || field[x][y].getTower() != null) {
+                            if (field[x][y].getTower() != null && field[x][y].getTower().templateForTower.towerAttackType == TowerAttackType.Pit) {
+                                charMatrix[y][x] = '.';
+                            } else {
+                                charMatrix[y][x] = 'T';
+                            }
                         } else {
-                            charMatrix[y][x] = 'T';
+                            charMatrix[y][x] = '.';
                         }
                     } else {
                         charMatrix[y][x] = '.';
+                        if (field[x][y].isTerrain()) {
+                            charMatrix[y][x] = 'T';
+                        }
                     }
 //                    System.out.print(charMatrix[y][x]);
                 }
@@ -741,7 +753,9 @@ public class GameField {
 
     public void rerouteAllUnits(int x, int y) {
         if (x == -1 && y == -1) {
-            for (Unit unit : unitsManager.units) {
+//            for (Unit unit : unitsManager.units) { // GdxRuntimeException: #iterator() cannot be used nested.
+            for (int u = 0; u < unitsManager.units.size; u++ ) {
+                Unit unit = unitsManager.units.get(u);
                 ArrayDeque<Cell> route = unit.route;
                 if (route != null && !route.isEmpty()) {
                     Cell node = route.getLast();

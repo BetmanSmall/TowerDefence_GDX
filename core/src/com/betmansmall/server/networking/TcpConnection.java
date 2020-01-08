@@ -4,10 +4,12 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.util.logging.Logger;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class TcpConnection {
     private final TcpSocketListener tcpSocketListener;
@@ -39,7 +41,11 @@ public class TcpConnection {
                         SendObject sendObject = (SendObject)objectInputStream.readObject();
                         tcpSocketListener.onReceiveObject(TcpConnection.this, sendObject);
                     }
-                } catch (Exception e) {
+                } catch (EOFException e) { // AuthServerThread Client Disconnect
+                    tcpSocketListener.onException(TcpConnection.this, e);
+                } catch (SocketException e) { // ServerSessionThread Player Disconnect
+                    tcpSocketListener.onException(TcpConnection.this, e);
+                } catch (Exception e) { // Other Exceptions
                     tcpSocketListener.onException(TcpConnection.this, e);
                 } finally {
                     tcpSocketListener.onDisconnect(TcpConnection.this);

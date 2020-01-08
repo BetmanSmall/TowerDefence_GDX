@@ -9,5 +9,5 @@ public interface TcpSocketListener {
 
     void onDisconnect(TcpConnection tcpConnection);
 
-    void onException(TcpConnection tcpConnection, Exception e);
+    void onException(TcpConnection tcpConnection, Exception exception);
 }

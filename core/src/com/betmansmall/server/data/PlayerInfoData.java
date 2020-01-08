@@ -14,7 +14,7 @@ public class PlayerInfoData implements NetworkPackage {
     public Integer gold;
 
     public PlayerInfoData(Player player) {
-        Logger.logFuncStart("player:" + player);
+//        Logger.logFuncStart("player:" + player);
         this.type = player.type;
         this.accountID = player.accountID;
         this.playerID = player.playerID;

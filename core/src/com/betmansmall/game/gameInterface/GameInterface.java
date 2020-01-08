@@ -56,6 +56,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private Label unitsCount; // duplicate unitsManagerSize
     // Console need
 
+    public TextButton gridNav1, gridNav2, gridNav3;
+    public TextButton disonnectButtons;
     public TextButton playersViewButton;
     public TextButton pauseMenuButton;
     public TextButton startAndPauseButton;
@@ -113,7 +115,6 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     public void initInterface() {
         Gdx.app.log("GameInterface::initInterface()", "--");
-
         pauseMenuTable = new Table(skin);
         pauseMenuTable.setFillParent(true);
         pauseMenuTable.setVisible(false);
@@ -158,6 +159,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         Table horizontalGroupTop = new Table(skin);
         tableWithButtons.add(horizontalGroupTop).expandY().top().row();
 
+        disonnectButtons = new TextButton("DISC(X)NNECT", skin);
+        horizontalGroupTop.add(disonnectButtons).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
+
         playersViewButton = new TextButton("PLAYERS", skin);
         horizontalGroupTop.add(playersViewButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
 
@@ -165,10 +169,19 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         horizontalGroupTop.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY().row();
 
         connectedPlayerCount = new Label("players:{players.size}", skin);
-        horizontalGroupTop.add(connectedPlayerCount).colspan(2).row();
+        horizontalGroupTop.add(connectedPlayerCount).colspan(3).row();
 
         unitsCount = new Label("unitsCount:{unitsCount}", skin);
-        horizontalGroupTop.add(unitsCount).colspan(2).row();
+        horizontalGroupTop.add(unitsCount).colspan(3).row();
+
+        gridNav1 = new TextButton("gNv1", skin);
+        horizontalGroupTop.add(gridNav1).prefWidth(Gdx.graphics.getWidth()*0.01f).prefHeight(Gdx.graphics.getHeight()*0.01f);
+
+        gridNav2 = new TextButton("gridNav2", skin);
+        horizontalGroupTop.add(gridNav2).prefWidth(Gdx.graphics.getWidth()*0.02f).prefHeight(Gdx.graphics.getHeight()*0.01f);
+
+        gridNav3 = new TextButton("gridNav2", skin);
+        horizontalGroupTop.add(gridNav3).prefWidth(Gdx.graphics.getWidth()*0.01f).prefHeight(Gdx.graphics.getHeight()*0.01f);
 
         Table horizontalGroupBottom = new Table(skin);
         tableWithButtons.add(horizontalGroupBottom).expandY().bottom();
@@ -228,6 +241,14 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     public void addListeners() {
         Gdx.app.log("GameInterface::addListeners()", "--");
+        disonnectButtons.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- disonnectButtons.isChecked():" + disonnectButtons.isChecked());
+//                gameScreen.dispose();
+                gameScreen.game.removeTopScreen();
+            }
+        });
         playersViewButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -263,6 +284,30 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 gameScreen.game.removeTopScreen();
             }
         });
+        gridNav1.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav1.isChecked():" + gridNav1.isChecked());
+                cameraController.isDrawableGrid++;
+                if (cameraController.isDrawableGrid > 5) {
+                    cameraController.isDrawableGrid = 0;
+                }
+            }
+        });
+        gridNav2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav2.isChecked():" + gridNav2.isChecked());
+                gameScreen.cameraController.isDrawableGridNav = 5;
+            }
+        });
+        gridNav3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav3.isChecked():" + gridNav3.isChecked());
+                gameScreen.cameraController.isDrawableGridNav = 0;
+            }
+        });
         pauseMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -272,6 +317,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 pauseMenuTable.setVisible(gamePaused);
                 tableWithSelectors.setVisible(!gamePaused);
                 tableWithButtons.setVisible(!gamePaused);
+                if (playersViewTable.isVisible()) {
+                    playersViewTable.setVisible(false);
+                }
                 interfaceTouched = true;
                 gameScreen.sendGameFieldVariables();
             }
@@ -577,7 +625,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 }
             }
         });
-        optionTable.add(verticalSelector).colspan(2).fill();
+        optionTable.add(verticalSelector).colspan(2).fill().row();
 
         smoothFlingSelector = new CheckBox("smoothFlingSelector", skin);
         smoothFlingSelector.setChecked(gameScreen.gameField.gameSettings.smoothFlingSelector);
@@ -601,7 +649,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
                 }
             }
         });
-        optionTable.add(smoothFlingSelector).colspan(2).fill();
+        optionTable.add(smoothFlingSelector).colspan(2).fill().row();
 
         if (cameraController.gameField.waveManager.wavesForUser.size > 0) {
             unitsSelector = new UnitsSelector(gameScreen);

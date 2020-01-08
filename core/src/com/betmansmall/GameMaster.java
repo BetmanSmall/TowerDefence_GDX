@@ -199,39 +199,55 @@ public class GameMaster extends Game {
     }
 
     public void removeTopScreen() {
-        Logger.logDebug("screensStack:" + screensStack);
+        Logger.logFuncStart("screensStack:" + screensStack);
         if (screensStack != null) {
-            int count = screensStack.size;
-            Logger.logDebug("screensStack.size:" + screensStack.size);
-            if (count > 0) {
-                Screen lastScreen = screensStack.get(count - 1);
+            Logger.logInfo("screensStack.size:" + screensStack.size);
+            int size = screensStack.size;
+            if (size == 0) {
+//                Screen screen = screensStack.get(0);
+//                if (screen != null) {
+//                    if (screen instanceof MainMenuScreen) {
+//                        if (mainMenuScreen != null) {
+//                            this.setScreen(mainMenuScreen);
+//                        } else {
+//                            this.setScreen(new MainMenuScreen(this));
+//                        }
+//                    } else if (screen instanceof MainMenuScreen) {
+//                        GameScreen gameScreen = (GameScreen) screen;
+//                        if (gameScreen != null) {
+//                            this.setScreen(gameScreen);
+//                        }
+//                    }
+//                }
+            } else if (size > 0) {
+                Screen lastScreen = screensStack.get(size - 1);
                 Logger.logDebug("lastScreen:" + lastScreen);
-//                if (lastScreen instanceof GameScreen) {
-//                    GameScreen gameScreen1 = (GameScreen) lastScreen;
-//                    Gdx.app.log("GameMaster::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
-//                    if (gameScreen1 != null) {
-//                    lastScreen.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
-//                        Gdx.app.log("GameMaster::removeTopScreen()", "-- gameScreen1.gameInterface.mapPathLabel:" + gameScreen1.gameInterface.mapPathLabel);
+                if (lastScreen instanceof GameScreen) {
+                    GameScreen gameScreen1 = (GameScreen) lastScreen;
+                    Gdx.app.log("GameMaster::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
+                    if (gameScreen1 != null) {
 //                        lastScreen.hide();
-                        screensStack.removeIndex(count - 1);
+//                        gameScreen1.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
+                        screensStack.removeValue(gameScreen1, true); // or false?
 //                        Gdx.app.log("GameMaster::removeTopScreen()", "-- gameScreen1.gameInterface:" + gameScreen1.gameInterface);
-                        count = screensStack.size;
-                        Logger.logDebug("screensStack.size:" + screensStack.size);
-                        if (count > 0) {
-                            Screen popToScreen = screensStack.get(count - 1);
+                        size = screensStack.size;
+//                        Logger.logDebug("screensStack.size:" + screensStack.size);
+                        if (size > 0) {
+                            Screen popToScreen = screensStack.get(size - 1);
                             Logger.logDebug("popToScreen:" + popToScreen);
                             if (popToScreen != null) {
                                 this.setScreen(popToScreen);
                             }
                         }
-//                    }
-//                }
-            } else {
-                this.setScreen(mainMenuScreen);
+                    } else {
+                        this.setScreen(mainMenuScreen);
+                    }
+                }
             }
         }
         Logger.logDebug("screensStack:" + screensStack);
         Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
+        this.setScreen(mainMenuScreen);
     }
 
 //    public void removeAllScreens() {

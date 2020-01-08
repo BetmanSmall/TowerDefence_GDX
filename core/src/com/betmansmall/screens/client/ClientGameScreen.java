@@ -32,6 +32,7 @@ public class ClientGameScreen extends GameScreen {
 
     @Override
     public void dispose() {
+        Logger.logFuncStart();
         super.dispose();
         this.clientSessionThread.dispose();
     }

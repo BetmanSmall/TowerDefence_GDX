@@ -39,13 +39,13 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
 
     public void dispose() {
         Logger.logFuncStart();
-        this.connection.disconnect();
         this.interrupt();
+        this.connection.disconnect();
     }
 
     @Override
     public void run() {
-        Logger.logInfo("Try connect to:" + sessionSettings.host + ":" + sessionSettings.gameServerPort);
+        Logger.logFuncStart("Try connect to:" + sessionSettings.host + ":" + sessionSettings.gameServerPort);
         try {
             new TcpConnection(this, sessionSettings.host, sessionSettings.gameServerPort);
         } catch (IOException exception) {
@@ -53,6 +53,7 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
             clientGameScreen.game.removeTopScreen(); // TODO mb not good!
             throw new RuntimeException(exception);
         }
+        Logger.logFuncEnd();
     }
 
     @Override
@@ -67,7 +68,7 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
     }
 
     @Override
-    public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) {
+    public void onReceiveObject(TcpConnection tcpConnection, SendObject sendObject) { // need create stackArray receive SendObjects and in other thread work with it;
         Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
         if (sendObject.sendObjectEnum != null) {
             if (sendObject.networkPackages != null && sendObject.networkPackages.size() != 0) {
@@ -149,10 +150,12 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
                     Player player = clientGameScreen.playersManager.getPlayer(buildTowerData.playerID);
                     TemplateForTower templateForTower = player.faction.getTemplateForTower(buildTowerData.templateName);
                     clientGameScreen.gameField.createTowerWithGoldCheck(buildTowerData.buildX, buildTowerData.buildY, templateForTower, player);
+                    clientGameScreen.gameField.rerouteAllUnits();
                 } else if (networkPackage instanceof RemoveTowerData) {
                     RemoveTowerData removeTowerData = (RemoveTowerData) networkPackage;
                     Player player = clientGameScreen.playersManager.getPlayer(removeTowerData.playerID);
                     clientGameScreen.gameField.removeTowerWithGold(removeTowerData.removeX, removeTowerData.removeY, player);
+//                    clientGameScreen.gameField.rerouteAllUnits(); // need or not?
                 } else if (networkPackage instanceof CreateUnitData) {
                     CreateUnitData createUnitData = (CreateUnitData) networkPackage;
                     clientGameScreen.gameField.createUnit(createUnitData);

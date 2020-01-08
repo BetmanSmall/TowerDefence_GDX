@@ -172,8 +172,8 @@ public class Unit {
                 animation = new Animation(speed / staticTiledMapTiles.length, textureRegions); // speed change to idleSpeed
             }
 //            Gdx.app.log("Unit::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
-        } else {
-            Gdx.app.log("Unit::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " animatedTiledMapTile: " + animatedTiledMapTile);
+//        } else {
+//            Gdx.app.log("Unit::setAnimation(" + action + direction + ")", "-- UnitName: " + templateForUnit.name + " animatedTiledMapTile: " + animatedTiledMapTile);
         }
     }
 
