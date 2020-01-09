@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -55,7 +56,7 @@ public class ClientSettingsScreen extends AbstractScreen {
 
     public void createUI() {
         this.stage = new Stage(new ScreenViewport());
-//        this.stage.setDebugAll(true);
+        this.stage.setDebugTableUnderMouse(true);
 
         VisTable rootTable = new VisTable();
         rootTable.setFillParent(true);
@@ -72,21 +73,36 @@ public class ClientSettingsScreen extends AbstractScreen {
         VisTable rightTable = new VisTable();
         rootTable.add(rightTable);
 
-        rightTable.add(new VisLabel("name:"));
+        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
+        rightTable.add(versionLabel).colspan(2).row();
+
+        VisTextButton backButton = new VisTextButton("BACK");
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.removeTopScreen();
+            }
+        });
+        rightTable.add(backButton);
+
+        VisTable midTable = new VisTable();
+        rootTable.add(midTable);
+
+        midTable.add(new VisLabel("name:"));
         if (game != null && game.cmd != null) {
             nameField = new VisTextField("Player_Desktop" + (game.cmd.hasOption("client") ? game.cmd.getOptionValue("client") : "_"));
         } else {
             nameField = new VisTextField("Player_Android");
         }
-        rightTable.add(nameField).row();
+        midTable.add(nameField).row();
 
-        rightTable.add(new VisLabel("faction:"));
+        midTable.add(new VisLabel("faction:"));
         factionSelectBox = new VisSelectBox();
         factionSelectBox.setItems(game.factionsManager.getFactionsNames());
-        rightTable.add(factionSelectBox).row();
+        midTable.add(factionSelectBox).row();
 
         VisLabel hostLabel = new VisLabel("host:");
-        rightTable.add(hostLabel);
+        midTable.add(hostLabel);
 
         String host = "localhost";
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -95,13 +111,13 @@ public class ClientSettingsScreen extends AbstractScreen {
             host = "127.0.0.1";
         }
         VisTextField hostField = new VisTextField(host);
-        rightTable.add(hostField).row();
+        midTable.add(hostField).row();
 
         VisLabel portLabel = new VisLabel("gameServerPort:");
-        rightTable.add(portLabel);
+        midTable.add(portLabel);
 
         VisTextField portField = new VisTextField(game.sessionSettings.gameServerPort.toString());
-        rightTable.add(portField).row();
+        midTable.add(portField).row();
 
         connectToServer = new VisTextButton("CONNECT TO SERVER");
         connectToServer.addListener(new ChangeListener() {
@@ -117,10 +133,7 @@ public class ClientSettingsScreen extends AbstractScreen {
                 game.addScreen(new ClientGameScreen(game, game.userAccount));
             }
         });
-        rightTable.add(connectToServer).colspan(2).row();
-
-        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
-        rightTable.add(versionLabel).colspan(2).row();
+        midTable.add(connectToServer).colspan(2).row();
 
         stage.addActor(rootTable);
     }

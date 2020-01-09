@@ -291,8 +291,12 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav1.isChecked():" + gridNav1.isChecked());
                 cameraController.isDrawableGrid++;
+                cameraController.isDrawableGridNav++;
+                cameraController.isDrawableRoutes++;
                 if (cameraController.isDrawableGrid > 5) {
                     cameraController.isDrawableGrid = 0;
+                    cameraController.isDrawableGridNav = 0;
+                    cameraController.isDrawableRoutes = 0;
                     gridNav1.setVisible(true);
                     gridNav2.setVisible(true);
                     gridNav3.setVisible(true);
@@ -303,7 +307,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav2.isChecked():" + gridNav2.isChecked());
-                gameScreen.cameraController.isDrawableGridNav = 5;
+                cameraController.isDrawableGridNav = 0;
+                cameraController.isDrawableRoutes = 0;
                 gridNav2.setVisible(false);
             }
         });
@@ -311,7 +316,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav3.isChecked():" + gridNav3.isChecked());
-                gameScreen.cameraController.isDrawableGridNav = 0;
+                cameraController.isDrawableGridNav = 5;
+                cameraController.isDrawableRoutes = 5;
                 gridNav3.setVisible(false);
             }
         });

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
@@ -48,13 +49,16 @@ public class ServerSettingsScreen extends AbstractScreen {
 
     public void createUI() {
         this.stage = new Stage(new ScreenViewport());
-//        this.stage.setDebugAll(true);
+        this.stage.setDebugUnderMouse(true);
 
         VisTable rootTable = new VisTable();
         rootTable.setFillParent(true);
 
+        VisTable leftTable = new VisTable();
+        rootTable.add(leftTable).left();
+
         VisLabel hostLabel = new VisLabel("host:");
-        rootTable.add(hostLabel);
+        leftTable.add(hostLabel).align(Align.right);
 
         Array<String> addresses = new Array<>();
         try {
@@ -75,35 +79,53 @@ public class ServerSettingsScreen extends AbstractScreen {
         VisSelectBox<String> hostField = new VisSelectBox<>();
         hostField.setItems(addresses);
         hostField.setSelected(addresses.peek());
-        rootTable.add(hostField).row();
+        leftTable.add(hostField).align(Align.left).row();
 
         VisLabel authServerPortLabel = new VisLabel("authServerPort:");
-        rootTable.add(authServerPortLabel);
+        leftTable.add(authServerPortLabel).align(Align.right);
 
         VisTextField authServerPortField = new VisTextField(game.sessionSettings.authServerPort.toString());
-        rootTable.add(authServerPortField).row();
+        leftTable.add(authServerPortField).align(Align.left).row();
 
         VisLabel gameServerPortLabel = new VisLabel("gameServerPort:");
-        rootTable.add(gameServerPortLabel);
+        leftTable.add(gameServerPortLabel).align(Align.right);
 
         VisTextField gameServerPortField = new VisTextField(game.sessionSettings.gameServerPort.toString());
-        rootTable.add(gameServerPortField).row();
+        leftTable.add(gameServerPortField).align(Align.left).row();
 
         VisLabel gameTypeLabel = new VisLabel("gameType:");
-        rootTable.add(gameTypeLabel);
+        leftTable.add(gameTypeLabel).align(Align.right);
 
         VisSelectBox<GameType> gameTypeSelectBox = new VisSelectBox<>();
         gameTypeSelectBox.setItems(GameType.values());
         gameTypeSelectBox.setSelected(GameType.TowerDefence);
-        rootTable.add(gameTypeSelectBox).colspan(2).row();
+        leftTable.add(gameTypeSelectBox).colspan(2).align(Align.left).row();
 
         VisLabel mapLabel = new VisLabel("map:");
-        rootTable.add(mapLabel);
+        leftTable.add(mapLabel).align(Align.right);
 
         VisSelectBox<String> mapSelectBox = new VisSelectBox<>();
         mapSelectBox.setItems(game.gameLevelMaps);
 //        mapSelectBox.setSelected(game.gameLevelMaps.random());
-        rootTable.add(mapSelectBox).colspan(2).row();
+        leftTable.add(mapSelectBox).colspan(2).align(Align.left).row();
+
+        VisTable rightTable = new VisTable();
+        rootTable.add(rightTable);
+
+        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
+        rightTable.add(versionLabel).colspan(2).row();
+
+        VisTextButton backButton = new VisTextButton("BACK");
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.removeTopScreen();
+            }
+        });
+        rightTable.add(backButton);
+
+        VisTable midTable = new VisTable();
+        rootTable.add(midTable);
 
         startServer = new VisTextButton("START SERVER");
         startServer.addListener(new ChangeListener() {
@@ -126,7 +148,7 @@ public class ServerSettingsScreen extends AbstractScreen {
                 game.addScreen(new ServerGameScreen(game, game.userAccount));
             }
         });
-        rootTable.add(startServer).colspan(2).row();
+        midTable.add(startServer).colspan(2).align(Align.center).row();
 
         withControlCheckBox = new VisCheckBox("WITH CONTROL", true);
         withControlCheckBox.addListener(new ChangeListener() {
@@ -135,22 +157,18 @@ public class ServerSettingsScreen extends AbstractScreen {
                 playerSettings.setVisible(withControlCheckBox.isChecked());
             }
         });
-        rootTable.add(withControlCheckBox).colspan(2).row();
+        midTable.add(withControlCheckBox).colspan(2).align(Align.center).row();
 
         playerSettings = new VisTable();
         playerSettings.add(new VisLabel("name:"));
         nameField = new VisTextField("ClientByServer");
-        playerSettings.add(nameField).row();
+        playerSettings.add(nameField).align(Align.center).row();
 
         playerSettings.add(new VisLabel("faction:"));
         factionSelectBox = new VisSelectBox();
         factionSelectBox.setItems(game.factionsManager.getFactionsNames());
         playerSettings.add(factionSelectBox).row();
-
-        rootTable.add(playerSettings).colspan(2).row();
-
-        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
-        rootTable.add(versionLabel).colspan(2).row();
+        midTable.add(playerSettings).colspan(2).align(Align.center).row();
 
         stage.addActor(rootTable);
     }
