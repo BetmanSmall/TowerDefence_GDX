@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class UnitsManagerData implements NetworkPackage {
     public ArrayList<UnitInstanceData> units;
-    public boolean hardOrSoftUpdate; // in future | not work in this time
+    public boolean hardOrSoftUpdate;
 
     public UnitsManagerData(UnitsManager unitsManager) {
         this.units = new ArrayList<>(unitsManager.units.size);

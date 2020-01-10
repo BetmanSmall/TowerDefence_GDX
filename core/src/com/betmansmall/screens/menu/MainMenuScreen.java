@@ -1,17 +1,11 @@
 package com.betmansmall.screens.menu;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -22,27 +16,30 @@ import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.util.logging.Logger;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisSlider;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class MainMenuScreen extends AbstractScreen {
-    private Skin skin;
     private Stage stage;
 
-    private TextButton helpButton;
-    private TextButton playButton;
-    private TextButton secondButton;
-    private TextButton exitButton;
-    private TextButton backButton;
-    private TextButton homeButton;
-    private TextButton serverButton;
-    private TextButton clientButton;
+    private VisTextButton helpButton;
+    private VisTextButton playButton;
+    private VisTextButton secondButton;
+    private VisTextButton exitButton;
+    private VisTextButton backButton;
+    private VisTextButton homeButton;
+    private VisTextButton serverButton;
+    private VisTextButton clientButton;
 
     private int menuLvl;
-    private Label sizeLabel1;
-    private Label sizeLabel2;
-    private Label sizeLabel3;
-    private Slider slider1;
-    private Slider slider2;
-    private Slider slider3;
+    private VisLabel sizeLabel1;
+    private VisLabel sizeLabel2;
+    private VisLabel sizeLabel3;
+    private VisSlider slider1;
+    private VisSlider slider2;
+    private VisSlider slider3;
     private float cellsSize = 0.001f;
     private float sizeFont2 = 2.5f;
     private float sizeFont3 = 0.01f;
@@ -51,29 +48,18 @@ public class MainMenuScreen extends AbstractScreen {
         super(gameMaster);
         Logger.logFuncStart();
 
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-//        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-//        Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
-//        textButtonStyle.font = skin.getFont("default-font");
-//        textButtonStyle.up = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("helpImages/button.png"))));
-//        textButtonStyle.down = skin.getDrawable("default-round-down");
-//        textButtonStyle.up = Color.RED;
-//        textButtonStyle.downFontColor = Color.RED;
-//        skin.newDrawable("default-round-down");
-//        skin.getFont("default-font").getData().setScale(cellsSize, cellsSize);
-
         stage = new Stage(new ScreenViewport());
         stage.addActor(game.backgroundImages.get(0));
-//        stage.setDebugAll(true);
+
         stage.setDebugUnderMouse(true);
         stage.setDebugParentUnderMouse(true);
 
-        Table rootTable = new Table(skin);
+        VisTable rootTable = new VisTable();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
-        Table leftTable = new Table(skin);
-        helpButton = new TextButton("HELP", skin); {
+        VisTable leftTable = new VisTable();
+        helpButton = new VisTextButton("HELP"); {
             helpButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -83,9 +69,34 @@ public class MainMenuScreen extends AbstractScreen {
                 }
             });
         }
-        leftTable.add(helpButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).colspan(2).row();
+        leftTable.add(helpButton).expand().fill().pad(5).colspan(2).row(); // prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
 
-        backButton = new TextButton("BACK", skin); {
+        serverButton = new VisTextButton("GameServerScreen"); {
+            serverButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    game.addScreen(new ServerSettingsScreen(game));
+                }
+            });
+        }
+        leftTable.add(serverButton).expand().fill().pad(5).colspan(2).row(); // .prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
+
+        clientButton = new VisTextButton("GameClientScreen"); {
+            clientButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.log("MainMenuScreen::clientButton::clicked()", "-- event:" + event);
+                    super.clicked(event, x, y);
+                    game.addScreen(new ClientSettingsScreen(game));
+                }
+            });
+        }
+        leftTable.add(clientButton).expand().fill().pad(5).colspan(2).row(); // .prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
+        rootTable.add(leftTable).expandX().fillX().left();
+
+        backButton = new VisTextButton("BACK"); {
             backButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -98,9 +109,9 @@ public class MainMenuScreen extends AbstractScreen {
                 }
             });
         }
-        leftTable.add(backButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize);
+        leftTable.add(backButton).expand().fill().pad(5); // .prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
 
-        homeButton = new TextButton("HOME", skin); {
+        homeButton = new VisTextButton("HOME"); {
             homeButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -111,48 +122,39 @@ public class MainMenuScreen extends AbstractScreen {
                 }
             });
         }
-        leftTable.add(homeButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).row();
+        leftTable.add(homeButton).expand().fill().pad(5).row(); // .prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
 
-        serverButton = new TextButton("GameServerScreen", skin); {
-            serverButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
-                    super.clicked(event, x, y);
-                    game.addScreen(new ServerSettingsScreen(game));
-                }
-            });
-        }
-        leftTable.add(serverButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).colspan(2).row();
+        VisTable middleTable = new VisTable();
 
-        clientButton = new TextButton("GameClientScreen", skin); {
-            clientButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.log("MainMenuScreen::clientButton::clicked()", "-- event:" + event);
-                    super.clicked(event, x, y);
-                    game.addScreen(new ClientSettingsScreen(game));
-                }
-            });
-        }
-        leftTable.add(clientButton).expand().fill().prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).colspan(2).row();
-        rootTable.add(leftTable).expandX().fillX().left();
-
-        Table middleTable = new Table(skin);
-
-        sizeLabel1 = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
-        sizeLabel1.setFontScale(Gdx.graphics.getHeight() * cellsSize);
-        middleTable.add(sizeLabel1).row();
-
-        sizeLabel2 = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
+        sizeLabel2 = new VisLabel(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
         sizeLabel2.setFontScale(Gdx.graphics.getHeight() * sizeFont2);
-        middleTable.add(sizeLabel2).row();
+        middleTable.add(sizeLabel2).expand().fill().row();
 
-        sizeLabel3 = new Label(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight(), skin);
+        sizeLabel1 = new VisLabel(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+        sizeLabel1.setFontScale(Gdx.graphics.getHeight() * cellsSize);
+        middleTable.add(sizeLabel1).expand().fill().row();
+
+        sizeLabel3 = new VisLabel(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
         sizeLabel3.setFontScale(Gdx.graphics.getHeight() * sizeFont3);
-        middleTable.add(sizeLabel3).row();
+        middleTable.add(sizeLabel3).expand().fill().row();
 
-        slider1 = new Slider(-0.1f, 0.1f, 0.001f, false, skin);
+        slider2 = new VisSlider(0.01f, 8f, 0.015f, false);
+        slider2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                sizeFont2 = slider2.getValue();
+                Gdx.app.log("MainMenuScreen::slider2::changed()", "-- sizeFont2:" + sizeFont2);
+//                sizeLabel2.setFontScale( (Gdx.graphics.getHeight() * sizeFont2 == 0) ? 0.001f : Gdx.graphics.getHeight() * sizeFont2);
+                if (sizeFont2 != 0) {
+                    sizeLabel2.setFontScale(sizeFont2);
+                }
+                sizeLabel3.setText("sizeFont2:" + sizeFont2);
+            }
+        });
+        slider2.setValue(sizeFont2);
+        middleTable.add(slider2).expand().fill().row();
+
+        slider1 = new VisSlider(-0.1f, 0.1f, 0.001f, false);
         slider1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -164,28 +166,9 @@ public class MainMenuScreen extends AbstractScreen {
             }
         });
         slider1.setValue(cellsSize);
-        middleTable.add(slider1).row();
+        middleTable.add(slider1).expand().fill().row();
 
-        slider2 = new Slider(0.01f, 5f, 0.015f, false, skin);
-        slider2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                sizeFont2 = slider2.getValue();
-                Gdx.app.log("MainMenuScreen::slider2::changed()", "-- sizeFont2:" + sizeFont2);
-//                sizeLabel2.setFontScale( (Gdx.graphics.getHeight() * sizeFont2 == 0) ? 0.001f : Gdx.graphics.getHeight() * sizeFont2);
-                if (sizeFont2 != 0) {
-                    sizeLabel2.setFontScale(sizeFont2);
-//                    cellsSize = sizeFont2;
-                    resize();
-                }
-//                sizeLabel2.setText("cellsSize:" + cellsSize);
-                sizeLabel3.setText("sizeFont2:" + sizeFont2);
-            }
-        });
-        slider2.setValue(sizeFont2);
-        middleTable.add(slider2).row();
-
-        slider3 = new Slider(-1f, 1f, 0.001f, false, skin);
+        slider3 = new VisSlider(-1f, 1f, 0.001f, false);
         slider3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -195,20 +178,16 @@ public class MainMenuScreen extends AbstractScreen {
                 if (sizeFont3 != 0) {
                     sizeLabel3.setFontScale(sizeFont3);
                     cellsSize = sizeFont3;
-                    resize();
                 }
             }
         });
         slider3.setValue(sizeFont3);
-        middleTable.add(slider3).row();
+        middleTable.add(slider3).expand().fill().row();
 
-        rootTable.add(middleTable).center().expand().fill();
+        rootTable.add(middleTable).center().expand().pad(10).fill();
 
-        Table rightTable = new Table(skin);
-        playButton = new TextButton("PLAY", skin); {
-//            Label playText = new Label("PLAY", skin);
-//            playText.setFontScale(Gdx.graphics.getHeight() * cellsSize);
-//            playButton.add(playText).expand().top().row();
+        VisTable rightTable = new VisTable();
+        playButton = new VisTextButton("PLAY"); {
             playButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -218,12 +197,9 @@ public class MainMenuScreen extends AbstractScreen {
                 }
             });
         }
-        rightTable.add(playButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).row();
+        rightTable.add(playButton).expand().fill().row(); // .prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
 
-        secondButton = new TextButton("OPTIONS", skin); {
-//            Label playText = new Label("OPTIONS", skin);
-//            playText.setFontScale(Gdx.graphics.getHeight() * cellsSize);
-//            secondButton.add(playText).expand();
+        secondButton = new VisTextButton("OPTIONS"); {
             secondButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -233,12 +209,9 @@ public class MainMenuScreen extends AbstractScreen {
                 }
             });
         }
-        rightTable.add(secondButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize).row();
+        rightTable.add(secondButton).expand().fill().pad(10).row(); // .prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
 
-        exitButton = new TextButton("EXIT", skin); {
-//            Label playText = new Label("EXIT", skin);
-//            playText.setFontScale(Gdx.graphics.getHeight() * cellsSize);
-//            exitButton.add(playText).expand();
+        exitButton = new VisTextButton("EXIT"); {
             exitButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -248,10 +221,8 @@ public class MainMenuScreen extends AbstractScreen {
                 }
             });
         }
-        rightTable.add(exitButton).expand().fill().prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize);
-        rootTable.add(rightTable).expand().fillX().right();
-
-//        resize();
+        rightTable.add(exitButton).expand().fill().pad(10).row(); // .prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
+        rootTable.add(rightTable).expand().fillX().right().pad(10).row();
     }
 
     @Override
@@ -259,20 +230,6 @@ public class MainMenuScreen extends AbstractScreen {
         Gdx.app.log("MainMenuScreen::show()", "-- Called!");
         Gdx.input.setInputProcessor(stage);
 //        resize();
-    }
-
-    public void resize() {
-        Logger.logFuncStart("skin:" + skin);
-        if (skin != null) {
-            Logger.logInfo("cellsSize:" + cellsSize);
-            Logger.logInfo("sizeFont2:" + sizeFont2);
-            if (Gdx.app.getType() == Application.ApplicationType.Android && sizeFont2 < 1) {
-                skin.getFont("default-font").getData().setScale(7.25f, 7.25f);
-            } else {
-                skin.getFont("default-font").getData().setScale(sizeFont2, sizeFont2);
-            }
-            resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }
     }
 
     @Override
@@ -418,7 +375,7 @@ public class MainMenuScreen extends AbstractScreen {
                         //Choose map2
                         menuLvl = 3;
                         switchMenuButtons();
-                        game.sessionSettings.gameSettings.mapPath = "maps/arena2.tmx";
+                        game.sessionSettings.gameSettings.mapPath = "maps/randomMap.tmx";
                         break;
                     case 3:
                         //Choose map3

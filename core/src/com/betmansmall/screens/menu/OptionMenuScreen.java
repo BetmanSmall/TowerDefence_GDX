@@ -3,20 +3,27 @@ package com.betmansmall.screens.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.GameSettings;
+import com.betmansmall.screens.client.GameScreen;
+import com.betmansmall.util.logging.Logger;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisSlider;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
  * Created by betma on 04.12.2018.
@@ -27,38 +34,52 @@ public class OptionMenuScreen implements Screen {
 
     private Stage stage;
 
-    private CheckBox topBottomLeftRightSelector;
-    private CheckBox verticalSelector;
-    private CheckBox smoothFlingSelector;
-    private CheckBox checkBoxSound;
+    private VisCheckBox topBottomLeftRightSelector;
+    private VisCheckBox verticalSelector;
+    private VisCheckBox smoothFlingSelector;
+    private VisCheckBox checkBoxSound;
     private Slider sliderSound;
     private Slider sliderEnemyCount;
     private Slider sliderTowerCount;
     private Slider sliderDifficultyLevel;
+    private Slider sliderLandscapePercent;
 
-    private CheckBox panLeftMouseButton;
-    private CheckBox panMidMouseButton;
-    private CheckBox panRightMouseButton;
+    private VisCheckBox panLeftMouseButton;
+    private VisCheckBox panMidMouseButton;
+    private VisCheckBox panRightMouseButton;
     private TextButton backButton;
 
     public OptionMenuScreen(final GameMaster gameMaster, final GameSettings gameSettings) {
         this.gameMaster = gameMaster;
 
-        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-
         stage = new Stage(new ScreenViewport());
         stage.addActor(gameMaster.backgroundImages.get(2));
-//        stage.setDebugAll(true);
+
         stage.setDebugUnderMouse(true);
         stage.setDebugParentUnderMouse(true);
+        stage.setDebugTableUnderMouse(true);
+        stage.setDebugInvisible(true);
 
-        Table rootTable = new Table(skin);
+        Table rootTable = new VisTable();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
-        Table rightTable = new Table(skin);
+        TextButton playButton = new VisTextButton("PLAY");
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
+                super.clicked(event, x, y);
+                gameSettings.setGameTypeByMap("maps/randomMap.tmx");
+                gameMaster.setScreen(new GameScreen(gameMaster));
+            }
+        });
+        rootTable.add(playButton).colspan(2).expand().fill().row();
 
-        topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
+        Table table1 = new VisTable();
+
+        topBottomLeftRightSelector = new VisCheckBox("topBottomLeftRightSelector");
+        topBottomLeftRightSelector.getLabel().setColor(Color.BLACK);
         topBottomLeftRightSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -67,13 +88,10 @@ public class OptionMenuScreen implements Screen {
             }
         });
         topBottomLeftRightSelector.setChecked(gameSettings.topBottomLeftRightSelector);
-        topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
-        topBottomLeftRightSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        topBottomLeftRightSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(topBottomLeftRightSelector).expand().fill().left().colspan(2).row();
+        table1.add(topBottomLeftRightSelector).row();
 
-        verticalSelector = new CheckBox("verticalSelector", skin);
+        verticalSelector = new VisCheckBox("verticalSelector");
+        verticalSelector.getLabel().setColor(Color.BLACK);
         verticalSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -82,13 +100,10 @@ public class OptionMenuScreen implements Screen {
             }
         });
         verticalSelector.setChecked(gameSettings.verticalSelector);
-        verticalSelector.getImage().setScaling(Scaling.stretch);
-        verticalSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        verticalSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(verticalSelector).expand().fill().left().colspan(2).row();
+        table1.add(verticalSelector).row();
 
-        smoothFlingSelector = new CheckBox("smoothFlingSelector", skin);
+        smoothFlingSelector = new VisCheckBox("smoothFlingSelector");
+        smoothFlingSelector.getLabel().setColor(Color.BLACK);
         smoothFlingSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -97,13 +112,13 @@ public class OptionMenuScreen implements Screen {
             }
         });
         smoothFlingSelector.setChecked(gameSettings.smoothFlingSelector);
-        smoothFlingSelector.getImage().setScaling(Scaling.stretch);
-        smoothFlingSelector.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        smoothFlingSelector.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        smoothFlingSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(smoothFlingSelector).expand().fill().left().colspan(2).row();
+        table1.add(smoothFlingSelector).row();
 
-        panLeftMouseButton = new CheckBox("panLeftMouseButton", skin);
+        rootTable.add(table1);
+        Table table2 = new VisTable();
+
+        panLeftMouseButton = new VisCheckBox("panLeftMouseButton");
+        panLeftMouseButton.getLabel().setColor(Color.BLACK);
         panLeftMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -111,13 +126,10 @@ public class OptionMenuScreen implements Screen {
             }
         });
         panLeftMouseButton.setChecked(gameSettings.panLeftMouseButton);
-        panLeftMouseButton.getImage().setScaling(Scaling.stretch);
-        panLeftMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        panLeftMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        panLeftMouseButton.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(panLeftMouseButton).expand().fill().left().colspan(2).row();
+        table2.add(panLeftMouseButton).row();
 
-        panMidMouseButton = new CheckBox("panMidMouseButton", skin);
+        panMidMouseButton = new VisCheckBox("panMidMouseButton");
+        panMidMouseButton.getLabel().setColor(Color.BLACK);
         panMidMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -125,13 +137,10 @@ public class OptionMenuScreen implements Screen {
             }
         });
         panMidMouseButton.setChecked(gameSettings.panMidMouseButton);
-        panMidMouseButton.getImage().setScaling(Scaling.stretch);
-        panMidMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        panMidMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        panMidMouseButton.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(panMidMouseButton).expand().fill().left().colspan(2).row();
+        table2.add(panMidMouseButton).row();
 
-        panRightMouseButton = new CheckBox("panRightMouseButton", skin);
+        panRightMouseButton = new VisCheckBox("panRightMouseButton");
+        panRightMouseButton.getLabel().setColor(Color.BLACK);
         panRightMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -139,42 +148,36 @@ public class OptionMenuScreen implements Screen {
             }
         });
         panRightMouseButton.setChecked(gameSettings.panRightMouseButton);
-        panRightMouseButton.getImage().setScaling(Scaling.stretch);
-        panRightMouseButton.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-        panRightMouseButton.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-        panRightMouseButton.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(panRightMouseButton).expand().fill().left().colspan(2).row();
+        table2.add(panRightMouseButton).row();
 
-//        checkBoxSound = new CheckBox("sound On/Off:", skin);
-//        checkBoxSound.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- checkBoxSound.isChecked():" + checkBoxSound.isChecked());
-//            }
-//        });
-////        checkBoxSound.setChecked(gameSettings.panLeftMouseButton);
-//        checkBoxSound.getImage().setScaling(Scaling.stretch);
-//        checkBoxSound.getImageCell().width(Gdx.graphics.getHeight()*0.07f);
-//        checkBoxSound.getImageCell().height(Gdx.graphics.getHeight()*0.07f);
-//        checkBoxSound.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
-//        rightTable.add(checkBoxSound).right();
-//
-//        sliderSound = new Slider(0f, 100f, 1f, false, skin);
-//        sliderSound.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- sliderSound.getValue():" + sliderSound.getValue());
-//            }
-//        });
-//        sliderSound.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
-//        sliderSound.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
-//        rightTable.add(sliderSound).expand().fill().row();
+        rootTable.add(table2).row();
+        Table table3 = new VisTable();
 
-        final Label enemyCountLabel = new Label("enemyCount:", skin);
-        enemyCountLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(enemyCountLabel).right();
+        checkBoxSound = new VisCheckBox("sound On/Off:");
+        checkBoxSound.getLabel().setColor(Color.BLACK);
+        checkBoxSound.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- checkBoxSound.isChecked():" + checkBoxSound.isChecked());
+            }
+        });
+        checkBoxSound.setChecked(gameSettings.panLeftMouseButton);
+        table3.add(checkBoxSound);
 
-        sliderEnemyCount = new Slider(0f, 32f, 1f, false, skin);
+        sliderSound = new VisSlider(0f, 100f, 1f, false);
+        sliderSound.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- sliderSound.getValue():" + sliderSound.getValue());
+            }
+        });
+        table3.add(sliderSound).row();
+
+        final Label enemyCountLabel = new VisLabel("enemyCount:");
+        enemyCountLabel.setColor(Color.BLACK);
+        table3.add(enemyCountLabel);
+
+        sliderEnemyCount = new VisSlider(0f, 32f, 1f, false);
         sliderEnemyCount.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -184,33 +187,13 @@ public class OptionMenuScreen implements Screen {
             }
         });
         sliderEnemyCount.setValue(gameSettings.enemyCount);
-        sliderEnemyCount.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
-        sliderEnemyCount.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
-        rightTable.add(sliderEnemyCount).expand().fill().row();
+        table3.add(sliderEnemyCount).row();
 
-        final Label difficultyLevelLabel = new Label("difficultyLevel:", skin);
-        difficultyLevelLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(difficultyLevelLabel).right();
+        final Label towerCountLabel = new VisLabel("towerCount:");
+        towerCountLabel.setColor(Color.BLACK);
+        table3.add(towerCountLabel);
 
-        sliderDifficultyLevel = new Slider(0f, 4f, 1f, false, skin);
-        sliderDifficultyLevel.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
-                difficultyLevelLabel.setText("difficultyLevel:" + sliderDifficultyLevel.getValue());
-                gameSettings.difficultyLevel = (int)sliderDifficultyLevel.getValue();
-            }
-        });
-        sliderDifficultyLevel.setValue(gameSettings.difficultyLevel);
-        sliderDifficultyLevel.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
-        sliderDifficultyLevel.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
-        rightTable.add(sliderDifficultyLevel).expand().fill().row();
-
-        final Label towerCountLabel = new Label("towerCount:", skin);
-        towerCountLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
-        rightTable.add(towerCountLabel).right();
-
-        sliderTowerCount = new Slider(0f, 32f, 1f, false, skin);
+        sliderTowerCount = new VisSlider(0f, 32f, 1f, false);
         sliderTowerCount.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -220,13 +203,43 @@ public class OptionMenuScreen implements Screen {
             }
         });
         sliderTowerCount.setValue(gameSettings.towersCount);
-        sliderTowerCount.getStyle().knob.setMinWidth(Gdx.graphics.getHeight()*0.05f);
-        sliderTowerCount.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
-        rightTable.add(sliderTowerCount).expand().fill().row();
+        table3.add(sliderTowerCount).row();
 
-//        skin.getFont()
-        backButton = new TextButton("BACK", skin);
-//        backButton.setScale(Gdx.graphics.getHeight()*0.01f);
+        final Label difficultyLevelLabel = new VisLabel("difficultyLevel:");
+        difficultyLevelLabel.setColor(Color.BLACK);
+        table3.add(difficultyLevelLabel);
+
+        sliderDifficultyLevel = new VisSlider(0f, 4f, 1f, false);
+        sliderDifficultyLevel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
+                difficultyLevelLabel.setText("difficultyLevel:" + sliderDifficultyLevel.getValue());
+                gameSettings.difficultyLevel = (int)sliderDifficultyLevel.getValue();
+            }
+        });
+        sliderDifficultyLevel.setValue(gameSettings.difficultyLevel);
+        table3.add(sliderDifficultyLevel).row();
+
+        final Label landscapePercentLabel = new VisLabel("landscapePercent:");
+        landscapePercentLabel.setColor(Color.BLACK);
+        table3.add(landscapePercentLabel);
+
+        sliderLandscapePercent = new VisSlider(0f, 100f, 1f, false);
+        sliderLandscapePercent.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Logger.logDebug("-- sliderLandscapePercent.getValue():" + sliderLandscapePercent.getValue());
+                landscapePercentLabel.setText("landscapePercent:" + sliderLandscapePercent.getValue());
+                gameSettings.landscapePercent = (int)sliderLandscapePercent.getValue();
+            }
+        });
+        sliderLandscapePercent.setValue(gameSettings.landscapePercent);
+        table3.add(sliderLandscapePercent).row();
+
+        rootTable.add(table3).colspan(2).row();
+
+        backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -234,8 +247,7 @@ public class OptionMenuScreen implements Screen {
                 gameMaster.removeTopScreen();
             }
         });
-        rightTable.add(backButton).expand().fill().colspan(2);//.prefHeight(Gdx.graphics.getHeight()*0.3f);
-        rootTable.add(rightTable).expand().fill().right().bottom();
+        rootTable.add(backButton).colspan(2).expand().fill().row();
     }
 
     @Override

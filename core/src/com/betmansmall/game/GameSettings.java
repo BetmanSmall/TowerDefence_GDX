@@ -14,6 +14,7 @@ public class GameSettings {
     public float difficultyLevel;
     public int enemyCount;
     public int towersCount;
+    public int landscapePercent;
     public boolean topBottomLeftRightSelector; // Top - false, Bottom - true, Left - false, Right - true;
     public boolean verticalSelector;
     public boolean smoothFlingSelector;
@@ -29,6 +30,7 @@ public class GameSettings {
         this.difficultyLevel = 1f;
         this.enemyCount = 20;
         this.towersCount = 10;
+        this.landscapePercent = 30;
 
         this.topBottomLeftRightSelector = true;
         this.verticalSelector = true;
@@ -72,6 +74,7 @@ public class GameSettings {
         sb.append(",enemyCount:" + enemyCount);
         sb.append(",towersCount:" + towersCount);
         if (full) {
+            sb.append(",landscapePercent:" + landscapePercent);
             sb.append(",topBottomLeftRightSelector:" + topBottomLeftRightSelector);
             sb.append(",verticalSelector:" + verticalSelector);
             sb.append(",smoothFlingSelector:" + smoothFlingSelector);

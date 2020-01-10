@@ -131,7 +131,7 @@ public class Unit {
 
     public void updateData(UnitInstanceData unitInstanceData, ArrayDeque<Cell> route) {
 //        this.id = unitInstanceData.id;
-//        this.currentCell = route.pollFirst(); // or simple?? // route.pollFirst();
+        this.currentCell = route.pollFirst(); // or simple?? // route.pollFirst();
         this.nextCell = route.pollFirst();
         this.route = route;
 //        this.templateForUnit = unitInstanceData.templateForUnit;

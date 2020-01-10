@@ -2,6 +2,7 @@ package com.betmansmall.screens.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,13 +11,22 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.screens.AbstractScreen;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
  * Created by betma on 09.05.2016.
  */
 public class MapEditorScreen extends AbstractScreen implements GestureDetector.GestureListener {
+    private Stage stage;
     private SpriteBatch spriteBatch;
 
     private static final float MAX_ZOOM = 50f; //max size
@@ -34,6 +44,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
     public MapEditorScreen(GameMaster gameMaster, String fileName) {
         super(gameMaster);
         Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- gameMaster:" + gameMaster + " fileName:" + fileName);
+        this.stage = new Stage(new ScreenViewport());
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera();
@@ -42,7 +53,24 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         this.map = new TmxMapLoader().load(fileName);
         this.renderer = new IsometricTiledMapRenderer(map, spriteBatch);
 
-        Gdx.input.setInputProcessor(new GestureDetector(this));
+        Table rootTable = new VisTable();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
+
+        TextButton backButton = new VisTextButton("BACK");
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("MapEditorScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
+                gameMaster.removeTopScreen();
+            }
+        });
+        rootTable.add(backButton).center().row();
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(new GestureDetector(this));
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -59,6 +87,8 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         camera.update();
         renderer.setView(camera);
         renderer.render();
+        stage.act();
+        stage.draw();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.log("MapEditorScreen::render()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE);");
@@ -71,6 +101,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         camera.viewportHeight = height;
         camera.viewportWidth = width;
         camera.update();
+        stage.getViewport().update(width, height);
         Gdx.app.log("MapEditorScreen::resize()", "-- New width:" + width + " height:" + height);
     }
 

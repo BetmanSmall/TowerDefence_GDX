@@ -33,7 +33,7 @@ public class UnitInstanceData implements NetworkPackage {
     public UnitInstanceData(Unit unit) {
         this.id = unit.id;
         this.route = new ArrayList<>(unit.route.size());
-//        this.route.add(new GridPoint2(unit.currentCell.cellX, unit.currentCell.cellY)); // need? or not?
+        this.route.add(new GridPoint2(unit.currentCell.cellX, unit.currentCell.cellY)); // need? or not?
         this.route.add(new GridPoint2(unit.nextCell.cellX, unit.nextCell.cellY));
         for (Cell cell : unit.route) {
             this.route.add(new GridPoint2(cell.cellX, cell.cellY));

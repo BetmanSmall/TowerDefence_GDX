@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.screens.actors.SlidingTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
  * Created by betma on 05.12.2018.
@@ -33,8 +34,6 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
     public HelpMenuScreen(final GameMaster gameMaster) {
         this.gameMaster = gameMaster;
 
-        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-
         stage = new Stage(new ScreenViewport());
         stage.addActor(gameMaster.backgroundImages.get(1));
         stage.setDebugAll(true);
@@ -47,7 +46,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
         slidingTable = new SlidingTable();
         rootTable.add(slidingTable).expand().fill().row();
 
-        backButton = new TextButton("BACK", skin);
+        backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

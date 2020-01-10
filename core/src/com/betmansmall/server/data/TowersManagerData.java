@@ -48,6 +48,7 @@ public class TowersManagerData implements NetworkPackage {
         }
     }
     public ArrayList<TowerData> towers;
+    public boolean hardOrSoftUpdate;
 
     public TowersManagerData(TowersManager towersManager) {
         this.towers = new ArrayList<>(towersManager.towers.size);
@@ -58,6 +59,7 @@ public class TowersManagerData implements NetworkPackage {
             TowerData towerData = new TowerData(tower);
             this.towers.add(towerData);
         }
+        this.hardOrSoftUpdate = true;
     }
 
     @Override

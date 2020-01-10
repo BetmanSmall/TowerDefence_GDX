@@ -231,24 +231,24 @@ public class GameField {
     }
 
     public boolean landscapeGenerator(String mapPath) {
-        Gdx.app.log("GameField::landscapeGenerator()", "-- mapPath:" + mapPath);
         if (mapPath.contains("randomMap")) {
             for (int x = 0; x < tmxMap.width; x++) {
                 for (int y = 0; y < tmxMap.height; y++) {
-                    if(random.nextInt(10) < 3) {
+                    if(random.nextInt(100) < gameSettings.landscapePercent) {
                         if (getCellNoCheck(x, y).isEmpty()) {
                             TiledMapTileSet tiledMapTileSet = tmxMap.getTileSets().getTileSet(1);
                             int firstgid = tiledMapTileSet.getProperties().get("firstgid", Integer.class);
 
                             int randNumber = (firstgid + 43 + random.nextInt(4)); // bricks from TileObjectsRubbleWalls.tsx
                             TiledMapTile tile = tiledMapTileSet.getTile(randNumber);
-                            Logger.logDebug("tile:" + tile);
+//                            Logger.logDebug("tile:" + tile);
                             getCellNoCheck(x, y).setTerrain(tile);
                         }
                     }
                 }
             }
         }
+        Logger.logFuncEnd("GameField::landscapeGenerator()", "-- mapPath:" + mapPath);
         return true;
     }
 
@@ -457,6 +457,9 @@ public class GameField {
     }
 
     public void updateUnitsManager(UnitsManagerData unitsManagerData) {
+        if (unitsManagerData.hardOrSoftUpdate) {
+            unitsManager.removeAllUnits();
+        }
         for (UnitInstanceData unitInstanceData : unitsManagerData.units) {
             ArrayDeque<Cell> route = unitInstanceData.getRoute(this);
             if (route != null) {
@@ -467,6 +470,7 @@ public class GameField {
                 Logger.logError("route:null unitInstanceData:" + unitInstanceData);
             }
         }
+        stepAllUnits(0f, gameScreen.cameraController);
     }
 
     public UnderConstruction createdRandomUnderConstruction() {
@@ -781,6 +785,15 @@ public class GameField {
         }
     }
 
+    private void setUnitRandomRoute(Unit unit) {
+        int randomX = random.nextInt(tmxMap.width);
+        int randomY = random.nextInt(tmxMap.height);
+        unit.route = pathFinder.route(unit.nextCell.cellX, unit.nextCell.cellY, randomX, randomY); // nextCurrentCell -?- currentCell
+        if (unit.route != null && !unit.route.isEmpty()) {
+            unit.route.removeFirst();
+        }
+    }
+
 //    public void rerouteForAllUnits() {
 //        rerouteForAllUnits(null);
 //    }
@@ -791,16 +804,16 @@ public class GameField {
 //            Gdx.app.log("GameField::rerouteForAllUnits()", "-- Start:" + start);
 ////            pathFinder.loadCharMatrix(getCharMatrix());
 //            for (Unit unit : unitsManager.units) {
-//                ArrayDeque<Node> route;
+//                ArrayDeque<Cell> route;
 //                if (exitPoint == null) {
 //                    route = unit.route;
 //                    if(route != null && route.size() > 0) {
-//                        Node node = unit.route.getLast();
-//                        GridPoint2 localExitPoint = new GridPoint2(node.getX(), node.getY());
-//                        route = pathFinder.route(unit.nextCell.getX(), unit.nextCell.getY(), localExitPoint.x, localExitPoint.y); // TODO BAGA!
+//                        Cell node = unit.route.getLast();
+//                        GridPoint2 localExitPoint = new GridPoint2(node.cellX, node.cellY);
+//                        route = pathFinder.route(unit.nextCell.cellX, unit.nextCell.cellY, localExitPoint.x, localExitPoint.y); // TODO BAGA!
 //                    }
 //                } else {
-//                    route = pathFinder.route(unit.nextCell.getX(), unit.nextCell.getY(), exitPoint.x, exitPoint.y); // TODO BAGA!
+//                    route = pathFinder.route(unit.nextCell.cellX, unit.nextCell.cellY, exitPoint.x, exitPoint.y); // TODO BAGA!
 //                }
 //                if (route != null && !route.isEmpty()) {
 //                    route.removeFirst();
@@ -843,6 +856,7 @@ public class GameField {
                             Cell cell = oldCurrentCell;
                             if (unit.player == gameScreen.playersManager.getLocalServer()) {
                                 unit.player.missedUnits++;
+                                setUnitRandomRoute(unit);
                             } else if (unit.player == gameScreen.playersManager.getLocalPlayer()) {
                                 if (unit.exitCell == nextCurrentCell) { // ?? unit.exitCell.equals(cell) ?? // hueta! change plz Nikita!
                                     unit.player.missedUnits++;
@@ -853,21 +867,13 @@ public class GameField {
                                     Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(tower):");
                                 } else {
                                     if (unit.route == null || unit.route.isEmpty()) {
-                                        int randomX = random.nextInt(tmxMap.width);
-                                        int randomY = random.nextInt(tmxMap.height);
-                                        unit.route = pathFinder.route(nextCurrentCell.cellX, nextCurrentCell.cellY, randomX, randomY); // nextCurrentCell -?- currentCell
-                                        if (unit.route != null && !unit.route.isEmpty()) {
-                                            unit.route.removeFirst();
-//                                        unit.route.removeLast();
-                                        }
-//                                    Gdx.app.log("GameField::stepAllUnits()", "-- new unit.route:" + tower.route);
+                                        setUnitRandomRoute(unit);
                                     }
                                 }
-//                            Cell* cell = getCell(currentCell.x, currentCell.y);
-//                            if (cell->isTerrain()) {
-//                                cell->removeTerrain(true);
-//                                updatePathFinderWalls();
-//                            }
+                                if (cell.isTerrain()) {
+                                    cell.removeTerrain(true);
+                                    updatePathFinderWalls();
+                                }
                             }
                         }
 //                    }

@@ -83,6 +83,20 @@ public class UnitsManager {
         }
     }
 
+    public void removeAllUnits() {
+        for (int u = 0; u < units.size; u++) {
+            Unit unit = units.get(u);
+            Cell currentCell = unit.currentCell;
+            currentCell.removeUnit(unit);
+            if (unit.towerAttack != null) {
+                unit.towerAttack.whoAttackMe.removeValue(unit, true);
+            }
+//            units.removeValue(unit, true);
+            unit.dispose();
+        }
+        units.clear();
+    }
+
     public String toString() {
         return toString(false);
     }
