@@ -1,11 +1,16 @@
 package com.betmansmall.server.data;
 
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.GameField;
 import com.betmansmall.game.gameLogic.Unit;
+import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
+import com.betmansmall.game.gameLogic.playerTemplates.UnitAttack;
 import com.betmansmall.util.logging.Logger;
 
 import java.util.ArrayDeque;
@@ -19,6 +24,8 @@ public class UnitInstanceData implements NetworkPackage {
     public PlayerInfoData playerInfoData; // mb more useless info
 
     public GridPoint2 exitCell;
+//    public Cell currentCell;
+//    public Cell nextCell;
 
     public float hp;
     public float speed;
@@ -26,9 +33,18 @@ public class UnitInstanceData implements NetworkPackage {
     public float deathElapsedTime;
 
     public GridPoint2 cellTowerAttack;
+    public UnitAttack unitAttack;
+    public Vector2 currentPoint;
+    public Vector2 backStepPoint;
+    public Vector2 velocity;
+    public Vector2 displacement;
+
+    public List<Circle> circles;
 
     public List<TowerShellEffect> shellEffectTypes;
 //    public List<UnitBulletData> bullets;
+    public Direction direction;
+//    private Animation animation;
 
     public UnitInstanceData(Unit unit) {
         this.id = unit.id;
@@ -53,12 +69,25 @@ public class UnitInstanceData implements NetworkPackage {
         if (unit.towerAttack != null) {
             this.cellTowerAttack = new GridPoint2(unit.towerAttack.cell.cellX, unit.towerAttack.cell.cellY);
         }
+        if (unit.unitAttack != null) {
+            this.unitAttack = unit.unitAttack;
+        }
+        this.currentPoint = unit.currentPoint;
+        this.backStepPoint = unit.backStepPoint;
+        this.velocity = unit.velocity;
+        this.displacement = unit.displacement;
+
+        this.circles = new ArrayList<>(unit.circles.size);
+        for (Circle circle : unit.circles) {
+            this.circles.add(circle);
+        }
 
         this.shellEffectTypes = new ArrayList<>(unit.shellEffectTypes.size);
         for (TowerShellEffect towerShellEffect : unit.shellEffectTypes) {
             this.shellEffectTypes.add(towerShellEffect);
         }
 //        this.bullets = ...
+        this.direction = unit.direction;
     }
 
     public ArrayDeque<Cell> getRoute(GameField gameField) {

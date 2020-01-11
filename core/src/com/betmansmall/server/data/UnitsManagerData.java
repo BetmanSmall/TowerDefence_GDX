@@ -11,6 +11,14 @@ public class UnitsManagerData implements NetworkPackage {
     public boolean hardOrSoftUpdate;
 
     public UnitsManagerData(UnitsManager unitsManager) {
+        init(unitsManager, false);
+    }
+
+    public UnitsManagerData(UnitsManager unitsManager, boolean hardOrSoftUpdate) {
+        init(unitsManager, hardOrSoftUpdate);
+    }
+
+    private void init(UnitsManager unitsManager, boolean hardOrSoftUpdate) {
         this.units = new ArrayList<>(unitsManager.units.size);
         for (int u = 0; u < unitsManager.units.size; u++) {
             Unit unit = unitsManager.units.get(u);
@@ -18,7 +26,7 @@ public class UnitsManagerData implements NetworkPackage {
             UnitInstanceData unitData = new UnitInstanceData(unit);
             this.units.add(unitData);
         }
-        this.hardOrSoftUpdate = true;
+        this.hardOrSoftUpdate = hardOrSoftUpdate;
     }
 
     @Override

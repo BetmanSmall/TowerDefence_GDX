@@ -15,6 +15,7 @@ import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.BuildTowerData;
+import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.util.logging.Logger;
 
 public class ClientGameScreen extends GameScreen {
@@ -56,7 +57,10 @@ public class ClientGameScreen extends GameScreen {
 
     @Override
     public void sendGameFieldVariables() {
-        clientSessionThread.sendObject(new SendObject(new GameFieldVariablesData(gameField)));
+        clientSessionThread.sendObject(new SendObject(
+                SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
+                new GameFieldVariablesData(gameField),
+                new UnitsManagerData(gameField.unitsManager)));
     }
 
     @Override

@@ -408,9 +408,9 @@ public class GameField {
             if (route != null) {
                 unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
-                Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
+                Logger.logDebug("-- unit:" + unit);
             } else {
-                Gdx.app.log("GameField::createUnit()", "-- Not found route for createUnit!");
+                Logger.logError("-- Not found route for createUnit!");
 //                if(towersManager.towers.size > 0) {
 //                    Gdx.app.log("GameField::createUnit()", "-- Remove one last tower! And retry call createUnit()");
 //                    removeLastTower();
@@ -421,13 +421,13 @@ public class GameField {
             }
             return unit;
         } else {
-            Gdx.app.log("GameField::createUnit()", "-- Bad spawnCell:" + spawnCell + " || destCell:" + destCell + " || pathFinder:" + pathFinder);
+            Logger.logError("-- Bad spawnCell:" + spawnCell + " || destCell:" + destCell + " || pathFinder:" + pathFinder);
             return null;
         }
     }
 
     public Unit createUnit(UnitInstanceData unitInstanceData) {
-        Logger.logFuncStart("unitInstanceData:" + unitInstanceData.toString(true));
+        Logger.logFuncStart("unitInstanceData:" + unitInstanceData);
         GridPoint2 spawnGP2 = unitInstanceData.route.get(0);
         GridPoint2 destGP2 = unitInstanceData.route.get(unitInstanceData.route.size()-1);
         Cell spawnCell = getCell(spawnGP2.x, spawnGP2.y);
@@ -443,7 +443,7 @@ public class GameField {
                 }
                 Unit unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
-                unit.updateData(unitInstanceData);
+                unit.updateData(unitInstanceData, this);
                 Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
                 return unit;
             } else {
@@ -458,19 +458,20 @@ public class GameField {
 
     public void updateUnitsManager(UnitsManagerData unitsManagerData) {
         if (unitsManagerData.hardOrSoftUpdate) {
+            Logger.logDebug(unitsManagerData.units.toString());
+            Logger.logDebug(unitsManager.units.toString());
             unitsManager.removeAllUnits();
         }
         for (UnitInstanceData unitInstanceData : unitsManagerData.units) {
             ArrayDeque<Cell> route = unitInstanceData.getRoute(this);
             if (route != null) {
-                if (!unitsManager.updateUnit(unitInstanceData, route)) {
+                if (!unitsManager.updateUnit(unitInstanceData, route, this)) {
                     this.createUnit(unitInstanceData);
                 }
             } else {
                 Logger.logError("route:null unitInstanceData:" + unitInstanceData);
             }
         }
-        stepAllUnits(0f, gameScreen.cameraController);
     }
 
     public UnderConstruction createdRandomUnderConstruction() {
@@ -580,7 +581,7 @@ public class GameField {
                     }
                 }
             }
-            Gdx.app.log("GameField::createTower()", "-- tower:" + tower.toString(true));
+            Logger.logFuncEnd("-- tower:" + tower.toString(true));
             return tower;
         }
         return null;
@@ -832,7 +833,9 @@ public class GameField {
 //    }
 
     private void stepAllUnits(float delta, CameraController cameraController) {
-        for (Unit unit : unitsManager.units) {
+        for (int u = 0; u < unitsManager.units.size; u++) {
+            Unit unit = unitsManager.units.get(u);
+//        for (Unit unit : unitsManager.units) {
             Cell oldCurrentCell = unit.currentCell;
             Cell nextCurrentCell = unit.nextCell;
             if (unit.isAlive()) {
@@ -864,7 +867,6 @@ public class GameField {
                                         cell.removeUnit(unit);
                                     }
                                     unitsManager.removeUnit(unit);
-                                    Gdx.app.log("GameField::stepAllUnits()", "-- unitsManager.removeUnit(tower):");
                                 } else {
                                     if (unit.route == null || unit.route.isEmpty()) {
                                         setUnitRandomRoute(unit);
@@ -883,9 +885,7 @@ public class GameField {
                 if (!unit.changeDeathFrame(delta)) {
                     oldCurrentCell.removeUnit(unit);
 //                    GameField.gamerGold += unit.templateForUnit.bounty;
-                    unit.dispose();
                     unitsManager.removeUnit(unit);
-                    Gdx.app.log("GameField::stepAllUnits()", "-- Unit death! and delete!");
                 }
             }
 //            Gdx.app.log("GameField::stepAllUnits()", "-- Unit:" + unit.toString());

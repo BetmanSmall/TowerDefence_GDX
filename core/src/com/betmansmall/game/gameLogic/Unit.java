@@ -129,28 +129,49 @@ public class Unit {
         this.animation = null;
     }
 
-    public void updateData(UnitInstanceData unitInstanceData, ArrayDeque<Cell> route) {
+    public void updateData(UnitInstanceData unitInstanceData, ArrayDeque<Cell> route, GameField gameField) {
 //        this.id = unitInstanceData.id;
         this.currentCell = route.pollFirst(); // or simple?? // route.pollFirst();
         this.nextCell = route.pollFirst();
         this.route = route;
 //        this.templateForUnit = unitInstanceData.templateForUnit;
 //        this.player = unitInstanceData.playerInfoData;
-        updateData(unitInstanceData);
+        updateData(unitInstanceData, gameField);
     }
 
-    public void updateData(UnitInstanceData unitInstanceData) {
+    public void updateData(UnitInstanceData unitInstanceData, GameField gameField) {
         this.hp = unitInstanceData.hp;
         this.speed = unitInstanceData.speed;
         this.stepsInTime = unitInstanceData.stepsInTime;
         this.deathElapsedTime = unitInstanceData.deathElapsedTime;
 
-//        this.towerAttack = ...
+        if (unitInstanceData.cellTowerAttack != null) {
+            Cell cellTowerAttack = gameField.getCell(unitInstanceData.cellTowerAttack.x, unitInstanceData.cellTowerAttack.y);
+            if (cellTowerAttack != null) {
+                this.towerAttack = cellTowerAttack.getTower();
+            }
+        }
+        if (unitInstanceData.unitAttack != null) {
+            this.unitAttack = unitInstanceData.unitAttack;
+        }
+        this.currentPoint = unitInstanceData.currentPoint;
+        this.backStepPoint = unitInstanceData.backStepPoint;
+        this.velocity = unitInstanceData.velocity;
+        this.displacement = unitInstanceData.displacement;
+
+//        this.circles = new Array<>(unitInstanceData.circles.size());
+        this.circles.clear();
+        for (Circle circle : unitInstanceData.circles) {
+            this.circles.add(circle);
+        }
+
         this.shellEffectTypes = new Array<>(unitInstanceData.shellEffectTypes.size());
         for (TowerShellEffect towerShellEffect : unitInstanceData.shellEffectTypes) {
             this.shellEffectTypes.add(towerShellEffect);
         }
 //        this.bullets = ...
+        this.direction = unitInstanceData.direction;
+//        this.calculateInitVars(0, gameField.gameScreen.cameraController);
     }
 
     private void setAnimation(String action) { // Action transform to Enum
@@ -317,22 +338,25 @@ public class Unit {
             }
         }
         if (unitAttack == null || (!unitAttack.attacked && towerAttack == null) ) {
-            Direction oldDirection = direction;
-            int oldX = currentCell.cellX, oldY = currentCell.cellY;
-            int newX = nextCell.cellX, newY = nextCell.cellY;
-
-            calculateDirection(oldX, oldY, newX, newY, cameraController);
-
-            velocity = new Vector2(backStepPoint.x - currentPoint.x, backStepPoint.y - currentPoint.y);
-            velocity.nor().scl(Math.min(currentPoint.dst(backStepPoint.x, backStepPoint.y), speed));
-            displacement = new Vector2(velocity.x * delta, velocity.y * delta);
-
-//        Gdx.app.log("Unit::move()", "-- direction:" + direction + " oldDirection:" + oldDirection);
-            if (!direction.equals(oldDirection)) {
-                setAnimation("walk_");
-            }
+            calculateInitVars(delta, cameraController);
         }
         return currentCell;
+    }
+
+    public void calculateInitVars(float delta, CameraController cameraController) {
+        Direction oldDirection = direction;
+        int oldX = currentCell.cellX, oldY = currentCell.cellY;
+        int newX = nextCell.cellX, newY = nextCell.cellY;
+
+        calculateDirection(oldX, oldY, newX, newY, cameraController);
+
+        velocity = new Vector2(backStepPoint.x - currentPoint.x, backStepPoint.y - currentPoint.y);
+        velocity.nor().scl(Math.min(currentPoint.dst(backStepPoint.x, backStepPoint.y), speed));
+        displacement = new Vector2(velocity.x * delta, velocity.y * delta);
+
+        if (!direction.equals(oldDirection)) {
+            setAnimation("walk_");
+        }
     }
 
     private void calculateDirection(int currX, int currY, int nextX, int nextY, CameraController cameraController) {

@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import java.io.Serializable;
+
 /**
  * Created by betma on 12.03.2019.
  */
 
-public class UnitAttack {
+public class UnitAttack implements Serializable {
     public enum AttackType {
         Melee("Melee"), // attack to die
 //        RangeStand("RangeStand"), // attack to die

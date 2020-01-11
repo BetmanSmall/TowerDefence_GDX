@@ -7,6 +7,7 @@ import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.server.data.UnitInstanceData;
+import com.betmansmall.util.logging.Logger;
 
 import java.util.ArrayDeque;
 
@@ -38,10 +39,10 @@ public class UnitsManager {
         return unit;
     }
 
-    public boolean updateUnit(UnitInstanceData unitInstanceData, ArrayDeque<Cell> route) {
+    public boolean updateUnit(UnitInstanceData unitInstanceData, ArrayDeque<Cell> route, GameField gameField) {
         Unit mbUnit = getUnitById(unitInstanceData.id);
         if (mbUnit != null) {
-            mbUnit.updateData(unitInstanceData, route);
+            mbUnit.updateData(unitInstanceData, route, gameField);
             return true;
         }
         return false;
@@ -77,23 +78,28 @@ public class UnitsManager {
     }
 
     public void removeUnit(Unit unit) {
+        Logger.logFuncStart("unit:" + unit);
         units.removeValue(unit, false);
         if (hero.contains(unit, false)) {
             hero.removeValue(unit, false);
         }
+        unit.dispose();
     }
 
     public void removeAllUnits() {
+        Logger.logFuncStart();
         for (int u = 0; u < units.size; u++) {
             Unit unit = units.get(u);
+            Logger.logDebug("unit:" + unit);
             Cell currentCell = unit.currentCell;
             currentCell.removeUnit(unit);
-            if (unit.towerAttack != null) {
+            if (unit.towerAttack != null && unit.towerAttack.whoAttackMe != null) {
                 unit.towerAttack.whoAttackMe.removeValue(unit, true);
             }
 //            units.removeValue(unit, true);
             unit.dispose();
         }
+        unitsCount = 0;
         units.clear();
     }
 
