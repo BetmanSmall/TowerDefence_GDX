@@ -117,27 +117,7 @@ public class GameField {
             }
             spawnHeroInSpawnPoint();
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            waveManager.validationPoints(field, tmxMap.width, tmxMap.height);
-            if (waveManager.waves.size == 0) {
-                for (int w = 0; w < 10; w++) {
-                    GridPoint2 spawnPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
-                    GridPoint2 exitPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
-                    Cell spawnCell = getCell(spawnPoint.x, spawnPoint.y);
-                    Cell exitCell = getCell(exitPoint.x, exitPoint.y);
-                    if (spawnCell != null && spawnCell.isEmpty()) {
-                        if (exitCell != null && exitCell.isEmpty()) {
-                            Wave wave = new Wave(spawnPoint, exitPoint);
-                            for (int k = 0; k < 10; k++) {
-                                wave.addAction("interval=" + 1);
-                                wave.addAction(factionsManager.getRandomTemplateForUnitFromFirstFaction().templateName);
-                            }
-                            waveManager.addWave(wave);
-                        }
-                    }
-                }
-
-            }
-            waveManager.checkRoutes(pathFinder);
+            waveManager.generateWave(this, field, tmxMap, random, pathFinder);
         } else {
             Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         }

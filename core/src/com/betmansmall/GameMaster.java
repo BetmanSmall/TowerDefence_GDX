@@ -111,6 +111,7 @@ public class GameMaster extends Game {
 //            gameLevelMaps.add("maps/desert.tmx");
 //            gameLevelMaps.add("maps/summer.tmx");
 //            gameLevelMaps.add("maps/winter.tmx");
+            gameLevelMaps.add("maps/arenaEmpty.tmx");
             gameLevelMaps.add("maps/arena0.tmx");
             gameLevelMaps.add("maps/randomMap.tmx");
             gameLevelMaps.add("maps/island.tmx");

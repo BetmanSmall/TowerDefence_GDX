@@ -331,12 +331,15 @@ public class GameScreen extends AbstractScreen {
         Cell cell = gameField.getCell(buildX, buildY);
         if (cell != null) {
             if (cell.isEmpty()) {
-                Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction());
+                TemplateForTower randomTemplateForTower = gameField.factionsManager.getRandomTemplateForTowerFromAllFaction();
+//                TemplateForTower small_fireTemplateForTower = gameField.factionsManager.getTemplateForTowerFromFirstFactionByName("small_fire");
+                Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, randomTemplateForTower);
                 if (tower != null) {
                     gameField.rerouteAllUnits();
                 }
                 return tower;
             } else if (cell.getTower() != null) {
+                cameraController.templateForTower = cell.getTower().templateForTower;
                 gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
             }
         }

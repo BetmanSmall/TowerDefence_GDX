@@ -128,6 +128,20 @@ public class FactionsManager {
         return null;
     }
 
+    public TemplateForTower getTemplateForTowerFromFirstFactionByName(String templateName) {
+        Faction faction = factions.first();
+        if (faction != null) {
+            for (TemplateForTower templateForTower : faction.getTemplateForTowers()) {
+                if (templateForTower != null) {
+                    if (templateForTower.templateName.equals(templateName)) {
+                        return templateForTower;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public TemplateForUnit getTemplateForUnitFromFirstFactionByName(String templateName) {
         Faction faction = factions.first();
         if (faction != null) {

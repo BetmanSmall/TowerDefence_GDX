@@ -9,8 +9,10 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.betmansmall.maps.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
+import com.betmansmall.maps.TmxMap;
 
 import java.util.ArrayDeque;
+import java.util.Random;
 
 /**
  * Created by betmansmall on 29.03.2016.
@@ -144,6 +146,30 @@ public class WaveManager {
             }
         }
         return false;
+    }
+
+    public void generateWave(GameField gameField, Cell[][] field, TmxMap tmxMap, Random random, PathFinder pathFinder) {
+        validationPoints(field, tmxMap.width, tmxMap.height);
+        if (waves.size == 0) {
+            for (int w = 0; w < 10; w++) {
+                GridPoint2 spawnPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
+                GridPoint2 exitPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
+                Cell spawnCell = gameField.getCell(spawnPoint.x, spawnPoint.y);
+                Cell exitCell = gameField.getCell(exitPoint.x, exitPoint.y);
+                if (spawnCell != null && spawnCell.isEmpty()) {
+                    if (exitCell != null && exitCell.isEmpty()) {
+                        Wave wave = new Wave(spawnPoint, exitPoint);
+                        for (int t = 0; t < gameField.factionsManager.getServerFaction().getTemplateForUnits().size; t++) {
+                            wave.addAction("interval=" + 1);
+                            wave.addAction(gameField.factionsManager.getServerFaction().getTemplateForUnits().get(t).templateName);
+                        }
+                        addWave(wave);
+                    }
+                }
+            }
+
+        }
+        checkRoutes(pathFinder);
     }
 
     public TemplateNameAndPoints getUnitForSpawn(float delta) {

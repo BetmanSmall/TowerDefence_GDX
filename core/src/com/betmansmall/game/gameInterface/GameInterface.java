@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -22,11 +24,14 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.enums.GameState;
+import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.util.logging.Logger;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
  * Created by Transet/AndeyA on 07.02.2016. (GovnoDoderbI)
@@ -78,6 +83,9 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     private float currentTextureTime, maxTextureTime;
     public int prevMouseX, prevMouseY;
     public boolean interfaceTouched;
+
+    public VisTable tableTowerButtons;
+    public VisTextButton sellTowerBtn, upgradeTowerBtn, closeTowerBtn;
 
     public GameInterface(final GameScreen gameScreen) {
         super(new ScreenViewport());
@@ -238,6 +246,44 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableWithSelectors.setFillParent(true);
         addActor(tableWithSelectors);
+
+        tableTowerButtons = new VisTable();
+        addActor(tableTowerButtons);
+
+        sellTowerBtn = new VisTextButton("SELL");
+        sellTowerBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Tower tower = gameScreen.playersManager.getLocalPlayer().selectedTower;
+                if (tower != null) {
+                    gameScreen.gameField.removeTowerWithGold(tower.cell.cellX, tower.cell.cellY, tower.player);
+                }
+            }
+        });
+        tableTowerButtons.add(sellTowerBtn);
+
+        upgradeTowerBtn = new VisTextButton("UP");
+        upgradeTowerBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Tower tower = gameScreen.playersManager.getLocalPlayer().selectedTower;
+                if (tower != null) {
+//                    tower.upgrade();
+                }
+            }
+        });
+        tableTowerButtons.add(upgradeTowerBtn);
+
+        closeTowerBtn = new VisTextButton("X");
+        closeTowerBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                tableTowerButtons.setVisible(false);
+                gameScreen.playersManager.getLocalPlayer().selectedTower = null;
+            }
+        });
+        tableTowerButtons.add(closeTowerBtn);
+
         resize();
     }
 
@@ -691,6 +737,28 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     public void render(float delta) {
         act(delta);
         draw();
+
+        Tower tower = gameScreen.playersManager.getLocalPlayer().selectedTower;
+        if (tower != null) {
+//            Logger.logDebug("tower:" + tower);
+            Vector2 vector2 = getStagePositionOfWorldPosition(tower.getCircle(cameraController.isDrawableTowers));
+            if (vector2 != null) {
+                tableTowerButtons.setPosition(vector2.x, vector2.y);
+                if (!tableTowerButtons.isVisible()) {
+                    tableTowerButtons.setVisible(true);
+                }
+            }
+        }
+    }
+
+    private Vector2 getStagePositionOfWorldPosition(Circle cicrle) {
+        if (cicrle != null) {
+            Vector3 screenPosition = cameraController.camera.project(new Vector3(cicrle.x, cicrle.y, 0));
+//            Vector3 screenPosition = new Vector3(cicrle.x, cicrle.y, 0);
+            Vector3 stagePosition = cameraController.camera.unproject(screenPosition);
+            return new Vector2(stagePosition.x, stagePosition.y);
+        }
+        return null;
     }
 
     public void act(float delta) {

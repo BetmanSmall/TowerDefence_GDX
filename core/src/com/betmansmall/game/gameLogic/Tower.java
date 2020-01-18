@@ -345,9 +345,11 @@ public class Tower {
 //            return circle4;
 //        }
 
-        map = (map == 5) ? 1 : map;
-        if (map > 0 && map < 5) {
-            return circles.get(map-1);
+        if (circles != null) {
+            map = (map == 5) ? 1 : map;
+            if (map > 0 && map < 5) {
+                return circles.get(map - 1);
+            }
         }
         Gdx.app.log("Tower::getCircle(" + map + ")", "-- Bad map | return null!");
         return null;

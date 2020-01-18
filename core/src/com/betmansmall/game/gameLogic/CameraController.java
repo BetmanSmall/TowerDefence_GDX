@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.enums.GameType;
+import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.util.logging.Logger;
 
@@ -61,6 +62,8 @@ public class CameraController extends AbstractCameraController {
     public int touchDownX, touchDownY;
     public int prevMouseX, prevMouseY;
     private Random random;
+
+    public TemplateForTower templateForTower;
 
     public CameraController(GameScreen gameScreen) {
         Logger.logFuncStart("gameScreen:" + gameScreen);
