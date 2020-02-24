@@ -279,7 +279,7 @@ public class FactionsManager {
                         if (source != null) {
                             FileHandle templateFile = getRelativeFileHandle(factionFile, source);
                             TemplateForTower templateForTower = new TemplateForTower(templateFile);
-//                            templateForTower.setFaction(faction);
+                            templateForTower.faction = faction;
                             if (templateForTower.towerAttackType == TowerAttackType.FireBall) {
 //                            if (templateForTower.templateName.contains("tower_FireBall")) {
                                 templateForTower.loadFireBall(fireball_0);

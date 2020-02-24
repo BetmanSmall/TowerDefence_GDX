@@ -15,6 +15,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
+import com.betmansmall.util.logging.Logger;
 
 /**
  * Created by Андрей on 24.01.2016.
@@ -48,9 +49,9 @@ public class Tower {
         this.templateForTower = templateForTower;
         this.player = player;
 
-        this.whoAttackMe = new Array<Unit>();
-        this.bullets = new Array<Bullet>();
-        this.circles = new Array<Circle>(4);
+        this.whoAttackMe = new Array<>();
+        this.bullets = new Array<>();
+        this.circles = new Array<>(4);
         this.circles.add(new Circle(0f, 0f, 16f));
         this.circles.add(new Circle(0f, 0f, 16f));
         this.circles.add(new Circle(0f, 0f, 16f));
@@ -159,12 +160,12 @@ public class Tower {
         if (elapsedReloadTime >= templateForTower.reloadTime) {
             if (templateForTower.towerAttackType == TowerAttackType.FireBall) {
                 elapsedReloadTime = 0f;
-                int radius = Math.round(cameraController.gameField.gameSettings.difficultyLevel);
+                int radius = Math.round(templateForTower.radiusDetection);
                 if ( radius == 0 ) {
-                    radius = Math.round(templateForTower.radiusDetection);
+                    radius = Math.round(cameraController.gameField.gameSettings.difficultyLevel);
                 }
                 Cell towerCell = cell;
-//                Gdx.app.log("Tower::shotFireBall()", "-- radius:" + radius + " towerCell:" + towerCell + " player:" + player);
+                Gdx.app.log("Tower::shotFireBall()", "-- radius:" + radius + " towerCell:" + towerCell + " player:" + player);
                 for (int tmpX = -radius; tmpX <= radius; tmpX++) {
                     for (int tmpY = -radius; tmpY <= radius; tmpY++) {
                         Cell cell = cameraController.gameField.getCell(tmpX + towerCell.cellX, tmpY + towerCell.cellY);
@@ -367,6 +368,18 @@ public class Tower {
             return (TextureRegion) animation.getKeyFrame(destroyElapsedTime, true);
         }
         return null;
+    }
+
+    public boolean upgrade() {
+        if (templateForTower.nextTemplate != null) {
+            TemplateForTower nexTemplateForTower = templateForTower.faction.getTemplateForTower(templateForTower.nextTemplate);
+            if (nexTemplateForTower != null) {
+                Logger.logDebug("nexTemplateForTower:" + nexTemplateForTower);
+                this.templateForTower = nexTemplateForTower;
+            }
+        }
+        Logger.logFuncEnd();
+        return false;
     }
 
     public String toString() {

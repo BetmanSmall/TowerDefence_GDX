@@ -3,7 +3,6 @@
  <image source="../../../textures/warcraft2/missiles/small_fire.png" width="160" height="96"/>
   <properties>
   <property name="animationTime" value="0.8"/>
-  <property name="nextTemplate" value="big_fire"/>
   </properties>
  <tile id="0">
   <properties>

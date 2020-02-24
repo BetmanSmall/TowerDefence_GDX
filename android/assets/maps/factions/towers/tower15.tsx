@@ -17,6 +17,7 @@
   <property name="towerShellEffect" value="FireEffect"/>
   <property name="shellEffectType_time" value="2"/>
   <property name="shellEffectType_damage" value="0.5"/>
+  <property name="nextTemplate" value="tower16"/>
  </properties>
  <image source="../../textures/warcraft2/tilesets/summer/orc/buildings/cannon_tower_test.png" trans="ff00ff" width="128" height="192"/>
  <!-- <image source="../../textures/warcraft2/tilesets/winter/human/buildings/mage_tower.png" trans="ff00ff" width="128" height="192"/> -->

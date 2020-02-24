@@ -63,6 +63,9 @@ public class TowersManager {
 
     public boolean removeTower(Tower tower) {
         if (towers.removeValue(tower, false)) {
+            if (tower.player.selectedTower == tower) {
+                tower.player.selectedTower = null;
+            }
             tower.dispose();
             return true;
         }

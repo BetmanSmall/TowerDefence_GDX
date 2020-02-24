@@ -1,6 +1,5 @@
 package com.betmansmall.game.gameInterface;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -268,7 +268,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Tower tower = gameScreen.playersManager.getLocalPlayer().selectedTower;
                 if (tower != null) {
-//                    tower.upgrade();
+                    tower.upgrade();
                 }
             }
         });
@@ -743,20 +743,23 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //            Logger.logDebug("tower:" + tower);
             Vector2 vector2 = getStagePositionOfWorldPosition(tower.getCircle(cameraController.isDrawableTowers));
             if (vector2 != null) {
-                tableTowerButtons.setPosition(vector2.x, vector2.y);
+                tableTowerButtons.setPosition(vector2.x, vector2.y, Align.center);
                 if (!tableTowerButtons.isVisible()) {
                     tableTowerButtons.setVisible(true);
                 }
+            }
+        } else {
+            if (tableTowerButtons.isVisible()) {
+                tableTowerButtons.setVisible(false);
             }
         }
     }
 
     private Vector2 getStagePositionOfWorldPosition(Circle cicrle) {
         if (cicrle != null) {
+            this.getBatch().setProjectionMatrix(this.getCamera().combined);
             Vector3 screenPosition = cameraController.camera.project(new Vector3(cicrle.x, cicrle.y, 0));
-//            Vector3 screenPosition = new Vector3(cicrle.x, cicrle.y, 0);
-            Vector3 stagePosition = cameraController.camera.unproject(screenPosition);
-            return new Vector2(stagePosition.x, stagePosition.y);
+            return new Vector2(screenPosition.x, screenPosition.y);
         }
         return null;
     }
@@ -1004,6 +1007,17 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     @Override
     public boolean scrolled(int amount) {
 //        Gdx.app.log("GameInterface::scrolled()", "-- amount:" + amount);
+
+//        if (tableTowerButtons != null) {
+//            tableTowerButtons.scaleBy(cameraController.camera.zoom);
+//            tableTowerButtons.setSize(cameraController.camera.zoom, cameraController.camera.zoom);
+//            for (Actor actor : tableTowerButtons.getChildren()) {
+//                tableTowerButtons.getCell(actor).prefSize(cameraController.camera.zoom);
+//                actor.setScale(cameraController.camera.zoom);
+//                actor.sizeBy(amount);
+//                actor.setSize(cameraController.camera.zoom*100f, cameraController.camera.zoom*100f);
+//            }
+//        }
         if (unitsSelector != null) {
             if (unitsSelector.scrolled(amount)) {
                 return true;

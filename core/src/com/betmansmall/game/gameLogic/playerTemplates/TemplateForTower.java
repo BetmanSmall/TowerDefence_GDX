@@ -8,13 +8,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
-import com.betmansmall.util.logging.Logger;
-
 /**
  * Created by betmansmall on 22.02.2016.
  */
 public class TemplateForTower extends Template {
-//    private Faction faction;
+    public Faction  faction;
     public String   factionName;
     public String   name;
     public Float    healthPoints;
@@ -33,6 +31,7 @@ public class TemplateForTower extends Template {
     public TowerShellType towerShellType;
     public TowerShellEffect towerShellEffect;
     public Integer capacity;
+    public String nextTemplate;
 
 //    public AnimatedTiledMapTile idleTile;
     public TiledMapTile idleTile;
@@ -244,6 +243,11 @@ public class TemplateForTower extends Template {
         if(this.radiusFlyShell == null && this.towerShellType != towerShellType.FirstTarget) {
             Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusFlyShell");
 //            this.radiusFlyShell = 0f;
+        }
+        if (!properties.containsKey("nextTemplate")) {
+            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: nextTemplate");
+        } else {
+            nextTemplate = properties.get("nextTemplate");
         }
 
         if(idleTile == null)
