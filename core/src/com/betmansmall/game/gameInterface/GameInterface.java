@@ -256,7 +256,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Tower tower = gameScreen.playersManager.getLocalPlayer().selectedTower;
                 if (tower != null) {
-                    gameScreen.gameField.removeTowerWithGold(tower.cell.cellX, tower.cell.cellY, tower.player);
+                    gameScreen.removeTower(tower.cell.cellX, tower.cell.cellY);
                 }
             }
         });
@@ -743,7 +743,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 //            Logger.logDebug("tower:" + tower);
             Vector2 vector2 = getStagePositionOfWorldPosition(tower.getCircle(cameraController.isDrawableTowers));
             if (vector2 != null) {
-                tableTowerButtons.setPosition(vector2.x, vector2.y, Align.center);
+                tableTowerButtons.setPosition(vector2.x, vector2.y - (-1f * cameraController.camera.zoom)*50f, Align.center);
                 if (!tableTowerButtons.isVisible()) {
                     tableTowerButtons.setVisible(true);
                 }

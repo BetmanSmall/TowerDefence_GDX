@@ -21,17 +21,16 @@ import com.betmansmall.util.logging.Logger;
 
 public class ServerGameScreen extends GameScreen {
     public AuthServerThread authServerThread;
-    public ServerSessionThread serverSessionThread;
 
     public ServerGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
         Logger.logFuncStart();
 
         this.authServerThread = new AuthServerThread(this);
-        this.serverSessionThread = new ServerSessionThread(this);
+        this.sessionThread = new ServerSessionThread(this);
 
         this.authServerThread.start();
-        this.serverSessionThread.start();
+        this.sessionThread.start();
         super.initGameField();
 
         Logger.logFuncEnd();
@@ -42,7 +41,7 @@ public class ServerGameScreen extends GameScreen {
         Logger.logFuncStart();
         super.dispose();
         this.authServerThread.dispose();
-        this.serverSessionThread.dispose();
+        this.sessionThread.dispose();
     }
 
     @Override
@@ -52,7 +51,7 @@ public class ServerGameScreen extends GameScreen {
 
     @Override
     public void sendGameFieldVariables() {
-        serverSessionThread.sendObject(new SendObject(
+        sessionThread.sendObject(new SendObject(
                 SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
                 new GameFieldVariablesData(gameField),
                 new UnitsManagerData(gameField.unitsManager)));
@@ -63,39 +62,35 @@ public class ServerGameScreen extends GameScreen {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
         Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
         if (tower != null) {
-            serverSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+            sessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
             return tower;
         }
         return null;
     }
 
-    public Tower towerToggle(int buildX, int buildY) {
+    @Override
+    public Tower createTower(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
-        Cell cell = gameField.getCell(buildX, buildY);
-        if (cell != null) {
-            if (cell.isEmpty()) {
-                Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction());
-                if (tower != null) {
-                    gameField.rerouteAllUnits();
-                    serverSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
-                }
-                return tower;
-            } else if (cell.getTower() != null) {
-                Tower tower = cell.getTower();
-                Player localPlayer = playersManager.getLocalPlayer();
-                if (localPlayer.equals(tower.player)) {
-                    gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
-                    serverSessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
-                }
-            }
+        Tower tower = super.createTower(buildX, buildY);
+        if (tower != null) {
+            sessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
         }
         return null;
+    }
+
+    @Override
+    public boolean removeTower(int buildX, int buildY) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
+        if (super.removeTower(buildX, buildY)) {
+            sessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
+        }
+        return false;
     }
 
     public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
         Unit unit = super.createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
         if (unit != null) {
-            serverSessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
+            sessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
         }
         return unit;
     }

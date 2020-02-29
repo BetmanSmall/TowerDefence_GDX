@@ -19,14 +19,12 @@ import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.util.logging.Logger;
 
 public class ClientGameScreen extends GameScreen {
-    public ClientSessionThread clientSessionThread;
-
     public ClientGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
         Logger.logFuncStart();
 
-        this.clientSessionThread = new ClientSessionThread(this);
-        this.clientSessionThread.start();
+        this.sessionThread = new ClientSessionThread(this);
+        this.sessionThread.start();
 
         Logger.logFuncEnd();
     }
@@ -35,7 +33,7 @@ public class ClientGameScreen extends GameScreen {
     public void dispose() {
         Logger.logFuncStart();
         super.dispose();
-        this.clientSessionThread.dispose();
+        this.sessionThread.dispose();
     }
 
     @Override
@@ -45,19 +43,19 @@ public class ClientGameScreen extends GameScreen {
 
     @Override
     public void render(float delta) {
-        if (clientSessionThread.sessionState == SessionState.RECEIVED_SERVER_INFO_DATA) {
+        if (sessionThread.sessionState == SessionState.RECEIVED_SERVER_INFO_DATA) {
             this.initGameField();
-            clientSessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_INITIALIZED));
-            clientSessionThread.sessionState = SessionState.INITIALIZED;
+            sessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_INITIALIZED));
+            sessionThread.sessionState = SessionState.INITIALIZED;
         }
-        if (clientSessionThread.sessionState == SessionState.INITIALIZED) {
+        if (sessionThread.sessionState == SessionState.INITIALIZED) {
             super.render(delta);
         }
     }
 
     @Override
     public void sendGameFieldVariables() {
-        clientSessionThread.sendObject(new SendObject(
+        sessionThread.sendObject(new SendObject(
                 SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
                 new GameFieldVariablesData(gameField),
                 new UnitsManagerData(gameField.unitsManager)));
@@ -68,40 +66,35 @@ public class ClientGameScreen extends GameScreen {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
         Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
         if (tower != null) {
-            clientSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+            sessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
             return tower;
         }
         return null;
     }
 
     @Override
-    public Tower towerToggle(int buildX, int buildY) {
+    public Tower createTower(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
-        Cell cell = gameField.getCell(buildX, buildY);
-        if (cell != null) {
-            if (cell.isEmpty()) {
-                Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction());
-                if (tower != null) {
-                    gameField.rerouteAllUnits();
-                    clientSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
-                }
-                return tower;
-            } else if (cell.getTower() != null) {
-                Tower tower = cell.getTower();
-                Player localPlayer = playersManager.getLocalPlayer();
-                if (localPlayer.equals(tower.player)) {
-                    gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
-                    clientSessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
-                }
-            }
+        Tower tower = super.createTower(buildX, buildY);
+        if (tower != null) {
+            sessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
         }
         return null;
+    }
+
+    @Override
+    public boolean removeTower(int buildX, int buildY) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
+        if (super.removeTower(buildX, buildY)) {
+            sessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
+        }
+        return false;
     }
 
     public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
         Unit unit = super.createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
         if (unit != null) {
-            clientSessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
+            sessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
         }
         return unit;
     }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.enums.SessionState;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.SessionThread;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.server.ServerGameScreen;
@@ -19,32 +20,30 @@ import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.TowersManagerData;
 import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.server.networking.TcpConnection;
-import com.betmansmall.server.networking.TcpSocketListener;
 import com.betmansmall.util.logging.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class ServerSessionThread extends Thread implements TcpSocketListener, Disposable {
+public class ServerSessionThread extends SessionThread {
     private ServerGameScreen serverGameScreen;
     private SessionSettings sessionSettings;
     private ServerSocket serverSocket;
     private Array<TcpConnection> connections;
-    public SessionState sessionState;
 
     public ServerSessionThread(ServerGameScreen serverGameScreen) {
         Logger.logFuncStart();
         this.serverGameScreen = serverGameScreen;
         this.sessionSettings = serverGameScreen.game.sessionSettings;
         this.serverSocket = null;
-        this.connections = new Array<TcpConnection>();
+        this.connections = new Array<>();
         this.sessionState = SessionState.INITIALIZATION;
         Logger.logFuncEnd();
     }
 
     @Override
     public void dispose() {
-        Logger.logFuncStart();
+        this.interrupt();
         try {
             this.serverSocket.close();
         } catch (IOException e) {
@@ -53,7 +52,6 @@ public class ServerSessionThread extends Thread implements TcpSocketListener, Di
         for (TcpConnection socket : connections) {
             socket.disconnect();
         }
-        this.interrupt();
     }
 
     @Override

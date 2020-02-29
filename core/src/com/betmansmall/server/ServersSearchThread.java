@@ -24,7 +24,7 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
     public ServersSearchThread(int from, int to, ClientSettingsScreen clientSettingsScreen) {
         Logger.logFuncStart();
         this.clientSettingsScreen = clientSettingsScreen;
-        this.connections = new Array<TcpConnection>();
+        this.connections = new Array<>();
 
         this.from = from;
         this.to = to;
@@ -33,13 +33,37 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
 
     @Override
     public void dispose() {
-        Logger.logFuncStart();
-        this.interrupt();
+        super.interrupt();
         this.clientSettingsScreen = null; // if set null || in run()->tryConnectToHost() throw NullPointer after check interrupted(). потому что не успевает. он проскакиевает проверку.
         for (TcpConnection connection : connections) {
             connection.disconnect();
         }
         this.connections.clear();
+    }
+
+    @Override
+    public void run() {
+        Logger.logFuncStart();
+        if (from == 1) {
+            tryConnectToHost("127.0.0.1");
+        }
+        if (to <= 255) {
+            String subnet = "192.168";
+            for (int i2 = from; i2 <= to; i2++) {
+                for (int i = from; i <= to; i++) {
+                    boolean interrupted = interrupted();
+                    if (!interrupted) {
+                        String host = subnet + "." + i2 + "." + i;
+                        tryConnectToHost(host);
+                    } else {
+                        Logger.logDebug("this:" + this);
+                        dispose();
+                        return;
+                    }
+                }
+            }
+        }
+        Logger.logFuncEnd();
     }
 
     private void tryConnectToHost(String host) {
@@ -67,27 +91,6 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
             exception.printStackTrace();
             throw new RuntimeException(exception);
         }
-    }
-
-    @Override
-    public void run() {
-        Logger.logFuncStart();
-        if (from == 1) {
-            tryConnectToHost("127.0.0.1");
-        }
-        if (to <= 255) {
-            String subnet = "192.168.0";
-            for (int i = from; i <= to; i++) {
-//                if (!isInterrupted()) {
-                if (!interrupted()) {
-                    String host = subnet + "." + i;
-                    tryConnectToHost(host);
-                } else {
-                    break;
-                }
-            }
-        }
-        Logger.logFuncEnd();
     }
 
     @Override

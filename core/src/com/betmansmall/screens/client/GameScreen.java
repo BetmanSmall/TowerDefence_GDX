@@ -11,6 +11,7 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
+import com.betmansmall.game.SessionThread;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.Cell;
@@ -32,6 +33,7 @@ public class GameScreen extends AbstractScreen {
     public CameraController cameraController;
 
     public PlayersManager playersManager;
+    public SessionThread sessionThread;
 
     public GameScreen(GameMaster gameMaster) {
         super(gameMaster);
@@ -326,7 +328,27 @@ public class GameScreen extends AbstractScreen {
         return gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
     }
 
-    public Tower towerToggle(int buildX, int buildY) {
+//    public Tower towerToggle(int buildX, int buildY) {
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
+//        Cell cell = gameField.getCell(buildX, buildY);
+//        if (cell != null) {
+//            if (cell.isEmpty()) {
+//                TemplateForTower randomTemplateForTower = gameField.factionsManager.getRandomTemplateForTowerFromAllFaction();
+////                TemplateForTower small_fireTemplateForTower = gameField.factionsManager.getTemplateForTowerFromFirstFactionByName("small_fire");
+//                Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, randomTemplateForTower);
+//                if (tower != null) {
+//                    gameField.rerouteAllUnits();
+//                }
+//                return tower;
+//            } else if (cell.getTower() != null) {
+//                cameraController.templateForTower = cell.getTower().templateForTower;
+//                gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
+//            }
+//        }
+//        return null;
+//    }
+
+    public Tower createTower(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         Cell cell = gameField.getCell(buildX, buildY);
         if (cell != null) {
@@ -338,12 +360,21 @@ public class GameScreen extends AbstractScreen {
                     gameField.rerouteAllUnits();
                 }
                 return tower;
-            } else if (cell.getTower() != null) {
-                cameraController.templateForTower = cell.getTower().templateForTower;
-                gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
             }
         }
         return null;
+    }
+
+    public boolean removeTower(int buildX, int buildY) {
+        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
+        Cell cell = gameField.getCell(buildX, buildY);
+        if (cell != null) {
+            if (cell.getTower() != null) {
+                cameraController.templateForTower = cell.getTower().templateForTower;
+                return gameField.removeTowerWithGold(buildX, buildY, playersManager.getLocalPlayer());
+            }
+        }
+        return false;
     }
 
     public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {

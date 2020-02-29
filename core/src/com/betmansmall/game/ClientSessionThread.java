@@ -18,16 +18,14 @@ import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.TowersManagerData;
 import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.server.networking.TcpConnection;
-import com.betmansmall.server.networking.TcpSocketListener;
 import com.betmansmall.util.logging.Logger;
 
 import java.io.IOException;
 
-public class ClientSessionThread extends Thread implements TcpSocketListener {
+public class ClientSessionThread extends SessionThread {
     private ClientGameScreen clientGameScreen;
     private SessionSettings sessionSettings;
     private TcpConnection connection;
-    public SessionState sessionState;
 
     public ClientSessionThread(ClientGameScreen clientGameScreen) {
         Logger.logFuncStart();
@@ -174,6 +172,10 @@ public class ClientSessionThread extends Thread implements TcpSocketListener {
     public void onException(TcpConnection tcpConnection, Exception exception) {
         Logger.logError("tcpConnection:" + tcpConnection + ", exception:" + exception);
         exception.printStackTrace();
+    }
+
+    public synchronized void sendObject(final SendObject sendObject, TcpConnection tcpConnection) {
+        Logger.logError("sendObject:" + sendObject + ", tcpConnection:" + tcpConnection);
     }
 
     public synchronized void sendObject(final SendObject sendObject) {
