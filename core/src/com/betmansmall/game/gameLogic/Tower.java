@@ -165,7 +165,7 @@ public class Tower {
                     radius = Math.round(cameraController.gameField.gameSettings.difficultyLevel);
                 }
                 Cell towerCell = cell;
-                Gdx.app.log("Tower::shotFireBall()", "-- radius:" + radius + " towerCell:" + towerCell + " player:" + player);
+//                Gdx.app.log("Tower::shotFireBall()", "-- radius:" + radius + " towerCell:" + towerCell + " player:" + player);
                 for (int tmpX = -radius; tmpX <= radius; tmpX++) {
                     for (int tmpY = -radius; tmpY <= radius; tmpY++) {
                         Cell cell = cameraController.gameField.getCell(tmpX + towerCell.cellX, tmpY + towerCell.cellY);

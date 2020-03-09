@@ -1,7 +1,6 @@
 package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.enums.SessionState;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.SessionThread;

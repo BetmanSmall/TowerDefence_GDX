@@ -63,7 +63,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     // Console need
 
     public TextButton gridNav1, gridNav2, gridNav3;
-    public TextButton disonnectButtons;
+    public TextButton disconnectButtons;
     public TextButton playersViewButton;
     public TextButton pauseMenuButton;
     public TextButton startAndPauseButton;
@@ -168,8 +168,8 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         Table horizontalGroupTop = new Table(skin);
         tableWithButtons.add(horizontalGroupTop).expandY().top().row();
 
-        disonnectButtons = new TextButton("DISC(X)NNECT", skin);
-        horizontalGroupTop.add(disonnectButtons).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
+        disconnectButtons = new TextButton("DISC(X)NNECT", skin);
+        horizontalGroupTop.add(disconnectButtons).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
 
         playersViewButton = new TextButton("PLAYERS", skin);
         horizontalGroupTop.add(playersViewButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
@@ -289,10 +289,10 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
 
     public void addListeners() {
         Gdx.app.log("GameInterface::addListeners()", "--");
-        disonnectButtons.addListener(new ChangeListener() {
+        disconnectButtons.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- disonnectButtons.isChecked():" + disonnectButtons.isChecked());
+                Gdx.app.log("GameInterface:changed:addListeners()", "-- disconnectButtons.isChecked():" + disconnectButtons.isChecked());
 //                gameScreen.dispose();
                 gameScreen.game.removeTopScreen();
             }

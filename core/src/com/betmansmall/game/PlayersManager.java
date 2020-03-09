@@ -60,6 +60,10 @@ public class PlayersManager {
         return players;
     }
 
+    public Array<Player> getDisconnectedPlayers() {
+        return disconnectedPlayers;
+    }
+
     public Player setServer(Player player) {
         if (player != null && player.playerID == 0 && player.type == PlayerType.SERVER) {
             if (players.size > 0) {
@@ -185,6 +189,16 @@ public class PlayersManager {
             }
         }
         Logger.logError("not found playerID:" + playerID + " | we have players:" + players);
+        return getDisconnectedPlayer(playerID);
+    }
+
+    public Player getDisconnectedPlayer(Integer playerID) {
+        for (Player player : disconnectedPlayers) {
+            if (player.playerID.equals(playerID)) {
+                return player;
+            }
+        }
+        Logger.logError("not found playerID:" + playerID + " | we have players:" + disconnectedPlayers);
         return null;
     }
 

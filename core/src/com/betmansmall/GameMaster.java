@@ -235,7 +235,7 @@ public class GameMaster extends Game {
                     Gdx.app.log("GameMaster::removeTopScreen()", "-- gameScreen1:" + gameScreen1);
                     if (gameScreen1 != null) {
 //                        lastScreen.hide();
-//                        gameScreen1.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
+                        gameScreen1.dispose(); // Нужно ли вызывать? Если вызывать то падает=(
                         screensStack.removeValue(gameScreen1, true); // or false?
 //                        Gdx.app.log("GameMaster::removeTopScreen()", "-- gameScreen1.gameInterface:" + gameScreen1.gameInterface);
                         size = screensStack.size;
