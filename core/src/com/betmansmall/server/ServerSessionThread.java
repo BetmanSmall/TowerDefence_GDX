@@ -198,7 +198,7 @@ public class ServerSessionThread extends SessionThread {
         for (TcpConnection connection : connections) {
             connection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_DISCONNECTED_DATA, new PlayerInfoData(player)));
         }
-        serverGameScreen.playersManager.removePlayer(player);
+        serverGameScreen.playersManager.playerDisconnect(player);
 //        gameServer.playerDisconnect(tcpConnection);
     }
 

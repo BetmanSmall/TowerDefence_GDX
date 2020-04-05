@@ -1,6 +1,7 @@
 package com.betmansmall.game;
 
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.Faction;
@@ -11,6 +12,7 @@ import com.betmansmall.server.networking.TcpConnection;
 public class Player {
     public TcpConnection connection; // only for ServerSessionThread class
     public PlayerType type;
+    public PlayerStatus playerStatus;
     public String accountID;
     public Integer playerID;
     public String name;
@@ -27,6 +29,7 @@ public class Player {
     public Player(String serverName, Faction faction) {
         this.connection = null;
         this.type = PlayerType.SERVER;
+        this.playerStatus = null;
         this.accountID = "accID_SERVER";
         this.playerID = 0;
         this.name = serverName;
@@ -40,6 +43,7 @@ public class Player {
     public Player(UserAccount userAccount, Faction faction) {
         this.connection = null;
         this.type = PlayerType.CLIENT;
+        this.playerStatus = null;
         this.accountID = userAccount.accountID;
         this.playerID = type.ordinal();
 //        if (type == PlayerType.SERVER) {
@@ -71,6 +75,7 @@ public class Player {
 
     public void updateData(PlayerInfoData playerInfoData) {
         this.type = playerInfoData.type;
+        this.playerStatus = playerInfoData.playerStatus;
         this.accountID = playerInfoData.accountID;
         this.playerID = playerInfoData.playerID;
         this.name = playerInfoData.name;
@@ -87,6 +92,7 @@ public class Player {
         StringBuilder sb = new StringBuilder();
         sb.append("Player[");
         sb.append("type:" + type);
+        sb.append(",playerStatus:" + playerStatus);
         sb.append(",accountID:" + accountID);
         sb.append(",playerID:" + playerID);
         sb.append(",name:" + name);

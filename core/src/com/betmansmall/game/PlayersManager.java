@@ -2,6 +2,7 @@ package com.betmansmall.game;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
@@ -16,7 +17,6 @@ public class PlayersManager {
     private FactionsManager factionsManager;
     private int connectedCount;
     private Array<Player> players;
-    private Array<Player> disconnectedPlayers;
 
     public PlayersManager(SessionType sessionType, FactionsManager factionsManager, UserAccount userAccount) {
         Logger.logFuncStart("sessionType:" + sessionType, "userAccount:" + userAccount);
@@ -24,29 +24,36 @@ public class PlayersManager {
         this.factionsManager = factionsManager;
         this.connectedCount = 0;
         this.players = new Array<>();
-        this.disconnectedPlayers = new Array<>();
 
         if (sessionType == SessionType.SERVER_STANDALONE) {
             Player server = new Player("ServerStandalone", factionsManager.getServerFaction());
+            server.playerStatus = PlayerStatus.LOCAL_SERVER;
             server.gold = 999999;
             this.setServer(server);
 //            this.setLocalPlayer(null);
         } else if (sessionType == SessionType.SERVER_AND_CLIENT) {
             Player server = new Player("ServerByClient", factionsManager.getServerFaction());
+            server.playerStatus = PlayerStatus.LOCAL_SERVER;
             server.gold = 999999;
             this.setServer(server);
-            this.setLocalPlayer(new Player(userAccount, factionsManager.getFactionByName(userAccount.factionName)));
+            Player player = new Player(userAccount, factionsManager.getFactionByName(userAccount.factionName));
+            player.playerStatus = PlayerStatus.LOCAL_SERVER;
+            this.setLocalPlayer(player);
             this.connectedCount++;
         } else if (sessionType == SessionType.CLIENT_ONLY) {
             this.players.add(null);
 //            this.setServer(null);
-            this.setLocalPlayer(new Player(userAccount, factionsManager.getFactionByName(userAccount.factionName)));
+            Player player = new Player(userAccount, factionsManager.getFactionByName(userAccount.factionName));
+            player.playerStatus = PlayerStatus.NOT_CONNECTED;
+            this.setLocalPlayer(player);
         } else if (sessionType == SessionType.CLIENT_STANDALONE) {
             Player server = new Player("Server_ClientStandalone", factionsManager.getServerFaction());
+            server.playerStatus = PlayerStatus.LOCAL_SERVER;
             server.gold = 999999;
             this.setServer(server);
 
             Player player = new Player(userAccount, factionsManager.getServerFaction());
+            player.playerStatus = PlayerStatus.LOCAL_SERVER;
             player.gold = 9999;
             this.setLocalPlayer(player);
         }
@@ -58,10 +65,6 @@ public class PlayersManager {
 
     public Array<Player> getPlayers() {
         return players;
-    }
-
-    public Array<Player> getDisconnectedPlayers() {
-        return disconnectedPlayers;
     }
 
     public Player setServer(Player player) {
@@ -101,9 +104,12 @@ public class PlayersManager {
     }
 
     private Player disconnectedPlayer(String accountID) {
-        for (Player player : disconnectedPlayers) {
+        for (Player player : players) {
+            Logger.logDebug("player:" + player);
             if (player.accountID.equals(accountID)) {
-                return player;
+                if (player.playerStatus == PlayerStatus.DISCONNECTED) {
+                    return player;
+                }
             }
         }
         return null;
@@ -115,13 +121,16 @@ public class PlayersManager {
             Faction faction = factionsManager.getFactionByName(playerInfoData.factionName);
             player = new Player(tcpConnection, playerInfoData, faction);
             if (addPlayer(player)) {
+                player.playerStatus = PlayerStatus.CONNECTED;
                 player.playerID = ++connectedCount;
                 return player;
             }
         } else { // user reconnect
-            if (addPlayer(player)) { // mb need not players.add() but players.insert()
-                return player;
-            }
+//            if (addPlayer(player)) { // mb need not players.add() but players.insert()
+//                return player;
+//            }
+            player.playerStatus = PlayerStatus.CONNECTED;
+            return player;
         }
         return null;
     }
@@ -167,16 +176,18 @@ public class PlayersManager {
 
     public boolean removePlayerByID(Integer playerID) { // remove player on client
         for (Player player : players) {
-            if (player.playerID == playerID && players.removeValue(player, true)) {
-                return true;
+            if (player.playerID == playerID) {
+                if (playerDisconnect(player)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public boolean removePlayer(Player player) { // remove player on server
-        if (players.removeValue(player, true)) {
-            disconnectedPlayers.add(player);
+    public boolean playerDisconnect(Player player) { // disconnect player on server
+        if (player != null && player.playerStatus == PlayerStatus.CONNECTED) {
+            player.playerStatus = PlayerStatus.DISCONNECTED;
             return true;
         }
         return false;
@@ -193,12 +204,14 @@ public class PlayersManager {
     }
 
     public Player getDisconnectedPlayer(Integer playerID) {
-        for (Player player : disconnectedPlayers) {
-            if (player.playerID.equals(playerID)) {
-                return player;
+        for (Player player : players) {
+            if (player.playerStatus == PlayerStatus.DISCONNECTED) {
+                if (player.playerID.equals(playerID)) {
+                    return player;
+                }
             }
         }
-        Logger.logError("not found playerID:" + playerID + " | we have players:" + disconnectedPlayers);
+        Logger.logError("not found playerID:" + playerID + " | we have players:" + players);
         return null;
     }
 
@@ -230,12 +243,6 @@ public class PlayersManager {
         sb.append(",players.size:" + players.size);
         if (full) {
             for (Player player : players) {
-                sb.append("," + player);
-            }
-        }
-        sb.append(",disconnectedPlayers.size:" + disconnectedPlayers.size);
-        if (full) {
-            for (Player player : disconnectedPlayers) {
                 sb.append("," + player);
             }
         }
