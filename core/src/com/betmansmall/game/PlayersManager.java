@@ -129,6 +129,7 @@ public class PlayersManager {
 //            if (addPlayer(player)) { // mb need not players.add() but players.insert()
 //                return player;
 //            }
+            player.connection = tcpConnection;
             player.playerStatus = PlayerStatus.CONNECTED;
             return player;
         }
@@ -136,9 +137,15 @@ public class PlayersManager {
     }
 
     public Player addPlayerByClient(PlayerInfoData playerInfoData) {
-        Faction faction = factionsManager.getFactionByName(playerInfoData.factionName);
-        Player player = new Player(playerInfoData, faction);
-        if (addPlayer(player)) {
+        Player player = disconnectedPlayer(playerInfoData.accountID);
+        if (player == null) {
+            Faction faction = factionsManager.getFactionByName(playerInfoData.factionName);
+            player = new Player(playerInfoData, faction);
+            if (addPlayer(player)) {
+                return player;
+            }
+        } else {
+            player.playerStatus = PlayerStatus.CONNECTED;
             return player;
         }
         return null;
