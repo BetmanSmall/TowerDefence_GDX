@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Desktop[Server]" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="C:\Program Files\Android\Android Studio\jre\jre" />
+    <option name="MAIN_CLASS_NAME" value="com.betmansmall.game.desktop.DesktopLauncher" />
+    <module name="desktop" />
+    <option name="PROGRAM_PARAMETERS" value="-s" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/android/assets" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

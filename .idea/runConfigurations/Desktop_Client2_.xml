@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Desktop[Client2]" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.betmansmall.game.desktop.DesktopLauncher" />
+    <module name="desktop" />
+    <option name="PROGRAM_PARAMETERS" value="-client 2" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/android/assets" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -24,6 +24,7 @@ android/gen/
 *.ipr
 *.iws
 *.iml
+!.idea\runConfigurations
 out/
 com_crashlytics_export_strings.xml
 
