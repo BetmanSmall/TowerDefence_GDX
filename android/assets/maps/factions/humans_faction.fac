@@ -23,11 +23,11 @@
 	<!-- <templateForTower source="towers/towerFreeze5.tsx"/> -->
 	<!-- <templateForTower source="towers/towerFreeze6.tsx"/> -->
 	
-	<!-- <templateForTower source="towers/tower_test1x1.tsx"/> -->
-	<!-- <templateForTower source="towers/tower_test2x2.tsx"/> -->
-	<!-- <templateForTower source="towers/tower_test3x3.tsx"/> -->
-	<!-- <templateForTower source="towers/tower_test4x4.tsx"/> -->
-	<!-- <templateForTower source="towers/tower_test5x5.tsx"/> -->
-	<!-- <templateForTower source="towers/tower_test6x6.tsx"/> -->
-	<!-- <templateForTower source="towers/tower_test7x7.tsx"/> -->
+	<templateForTower source="towers/tower_test1x1.tsx"/>
+	<templateForTower source="towers/tower_test2x2.tsx"/>
+	<templateForTower source="towers/tower_test3x3.tsx"/>
+	<templateForTower source="towers/tower_test4x4.tsx"/>
+	<templateForTower source="towers/tower_test5x5.tsx"/>
+	<templateForTower source="towers/tower_test6x6.tsx"/>
+	<templateForTower source="towers/tower_test7x7.tsx"/>
 </faction>
