@@ -16,10 +16,10 @@ public class UnderConstruction {
     public Array<Integer> coorsY;
     private boolean buildType;
 
-    public UnderConstruction(TemplateForTower templateForTower) {
+    public UnderConstruction(TemplateForTower templateForTower, boolean buildType) {
         Gdx.app.log("UnderConstruction::UnderConstruction()", "-- templateForTower:" + templateForTower);
         this.state = -1;
-        this.init(templateForTower, false);
+        this.init(templateForTower, buildType);
     }
 
     public UnderConstruction(int startX, int startY, TemplateForTower templateForTower) {
@@ -35,6 +35,10 @@ public class UnderConstruction {
         this.buildType = buildType;
         this.coorsX = new Array<>();
         this.coorsY = new Array<>();
+    }
+
+    public void setBuildType(boolean buildType) {
+        this.buildType = buildType;
     }
 
     public boolean setStartCoors(int startX, int startY) {

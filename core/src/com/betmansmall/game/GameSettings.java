@@ -21,6 +21,7 @@ public class GameSettings {
     public boolean panLeftMouseButton;
     public boolean panMidMouseButton;
     public boolean panRightMouseButton;
+    public boolean towerMoveAlgorithm;
 
     public Cell cellSpawnHero;
     public Cell cellExitHero;
@@ -38,6 +39,7 @@ public class GameSettings {
         this.panLeftMouseButton = true;
         this.panMidMouseButton = false;
         this.panRightMouseButton = false;
+        this.towerMoveAlgorithm = false;
 
         this.cellSpawnHero = null;
         this.cellExitHero = null;

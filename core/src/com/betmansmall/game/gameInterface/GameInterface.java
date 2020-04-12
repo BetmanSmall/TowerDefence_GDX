@@ -46,13 +46,13 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
     public Skin skin;
 
     public PlayersViewTable playersViewTable;
-    public Table tableWithButtons, tableWithSelectors, tableConsoleLog, tableInfoTablo, pauseMenuTable, optionTable;
+    public Table tableWithButtons, tableWithSelectors, tableConsoleLog, tableInfoTablo, pauseMenuTable, optionTable, firstOptionTable;
     public Table infoTabloTable;
 
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
     public Slider drawGrid, drawUnits, drawTowers, drawBackground, drawGround, drawForeground, drawGridNav, drawRoutes, drawOrder, drawAll;
-    public CheckBox topBottomLeftRightSelector, verticalSelector, smoothFlingSelector;
+    public CheckBox topBottomLeftRightSelector, verticalSelector, smoothFlingSelector, towerMoveAlgorithm;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -101,7 +101,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         this.maxTextureTime = 5f;
 
         this.interfaceTouched = false;
-
+//        this.setDebugAll(true);
         initInterface();
         addListeners();
     }
@@ -128,6 +128,10 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
         pauseMenuTable.setFillParent(true);
         pauseMenuTable.setVisible(false);
         addActor(pauseMenuTable);
+
+        firstOptionTable = new Table(skin);
+        firstOptionTable.setVisible(false);
+        pauseMenuTable.add(firstOptionTable);
 
         optionTable = new Table(skin);
         optionTable.setVisible(false);
@@ -323,6 +327,7 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- optionButton.isChecked():" + optionButton.isChecked());
                 optionTable.setVisible(optionButton.isChecked());
+                firstOptionTable.setVisible(optionButton.isChecked());
             }
         });
         exitButton.addListener(new ChangeListener() {
@@ -661,6 +666,24 @@ public class GameInterface extends Stage implements GestureDetector.GestureListe
             }
         });
         optionTable.add(topBottomLeftRightSelector).colspan(2).fill().row();
+
+        towerMoveAlgorithm = new CheckBox("towerMoveAlgorithm", skin);
+        towerMoveAlgorithm.setChecked(gameScreen.gameField.gameSettings.towerMoveAlgorithm);
+        towerMoveAlgorithm.getImage().setScaling(Scaling.stretch);
+        towerMoveAlgorithm.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
+        towerMoveAlgorithm.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+        towerMoveAlgorithm.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("GameInterface::setCameraController()", "-- towerMoveAlgorithm.isChecked():" + towerMoveAlgorithm.isChecked());
+                gameScreen.gameField.gameSettings.towerMoveAlgorithm = towerMoveAlgorithm.isChecked();
+                UnderConstruction underConstruction = gameScreen.gameField.getUnderConstruction();
+                if (underConstruction != null) {
+                    underConstruction.setBuildType(gameScreen.gameField.gameSettings.towerMoveAlgorithm);
+                }
+            }
+        });
+        firstOptionTable.add(towerMoveAlgorithm).colspan(2).fill().row();
 
         verticalSelector = new CheckBox("verticalSelector", skin);
         verticalSelector.setChecked(gameScreen.gameField.gameSettings.verticalSelector);

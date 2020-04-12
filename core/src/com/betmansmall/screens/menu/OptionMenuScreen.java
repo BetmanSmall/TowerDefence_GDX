@@ -46,6 +46,7 @@ public class OptionMenuScreen implements Screen {
 
     private VisCheckBox panLeftMouseButton;
     private VisCheckBox panMidMouseButton;
+    private VisCheckBox towerMoveAlgorithm;
     private VisCheckBox panRightMouseButton;
     private TextButton backButton;
 
@@ -149,6 +150,18 @@ public class OptionMenuScreen implements Screen {
         });
         panRightMouseButton.setChecked(gameSettings.panRightMouseButton);
         table2.add(panRightMouseButton).row();
+
+        towerMoveAlgorithm = new VisCheckBox("towerMoveAlgorithm");
+        towerMoveAlgorithm.getLabel().setColor(Color.BLACK);
+        towerMoveAlgorithm.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("OptionMenuScreen::towerMoveAlgorithm::changed()", "-- towerMoveAlgorithm.isChecked():" + towerMoveAlgorithm.isChecked());
+                gameSettings.towerMoveAlgorithm = towerMoveAlgorithm.isChecked();
+            }
+        });
+        towerMoveAlgorithm.setChecked(gameSettings.towerMoveAlgorithm);
+        table2.add(towerMoveAlgorithm).row();
 
         rootTable.add(table2).row();
         Table table3 = new VisTable();

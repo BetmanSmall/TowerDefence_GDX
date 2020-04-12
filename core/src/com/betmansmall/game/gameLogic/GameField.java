@@ -463,7 +463,7 @@ public class GameField {
             if (underConstruction != null) {
                 underConstruction.dispose();
             }
-            return underConstruction = new UnderConstruction(templateForTower);
+            return underConstruction = new UnderConstruction(templateForTower, gameScreen.gameField.gameSettings.towerMoveAlgorithm);
         }
         return null;
     }
