@@ -16,7 +16,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.badlogic.gdx.math.Circle;
 import com.betmansmall.game.gameLogic.playerTemplates.UnitAttack;
 import com.betmansmall.server.data.UnitInstanceData;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayDeque;
 

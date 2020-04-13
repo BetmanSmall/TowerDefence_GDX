@@ -10,7 +10,7 @@ import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.Random;
 

@@ -6,7 +6,7 @@ import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.server.networking.TcpSocketListener;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.io.IOException;
 import java.net.ConnectException;

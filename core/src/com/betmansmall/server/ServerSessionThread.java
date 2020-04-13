@@ -19,7 +19,7 @@ import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.TowersManagerData;
 import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.server.networking.TcpConnection;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;

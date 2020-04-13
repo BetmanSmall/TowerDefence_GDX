@@ -22,9 +22,9 @@ import com.betmansmall.game.gameLogic.Unit;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.render.GameFieldRenderer;
-import com.betmansmall.screens.AbstractScreen;
+import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.server.accouting.UserAccount;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 public class GameScreen extends AbstractScreen {
     public GameField gameField;

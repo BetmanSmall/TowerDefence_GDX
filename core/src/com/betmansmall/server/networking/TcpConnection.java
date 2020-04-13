@@ -2,7 +2,7 @@ package com.betmansmall.server.networking;
 
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.server.data.SendObject;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.io.EOFException;
 import java.io.IOException;

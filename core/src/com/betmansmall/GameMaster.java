@@ -19,8 +19,8 @@ import com.betmansmall.screens.menu.OptionMenuScreen;
 import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.server.SessionSettings;
 import com.betmansmall.server.accouting.UserAccount;
-import com.betmansmall.util.Version;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.Version;
+import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.VisUI;
 
 import org.apache.commons.cli.CommandLine;

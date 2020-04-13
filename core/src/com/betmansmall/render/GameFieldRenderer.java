@@ -19,7 +19,7 @@ import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerAttackType;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayDeque;
 import java.util.Iterator;

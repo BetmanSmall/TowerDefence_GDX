@@ -3,7 +3,6 @@ package com.betmansmall.server.data;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.GameField;
@@ -11,7 +10,7 @@ import com.betmansmall.game.gameLogic.Unit;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.game.gameLogic.playerTemplates.TowerShellEffect;
 import com.betmansmall.game.gameLogic.playerTemplates.UnitAttack;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

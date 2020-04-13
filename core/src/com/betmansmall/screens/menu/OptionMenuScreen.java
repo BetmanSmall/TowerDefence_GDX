@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.GameSettings;
 import com.betmansmall.screens.client.GameScreen;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSlider;

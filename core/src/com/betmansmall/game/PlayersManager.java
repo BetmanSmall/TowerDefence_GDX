@@ -10,7 +10,7 @@ import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.PlayersManagerData;
 import com.betmansmall.server.networking.TcpConnection;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 public class PlayersManager {
     private SessionType sessionType;

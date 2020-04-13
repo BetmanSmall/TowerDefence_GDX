@@ -12,7 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.betmansmall.GameMaster;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.actors.LoadingBar;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.AbstractScreen;
+import com.betmansmall.utils.logging.Logger;
 
 public class LoadingScreen extends AbstractScreen {
     private Stage stage;

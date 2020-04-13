@@ -11,11 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
-import com.betmansmall.screens.AbstractScreen;
+import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.server.ServerSettingsScreen;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSlider;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -359,7 +359,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            game.setScreen(new MapEditorScreen(game, fileName));
 //                        } else {
-                        game.addScreen(new MapEditorScreen(game, "maps/aaagen.tmx"));
+                        game.addScreen(new TestScreen(game));
 //                        }
                         break;
                 }

@@ -29,7 +29,7 @@ import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.UnderConstruction;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 

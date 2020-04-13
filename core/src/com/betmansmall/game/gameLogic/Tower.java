@@ -15,7 +15,7 @@ import com.betmansmall.game.gameLogic.playerTemplates.TowerShellType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.badlogic.gdx.math.Circle; // AlexGor
 import com.badlogic.gdx.math.Vector2; //AlexGor
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 /**
  * Created by Андрей on 24.01.2016.

@@ -26,7 +26,7 @@ import com.betmansmall.server.data.CreateUnitData;
 import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.UnitInstanceData;
 import com.betmansmall.server.data.UnitsManagerData;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayDeque;
 import java.util.Random;

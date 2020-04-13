@@ -1,7 +1,7 @@
 package com.betmansmall.server.data;
 
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 public class GameServerNetworkData implements NetworkPackage {
     public String host;

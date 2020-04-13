@@ -7,7 +7,7 @@ import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.server.data.UnitInstanceData;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayDeque;
 

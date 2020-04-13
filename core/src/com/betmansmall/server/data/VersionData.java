@@ -1,8 +1,7 @@
 package com.betmansmall.server.data;
 
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.util.Version;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.Version;
 
 public class VersionData implements NetworkPackage {
     public String version;

@@ -1,4 +1,4 @@
-package com.betmansmall.util.logging;
+package com.betmansmall.utils.logging;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.StringBuilder;

@@ -17,7 +17,7 @@ import com.betmansmall.server.data.GameFieldVariablesData;
 import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.UnitsManagerData;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 public class ServerGameScreen extends GameScreen {
     public AuthServerThread authServerThread;

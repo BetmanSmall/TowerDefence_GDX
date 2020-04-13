@@ -16,7 +16,7 @@ import com.betmansmall.server.data.RemoveTowerData;
 import com.betmansmall.server.data.SendObject;
 import com.betmansmall.server.data.BuildTowerData;
 import com.betmansmall.server.data.UnitsManagerData;
-import com.betmansmall.util.logging.Logger;
+import com.betmansmall.utils.logging.Logger;
 
 public class ClientGameScreen extends GameScreen {
     public ClientGameScreen(GameMaster gameMaster, UserAccount userAccount) {
