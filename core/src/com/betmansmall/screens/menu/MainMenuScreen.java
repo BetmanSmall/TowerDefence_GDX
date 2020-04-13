@@ -347,7 +347,8 @@ public class MainMenuScreen extends AbstractScreen {
                         break;
                     case 2:
                         menuLvl = 2;
-                        switchMenuButtons();
+//                        switchMenuButtons();
+                        game.addScreen(new LevelSelectorScreen(game));
                         break;
                     case 3:
                         //Editor mode
