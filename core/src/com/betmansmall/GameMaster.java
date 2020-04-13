@@ -189,7 +189,12 @@ public class GameMaster extends Game {
     @Override
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        super.render();
+        try {
+            super.render();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Logger.logError("ex:" + ex);
+        }
     }
 
     @Override

@@ -455,15 +455,19 @@ public class GameFieldRenderer {
         if (cameraController.isDrawableUnits == 5) {
             for (int m = 1; m < cameraController.isDrawableUnits; m++) {
                 Circle circle = unit.getCircle(m);
+                if (circle != null) {
+                    fVx = circle.x - deltaX;
+                    fVy = circle.y - deltaY;
+                    spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY);
+                }
+            }
+        } else if (cameraController.isDrawableUnits != 0) {
+            Circle circle = unit.getCircle(cameraController.isDrawableUnits);
+            if (circle != null) {
                 fVx = circle.x - deltaX;
                 fVy = circle.y - deltaY;
                 spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY);
             }
-        } else if (cameraController.isDrawableUnits != 0) {
-            Circle circle = unit.getCircle(cameraController.isDrawableUnits);
-            fVx = circle.x - deltaX;
-            fVy = circle.y - deltaY;
-            spriteBatch.draw(currentFrame, fVx, fVy, sizeCellX, sizeCellY);
         }
 //        drawUnitBar(shapeRenderer, unit, currentFrame, fVx, fVy);
     }

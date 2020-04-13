@@ -741,12 +741,14 @@ public class Unit {
     }
 
     private void updateTowerAttack(CameraController cameraController) {
-        unitAttack.attacked = true;
-        int oldX = currentCell.cellX, oldY = currentCell.cellY;
-        int newX = towerAttack.cell.cellX, newY = towerAttack.cell.cellY;
+        if (towerAttack != null) {
+            unitAttack.attacked = true;
+            int oldX = currentCell.cellX, oldY = currentCell.cellY;
+            int newX = towerAttack.cell.cellX, newY = towerAttack.cell.cellY;
 
-        calculateDirection(oldX, oldY, newX, newY, cameraController);
-        setAnimation("attack_");
+            calculateDirection(oldX, oldY, newX, newY, cameraController);
+            setAnimation("attack_");
+        }
     }
 
     public boolean die(float damage, TowerShellEffect towerShellEffect) {
@@ -812,7 +814,12 @@ public class Unit {
     }
 
     public TextureRegion getCurrentFrame() {
-        return (TextureRegion)animation.getKeyFrame(stepsInTime, true);
+        if (animation != null) {
+            return (TextureRegion) animation.getKeyFrame(stepsInTime, true);
+        } else {
+            Logger.logWithTime("currentThread:" + Thread.currentThread());
+        }
+        return null;
     }
 
     public TextureRegion getCurrentDeathFrame() {
@@ -846,8 +853,11 @@ public class Unit {
             if (map > 0 && map < 5) {
                 return circles.get(map - 1);
             }
+            Gdx.app.log("Unit::getCircle(" + map + ")", "-- Bad map | return null!");
+        } else {
+            Gdx.app.log("Unit::getCircle(" + map + ")", "-- Unit die?!? circles:null");
+            Logger.logDebug("unit:" + toString(true));
         }
-        Gdx.app.log("Unit::getCircle(" + map + ")", "-- Bad map | return null!");
         return null;
     }
 

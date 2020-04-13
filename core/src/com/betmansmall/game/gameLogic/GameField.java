@@ -571,23 +571,26 @@ public class GameField {
         Tower tower = towersManager.getTower(); // towersManager.towers.size - 1);
         if (tower != null) {
             Cell pos = tower.cell;
-            return ( (removeTower(pos.cellX, pos.cellY)==0)?false:true );
+            return ( removeTower(pos.cellX, pos.cellY) != null );
         }
         return false;
     }
 
     public boolean removeTowerWithGold(int cellX, int cellY, Player player) {
-        int towerCost = removeTower(cellX, cellY);
-        if (towerCost > 0) {
-//            rerouteForAllUnits();
-            player.gold += towerCost; // *0.5;
-            Gdx.app.log("GameField::removeTowerWithGold()", "-- Now gamerGold:" + player.gold);
+        TemplateForTower templateForTower = removeTower(cellX, cellY);
+        if (templateForTower != null) {
+            int towerCost = templateForTower.cost;
+            if (towerCost > 0) {
+//                rerouteForAllUnits();
+                player.gold += towerCost; // *0.5;
+                Gdx.app.log("GameField::removeTowerWithGold()", "-- Now gamerGold:" + player.gold);
+            }
             return true;
         }
         return false;
     }
 
-    public int removeTower(int cellX, int cellY) { // TODO if tower.cost zero mb bug
+    public TemplateForTower removeTower(int cellX, int cellY) { // TODO if tower.cost zero mb bug
         Tower tower = field[cellX][cellY].getTower();
         if (tower != null) {
             int x = tower.cell.cellX;
@@ -619,16 +622,17 @@ public class GameField {
             for (Unit unit : tower.whoAttackMe) { // need change i think
                 if (unit != null) {
                     unit.towerAttack = null;
+//                    Logger.logDebug("unit:" + unit);
                     if (unit.unitAttack != null) {
                         unit.unitAttack.attacked = false;
                     }
                 }
             }
-            int towerCost = tower.templateForTower.cost;
+            TemplateForTower templateForTower = tower.templateForTower;
             towersManager.removeTower(tower);
-            return towerCost;
+            return templateForTower;
         }
-        return 0;
+        return null;
     }
 
 //    public void updateHeroDestinationPoint() {
@@ -813,8 +817,10 @@ public class GameField {
 //    }
 
     private void stepAllUnits(float delta, CameraController cameraController) {
+//        Logger.logDebug("unitsManager.units.size:" + unitsManager.units.size);
         for (int u = 0; u < unitsManager.units.size; u++) {
             Unit unit = unitsManager.units.get(u);
+//            Logger.logDebug("unit:" + unit);
 //        for (Unit unit : unitsManager.units) {
             Cell oldCurrentCell = unit.currentCell;
             Cell nextCurrentCell = unit.nextCell;
