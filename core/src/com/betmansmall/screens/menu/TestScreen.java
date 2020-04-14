@@ -9,13 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.utils.AbstractScreen;
-import com.betmansmall.utils.NavigationDrawer;
+import com.betmansmall.utils.BackSliderTable;
 import com.betmansmall.utils.Utils;
 import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -31,7 +30,7 @@ public class TestScreen extends AbstractScreen {
     private static final int NAV_WIDTH = Gdx.graphics.getHeight()/3;
     private static final int NAV_HEIGHT = Gdx.graphics.getHeight();
     private Stage stage;
-    private final NavigationDrawer drawer = new NavigationDrawer(NAV_WIDTH, NAV_HEIGHT);
+    private final BackSliderTable drawer = new BackSliderTable(NAV_WIDTH, NAV_HEIGHT);
 
     public TestScreen(GameMaster gameMaster) {
         super(gameMaster);
@@ -78,7 +77,7 @@ public class TestScreen extends AbstractScreen {
         Image image_shadow = new Image(atlas.findRegion("image_shadow"));
         image_shadow.setHeight(NAV_HEIGHT);
         image_shadow.setX(NAV_WIDTH);
-        drawer.setAreaWidth(NAV_WIDTH + image_shadow.getWidth());
+//        drawer.setAreaWidth(NAV_WIDTH + image_shadow.getWidth());
         drawer.addActor(image_shadow);
 
         // show the panel
