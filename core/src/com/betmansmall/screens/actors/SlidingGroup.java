@@ -36,9 +36,10 @@ public class SlidingGroup extends Table implements GestureDetector.GestureListen
 //    private Actor touchFocusedChild;
 //    private ActorGestureListener actorGestureListener;
 
-    private int LINE_MENU_ITEM_COUNT = 6;
+    private int LINE_MENU_ITEM_COUNT = 4;
 
     public SlidingGroup() {
+
         Gdx.app.log("SlidingGroup::SlidingGroup()", "-- amountX:" + amountX);
 //        super();
         bg          = new Texture(Gdx.files.internal("buttons/bg.png"));
@@ -58,18 +59,18 @@ public class SlidingGroup extends Table implements GestureDetector.GestureListen
 
         // Считаем ширину иконки уровня исходя из желаемого количества иконок по ширине экрана
         // Ширина = Ширина экрана / желаемое количество - (отступ слева + отступ справа)
-        float itemWidth = Gdx.app.getGraphics().getWidth() / LINE_MENU_ITEM_COUNT - 40;
+        float itemWidth = Gdx.app.getGraphics().getWidth() / LINE_MENU_ITEM_COUNT;
 
         // Создаем 4 секции с иконками выбора уровня
         // В каждой секции будет 2 строки иконок по 6 в каждой
         // Расставляем иконки по сетке с помощью виджета Table
-        for(int section=0; section<4; section++) {
+        for(int section=0; section< LINE_MENU_ITEM_COUNT; section++) {
             Table table = new Table();
-            for(int i=0; i<2; i++) {
+            for(int i=0; i<1; i++) {
                 table.row();
-                for(int j = 0; j < 6; j++ ) {
+                for(int j = 0; j < 3; j++ ) {
                     // (20,20,60,20) - отступы сверху, слева, снизу, справа
-                    table.add( new MenuItem( itemWidth, itemWidth ) ).pad(20,20,60,20);
+                    table.add( new MenuItem( itemWidth + itemWidth/2, itemWidth ) ).pad(20,itemWidth / LINE_MENU_ITEM_COUNT,60,itemWidth / LINE_MENU_ITEM_COUNT);
                 }
             }
             // Добавляем секцию в наш контейнер

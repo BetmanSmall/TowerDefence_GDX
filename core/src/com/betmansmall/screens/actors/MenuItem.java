@@ -21,8 +21,8 @@ public class MenuItem extends Actor {
     private BitmapFont font;
 
     public MenuItem( float width, float height ) {
-        texMenuItem = new Texture(Gdx.files.internal("buttons/item.png"));
-        tex = new TextureRegion(texMenuItem, 0, 0, 128, 128);
+        texMenuItem = new Texture(Gdx.files.internal("buttons/itemNEW.png"));
+        tex = new TextureRegion(texMenuItem, 0, 0, 512, 512);
 
         this.setWidth(width);
         this.setHeight(height);

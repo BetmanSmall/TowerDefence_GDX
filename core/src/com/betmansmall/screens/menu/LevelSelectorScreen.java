@@ -41,7 +41,7 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
 
         stage = new Stage(new ScreenViewport());
         stage.addActor(towerDefence.backgroundImages.get(1));
-        stage.setDebugAll(true);
+        //stage.setDebugAll(true);
 
         rootTable = new Table();
         rootTable.setFillParent(true);
