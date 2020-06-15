@@ -33,6 +33,7 @@ public class GameMaster extends Game {
     private Array<Screen> screensStack;
 
     public Array<Image> backgroundImages;
+    public Array<String> allMaps;
     public Array<String> gameLevelMaps;
 
     public UserAccount userAccount;
@@ -105,31 +106,34 @@ public class GameMaster extends Game {
         Logger.logDebug("backgroundImages.size:" + backgroundImages.size);
 
         gameLevelMaps = new Array<>();
-//        gameLevelMaps.add("maps/test.tmx");
-//        FileHandle mapsDir = Gdx.files.internal("maps");
-//        if (mapsDir.list().length == 0) {
-//            gameLevelMaps.add("maps/desert.tmx");
-//            gameLevelMaps.add("maps/summer.tmx");
-//            gameLevelMaps.add("maps/winter.tmx");
-            gameLevelMaps.add("maps/arenaEmpty.tmx");
-            gameLevelMaps.add("maps/arena0.tmx");
-            gameLevelMaps.add("maps/randomMap.tmx");
-            gameLevelMaps.add("maps/island.tmx");
-            gameLevelMaps.add("maps/arena1.tmx");
-            gameLevelMaps.add("maps/arena2.tmx");
-            gameLevelMaps.add("maps/old/arena3.tmx");
-            gameLevelMaps.add("maps/arena4.tmx");
-            gameLevelMaps.add("maps/arena4_1.tmx");
-            gameLevelMaps.add("maps/sample.tmx");
-//        } else {
-//            for (FileHandle fileHandle : mapsDir.list()) {
-//                if (fileHandle.extension().equals("tmx")) {
-//                    Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.add():" + fileHandle.path());
-//                    gameLevelMaps.add(fileHandle.path());
-//                }
-//            }
-//        }
+        gameLevelMaps.add("maps/3dArena0.tmx");
+        gameLevelMaps.add("maps/arenaEmpty.tmx");
+        gameLevelMaps.add("maps/arena0.tmx");
+        gameLevelMaps.add("maps/randomMap.tmx");
+        gameLevelMaps.add("maps/island.tmx");
+        gameLevelMaps.add("maps/arena1.tmx");
+        gameLevelMaps.add("maps/arena2.tmx");
+        gameLevelMaps.add("maps/old/arena3.tmx");
+        gameLevelMaps.add("maps/arena4.tmx");
+        gameLevelMaps.add("maps/arena4_1.tmx");
+        gameLevelMaps.add("maps/sample.tmx");
+        gameLevelMaps.add("maps/desert.tmx");
+        gameLevelMaps.add("maps/summer.tmx");
+        gameLevelMaps.add("maps/winter.tmx");
+        gameLevelMaps.add("maps/test.tmx");
         Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
+        allMaps = new Array<>();
+        FileHandle mapsDir = Gdx.files.internal("maps");
+        if (mapsDir.length() > 0) {
+            for (FileHandle fileHandle : mapsDir.list()) {
+                if (fileHandle.extension().equals("tmx")) {
+                    Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.add():" + fileHandle.path());
+                    allMaps.add(fileHandle.path());
+                }
+            }
+        } else {
+            allMaps.addAll(gameLevelMaps);
+        }
 
         this.userAccount = new UserAccount("root", null, "accID_" + System.currentTimeMillis());
         this.assetManager = new AssetManager();

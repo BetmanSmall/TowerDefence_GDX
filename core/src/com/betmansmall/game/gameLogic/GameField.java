@@ -165,7 +165,7 @@ public class GameField {
                                     if (layerName != null) {
                                         if ( layerName.equals("background") ) {
                                             cell.backgroundTiles.add(tiledMapTile);
-                                        } else if ( layerName.equals("ground") || layerName.equals("entity") ) {
+                                        } else if ( layerName.contains("ground") || layerName.equals("entity") ) {
                                             cell.setTerrain(tiledMapTile, false, false);
                                         } else if ( layerName.equals("towers") ) {
                                             cell.removeTerrain(true);

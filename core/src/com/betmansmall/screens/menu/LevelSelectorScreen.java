@@ -9,49 +9,34 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.screens.actors.SlidingGroup;
 
-/**
- * Created by betma on 05.12.2018.
- */
-
 public class LevelSelectorScreen implements Screen, GestureDetector.GestureListener {
-    private GameMaster towerDefence;
-
+    private GameMaster gameMaster;
     private Stage stage;
     private Table rootTable;
-    private HorizontalGroup helpImagesHorGroup;
     private SlidingGroup slidingGroup;
-    private Array<Image> helpImages;
     private boolean pan = false;
 
-    public LevelSelectorScreen(final GameMaster towerDefence) {
-        this.towerDefence = towerDefence;
-
+    public LevelSelectorScreen(final GameMaster gameMaster) {
+        this.gameMaster = gameMaster;
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-
         stage = new Stage(new ScreenViewport());
-        stage.addActor(towerDefence.backgroundImages.get(1));
-        //stage.setDebugAll(true);
+        stage.addActor(gameMaster.backgroundImages.get(1));
+        stage.setDebugAll(true);
 
         rootTable = new Table();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
-        // Инициализируем наш контейнер
-        slidingGroup = new SlidingGroup();
-
+        slidingGroup = new SlidingGroup(gameMaster);
         rootTable.add(slidingGroup).center().expand().fill().row();
-        // ---- ----- - -- - - - -
 
 //        helpImagesHorGroup = new HorizontalGroup();
 //        FileHandle imagesDir = Gdx.files.internal("helpImages");
@@ -71,7 +56,7 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                towerDefence.removeTopScreen();
+                gameMaster.removeTopScreen();
             }
         });
         rootTable.add(backButton).bottom().fillX();
@@ -131,7 +116,7 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
 //        Gdx.app.log("HelpMenuScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            towerDefence.removeTopScreen();
+            gameMaster.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
 //            clickAnalyzer((short)1);

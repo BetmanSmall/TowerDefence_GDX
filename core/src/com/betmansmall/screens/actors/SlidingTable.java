@@ -19,10 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-
-/**
- * Created by betma on 06.12.2018.
- */
+import com.betmansmall.utils.logging.Logger;
 
 public class SlidingTable extends Table implements GestureDetector.GestureListener {
     private Texture naviPassive, naviActive;
@@ -138,6 +135,7 @@ public class SlidingTable extends Table implements GestureDetector.GestureListen
 //        if ( event.getTarget().getClass() == LevelIcon.class ) {
 //            touchFocusedChild = event.getTarget();
 //        }
+        Logger.logDebug("x:" + x, "y:" + y, "actor:" + hit(x, y, true));
         return false;
     }
 
