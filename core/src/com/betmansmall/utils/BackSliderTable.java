@@ -10,25 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 
-/**
- * @author Crowni
- */
-public class NavigationDrawer extends Table {
+public class BackSliderTable extends Table {
+    private final Rectangle scissorBounds;
+    private final Rectangle areaBounds;
 
-    // only visual window and using scissor to avoid GPU to draw out of left-edge screen.
-    private float areaWidth;
-    private float areaHeight;
-    private final Rectangle areaBounds = new Rectangle();
-    private final Rectangle scissorBounds = new Rectangle();
-
-    // it's revealed with (widthStart = 60F;) when the user swipes a finger from the left edge of the screen with start touch.
     private float widthStart = 60f;
-    // when the user swipes a finger from the right edge of the screen, it goes into off-screen after (widthBack = 20F;).
     private float widthBack = 20f;
-    // speed of dragging
     private float speed = 15f;
 
-    // some attributes to make real dragging
     private Vector2 clamp = new Vector2();
     private Vector2 posTap = new Vector2();
     private Vector2 end = new Vector2();
@@ -42,17 +31,9 @@ public class NavigationDrawer extends Table {
     private boolean auto = false;
     private boolean enableDrag = true;
 
-    public void setAreaWidth(float areaWidth) {
-        this.areaWidth = areaWidth;
-    }
-
-    public void setAreaHeight(float areaHeight) {
-        this.areaHeight = areaHeight;
-    }
-
-    public NavigationDrawer(float width, float height) {
-        this.areaWidth = width;
-        this.areaHeight = height;
+    public BackSliderTable(float width, float height) {
+        scissorBounds = new Rectangle();
+        areaBounds = new Rectangle(0, 0, width, height);
         this.setSize(width, height);
     }
 
@@ -94,7 +75,7 @@ public class NavigationDrawer extends Table {
 
     @Override
     public void draw(Batch batch, float alpha) {
-        getStage().calculateScissors(areaBounds.set(0, 0, areaWidth, areaHeight), scissorBounds);
+        getStage().calculateScissors(areaBounds, scissorBounds);
         batch.flush();
         if (ScissorStack.pushScissors(scissorBounds)) {
             super.draw(batch, alpha);
@@ -131,7 +112,6 @@ public class NavigationDrawer extends Table {
         rotateMenuButton();
 
         fadeBackground();
-
     }
 
     private boolean isMax = false;
@@ -154,7 +134,6 @@ public class NavigationDrawer extends Table {
                 listener.moving(clamp);
             }
         }
-
     }
 
     private void updatePosition() {
@@ -163,12 +142,12 @@ public class NavigationDrawer extends Table {
     }
 
     private void dragging() {
-        if (isStart)
+        if (isStart) {
             end.set(scrToStgX(inputX(), 0));
-
-        if (isBack && last.x < -widthBack)
+        }
+        if (isBack && last.x < -widthBack) {
             end.set(last.add(this.getWidth() + widthBack, 0));
-
+        }
     }
 
     private void backDrag() {
@@ -182,7 +161,6 @@ public class NavigationDrawer extends Table {
         if (inputX() < stgToScrX(widthStart, 0).x) {
             isStart = true;
             isBack = false;
-
             hintToOpen(); // hint to player if he want to open the drawer
         }
     }
@@ -196,15 +174,17 @@ public class NavigationDrawer extends Table {
         end.set(clamp);
 
         if (auto) {
-            if (show)
+            if (show) {
                 end.add(speed, 0); // player want to OPEN drawer
-            else
+            } else {
                 end.sub(speed, 0); // player want to CLOSE drawer
+            }
         } else {
-            if (toOpen())
+            if (toOpen()) {
                 end.add(speed, 0); // player want to OPEN drawer
-            else if (toClose())
+            } else if (toClose()) {
                 end.sub(speed, 0); // player want to CLOSE drawer
+            }
         }
 
     }
@@ -245,16 +225,14 @@ public class NavigationDrawer extends Table {
         return Gdx.input.isTouched();
     }
 
-    /**
-     * Optional
-     **/
     private Actor menuButton = new Actor();
     private boolean isRotateMenuButton = false;
     private float menuButtonRotation = 0f;
 
     private void rotateMenuButton() {
-        if (isRotateMenuButton)
+        if (isRotateMenuButton) {
             menuButton.setRotation(clamp.x / this.getWidth() * menuButtonRotation);
+        }
     }
 
     public void setRotateMenuButton(Actor actor, float rotation) {
@@ -267,17 +245,15 @@ public class NavigationDrawer extends Table {
         this.enableDrag = enableDrag;
     }
 
-    /**
-     * Optional
-     **/
     private Actor background = new Actor();
     private boolean isFadeBackground = false;
     private float maxFade = 1f;
 
     private void fadeBackground() {
-        if (isFadeBackground)
+        if (isFadeBackground) {
             background.setColor(background.getColor().r, background.getColor().g, background.getColor().b,
                     MathUtils.clamp(clamp.x / this.getWidth() / 2, 0, maxFade));
+        }
     }
 
     public void setFadeBackground(Actor background, float maxFade) {
@@ -285,5 +261,4 @@ public class NavigationDrawer extends Table {
         this.isFadeBackground = true;
         this.maxFade = maxFade;
     }
-
 }
