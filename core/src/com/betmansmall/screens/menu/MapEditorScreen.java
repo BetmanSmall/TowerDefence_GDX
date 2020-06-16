@@ -45,6 +45,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         super(gameMaster);
         Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- gameMaster:" + gameMaster + " fileName:" + fileName);
         this.stage = new Stage(new ScreenViewport());
+        stage.setDebugAll(true);
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera();
@@ -57,6 +58,9 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
+        Table elemTable = new VisTable();
+        rootTable.add(elemTable).expand().right().bottom();
+        TextButton loadButton = new VisTextButton("Load Map");
         TextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
             @Override
@@ -65,7 +69,8 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
                 gameMaster.removeTopScreen();
             }
         });
-        rootTable.add(backButton).center().row();
+        elemTable.add(loadButton).row();
+        elemTable.add(backButton);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new GestureDetector(this));
@@ -76,6 +81,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
     @Override
     public void show() {
         Gdx.app.log("MapEditorScreen::show()", "-- Start!");
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     @Override
@@ -101,7 +107,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         camera.viewportHeight = height;
         camera.viewportWidth = width;
         camera.update();
-        stage.getViewport().update(width, height);
+        stage.getViewport().update(width, height, true);
         Gdx.app.log("MapEditorScreen::resize()", "-- New width:" + width + " height:" + height);
     }
 
