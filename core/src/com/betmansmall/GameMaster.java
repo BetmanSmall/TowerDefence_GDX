@@ -41,6 +41,7 @@ public class GameMaster extends Game {
     public SessionSettings sessionSettings;
     public FactionsManager factionsManager;
     public Screen mainMenuScreen;
+    public Screen mapEditorScreen;
     public Screen optionMenuScreen;
     public Screen helpMenuScreen;
 
@@ -120,7 +121,7 @@ public class GameMaster extends Game {
         gameLevelMaps.add("maps/desert.tmx");
         gameLevelMaps.add("maps/summer.tmx");
         gameLevelMaps.add("maps/winter.tmx");
-        gameLevelMaps.add("maps/test.tmx");
+        gameLevelMaps.add("maps/old/NoNameMap.tmx");
         Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
         allMaps = new Array<>();
         FileHandle mapsDir = Gdx.files.internal("maps");

@@ -683,6 +683,9 @@ public class GameFieldRenderer {
     private void drawForeGroundCell(Cell cell) {
         float sizeCellX = cameraController.sizeCellX;
         float sizeCellY = cameraController.sizeCellY*2;
+//        if (cameraController.gameField.tmxMap. == cameraController.gameField.tmxMap.tileHeight) {
+//            sizeCellY = cameraController.sizeCellY;
+//        }
         float deltaX = cameraController.halfSizeCellX;
         float deltaY = cameraController.halfSizeCellY;
         if (!cameraController.gameField.tmxMap.isometric) {

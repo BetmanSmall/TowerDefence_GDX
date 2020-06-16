@@ -63,6 +63,11 @@ public class CameraController extends AbstractCameraController {
     public int prevMouseX, prevMouseY;
     private Random random;
 
+    float space = 50f;
+    float shiftCamera = 5f;
+    private float limitSpeedBorder = 15;
+
+
     public TemplateForTower templateForTower;
 
     public CameraController(GameScreen gameScreen) {
@@ -300,21 +305,7 @@ public class CameraController extends AbstractCameraController {
                 }
             }
         }
-//        Gdx.app.log("CameraController::pan()", "-- camera.viewportWidth:" + camera.viewportWidth + " camera.viewportHeight:" + camera.viewportHeight);
-//        float space = 50f;
-//        float shiftCamera = 5f;
-//        if (x < space) {
-//            camera.position.add(-shiftCamera, 0.0f, 0.0f);
-//        }
-//        if (x > camera.viewportWidth - space) {
-//            camera.position.add(shiftCamera, 0.0f, 0.0f);
-//        }
-//        if (y < space) {
-//            camera.position.add(0.0f, shiftCamera, 0.0f);
-//        }
-//        if (y > camera.viewportHeight - space) {
-//            camera.position.add(0.0f, -shiftCamera, 0.0f);
-//        }
+        Gdx.app.log("CameraController::pan()", "-- camera.viewportWidth:" + camera.viewportWidth + " camera.viewportHeight:" + camera.viewportHeight);
         return false;
     }
 
@@ -390,6 +381,29 @@ public class CameraController extends AbstractCameraController {
             camera.update();
         } catch (Exception exp) {
             Gdx.app.error("CameraController::update()", "-- Exception:" + exp);
+        }
+
+        int mouseX = Gdx.input.getX();
+        int mouseY = Gdx.input.getY();
+
+        if(shiftCamera < limitSpeedBorder){
+            shiftCamera += deltaTime * 10f;
+        }
+
+        if (mouseX <= space) {
+            camera.position.add(-shiftCamera, 0.0f, 0.0f);
+        }
+        if (mouseX >= camera.viewportWidth - space) {
+            camera.position.add(shiftCamera, 0.0f, 0.0f);
+        }
+        if (mouseY <= space) {
+            camera.position.add(0.0f, shiftCamera, 0.0f);
+        }
+        if (mouseY >= camera.viewportHeight - space) {
+            camera.position.add(0.0f, -shiftCamera, 0.0f);
+        }
+        if (mouseX >= space && mouseX < camera.viewportWidth - space && mouseY >= space && mouseY < camera.viewportHeight - space) {
+            shiftCamera = 0;
         }
     }
 

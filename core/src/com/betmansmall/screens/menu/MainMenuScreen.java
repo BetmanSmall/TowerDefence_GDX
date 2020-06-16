@@ -94,7 +94,6 @@ public class MainMenuScreen extends AbstractScreen {
             });
         }
         leftTable.add(clientButton).expand().fill().pad(5).colspan(2).row(); // .prefHeight(Gdx.app.getGraphics().getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
-        rootTable.add(leftTable).expandX().fillX().left();
 
         backButton = new VisTextButton("BACK"); {
             backButton.addListener(new ClickListener() {
@@ -123,9 +122,9 @@ public class MainMenuScreen extends AbstractScreen {
             });
         }
         leftTable.add(homeButton).expand().fill().pad(5).row(); // .prefHeight(Gdx.graphics.getHeight() * cellsSize).pad(Gdx.graphics.getHeight() * cellsSize)
+        rootTable.add(leftTable).expandX().fillX().left();
 
         VisTable middleTable = new VisTable();
-
         sizeLabel2 = new VisLabel(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
         sizeLabel2.setFontScale(Gdx.graphics.getHeight() * sizeFont2);
         middleTable.add(sizeLabel2).expand().fill().row();
@@ -359,7 +358,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            game.setScreen(new MapEditorScreen(game, fileName));
 //                        } else {
-                        game.addScreen(new TestScreen(game));
+                        game.addScreen(new MapEditorScreen(game, "maps/arena0.tmx"));
 //                        }
                         break;
                 }

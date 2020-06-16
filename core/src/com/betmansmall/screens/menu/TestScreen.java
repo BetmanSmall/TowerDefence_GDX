@@ -42,14 +42,18 @@ public class TestScreen extends AbstractScreen {
         icon_music.setName("icon_music");
         final Image icon_off_music = new Image(atlas.findRegion("icon_off_music"));
         icon_music.setName("icon_music");
-        drawer.stack(icon_music, icon_off_music).expand().fill().row(); // .pad(52, 52, 300, 52).pad(0,drawer.getWidth()/5, drawer.getHeight()/3, 0)
+        //drawer.stack(icon_music, icon_off_music).expand().fill().row(); // .pad(52, 52, 300, 52).pad(0,drawer.getWidth()/5, drawer.getHeight()/3, 0)
 
         final VisTextButton button_back = new VisTextButton("BACK");
         button_back.setName("BUTTON_BACK");
         drawer.add(button_back).expand().fill().row();
 
+        TextButton loadMap = new VisTextButton("loadMap");
+        loadMap.setName("loadMap");
+        drawer.stack(loadMap).expand().fill().row(); // .pad(52, 52, 300, 52).pad(0,drawer.getWidth()/5, drawer.getHeight()/3, 0)
+
         TextButton onBtn = new VisTextButton("ON");
-        onBtn.setName("OFF");
+        onBtn.setName("ON");
         TextButton offBtn = new VisTextButton("OFF");
         offBtn.setName("OFF");
         onBtn.setVisible(false);
@@ -91,7 +95,6 @@ public class TestScreen extends AbstractScreen {
                 if (name != null) {
                     if (name.equals("icon_off_music")) {
                         Logger.logDebug("BUTTON_BACK clicked.");
-                        game.removeTopScreen();
                     } else if (name.equals("BUTTON_MENU") || name.equals("IMAGE_BACKGROUND")) {
                         Logger.logDebug("Menu button clicked.");
                         image_background.setTouchable(closed ? Touchable.enabled : Touchable.disabled);
@@ -106,12 +109,17 @@ public class TestScreen extends AbstractScreen {
                         Logger.logDebug("Music button clicked.");
                         icon_music.setVisible(!icon_music.isVisible());
                         icon_off_music.setVisible(!icon_off_music.isVisible());
+                    }else if(name.contains("BACK")){
+                        gameMaster.removeTopScreen();
+                    }else if(name.contains("loadMap")){
+                        Logger.logDebug("loadMap button clicked.");
+                        gameMaster.addScreen(gameMaster.mapEditorScreen);
                     }
                 }
             }
         };
 
-        Utils.addListeners(listener, icon_music, icon_off_music, button_back, onBtn, offBtn, button_menu, image_background); // , button_menu, image_background
+        Utils.addListeners(listener, icon_music, icon_off_music, button_back, onBtn, offBtn, button_menu, image_background,loadMap); // , button_menu, image_background
     }
 
     @Override
