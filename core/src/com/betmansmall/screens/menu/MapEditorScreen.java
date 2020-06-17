@@ -16,9 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.utils.AbstractScreen;
+import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
@@ -58,9 +60,37 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
+        VisSelectBox<String> selectBox = new VisSelectBox<>();
         Table elemTable = new VisTable();
+        Array<String> sbList = new Array<>();
+        sbList.add("maps/3dArena0.tmx");
+        sbList.add("maps/arenaEmpty.tmx");
+        sbList.add("maps/arena0.tmx");
+        sbList.add("maps/randomMap.tmx");
+        sbList.add("maps/island.tmx");
+        sbList.add("maps/arena1.tmx");
+        sbList.add("maps/arena2.tmx");
+        sbList.add("maps/old/arena3.tmx");
+        sbList.add("maps/arena4.tmx");
+        sbList.add("maps/arena4_1.tmx");
+        sbList.add("maps/sample.tmx");
+        sbList.add("maps/desert.tmx");
+        sbList.add("maps/summer.tmx");
+        sbList.add("maps/winter.tmx");
+        sbList.add("maps/old/NoNameMap.tmx");
+        selectBox.setItems(sbList);
+        selectBox.setSelected(sbList.first());
+
         rootTable.add(elemTable).expand().right().bottom();
         TextButton loadButton = new VisTextButton("Load Map");
+        loadButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("MapEditorScreen::loadButton::changed()", "-- backButton.isChecked():" + loadButton.isChecked());
+                map = new TmxMapLoader().load(selectBox.getSelected());
+                renderer = new IsometricTiledMapRenderer(map, spriteBatch);
+            }
+        });
         TextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
             @Override
@@ -69,7 +99,8 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
                 gameMaster.removeTopScreen();
             }
         });
-        elemTable.add(loadButton).row();
+        elemTable.add(selectBox).row();
+        elemTable.add(loadButton);
         elemTable.add(backButton);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
