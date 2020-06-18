@@ -3,6 +3,7 @@ package com.betmansmall.screens.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,7 +28,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 /**
  * Created by betma on 09.05.2016.
  */
-public class MapEditorScreen extends AbstractScreen implements GestureDetector.GestureListener {
+public class MapEditorScreen extends AbstractScreen implements GestureDetector.GestureListener, InputProcessor {
     private Stage stage;
     private SpriteBatch spriteBatch;
 
@@ -105,6 +106,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new GestureDetector(this));
+        inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -224,5 +226,57 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
     @Override
     public void pinchStop() {
 
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        Gdx.app.log("MapEditorScreen::scrolled()", "-- camera.zoom:" + camera.zoom);
+        if (camera != null) {
+            if (amount > 0) {
+                if (camera.zoom <= MAX_ZOOM)
+                    camera.zoom += 0.1f;
+            } else if (amount < 0) {
+                if (camera.zoom >= MIN_ZOOM)
+                    camera.zoom -= 0.1f;
+            }
+            camera.update();
+            Gdx.app.log("CameraController::scrolled()", "-- camera.zoom:" + camera.zoom);
+        }
+        return false;
     }
 }
