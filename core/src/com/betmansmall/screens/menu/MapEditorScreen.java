@@ -26,6 +26,7 @@ import com.betmansmall.maps.MapLoader;
 import com.betmansmall.maps.TmxMap;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.utils.logging.Logger;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -42,6 +43,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 
     private TmxMap map;
     private IsometricTiledMapRenderer renderer;
+    private VisCheckBox layerVisibleCheckBox;
     private VisSelectBox<String> selectMapsBox, selectTileBox, mapLayersBox;
 
     public MapEditorScreen(GameMaster gameMaster, String fileName) {
@@ -61,8 +63,39 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
+        TextButton backButton = new VisTextButton("BACK");
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log("MapEditorScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
+                gameMaster.removeTopScreen();
+            }
+        });
+        rootTable.add(backButton).left().top().row();
+
         Table elemTable = new VisTable();
         rootTable.add(elemTable).expand().right().bottom();
+
+        selectTileBox = new VisSelectBox<>();
+        elemTable.add(selectTileBox).colspan(2).row();
+
+        mapLayersBox = new VisSelectBox<>();
+        mapLayersBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                layerVisibleCheckBox.setChecked(map.getLayers().get(mapLayersBox.getSelected()).isVisible());
+            }
+        });
+        elemTable.add(mapLayersBox).right();
+
+        layerVisibleCheckBox = new VisCheckBox(":");
+        layerVisibleCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                map.getLayers().get(mapLayersBox.getSelected()).setVisible(layerVisibleCheckBox.isChecked());
+            }
+        });
+        elemTable.add(layerVisibleCheckBox).left().row();
 
         selectMapsBox = new VisSelectBox<>();
         selectMapsBox.addListener(new ChangeListener() {
@@ -76,23 +109,8 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
                 updateTileList();
             }
         });
-        elemTable.add(selectMapsBox).left().row();
+        elemTable.add(selectMapsBox).colspan(2);
 
-        selectTileBox = new VisSelectBox<>();
-        elemTable.add(selectTileBox).row();
-
-        mapLayersBox = new VisSelectBox<>();
-        elemTable.add(mapLayersBox);
-
-        TextButton backButton = new VisTextButton("BACK");
-        backButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("MapEditorScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
-                gameMaster.removeTopScreen();
-            }
-        });
-        elemTable.add(backButton);
         updateTileList();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -103,10 +121,11 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
     }
 
     public void updateTileList() {
-        selectMapsBox.setItems(game.gameLevelMaps);
-        selectMapsBox.setSelected(selectMapsBox.getSelected());
         selectTileBox.setItems(map.getTiledMapTilesIds());
         mapLayersBox.setItems(map.getMapLayersNames());
+        layerVisibleCheckBox.setChecked(map.getLayers().get(mapLayersBox.getSelected()).isVisible());
+        selectMapsBox.setItems(game.gameLevelMaps);
+        selectMapsBox.setSelected(selectMapsBox.getSelected());
     }
 
     @Override
