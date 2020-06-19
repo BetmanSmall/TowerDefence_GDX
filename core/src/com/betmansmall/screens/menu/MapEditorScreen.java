@@ -8,7 +8,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -43,6 +46,11 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 
     private TiledMap map;
     private IsometricTiledMapRenderer renderer;
+    Array<String> tileList = new Array<>();
+    VisSelectBox<String> selectTileBox = new VisSelectBox<>();
+
+    Array<String> mapLayersList = new Array<>();
+    VisSelectBox<String> mapLayersBox = new VisSelectBox<>();
 
     public MapEditorScreen(GameMaster gameMaster, String fileName) {
         super(gameMaster);
@@ -81,6 +89,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         sbList.add("maps/old/NoNameMap.tmx");
         selectBox.setItems(sbList);
         selectBox.setSelected(sbList.first());
+        updateTileList();
 
         rootTable.add(elemTable).expand().right().bottom();
         TextButton loadButton = new VisTextButton("Load Map");
@@ -90,6 +99,8 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
                 Gdx.app.log("MapEditorScreen::loadButton::changed()", "-- backButton.isChecked():" + loadButton.isChecked());
                 map = new TmxMapLoader().load(selectBox.getSelected());
                 renderer = new IsometricTiledMapRenderer(map, spriteBatch);
+                updateTileList();
+                camera.position.set(0f,0f,0f);
             }
         });
         TextButton backButton = new VisTextButton("BACK");
@@ -100,8 +111,10 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
                 gameMaster.removeTopScreen();
             }
         });
-        elemTable.add(selectBox).row();
-        elemTable.add(loadButton);
+        elemTable.add(selectBox).left().row();
+        elemTable.add(loadButton).left().row();
+        elemTable.add(selectTileBox).row();
+        elemTable.add(mapLayersBox);
         elemTable.add(backButton);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -109,6 +122,22 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+    public void updateTileList(){
+        tileList.clear();
+        for(TiledMapTileSet tiledMapTiles : map.getTileSets()){
+            for(TiledMapTile tiledMapTile : tiledMapTiles){
+                tileList.add(tiledMapTile.getId() + " - Tile Id");
+            }
+        }
+        selectTileBox.setItems(tileList);
+        selectTileBox.setSelected(tileList.first());
+
+        for(MapLayer mapLayer : map.getLayers()){
+            mapLayersList.add(mapLayer.getName());
+        }
+        mapLayersBox.setItems(mapLayersList);
+        mapLayersBox.setSelected(mapLayersList.first());
     }
 
     @Override
