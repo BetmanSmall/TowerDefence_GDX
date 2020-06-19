@@ -3,7 +3,9 @@ package com.betmansmall.maps;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.utils.logging.Logger;
 
@@ -47,6 +49,24 @@ public class TmxMap extends TiledMap { // how good? 1
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+
+    public Array<String> getTiledMapTilesIds() {
+        Array<String> tiledMapTileArray = new Array<>();
+        for (TiledMapTileSet tiledMapTiles : getTileSets()) {
+            for (TiledMapTile tiledMapTile : tiledMapTiles) {
+                tiledMapTileArray.add(tiledMapTile.getId() + "");
+            }
+        }
+        return tiledMapTileArray;
+    }
+
+    public Array<String> getMapLayersNames() {
+        Array<String> mapLayersNames = new Array<>();
+        for (MapLayer mapLayer : getLayers()) {
+            mapLayersNames.add(mapLayer.getName());
+        }
+        return mapLayersNames;
     }
 
     @Override

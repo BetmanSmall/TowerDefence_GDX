@@ -20,17 +20,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.maps.MapLoader;
+import com.betmansmall.maps.TmxMap;
 import com.betmansmall.utils.AbstractScreen;
+import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
-/**
- * Created by betma on 09.05.2016.
- */
 public class MapEditorScreen extends AbstractScreen implements GestureDetector.GestureListener, InputProcessor {
     private Stage stage;
     private SpriteBatch spriteBatch;
@@ -38,19 +37,12 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
     private static final float MAX_ZOOM = 50f; //max size
     private static final float MIN_ZOOM = 0.2f; // 2x zoom
     private float initialScale = 2f;
-//    private float MAX_DESTINATION_X = 0f;
-//    private float MAX_DESTINATION_Y = 0f;
-//    private BitmapFont bitmapFont = new BitmapFont();
 
     private OrthographicCamera camera;
 
-    private TiledMap map;
+    private TmxMap map;
     private IsometricTiledMapRenderer renderer;
-    Array<String> tileList = new Array<>();
-    VisSelectBox<String> selectTileBox = new VisSelectBox<>();
-
-    Array<String> mapLayersList = new Array<>();
-    VisSelectBox<String> mapLayersBox = new VisSelectBox<>();
+    private VisSelectBox<String> selectMapsBox, selectTileBox, mapLayersBox;
 
     public MapEditorScreen(GameMaster gameMaster, String fileName) {
         super(gameMaster);
@@ -62,47 +54,36 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        this.map = new TmxMapLoader().load(fileName);
+        this.map = (TmxMap) new MapLoader().load(fileName);
         this.renderer = new IsometricTiledMapRenderer(map, spriteBatch);
 
         Table rootTable = new VisTable();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
-        VisSelectBox<String> selectBox = new VisSelectBox<>();
         Table elemTable = new VisTable();
-        Array<String> sbList = new Array<>();
-        sbList.add("maps/3dArena0.tmx");
-        sbList.add("maps/arenaEmpty.tmx");
-        sbList.add("maps/arena0.tmx");
-        sbList.add("maps/randomMap.tmx");
-        sbList.add("maps/island.tmx");
-        sbList.add("maps/arena1.tmx");
-        sbList.add("maps/arena2.tmx");
-        sbList.add("maps/old/arena3.tmx");
-        sbList.add("maps/arena4.tmx");
-        sbList.add("maps/arena4_1.tmx");
-        sbList.add("maps/sample.tmx");
-        sbList.add("maps/desert.tmx");
-        sbList.add("maps/summer.tmx");
-        sbList.add("maps/winter.tmx");
-        sbList.add("maps/old/NoNameMap.tmx");
-        selectBox.setItems(sbList);
-        selectBox.setSelected(sbList.first());
-        updateTileList();
-
         rootTable.add(elemTable).expand().right().bottom();
-        TextButton loadButton = new VisTextButton("Load Map");
-        loadButton.addListener(new ChangeListener() {
+
+        selectMapsBox = new VisSelectBox<>();
+        selectMapsBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("MapEditorScreen::loadButton::changed()", "-- backButton.isChecked():" + loadButton.isChecked());
-                map = new TmxMapLoader().load(selectBox.getSelected());
+                Logger.logDebug(selectMapsBox.getSelected());
+                map = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
                 renderer = new IsometricTiledMapRenderer(map, spriteBatch);
+                camera.position.set((map.width*map.tileWidth)/2f, 0, 0f);
+                camera.update();
                 updateTileList();
-                camera.position.set(0f,0f,0f);
             }
         });
+        elemTable.add(selectMapsBox).left().row();
+
+        selectTileBox = new VisSelectBox<>();
+        elemTable.add(selectTileBox).row();
+
+        mapLayersBox = new VisSelectBox<>();
+        elemTable.add(mapLayersBox);
+
         TextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
             @Override
@@ -111,11 +92,8 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
                 gameMaster.removeTopScreen();
             }
         });
-        elemTable.add(selectBox).left().row();
-        elemTable.add(loadButton).left().row();
-        elemTable.add(selectTileBox).row();
-        elemTable.add(mapLayersBox);
         elemTable.add(backButton);
+        updateTileList();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new GestureDetector(this));
@@ -123,21 +101,12 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
-    public void updateTileList(){
-        tileList.clear();
-        for(TiledMapTileSet tiledMapTiles : map.getTileSets()){
-            for(TiledMapTile tiledMapTile : tiledMapTiles){
-                tileList.add(tiledMapTile.getId() + " - Tile Id");
-            }
-        }
-        selectTileBox.setItems(tileList);
-        selectTileBox.setSelected(tileList.first());
 
-        for(MapLayer mapLayer : map.getLayers()){
-            mapLayersList.add(mapLayer.getName());
-        }
-        mapLayersBox.setItems(mapLayersList);
-        mapLayersBox.setSelected(mapLayersList.first());
+    public void updateTileList() {
+        selectMapsBox.setItems(game.gameLevelMaps);
+        selectMapsBox.setSelected(selectMapsBox.getSelected());
+        selectTileBox.setItems(map.getTiledMapTilesIds());
+        mapLayersBox.setItems(map.getMapLayersNames());
     }
 
     @Override

@@ -305,7 +305,6 @@ public class CameraController extends AbstractCameraController {
                 }
             }
         }
-        Gdx.app.log("CameraController::pan()", "-- camera.viewportWidth:" + camera.viewportWidth + " camera.viewportHeight:" + camera.viewportHeight);
         return false;
     }
 
