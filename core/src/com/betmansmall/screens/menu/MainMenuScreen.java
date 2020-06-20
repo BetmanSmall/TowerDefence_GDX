@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.screens.GameAutoTileScreen;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
@@ -229,6 +230,8 @@ public class MainMenuScreen extends AbstractScreen {
         Gdx.app.log("MainMenuScreen::show()", "-- Called!");
         Gdx.input.setInputProcessor(stage);
 //        resize();
+        menuLvl = 0;
+        switchMenuButtons();
     }
 
     @Override
@@ -347,7 +350,7 @@ public class MainMenuScreen extends AbstractScreen {
                     case 2:
                         menuLvl = 2;
 //                        switchMenuButtons();
-                        game.addScreen(new LevelSelectorScreen(game));
+                        game.addScreen(new GameAutoTileScreen(game));
                         break;
                     case 3:
                         //Editor mode
@@ -363,47 +366,47 @@ public class MainMenuScreen extends AbstractScreen {
                         break;
                 }
                 break;
-            case 2:                                             //Choose map menu
-                switch (buttonNumber) {
-                    case 1:
-                        //Choose map FOREST
-                        menuLvl = 3;
-                        switchMenuButtons();
-                        game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
-                        break;
-                    case 2:
-                        //Choose map2
-                        menuLvl = 3;
-                        switchMenuButtons();
-                        game.sessionSettings.gameSettings.mapPath = "maps/randomMap.tmx";
-                        break;
-                    case 3:
-                        //Choose map3
-                        menuLvl = 3;
-                        switchMenuButtons();
-                        game.sessionSettings.gameSettings.mapPath = "maps/arena4.tmx";
-                        break;
-                }
-                break;
-            case 3:                                             //Difficulty menu
-                switch (buttonNumber) {
-                    case 1:
-                        //start game with EASY
-                        game.sessionSettings.gameSettings.difficultyLevel = 0.5f;
-                        game.addScreen(new GameScreen(game));
-                        break;
-                    case 2:
-                        //start game with NORMAL
-                        game.sessionSettings.gameSettings.difficultyLevel = 1f;
-                        game.addScreen(new GameScreen(game));
-                        break;
-                    case 3:
-                        //start game with HARD
-                        game.sessionSettings.gameSettings.difficultyLevel = 2f;
-                        game.addScreen(new GameScreen(game));
-                        break;
-                }
-                break;
+//            case 2:                                             //Choose map menu
+//                switch (buttonNumber) {
+//                    case 1:
+//                        //Choose map FOREST
+//                        menuLvl = 3;
+//                        switchMenuButtons();
+//                        game.sessionSettings.gameSettings.mapPath = "maps/arena0.tmx";
+//                        break;
+//                    case 2:
+//                        //Choose map2
+//                        menuLvl = 3;
+//                        switchMenuButtons();
+//                        game.sessionSettings.gameSettings.mapPath = "maps/randomMap.tmx";
+//                        break;
+//                    case 3:
+//                        //Choose map3
+//                        menuLvl = 3;
+//                        switchMenuButtons();
+//                        game.sessionSettings.gameSettings.mapPath = "maps/arena4.tmx";
+//                        break;
+//                }
+//                break;
+//            case 3:                                             //Difficulty menu
+//                switch (buttonNumber) {
+//                    case 1:
+//                        //start game with EASY
+//                        game.sessionSettings.gameSettings.difficultyLevel = 0.5f;
+//                        game.addScreen(new GameScreen(game));
+//                        break;
+//                    case 2:
+//                        //start game with NORMAL
+//                        game.sessionSettings.gameSettings.difficultyLevel = 1f;
+//                        game.addScreen(new GameScreen(game));
+//                        break;
+//                    case 3:
+//                        //start game with HARD
+//                        game.sessionSettings.gameSettings.difficultyLevel = 2f;
+//                        game.addScreen(new GameScreen(game));
+//                        break;
+//                }
+//                break;
             default:
                 break;
         }

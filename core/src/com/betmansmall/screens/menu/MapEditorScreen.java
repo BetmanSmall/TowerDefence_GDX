@@ -22,7 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.maps.AutoTiler;
 import com.betmansmall.maps.MapLoader;
+import com.betmansmall.maps.TilesetConfig;
 import com.betmansmall.maps.TmxMap;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.utils.logging.Logger;
@@ -72,6 +74,20 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
             }
         });
         rootTable.add(backButton).left().top().row();
+
+//        TextButton generateBtn = new VisTextButton("GEN");
+//        generateBtn.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                Logger.logDebug(generateBtn.isChecked()+"");
+//                map = (TmxMap) new AutoTiler(16, 16, new TilesetConfig()).generateMap();
+//                renderer = new IsometricTiledMapRenderer(map, spriteBatch);
+//                camera.position.set((map.width*map.tileWidth)/2f, 0, 0f);
+//                camera.update();
+//                updateTileList();
+//            }
+//        });
+//        rootTable.add(generateBtn).left().top().row();
 
         Table elemTable = new VisTable();
         rootTable.add(elemTable).expand().right().bottom();

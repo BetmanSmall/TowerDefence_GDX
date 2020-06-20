@@ -64,7 +64,7 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
 
     @Override
     public void show() {
-        Gdx.app.log("HelpMenuScreen::show()", "--");
+        Gdx.app.log("LevelSelectorScreen::show()", "--");
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
 //        inputMultiplexer.addProcessor(new GestureDetector(this));
 //        inputMultiplexer.addProcessor(slidingGroup.getStage());
@@ -75,7 +75,7 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
 
     @Override
     public void render(float delta) {
-//      Gdx.app.log("HelpMenuScreen::render()", "-- delta:" + delta + " FPS:" + Gdx.graphics.getFramesPerSecond());
+//      Gdx.app.log("LevelSelectorScreen::render()", "-- delta:" + delta + " FPS:" + Gdx.graphics.getFramesPerSecond());
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         inputHandler(delta);
@@ -88,47 +88,47 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("HelpMenuScreen::resize(" + width + ", " + height + ")", "--");
+        Gdx.app.log("LevelSelectorScreen::resize(" + width + ", " + height + ")", "--");
         stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void pause() {
-        Gdx.app.log("HelpMenuScreen::pause()", "--");
+        Gdx.app.log("LevelSelectorScreen::pause()", "--");
     }
 
     @Override
     public void resume() {
-        Gdx.app.log("HelpMenuScreen::resume()", "--");
+        Gdx.app.log("LevelSelectorScreen::resume()", "--");
     }
 
     @Override
     public void hide() {
-        Gdx.app.log("HelpMenuScreen::hide()", "--");
+        Gdx.app.log("LevelSelectorScreen::hide()", "--");
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("HelpMenuScreen::dispose()", "--");
+        Gdx.app.log("LevelSelectorScreen::dispose()", "--");
     }
 
     private void inputHandler(float delta) {
-//        Gdx.app.log("HelpMenuScreen::inputHandler(" + delta + ");");
+//        Gdx.app.log("LevelSelectorScreen::inputHandler(" + delta + ");");
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            Gdx.app.log("LevelSelectorScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             gameMaster.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
+            Gdx.app.log("LevelSelectorScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
 //            clickAnalyzer((short)1);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_2 || Input.Keys.NUM_2);");
+            Gdx.app.log("LevelSelectorScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_2 || Input.Keys.NUM_2);");
 //            clickAnalyzer((short)2);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_3 || Input.Keys.NUM_3);");
+            Gdx.app.log("LevelSelectorScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_3 || Input.Keys.NUM_3);");
 //            clickAnalyzer((short)3);
 //        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-//            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
-//            Gdx.app.log("HelpMenuScreen::inputHandler()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
+//            Gdx.app.log("LevelSelectorScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER);");
+//            Gdx.app.log("LevelSelectorScreen::inputHandler()", "-- Campaign levels:" + towerDefence.gameLevelMaps.toString());
 //            towerDefence.nextGameLevel();
         }
     }
@@ -154,7 +154,7 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
     }
 
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Gdx.app.log("HelpMenuScreen::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
+        Gdx.app.log("LevelSelectorScreen::pan(" + x + "," + y + "," + deltaX + "," + deltaY + ")", "--");
 //        float groupX = helpImagesHorGroup.getX();
 //        float groupY = helpImagesHorGroup.getY();
 //        float groupWidth = helpImagesHorGroup.getWidth();
@@ -163,14 +163,14 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
 //        float groupPrefHeight = helpImagesHorGroup.getPrefHeight();
 //        float tableWidth = rootTable.getWidth();
 //        float tableHeight = rootTable.getHeight();
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
-////        Gdx.app.log("HelpMenuScreen::pan()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- groupX:" + groupX + " groupY:" + groupY + " groupWidth:" + groupWidth + " groupHeight:" + groupHeight);
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- groupPrefWidth:" + groupPrefWidth + " groupPrefHeight:" + groupPrefHeight + " tableWidth:" + tableWidth + " tableHeight:" + tableHeight);
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- Gdx.graphics.getWidth():" + Gdx.graphics.getWidth() + " Gdx.graphics.getHeight():" + Gdx.graphics.getHeight());
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- table.getStage().getViewport().getScreenWidth():" + table.getStage().getViewport().getScreenWidth());
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- table.getStage().getViewport().getScreenHeight():" + table.getStage().getViewport().getScreenHeight());
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- table.getStage().getViewport().getWorldWidth():" + table.getStage().getViewport().getWorldWidth());
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- table.getStage().getViewport().getWorldHeight():" + table.getStage().getViewport().getWorldHeight());
+////        Gdx.app.log("LevelSelectorScreen::pan()", "-- table.getWidth():" + table.getWidth() + " table.getHeight():" + table.getHeight());
 //        if (Math.abs(deltaX) > Math.abs(deltaY) && !pan) {
 //            if (x >= (tableWidth-groupWidth/**2f*/) && deltaX > 0) {
 //                helpImagesHorGroup.moveBy(deltaX, 0);
@@ -206,7 +206,7 @@ public class LevelSelectorScreen implements Screen, GestureDetector.GestureListe
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
-        Gdx.app.log("HelpMenuScreen::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
+        Gdx.app.log("LevelSelectorScreen::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         pan = false;
         return false;
     }
