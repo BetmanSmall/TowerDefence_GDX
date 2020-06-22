@@ -60,11 +60,11 @@ public class GameMaster extends Game {
     public void create() {
         Logger.logFuncStart();
         VisUI.load();
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            VisUI.getSkin().getFont("default-font").getData().setScale(Gdx.graphics.getHeight() * 0.0025f, Gdx.graphics.getHeight() * 0.0025f);
-        } else {
-            VisUI.getSkin().getFont("default-font").getData().setScale(Gdx.graphics.getHeight()*0.005f, Gdx.graphics.getHeight()*0.005f);
-        }
+//        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+//            VisUI.getSkin().getFont("default-font").getData().setScale(Gdx.graphics.getHeight() * 0.0025f, Gdx.graphics.getHeight() * 0.0025f);
+//        } else {
+//            VisUI.getSkin().getFont("default-font").getData().setScale(Gdx.graphics.getHeight()*0.005f, Gdx.graphics.getHeight()*0.005f);
+//        }
         this.version = new Version();
         screensStack = new Array<>();
 
