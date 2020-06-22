@@ -105,8 +105,9 @@ public class TestListView extends VisWindow {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 //by changing array using adapter view will be invalidated automatically
-
-                adapter.removeValue(adapter.getSelection().get(adapter.getSelection().size - 1), false);
+                if(adapter.getSelection().size > 0) {
+                    adapter.removeValue(adapter.getSelection().get(adapter.getSelection().size - 1), false);
+                }
             }
         });
         showPickerButton.addListener(new ChangeListener() {
