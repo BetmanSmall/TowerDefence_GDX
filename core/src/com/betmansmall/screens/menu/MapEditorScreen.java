@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.game.gameInterface.TestListView;
 import com.betmansmall.maps.AutoTiler;
 import com.betmansmall.maps.MapLoader;
 import com.betmansmall.maps.TilesetConfig;
@@ -52,7 +53,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         super(gameMaster);
         Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- gameMaster:" + gameMaster + " fileName:" + fileName);
         this.stage = new Stage(new ScreenViewport());
-        stage.setDebugAll(true);
+        //stage.setDebugAll(true);
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera();
@@ -64,6 +65,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         Table rootTable = new VisTable();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
+        stage.addActor(new TestListView());
 
         TextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
@@ -90,7 +92,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 //        rootTable.add(generateBtn).left().top().row();
 
         Table elemTable = new VisTable();
-        rootTable.add(elemTable).expand().right().bottom();
+        rootTable.add(elemTable).expand().left().bottom();
 
         selectTileBox = new VisSelectBox<>();
         elemTable.add(selectTileBox).colspan(2).row();
