@@ -65,7 +65,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         Table rootTable = new VisTable();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
-        stage.addActor(new TestListView());
+        stage.addActor(new TestListView(map, camera));
 
         TextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
