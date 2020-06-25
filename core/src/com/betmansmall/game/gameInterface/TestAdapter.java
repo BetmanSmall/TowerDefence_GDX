@@ -44,7 +44,7 @@ class TestAdapter extends ArrayAdapter<MapLayer, VisTable> {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println(mapEditorScreen.map.getLayers().get(0).isVisible());
-                //mapEditorScreen.map.getLayers().get());
+                mapEditorScreen.map.getLayers().get(testListView.adapter.getSelection().get(0).getName()).setVisible(visCheckBox.isChecked());
                 //map.getLayers().get(map.getLayers().getCount()-1).setVisible(false);
                 System.out.println(mapEditorScreen.map.getLayers().get(0).isVisible());
             }

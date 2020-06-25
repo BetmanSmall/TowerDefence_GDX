@@ -20,6 +20,7 @@ import com.kotcrab.vis.ui.widget.ListView.UpdatePolicy;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 
+
 public class TestListView extends VisWindow {
     private static final Drawable white = VisUI.getSkin().getDrawable("white");
 

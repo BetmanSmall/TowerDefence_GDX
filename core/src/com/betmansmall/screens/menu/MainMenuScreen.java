@@ -361,7 +361,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            game.setScreen(new MapEditorScreen(game, fileName));
 //                        } else {
-                        game.addScreen(new MapEditorScreen(game, "maps/arena1.tmx"));
+                        game.addScreen(new MapEditorScreen(game, "maps/3dArena0.tmx"));
 //                        }
                         break;
                 }

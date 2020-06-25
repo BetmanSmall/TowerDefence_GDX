@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.gameInterface.TestListView;
@@ -28,6 +29,8 @@ import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+
+import java.util.ArrayList;
 
 public class MapEditorScreen extends AbstractScreen implements GestureDetector.GestureListener, InputProcessor {
     private Stage stage;
@@ -43,6 +46,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
     private IsometricTiledMapRenderer renderer;
     private VisCheckBox layerVisibleCheckBox;
     private VisSelectBox<String> selectMapsBox, selectTileBox, mapLayersBox;
+    Array<String> arrName = new Array<String>();
 
     public MapEditorScreen(GameMaster gameMaster, String fileName) {
         super(gameMaster);
@@ -85,7 +89,6 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 //            }
 //        });
 //        rootTable.add(generateBtn).left().top().row();
-
         Table elemTable = new VisTable();
         rootTable.add(elemTable).expand().left().bottom();
 
@@ -115,7 +118,6 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Logger.logDebug(selectMapsBox.getSelected());
-                map = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
                 renderer = new IsometricTiledMapRenderer(map, spriteBatch);
                 camera.position.set((map.width*map.tileWidth)/2f, 0, 0f);
                 camera.update();
@@ -135,7 +137,10 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 
     public void updateTileList() {
         selectTileBox.setItems(map.getTiledMapTilesIds());
-        mapLayersBox.setItems(map.getMapLayersNames());
+        for (int i = 0; i < map.getLayers().size(); i++){
+            arrName.add(map.getLayers().get(i).getName());
+        }
+        mapLayersBox.setItems(arrName);
         layerVisibleCheckBox.setChecked(map.getLayers().get(mapLayersBox.getSelected()).isVisible());
         selectMapsBox.setItems(game.gameLevelMaps);
         selectMapsBox.setSelected(selectMapsBox.getSelected());
