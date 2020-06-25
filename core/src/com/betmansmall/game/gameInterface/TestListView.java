@@ -27,6 +27,7 @@ public class TestListView extends VisWindow {
     private ColorPicker picker;
     TestAdapter adapter;
     Array<MapLayer> array;
+
     public TestListView(MapEditorScreen mapEditorScreen, Camera camera) {
         super("listview");
 
@@ -37,13 +38,7 @@ public class TestListView extends VisWindow {
         closeOnEscape();
 
         array = new Array<MapLayer>();
-        for (int i = 0; i < mapEditorScreen.map.getLayers().getCount(); i++) {
-//            array.add(new Model("Windows" + i, VisUI.getSkin().getColor("vis-red")));
-//            array.add(new Model("Linux" + i, Color.GREEN));
-//            array.add(new Model("OSX" + i, Color.WHITE));
-            array.add(mapEditorScreen.map.getLayers().get(i));
-        }
-
+        updateLayersList(mapEditorScreen);
         adapter = new TestAdapter(array, mapEditorScreen, this);
         ListView<MapLayer> view = new ListView<MapLayer>(adapter);
         view.setUpdatePolicy(UpdatePolicy.ON_DRAW);
@@ -144,5 +139,13 @@ public class TestListView extends VisWindow {
 
         setSize(500, 300);
         setPosition(458, 245);
+    }
+    public void updateLayersList(MapEditorScreen mapEditorScreen){
+        for (int i = 0; i < mapEditorScreen.map.getLayers().getCount(); i++) {
+//            array.add(new Model("Windows" + i, VisUI.getSkin().getColor("vis-red")));
+//            array.add(new Model("Linux" + i, Color.GREEN));
+//            array.add(new Model("OSX" + i, Color.WHITE));
+            array.add(mapEditorScreen.map.getLayers().get(i));
+        }
     }
 }

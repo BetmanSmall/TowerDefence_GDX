@@ -118,6 +118,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Logger.logDebug(selectMapsBox.getSelected());
+                map = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
                 renderer = new IsometricTiledMapRenderer(map, spriteBatch);
                 camera.position.set((map.width*map.tileWidth)/2f, 0, 0f);
                 camera.update();

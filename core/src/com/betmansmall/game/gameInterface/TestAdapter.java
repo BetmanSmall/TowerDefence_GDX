@@ -39,6 +39,7 @@ class TestAdapter extends ArrayAdapter<MapLayer, VisTable> {
     @Override
     protected VisTable createView (MapLayer item) {
         VisCheckBox visCheckBox = new VisCheckBox("");
+        visCheckBox.setChecked(true);
 
         visCheckBox.addListener(new ChangeListener() {
             @Override
