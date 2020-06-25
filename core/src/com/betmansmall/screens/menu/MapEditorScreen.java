@@ -8,11 +8,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -44,7 +39,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 
     private OrthographicCamera camera;
 
-    private TmxMap map;
+    public TmxMap map;
     private IsometricTiledMapRenderer renderer;
     private VisCheckBox layerVisibleCheckBox;
     private VisSelectBox<String> selectMapsBox, selectTileBox, mapLayersBox;
@@ -65,7 +60,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         Table rootTable = new VisTable();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
-        stage.addActor(new TestListView(map, camera));
+        stage.addActor(new TestListView(this, camera));
 
         TextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
