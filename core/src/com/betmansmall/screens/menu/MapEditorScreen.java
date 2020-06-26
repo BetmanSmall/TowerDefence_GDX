@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -58,6 +59,7 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        Logger.logDebug("fileName:" + fileName);
         this.map = (TmxMap) new MapLoader().load(fileName);
         this.renderer = new IsometricTiledMapRenderer(map, spriteBatch);
 
@@ -114,6 +116,8 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
         elemTable.add(layerVisibleCheckBox).left().row();
 
         selectMapsBox = new VisSelectBox<>();
+        updateTileList();
+        selectTileBox.setSelected(fileName);
         selectMapsBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -138,13 +142,20 @@ public class MapEditorScreen extends AbstractScreen implements GestureDetector.G
 
     public void updateTileList() {
         selectTileBox.setItems(map.getTiledMapTilesIds());
-        for (int i = 0; i < map.getLayers().size(); i++){
-            arrName.add(map.getLayers().get(i).getName());
+        for (MapLayer mapLayer : map.getLayers()) {
+            Logger.logDebug("mapLayer.getName():" + mapLayer.getName());
+            arrName.add(mapLayer.getName());
         }
+        String selectedLayer = mapLayersBox.getSelected();
+        Logger.logDebug("selectedLayer:" + selectedLayer);
         mapLayersBox.setItems(arrName);
         layerVisibleCheckBox.setChecked(map.getLayers().get(mapLayersBox.getSelected()).isVisible());
+        String selectedMap = selectMapsBox.getSelected();
+        Logger.logDebug("selectedMap:" + selectedMap);
         selectMapsBox.setItems(game.gameLevelMaps);
-        selectMapsBox.setSelected(selectMapsBox.getSelected());
+        if (game.gameLevelMaps.contains(selectedMap, false)) {
+            selectMapsBox.setSelected(selectedMap);
+        }
     }
 
     @Override

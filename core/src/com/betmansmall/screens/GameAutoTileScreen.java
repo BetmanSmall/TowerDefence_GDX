@@ -46,34 +46,27 @@ public class GameAutoTileScreen extends AbstractScreen {
     public void show() {
         super.show();
 
-        // Setup camera
         camera = new OrthographicCamera();
         viewport = new FitViewport(MAP_WIDTH, MAP_HEIGHT, camera);
 
-        // Setup GUI camera
         guiCam = new OrthographicCamera();
         screenViewport = new ScreenViewport(guiCam);
         guiCam.setToOrtho(false);
 
-        // Setup font rendering
         batch = new SpriteBatch();
         font = new BitmapFont(Gdx.files.internal("utils/arial-15.fnt"), false);
         font.setColor(PROMPT_COLOR);
         layout.setText(font, PROMPT_TEXT);
 
-        // Auto generate a new map
         autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("utils/tileset.json"));
         map = autoTiler.generateMap();
 
-        // Setup map renderer
         final float unitScale = 1f / Math.max(autoTiler.getTileWidth(), autoTiler.getTileHeight());
         renderer = new OrthogonalTiledMapRenderer(map, unitScale);
 
-        // Setup input processor
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                // Generate a new procedural map on touch event
                 map = autoTiler.generateMap();
                 elapsedTime = 0;
                 return true;
@@ -94,22 +87,17 @@ public class GameAutoTileScreen extends AbstractScreen {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Render map
         viewport.apply(true);
         renderer.setView(camera);
         renderer.render();
 
         elapsedTime += delta;
 
-        // Render text prompt
         screenViewport.apply(true);
         batch.setProjectionMatrix(guiCam.combined);
         batch.begin();
-        font.setColor(PROMPT_COLOR.r, PROMPT_COLOR.g, PROMPT_COLOR.b,
-                (elapsedTime - PROMPT_FADE_IN) % PROMPT_FADE_OUT);
-        font.draw(batch, PROMPT_TEXT,
-                (screenViewport.getScreenWidth() - layout.width) / 2.0f,
-                screenViewport.getScreenHeight() - layout.height);
+        font.setColor(PROMPT_COLOR.r, PROMPT_COLOR.g, PROMPT_COLOR.b, (elapsedTime - PROMPT_FADE_IN) % PROMPT_FADE_OUT);
+        font.draw(batch, PROMPT_TEXT, (screenViewport.getScreenWidth() - layout.width) / 2.0f, screenViewport.getScreenHeight() - layout.height);
         batch.end();
     }
 
