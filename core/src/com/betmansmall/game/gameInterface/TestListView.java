@@ -28,7 +28,7 @@ public class TestListView extends VisWindow {
     public TestAdapter adapter;
     private Array<MapLayer> array;
 
-    public TestListView(MapEditorScreen mapEditorScreen, Camera camera) {
+    public TestListView(MapEditorScreen mapEditorScreen) {
         super("listview");
 
         TableUtils.setSpacingDefaults(this);
