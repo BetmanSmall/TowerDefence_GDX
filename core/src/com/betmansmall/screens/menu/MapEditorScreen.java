@@ -32,15 +32,11 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
-import java.util.ArrayList;
-
 public class MapEditorScreen extends AbstractScreen {
     private MapEditorCameraController mapEditorCameraController;
 
     private Stage stage;
     private SpriteBatch spriteBatch;
-
-
 
     public TmxMap map;
     private IsometricTiledMapRenderer renderer;
@@ -54,9 +50,7 @@ public class MapEditorScreen extends AbstractScreen {
         this.stage = new Stage(new ScreenViewport());
         //stage.setDebugAll(true);
         this.spriteBatch = new SpriteBatch();
-        mapEditorCameraController = new MapEditorCameraController();
-        Gdx.input.setInputProcessor(new GestureDetector(mapEditorCameraController));
-
+        mapEditorCameraController = new MapEditorCameraController(this);
 
         Logger.logDebug("fileName:" + fileName);
         this.map = (TmxMap) new MapLoader().load(fileName);
@@ -131,12 +125,6 @@ public class MapEditorScreen extends AbstractScreen {
         elemTable.add(selectMapsBox).colspan(2);
 
         updateTileList();
-
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-//        inputMultiplexer.addProcessor(new GestureDetector(this));
-//        inputMultiplexer.addProcessor(this);
-        inputMultiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     public void updateTileList() {
@@ -161,6 +149,12 @@ public class MapEditorScreen extends AbstractScreen {
     public void show() {
         Gdx.app.log("MapEditorScreen::show()", "-- Start!");
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(mapEditorCameraController);
+        inputMultiplexer.addProcessor(new GestureDetector(mapEditorCameraController));
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override

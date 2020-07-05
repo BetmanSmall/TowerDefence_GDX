@@ -1,13 +1,14 @@
 package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
-import com.betmansmall.screens.client.GameScreen;
 
 public class MapEditorCameraController extends CameraController {
-    public MapEditorCameraController() {
-
+    public MapEditorCameraController(Screen screen) {
+        super(screen);
     }
+
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         Gdx.app.log("MapEditorScreen::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);

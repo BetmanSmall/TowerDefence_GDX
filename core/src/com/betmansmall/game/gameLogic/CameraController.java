@@ -2,6 +2,7 @@ package com.betmansmall.game.gameLogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -67,25 +68,29 @@ public class CameraController extends AbstractCameraController {
     float shiftCamera = 5f;
     private float limitSpeedBorder = 15;
 
-
     public TemplateForTower templateForTower;
 
-    public CameraController(GameScreen gameScreen) {
-        Logger.logFuncStart("gameScreen:" + gameScreen);
+    public CameraController(Screen screen) {
+        Logger.logFuncStart("screen:" + screen);
 
-        this.gameScreen = gameScreen;
-        this.gameField = gameScreen.gameField;
-        this.gameInterface = gameScreen.gameInterface;
-        this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        if (screen instanceof GameScreen) {
+            this.gameScreen = (GameScreen)screen;
 
-        this.mapWidth = gameField.tmxMap.width;
-        this.mapHeight = gameField.tmxMap.height;
-        this.sizeCellX = gameField.tmxMap.tileWidth;
-        this.sizeCellY = gameField.tmxMap.tileHeight;
-        this.halfSizeCellX = sizeCellX/2;
-        this.halfSizeCellY = sizeCellY/2;
+            this.gameField = gameScreen.gameField;
+            this.gameInterface = gameScreen.gameInterface;
+
+            this.mapWidth = gameField.tmxMap.width;
+            this.mapHeight = gameField.tmxMap.height;
+            this.sizeCellX = gameField.tmxMap.tileWidth;
+            this.sizeCellY = gameField.tmxMap.tileHeight;
+            this.halfSizeCellX = sizeCellX/2;
+            this.halfSizeCellY = sizeCellY/2;
+        } else {
+            Logger.logError("screen!=GameScreen");
+        }
         random = new Random();
 //        Gdx.input.setCursorCatched(true);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(185, -110, 0);
         camera.zoom = 0.5f;
     }

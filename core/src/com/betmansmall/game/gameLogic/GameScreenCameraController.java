@@ -11,6 +11,7 @@ public class GameScreenCameraController extends CameraController {
         this.gameField = gameScreen.gameField;
         this.gameInterface = gameScreen.gameInterface;
     }
+
     @Override
     public boolean longPress(float x, float y) {
         super.longPress(x, y);
