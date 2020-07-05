@@ -61,7 +61,7 @@ public class CameraController extends AbstractCameraController {
     public boolean paning = false;
     public int touchDownX, touchDownY;
     public int prevMouseX, prevMouseY;
-    private Random random;
+    protected Random random;
 
     float space = 50f;
     float shiftCamera = 5f;
@@ -113,25 +113,6 @@ public class CameraController extends AbstractCameraController {
         this.borderRightX = borderRightX;
         this.borderUpY    = borderUpY;
         this.borderDownY  = borderDownY;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-        super.longPress(x, y);
-//        if (!gameInterface.interfaceTouched) {
-            Vector3 touch = new Vector3(x, y, 0.0f);
-            whichCell(touch, isDrawableTowers);
-            if (random.nextBoolean()) {
-                gameScreen.createTower((int) touch.x, (int) touch.y);
-            } else {
-                if (random.nextInt(5) == 0 && gameField.gameSettings.gameType == GameType.LittleGame) {
-                    gameField.spawnLocalHero((int) touch.x, (int) touch.y);
-                } else {
-                    gameField.spawnServerUnitToRandomExit((int) touch.x, (int) touch.y);
-                }
-            }
-//        }
-        return false;
     }
 
     @Override
@@ -429,7 +410,7 @@ public class CameraController extends AbstractCameraController {
      * Calculates coordinates of touched cell, returning them in given vector.
      * Returns false, touch was out of map.
      */
-    private boolean whichCell(Vector3 mouse, int map) {
+    protected boolean whichCell(Vector3 mouse, int map) {
 //        Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);
         if (camera != null) {
             camera.unproject(mouse);
