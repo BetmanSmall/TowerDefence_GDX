@@ -49,7 +49,6 @@ class TestAdapter extends ArrayAdapter<MapLayer, VisTable> {
             }
         });
 
-
         VisCheckBox visCheckBoxSecond = new VisCheckBox("");
 
         VisLabel label = new VisLabel(item.getName());
@@ -59,7 +58,6 @@ class TestAdapter extends ArrayAdapter<MapLayer, VisTable> {
         table.add(label);
         table.add(visCheckBox).right().expandX();
         table.add(visCheckBoxSecond).right();
-
 
         return table;
     }

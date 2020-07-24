@@ -1,5 +1,6 @@
 package com.betmansmall.game.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.betmansmall.GameMaster;
@@ -50,6 +51,8 @@ public class DesktopLauncher {
         config.y = 0;
         config.width = 1000;
         config.height = 500;
+//        config.foregroundFPS = 90;
+        config.addIcon("icons8-batman-emoji-32.png", Files.FileType.Internal);
         if (cmd.hasOption("server")) {
             config.width = (int)width/2;
             config.height = (int)height/2;

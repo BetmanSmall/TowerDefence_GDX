@@ -16,6 +16,7 @@ import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.game.gameLogic.GameScreenCameraController;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.game.gameLogic.Unit;
@@ -66,7 +67,7 @@ public class GameScreen extends AbstractScreen {
         Logger.logFuncStart();
         gameField = new GameField(this);
         gameInterface = new GameInterface(this);
-        cameraController = new CameraController(this);
+        cameraController = new GameScreenCameraController(this);
         gameFieldRenderer = new GameFieldRenderer(gameField, cameraController);
         gameInterface.setCameraController(cameraController);
 

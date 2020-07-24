@@ -43,6 +43,7 @@ public class MapEditorScreen extends AbstractScreen {
     private VisCheckBox layerVisibleCheckBox;
     private VisSelectBox<String> selectMapsBox, selectTileBox, mapLayersBox;
     Array<String> arrName = new Array<String>();
+    private TestListView testListView;
 
     public MapEditorScreen(GameMaster gameMaster, String fileName) {
         super(gameMaster);
@@ -59,7 +60,6 @@ public class MapEditorScreen extends AbstractScreen {
         Table rootTable = new VisTable();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
-        stage.addActor(new TestListView(this));
 
         TextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
@@ -143,6 +143,17 @@ public class MapEditorScreen extends AbstractScreen {
         if (game.gameLevelMaps.contains(selectedMap, false)) {
             selectMapsBox.setSelected(selectedMap);
         }
+        float testListViewPosX = -1, testListViewPosY = -1;
+        if (testListView != null) {
+            testListViewPosX = testListView.getX();
+            testListViewPosY = testListView.getY();
+            testListView.remove();
+        }
+        testListView = new TestListView(this);
+        if (testListViewPosX != -1 && testListViewPosY != -1) {
+            testListView.setPosition(testListViewPosX, testListViewPosY);
+        }
+        stage.addActor(testListView);
     }
 
     @Override

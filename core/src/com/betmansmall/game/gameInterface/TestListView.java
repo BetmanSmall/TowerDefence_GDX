@@ -25,8 +25,9 @@ public class TestListView extends VisWindow {
     private static final Drawable white = VisUI.getSkin().getDrawable("white");
 
     private ColorPicker picker;
-    public TestAdapter adapter;
     private Array<MapLayer> array;
+    public TestAdapter adapter;
+    private ListView<MapLayer> view;
 
     public TestListView(MapEditorScreen mapEditorScreen) {
         super("listview");
@@ -37,11 +38,9 @@ public class TestListView extends VisWindow {
         addCloseButton();
         closeOnEscape();
 
-        array = new Array<MapLayer>();
+        array = new Array<>();
         updateLayersList(mapEditorScreen);
 
-        adapter = new TestAdapter(array, mapEditorScreen, this);
-        ListView<MapLayer> view = new ListView<MapLayer>(adapter);
         view.setUpdatePolicy(UpdatePolicy.ON_DRAW);
 
         VisTable footerTable = new VisTable();
@@ -145,5 +144,7 @@ public class TestListView extends VisWindow {
         for (MapLayer mapLayer : mapEditorScreen.map.getLayers()) {
             array.add(mapLayer);
         }
+        adapter = new TestAdapter(array, mapEditorScreen, this);
+        view = new ListView<>(adapter);
     }
 }
