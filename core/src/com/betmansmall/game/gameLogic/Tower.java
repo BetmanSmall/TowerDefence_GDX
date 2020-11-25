@@ -73,7 +73,7 @@ public class Tower {
     }
 
     public void dispose() {
-        Gdx.app.log("Tower::dispose()", "--");
+        Logger.logDebug("player:" + player, "cell:" + cell, "templateForTower:" + templateForTower);
         this.cell = null;
         this.templateForTower = null;
 //        this.player = 0;

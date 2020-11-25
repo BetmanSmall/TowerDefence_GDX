@@ -24,7 +24,6 @@ android/gen/
 *.ipr
 *.iws
 *.iml
-!.idea\runConfigurations
 out/
 com_crashlytics_export_strings.xml
 
@@ -69,3 +68,5 @@ doxygen
 android/assets/version.properties
 android/assets/client*Log.st
 android/assets/serverLog.st
+.idea/
+!.idea/runConfigurations/*

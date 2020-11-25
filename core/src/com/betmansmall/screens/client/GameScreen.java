@@ -13,6 +13,7 @@ import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
 import com.betmansmall.game.SessionThread;
 import com.betmansmall.game.gameInterface.GameInterface;
+import com.betmansmall.game.gameInterface.GameScreenInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.GameField;
@@ -29,7 +30,7 @@ import com.betmansmall.utils.logging.Logger;
 
 public class GameScreen extends AbstractScreen {
     public GameField gameField;
-    public GameInterface gameInterface;
+    public GameScreenInterface gameInterface;
     public GameFieldRenderer gameFieldRenderer;
     public CameraController cameraController;
 
@@ -66,7 +67,7 @@ public class GameScreen extends AbstractScreen {
     public void initGameField() {
         Logger.logFuncStart();
         gameField = new GameField(this);
-        gameInterface = new GameInterface(this);
+        gameInterface = new GameScreenInterface(this);
         cameraController = new GameScreenCameraController(this);
         gameFieldRenderer = new GameFieldRenderer(gameField, cameraController);
         gameInterface.setCameraController(cameraController);
@@ -308,12 +309,10 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("GameScreen::resize(" + width + ", " + height + ")", "--");
-
+//        Gdx.app.log("GameScreen::resize(" + width + ", " + height + ")", "--");
         if (gameInterface != null) {
             gameInterface.resize(width, height);
         }
-
         if (cameraController != null) {
             cameraController.camera.viewportWidth = width;
             cameraController.camera.viewportHeight = height;
@@ -325,7 +324,7 @@ public class GameScreen extends AbstractScreen {
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
-        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
         return gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
     }
 

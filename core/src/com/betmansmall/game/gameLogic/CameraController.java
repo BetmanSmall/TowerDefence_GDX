@@ -12,6 +12,7 @@ import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.utils.logging.Logger;
+import org.lwjgl.input.Mouse;
 
 import java.util.Random;
 
@@ -329,7 +330,7 @@ public class CameraController extends AbstractCameraController {
                     camera.zoom -= 0.1f;
             }
             camera.update();
-            Gdx.app.log("CameraController::scrolled()", "-- camera.zoom:" + camera.zoom);
+//            Logger.logDebug("camera.zoom:" + camera.zoom);
         }
         return false;
     }
@@ -389,6 +390,9 @@ public class CameraController extends AbstractCameraController {
         }
         if (mouseX >= space && mouseX < camera.viewportWidth - space && mouseY >= space && mouseY < camera.viewportHeight - space) {
             shiftCamera = 0;
+        }
+        if (!Mouse.isInsideWindow()) {
+            shiftCamera = 0f;
         }
     }
 

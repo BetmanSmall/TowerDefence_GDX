@@ -119,9 +119,9 @@ public class GameField {
         } else if (gameSettings.gameType == GameType.TowerDefence) {
             waveManager.generateWave(this, field, tmxMap, random, pathFinder);
         } else {
-            Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
+            Logger.logDebug("gameSettings.gameType:" + gameSettings.gameType);
         }
-        Gdx.app.log("GameField::GameField()", "-end-");
+        Logger.logFuncEnd();
     }
 
     public void dispose() {
@@ -482,7 +482,7 @@ public class GameField {
     }
 
     public void buildTowersWithUnderConstruction(int buildX, int buildY) {
-        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         if (underConstruction != null) {
             underConstruction.setEndCoors(buildX, buildY);
             gameScreen.createTowerWithGoldCheck(underConstruction.startX, underConstruction.startY, underConstruction.templateForTower);
@@ -496,17 +496,17 @@ public class GameField {
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {
-        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
         return createTowerWithGoldCheck(buildX, buildY, templateForTower, gameScreen.playersManager.getLocalPlayer());
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
-        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
         if (player.gold >= templateForTower.cost) {
             Tower tower = createTower(buildX, buildY, templateForTower, player);
             if (tower != null) {
                 player.gold -= templateForTower.cost;
-                Logger.logDebug("player:" + player + ", Now player.gold:" + player.gold);
+//                Logger.logDebug("player:" + player + ", Now player.gold:" + player.gold);
                 return tower;
             }
         }
@@ -514,13 +514,13 @@ public class GameField {
     }
 
     public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower) {
-        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
         Player localPlayer = gameScreen.playersManager.getLocalPlayer();
         return createTower(buildX, buildY, templateForTower, localPlayer);
     }
 
     public Tower createTower(int buildX, int buildY, TemplateForTower templateForTower, Player player) {
-        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
+//        Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower, "player:" + player);
         if (player == null) {
             player = gameScreen.playersManager.getLocalServer(); // ComputerPlayer0 inst;
         }
@@ -561,7 +561,7 @@ public class GameField {
                     }
                 }
             }
-            Logger.logFuncEnd("-- tower:" + tower.toString(true));
+//            Logger.logFuncEnd("-- tower:" + tower.toString(true));
             return tower;
         }
         return null;

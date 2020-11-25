@@ -1,6 +1,5 @@
 package com.betmansmall;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -15,6 +14,7 @@ import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.menu.HelpMenuScreen;
 import com.betmansmall.screens.menu.MainMenuScreen;
+import com.betmansmall.screens.menu.MapEditorScreen;
 import com.betmansmall.screens.menu.OptionMenuScreen;
 import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.server.SessionSettings;
@@ -152,6 +152,8 @@ public class GameMaster extends Game {
             addScreen(new ServerSettingsScreen(this));
         } else if (cmd != null && cmd.hasOption("client")) {
             addScreen(new ClientSettingsScreen(this));
+        } else if (cmd != null && cmd.hasOption("mapeditor")) {
+            addScreen(new MapEditorScreen(this, "maps/old/arena3.tmx"));
         } else {
             addScreen(mainMenuScreen);
         }

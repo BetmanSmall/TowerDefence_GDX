@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.betmansmall.game.gameLogic.GameField;
+import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.utils.logging.Logger;
 
 public class InterfaceSelector extends Table {
@@ -47,20 +48,23 @@ public class InterfaceSelector extends Table {
     }
 
     public void resize(int width, int height) {
+//        parentWidth = width;
+//        parentHeight = height;
         updateBorders(vertical, topBottomLeftRight, smoothFling);
     }
 
     public void updateBorders(boolean vertical, boolean topBottomLeftRight, boolean smoothFling) {
-        Logger.logFuncStart("vertical:" + vertical, "topBottomLeftRight:" + topBottomLeftRight, "smoothFling:" + smoothFling);
+//        Logger.logFuncStart("vertical:" + vertical, "topBottomLeftRight:" + topBottomLeftRight, "smoothFling:" + smoothFling);
         Group groupParent = getParent(); // mb it is not good!
         if (groupParent != null) {
+//            Logger.logDebug("groupParent:" + groupParent);
             parentWidth = groupParent.getWidth(); // mb need set simple // parentWidth = width;
             parentHeight = groupParent.getHeight(); // mb need set simple // parentHeight = height;
-            Gdx.app.log("InterfaceSelector::resize()", "-- parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
+//            Logger.logDebug("parentWidth:" + parentWidth + " parentHeight:" + parentHeight);
         }
         selectorPrefWidth = getPrefWidth();
         selectorPrefHeight = getPrefHeight();
-        Gdx.app.log("InterfaceSelector::resize()", "-- selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
+//        Logger.logDebug("selectorPrefWidth:" + selectorPrefWidth + " selectorPrefHeight:" + selectorPrefHeight);
 
         if (vertical) {
             selectorBorderHorizontal = 0;
@@ -99,10 +103,10 @@ public class InterfaceSelector extends Table {
                 }
             }
         }
-        Gdx.app.log("InterfaceSelector::resize()", "-- selectorBorderVertical:" + selectorBorderVertical);
-        Gdx.app.log("InterfaceSelector::resize()", "-- selectorBorderHorizontal:" + selectorBorderHorizontal);
-        Gdx.app.log("InterfaceSelector::resize()", "-- coordinateX:" + coordinateX);
-        Gdx.app.log("InterfaceSelector::resize()", "-- coordinateY:" + coordinateY);
+//        Logger.logDebug("selectorBorderVertical:" + selectorBorderVertical);
+//        Logger.logDebug("selectorBorderHorizontal:" + selectorBorderHorizontal);
+//        Logger.logDebug("coordinateX:" + coordinateX);
+//        Logger.logDebug("coordinateY:" + coordinateY);
         if (vertical != this.vertical || topBottomLeftRight != this.topBottomLeftRight || smoothFling != this.smoothFling) {
             this.vertical = vertical;
             this.topBottomLeftRight = topBottomLeftRight;
@@ -113,7 +117,6 @@ public class InterfaceSelector extends Table {
     }
 
     public boolean touchDown(float x, float y, int pointer, int button) {
-//        Gdx.app.log("InterfaceSelector::touchDown()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         for (Actor actor : getChildren()) {
             if (actor instanceof Button) {
                 Button buttonActor = (Button)actor;
@@ -269,7 +272,6 @@ public class InterfaceSelector extends Table {
     }
 
     public boolean panStop(float x, float y, int pointer, int button) {
-//        Gdx.app.log("InterfaceSelector::panStop()", "-- x:" + x + " y:" + y + " pointer:" + pointer + " button:" + button);
         boolean panStop = false;
         if (vertical) {
             if (topBottomLeftRight) {
@@ -325,7 +327,6 @@ public class InterfaceSelector extends Table {
     }
 
     public boolean fling(float velocityX, float velocityY, int button) {
-//        Gdx.app.log("InterfaceSelector::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
         this.flinging = false;
         if (vertical) {
             if (topBottomLeftRight) {
@@ -358,7 +359,6 @@ public class InterfaceSelector extends Table {
     }
 
     public boolean scrolled(int amount) {
-//        Gdx.app.log("InterfaceSelector::scrolled()", "-- amount:" + amount);
         int x = gameInterface.prevMouseX;
         int y = gameInterface.prevMouseY;
         if (vertical) {

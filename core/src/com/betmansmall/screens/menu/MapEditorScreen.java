@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.game.gameInterface.MapEditorInterface;
 import com.betmansmall.game.gameInterface.TestListView;
 import com.betmansmall.game.gameLogic.MapEditorCameraController;
 import com.betmansmall.maps.AutoTiler;
@@ -33,6 +34,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class MapEditorScreen extends AbstractScreen {
+    private MapEditorInterface gameInterface;
     private MapEditorCameraController mapEditorCameraController;
 
     private Stage stage;
@@ -49,6 +51,7 @@ public class MapEditorScreen extends AbstractScreen {
         super(gameMaster);
         Gdx.app.log("MapEditorScreen::MapEditorScreen()", "-- gameMaster:" + gameMaster + " fileName:" + fileName);
         this.stage = new Stage(new ScreenViewport());
+        gameInterface = new MapEditorInterface();
         //stage.setDebugAll(true);
         this.spriteBatch = new SpriteBatch();
         mapEditorCameraController = new MapEditorCameraController(this);

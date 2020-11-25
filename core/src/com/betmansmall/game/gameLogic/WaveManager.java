@@ -10,6 +10,7 @@ import com.betmansmall.maps.MapLoader;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.Node;
 import com.betmansmall.game.gameLogic.pathfinderAlgorithms.PathFinder.PathFinder;
 import com.betmansmall.maps.TmxMap;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayDeque;
 import java.util.Random;
@@ -150,7 +151,9 @@ public class WaveManager {
 
     public void generateWave(GameField gameField, Cell[][] field, TmxMap tmxMap, Random random, PathFinder pathFinder) {
         validationPoints(field, tmxMap.width, tmxMap.height);
-        if (waves.size == 0) {
+        int tryFoundIndex = 0;
+        while (waves.size == 0 && tryFoundIndex < 5) {
+            tryFoundIndex++;
             for (int w = 0; w < 10; w++) {
                 GridPoint2 spawnPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
                 GridPoint2 exitPoint = new GridPoint2(random.nextInt(tmxMap.width), random.nextInt(tmxMap.height));
@@ -167,9 +170,9 @@ public class WaveManager {
                     }
                 }
             }
-
+            checkRoutes(pathFinder);
         }
-        checkRoutes(pathFinder);
+        Logger.logFuncEnd("tryFoundIndex:" + tryFoundIndex);
     }
 
     public TemplateNameAndPoints getUnitForSpawn(float delta) {
@@ -307,44 +310,35 @@ public class WaveManager {
     }
 
     public void checkRoutes(PathFinder pathFinder) {
-        Gdx.app.log("WaveManager::checkRoutes(" + pathFinder + ")", "--");
-        if(pathFinder != null) {
+        if (pathFinder != null) {
+            Logger.logDebug("waves.size:" + waves.size);
             int wavesSize = waves.size;
-            Gdx.app.log("WaveManager::checkRoutes()", "-- waves:(" + wavesSize + ":" + waves.size + ") - before");
-            for (int w = 0; w < waves.size; w++) {
-                Wave wave = waves.get(w);
-                GridPoint2 spawnPoint = wave.spawnPoint;
-                GridPoint2 exitPoint = wave.exitPoint;
-                Gdx.app.log("WaveManager::checkRoutes()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
-                ArrayDeque<Node> route = pathFinder.routeWithNode(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
-                if (route == null) {
-                    Gdx.app.log("WaveManager::checkRoutes()", "-- Not found route for this points | Remove wave:" + wave);
-                    waves.removeValue(wave, true);
-                    w--;
-                } else {
-                    wave.route = route;
-                }
-            }
-            Gdx.app.log("WaveManager::checkRoutes()", "-- waves:(" + wavesSize + ":" + waves.size + ") - after");
+            Logger.logDebug("waves:(" + wavesSize + ":" + waves.size + ") - before");
+            deleteBadWaves(pathFinder, waves);
+            Logger.logDebug("waves:(" + wavesSize + ":" + waves.size + ") - after");
             int wavesForUserSize = wavesForUser.size;
-            Gdx.app.log("WaveManager::checkRoutes()", "-- wavesForUser:(" + wavesForUserSize + ":" + wavesForUser.size + ") - before");
-            for (int w = 0; w < wavesForUser.size; w++) {
-                Wave wave = wavesForUser.get(w);
-                GridPoint2 spawnPoint = wave.spawnPoint;
-                GridPoint2 exitPoint = wave.exitPoint;
-                Gdx.app.log("WaveManager::checkRoutes()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
-                ArrayDeque<Node> route = pathFinder.routeWithNode(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
-                if (route == null) {
-                    Gdx.app.log("WaveManager::checkRoutes()", "-- Not found route for this points | Remove wave:" + wave);
-                    wavesForUser.removeValue(wave, true);
-                    w--;
-                } else {
-                    wave.route = route;
-                }
-            }
-            Gdx.app.log("WaveManager::checkRoutes()", "-- wavesForUser:(" + wavesForUserSize + ":" + wavesForUser.size + ") - after");
+            Logger.logDebug("wavesForUser:(" + wavesForUserSize + ":" + wavesForUser.size + ") - before");
+            deleteBadWaves(pathFinder, wavesForUser);
+            Logger.logDebug("wavesForUser:(" + wavesForUserSize + ":" + wavesForUser.size + ") - after");
         } else {
-            Gdx.app.log("WaveManager::checkRoutes()", "-- pathFinder == null");
+            Logger.logError("pathFinder == null");
+        }
+    }
+
+    private void deleteBadWaves(PathFinder pathFinder, Array<Wave> wavesForUser) {
+        for (int w = 0; w < wavesForUser.size; w++) {
+            Wave wave = wavesForUser.get(w);
+            GridPoint2 spawnPoint = wave.spawnPoint;
+            GridPoint2 exitPoint = wave.exitPoint;
+//                Gdx.app.log("WaveManager::checkRoutes()", "-- spawnPoint:" + spawnPoint + " exitPoint:" + exitPoint);
+            ArrayDeque<Node> route = pathFinder.routeWithNode(spawnPoint.x, spawnPoint.y, exitPoint.x, exitPoint.y);
+            if (route == null) {
+//                    Gdx.app.log("WaveManager::checkRoutes()", "-- Not found route for this points | Remove wave:" + wave);
+                wavesForUser.removeValue(wave, true);
+                w--;
+            } else {
+                wave.route = route;
+            }
         }
     }
 

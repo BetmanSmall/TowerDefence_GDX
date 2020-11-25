@@ -21,6 +21,7 @@ public class DesktopLauncher {
         Logger.logFuncStart(args);
         Options options = new Options()
                 .addOption("help", false, "prints this message")
+                .addOption("me", "mapeditor", false, "Start MapEditorScreen")
                 .addOption("c", "client", true, "Start ClientGameScreen")
                 .addOption("s", "server", false, "Start ServerGameScreen");
 
@@ -72,6 +73,7 @@ public class DesktopLauncher {
                 config.width = (int) width / 2;
                 config.height = (int) height / 2;
             }
+//        } else if (cmd.hasOption("mapeditor")) {
         }
 //        config.useGL30 = true;
 //        config.fullscreen = true;
