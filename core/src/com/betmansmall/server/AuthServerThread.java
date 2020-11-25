@@ -25,7 +25,7 @@ public class AuthServerThread extends Thread implements TcpSocketListener, Dispo
     public AuthServerThread(ServerGameScreen serverGameScreen) {
         Logger.logFuncStart();
         this.serverGameScreen = serverGameScreen;
-        this.sessionSettings = serverGameScreen.game.sessionSettings;
+        this.sessionSettings = serverGameScreen.gameMaster.sessionSettings;
         this.serverSocket = null;
         this.connections = new Array<TcpConnection>();
         Logger.logFuncEnd();
@@ -68,7 +68,7 @@ public class AuthServerThread extends Thread implements TcpSocketListener, Dispo
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
 
-        NetworkPackage versionData = new VersionData(serverGameScreen.game.version);
+        NetworkPackage versionData = new VersionData(serverGameScreen.gameMaster.version);
         NetworkPackage gameSettingsData = new GameSettingsData(sessionSettings.gameSettings);
         NetworkPackage playersManagerData = new PlayersManagerData(serverGameScreen.playersManager);
         NetworkPackage gameServerNetworkData = new GameServerNetworkData(serverSocket.getInetAddress().getHostAddress(), sessionSettings.gameServerPort);

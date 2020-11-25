@@ -1,6 +1,5 @@
 package com.betmansmall.game.gameInterface;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
@@ -12,6 +11,7 @@ import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.utils.logging.Logger;
+import com.kotcrab.vis.ui.VisUI;
 
 public class TowersSelector extends InterfaceSelector {
     public Array<TemplateForTower> templateForTowers;
@@ -24,7 +24,7 @@ public class TowersSelector extends InterfaceSelector {
         this.templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
 //        Logger.logDebug("templateForTowers:" + templateForTowers);
         this.setDebug(true);
-        GameSettings gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        GameSettings gameSettings = gameScreen.gameMaster.sessionSettings.gameSettings;
         updateBorders(gameSettings.verticalSelector, gameSettings.topBottomLeftRightSelector, gameSettings.smoothFlingSelector);
         initButtons();
     }
@@ -52,7 +52,6 @@ public class TowersSelector extends InterfaceSelector {
             costTowerLabel.setName("costTowerLabel");
 
             Table towerTable = new Table();
-
             towerTable.add(nameTowerLabel).colspan(2).row();
             Image templateButton = new Image(templateForTower.idleTile.getTextureRegion());
             towerTable.add(templateButton).expand();
@@ -63,7 +62,7 @@ public class TowersSelector extends InterfaceSelector {
             tableWithCharacteristics.add(costTowerLabel).row();
             towerTable.add(tableWithCharacteristics).expandY().right();
 
-            Button button = new Button(towerTable, gameInterface.skin);
+            Button button = new Button(towerTable, VisUI.getSkin());
             button.setName(nameTower);
             button.setUserObject(towerIndex);
             Cell<Button> cellButton = this.add(button).expand().fill();

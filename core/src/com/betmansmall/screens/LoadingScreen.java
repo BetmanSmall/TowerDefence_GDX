@@ -38,12 +38,12 @@ public class LoadingScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        game.assetManager.load("data/loading.pack", TextureAtlas.class);
-        game.assetManager.finishLoading();
+        gameMaster.assetManager.load("data/loading.pack", TextureAtlas.class);
+        gameMaster.assetManager.finishLoading();
 
         stage = new Stage();
 
-        TextureAtlas atlas = game.assetManager.get("data/loading.pack", TextureAtlas.class);
+        TextureAtlas atlas = gameMaster.assetManager.get("data/loading.pack", TextureAtlas.class);
 
         logo = new Image(atlas.findRegion("libgdx-logo"));
         loadingFrame = new Image(atlas.findRegion("loading-frame"));
@@ -77,18 +77,18 @@ public class LoadingScreen extends AbstractScreen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (game.assetManager.update()) { // Load some, will return true if done loading
+        if (gameMaster.assetManager.update()) { // Load some, will return true if done loading
             if (Gdx.input.isTouched()) { // If the screen is touched after the game is done loading, go to the main menu screen
 //                game.setScreen(new MainMenuScreen(game));
                 Logger.logDebug("touched");
 //                game.addScreen(new GameClientScreen(game));
-                game.removeTopScreen();
-                game.addScreen(loadScreen);
+                gameMaster.removeTopScreen();
+                gameMaster.addScreen(loadScreen);
             }
         }
 
         // Interpolate the percentage to make it more smooth
-        percent = Interpolation.linear.apply(percent, game.assetManager.getProgress(), 0.1f);
+        percent = Interpolation.linear.apply(percent, gameMaster.assetManager.getProgress(), 0.1f);
 
         // Update positions (and size) to match the percentage
         loadingBarHidden.setX(startX + endX * percent);
@@ -133,6 +133,6 @@ public class LoadingScreen extends AbstractScreen {
 
     @Override
     public void hide() {
-        game.assetManager.unload("data/loading.pack");
+        gameMaster.assetManager.unload("data/loading.pack");
     }
 }

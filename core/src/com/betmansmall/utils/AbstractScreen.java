@@ -7,11 +7,11 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.utils.logging.Logger;
 
 public class AbstractScreen implements Screen {
-    public GameMaster game;
+    public GameMaster gameMaster;
 
-    public AbstractScreen(GameMaster game) {
+    public AbstractScreen(GameMaster gameMaster) {
         Logger.logFuncStart();
-        this.game = game;
+        this.gameMaster = gameMaster;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class AbstractScreen implements Screen {
                 Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ||
                 Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             Logger.logDebug("isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE || Input.Keys.BACKSPACE);");
-            game.removeTopScreen();
+            gameMaster.removeTopScreen();
         }
     }
 

@@ -30,7 +30,7 @@ public class ClientSessionThread extends SessionThread {
     public ClientSessionThread(ClientGameScreen clientGameScreen) {
         Logger.logFuncStart();
         this.clientGameScreen = clientGameScreen;
-        this.sessionSettings = clientGameScreen.game.sessionSettings;
+        this.sessionSettings = clientGameScreen.gameMaster.sessionSettings;
         this.connection = null;
         this.sessionState = SessionState.INITIALIZATION;
     }
@@ -48,7 +48,7 @@ public class ClientSessionThread extends SessionThread {
             new TcpConnection(this, sessionSettings.host, sessionSettings.gameServerPort);
         } catch (IOException exception) {
             Logger.logError("exception:" + exception);
-            clientGameScreen.game.removeTopScreen(); // TODO mb not good!
+            clientGameScreen.gameMaster.removeTopScreen(); // TODO mb not good!
             throw new RuntimeException(exception);
         }
         Logger.logFuncEnd();
@@ -75,10 +75,10 @@ public class ClientSessionThread extends SessionThread {
                         case GAME_SETTINGS_AND_SERVER_PLAYER_DATA: {
                             if (networkPackage instanceof GameSettingsData) {
                                 GameSettingsData gameSettingsData = (GameSettingsData) networkPackage;
-                                clientGameScreen.game.sessionSettings.gameSettings.updateGameSettings(gameSettingsData);
+                                clientGameScreen.gameMaster.sessionSettings.gameSettings.updateGameSettings(gameSettingsData);
                             } else if (networkPackage instanceof PlayerInfoData) {
                                 PlayerInfoData playerInfoData = (PlayerInfoData) networkPackage;
-                                Faction serverFaction = clientGameScreen.game.factionsManager.getServerFaction();
+                                Faction serverFaction = clientGameScreen.gameMaster.factionsManager.getServerFaction();
                                 clientGameScreen.playersManager.setServer(new Player(playerInfoData, serverFaction));
                             }
                             sessionState = SessionState.RECEIVED_SERVER_INFO_DATA;
@@ -165,7 +165,7 @@ public class ClientSessionThread extends SessionThread {
     @Override
     public void onDisconnect(TcpConnection tcpConnection) {
         Logger.logInfo("tcpConnection:" + tcpConnection);
-        clientGameScreen.game.removeTopScreen(); // TODO mb not good!
+        clientGameScreen.gameMaster.removeTopScreen(); // TODO mb not good!
     }
 
     @Override

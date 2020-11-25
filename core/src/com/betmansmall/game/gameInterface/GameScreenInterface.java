@@ -11,10 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
@@ -22,141 +19,141 @@ import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.utils.logging.Logger;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.*;
 
 public class GameScreenInterface extends GameInterface {
+    private final GameScreen gameScreen;
+
     private float currentTextureTime, maxTextureTime;
     private Texture winTexture, loseTexture;
 
-    private Label connectedPlayerCount;
-    private Label unitsCount; // duplicate unitsManagerSize
-
-    private final GameScreen gameScreen;
+    private VisLabel connectedPlayerCount;
+    private VisLabel unitsCount; // duplicate unitsManagerSize
 
     public GameScreenInterface(final GameScreen gameScreen) {
         super();
+        Logger.logFuncStart();
+        this.gameScreen = gameScreen;
 
         this.currentTextureTime = 0f;
         this.maxTextureTime = 5f;
         this.winTexture = new Texture(Gdx.files.internal("concepts/littlegame-concept-2-1.jpg"));
         this.loseTexture = new Texture(Gdx.files.internal("concepts/2018-12-03_19-43-03.png"));
 
-        this.gameScreen = gameScreen;
-
-        pauseMenuTable = new Table(skin);
+        pauseMenuTable = new VisTable();
         pauseMenuTable.setFillParent(true);
         pauseMenuTable.setVisible(false);
         addActor(pauseMenuTable);
 
-        firstOptionTable = new Table(skin);
+        firstOptionTable = new VisTable();
         firstOptionTable.setVisible(false);
         pauseMenuTable.add(firstOptionTable);
 
-        optionTable = new Table(skin);
+        optionTable = new VisTable();
         optionTable.setVisible(false);
         pauseMenuTable.add(optionTable);
 
         Table verticalButtonsTable = new Table();
         pauseMenuTable.add(verticalButtonsTable);
 
-        resumeButton = new TextButton("RESUME", skin);
+        resumeButton = new VisTextButton("RESUME");
         verticalButtonsTable.add(resumeButton).fill().prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.2f).row();
-        nextLevelButton = new TextButton("NEXT LEVEL", skin);
+        nextLevelButton = new VisTextButton("NEXT LEVEL");
         verticalButtonsTable.add(nextLevelButton).fill().prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.2f).row();
-        optionButton = new TextButton("OPTION", skin);
+        optionButton = new VisTextButton("OPTION");
         verticalButtonsTable.add(optionButton).fill().prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.2f).row();
-        exitButton = new TextButton("EXIT", skin);
+        exitButton = new VisTextButton("EXIT");
         verticalButtonsTable.add(exitButton).fill().prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.2f).row();
 
-        playersViewTable = new PlayersViewTable(gameScreen.playersManager, skin);
+        playersViewTable = new PlayersViewTable(gameScreen.playersManager, VisUI.getSkin());
         playersViewTable.setFillParent(true);
         playersViewTable.setVisible(false);
         addActor(playersViewTable.scrollPane);
 
-        tableWithButtons = new Table(skin);
+        tableWithButtons = new VisTable();
         tableWithButtons.setFillParent(true);
         addActor(tableWithButtons);
 
-        Table horizontalGroupTop = new Table(skin);
+        Table horizontalGroupTop = new VisTable();
         tableWithButtons.add(horizontalGroupTop).expandY().top().row();
 
-        disconnectButtons = new TextButton("DISC(X)NNECT", skin);
+        disconnectButtons = new VisTextButton("DISC(X)NNECT");
         horizontalGroupTop.add(disconnectButtons).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
 
-        playersViewButton = new TextButton("PLAYERS", skin);
+        playersViewButton = new VisTextButton("PLAYERS");
         horizontalGroupTop.add(playersViewButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
 
-        pauseMenuButton = new TextButton("||", skin);
+        pauseMenuButton = new VisTextButton("||");
         horizontalGroupTop.add(pauseMenuButton).prefWidth(Gdx.graphics.getHeight()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.12f).expandY();
 
-        gridNav1 = new TextButton("gNv1", skin);
+        gridNav1 = new VisTextButton("gNv1");
         horizontalGroupTop.add(gridNav1).prefWidth(Gdx.graphics.getWidth()*0.01f).prefHeight(Gdx.graphics.getHeight()*0.01f);
 
-        gridNav2 = new TextButton("gridNav2", skin);
+        gridNav2 = new VisTextButton("gridNav2");
         horizontalGroupTop.add(gridNav2).prefWidth(Gdx.graphics.getWidth()*0.02f).prefHeight(Gdx.graphics.getHeight()*0.01f);
 
-        gridNav3 = new TextButton("gridNav2", skin);
+        gridNav3 = new VisTextButton("gridNav2");
         horizontalGroupTop.add(gridNav3).prefWidth(Gdx.graphics.getWidth()*0.01f).prefHeight(Gdx.graphics.getHeight()*0.01f).row();
 
-        connectedPlayerCount = new Label("players:{players.size}", skin);
+        connectedPlayerCount = new VisLabel("players:{players.size}");
         horizontalGroupTop.add(connectedPlayerCount).colspan(3).row();
 
-        unitsCount = new Label("unitsCount:{unitsCount}", skin);
+        unitsCount = new VisLabel("unitsCount:{unitsCount}");
         horizontalGroupTop.add(unitsCount).colspan(3).row();
 
-        Table horizontalGroupBottom = new Table(skin);
+        Table horizontalGroupBottom = new VisTable();
         tableWithButtons.add(horizontalGroupBottom).expandY().bottom();
 
-        gameSpeedMinus = new TextButton("<<", skin);
+        gameSpeedMinus = new VisTextButton("<<");
         horizontalGroupBottom.add(gameSpeedMinus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
-        startAndPauseButton = new TextButton("startAndPauseButton", skin, "default");
+        startAndPauseButton = new VisTextButton("startAndPauseButton", "default");
         horizontalGroupBottom.add(startAndPauseButton).prefWidth(Gdx.graphics.getWidth()*0.2f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
-        gameSpeedPlus = new TextButton(">>", skin);
+        gameSpeedPlus = new VisTextButton(">>");
         horizontalGroupBottom.add(gameSpeedPlus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
-        tableInfoTablo = new Table(skin);
+        tableInfoTablo = new VisTable();
         tableInfoTablo.setFillParent(true);
         addActor(tableInfoTablo);
 
-        infoTabloTable = new Table();
+        infoTabloTable = new VisTable();
         infoTabloTable.setVisible(false);
         tableInfoTablo.add(infoTabloTable).expand().left();
 
-        fpsLabel = new Label("FPS:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        fpsLabel = new VisLabel("FPS:000", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(fpsLabel).left().row();
-        deltaTimeLabel = new Label("deltaTime:000", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        deltaTimeLabel = new VisLabel("deltaTime:000", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(deltaTimeLabel).left().row();
-        mapPathLabel = new Label("MapName:arena0tmx", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        mapPathLabel = new VisLabel("MapName:arena0tmx", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(mapPathLabel).left().row();
-        gameType = new Label("gameType:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        gameType = new VisLabel("gameType:", new VisLabel.LabelStyle(bitmapFont, Color.YELLOW));
         infoTabloTable.add(gameType).left().row();
-        isometricLabel = new Label("isometricLabel:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        isometricLabel = new VisLabel("isometricLabel:", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(isometricLabel).left().row();
-        underConstrEndCoord = new Label("CoordCell:(0,0)", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        underConstrEndCoord = new VisLabel("CoordCell:(0,0)", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(underConstrEndCoord).left().row();
-        underConstructionLabel = new Label("UnderConstrTemplateName:tower1", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        underConstructionLabel = new VisLabel("UnderConstrTemplateName:tower1", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(underConstructionLabel).left().row();
-        unitsManagerSize = new Label("unitsManagerSize:", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        unitsManagerSize = new VisLabel("unitsManagerSize:", new VisLabel.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(unitsManagerSize).left().row();
-        towersManagerSize = new Label("towersManagerSize:", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        towersManagerSize = new VisLabel("towersManagerSize:", new VisLabel.LabelStyle(bitmapFont, Color.YELLOW));
         infoTabloTable.add(towersManagerSize).left().row();
-        gamerGoldLabel = new Label("GamerGold:000", new Label.LabelStyle(bitmapFont, Color.YELLOW));
+        gamerGoldLabel = new VisLabel("GamerGold:000", new VisLabel.LabelStyle(bitmapFont, Color.YELLOW));
         infoTabloTable.add(gamerGoldLabel).left().row();
-        missedAndMaxForPlayer1 = new Label("UnitsLimitPL1:10/100", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        missedAndMaxForPlayer1 = new VisLabel("UnitsLimitPL1:10/100", new VisLabel.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(missedAndMaxForPlayer1).left().row();
-        missedAndMaxForComputer0 = new Label("UnitsLimitComp0:10/100", new Label.LabelStyle(bitmapFont, Color.RED));
+        missedAndMaxForComputer0 = new VisLabel("UnitsLimitComp0:10/100", new VisLabel.LabelStyle(bitmapFont, Color.RED));
         infoTabloTable.add(missedAndMaxForComputer0).left().row();
-        nextUnitSpawnLabel = new Label("NextUnitSpawnAfter:0.12sec", new Label.LabelStyle(bitmapFont, Color.ORANGE));
+        nextUnitSpawnLabel = new VisLabel("NextUnitSpawnAfter:0.12sec", new VisLabel.LabelStyle(bitmapFont, Color.ORANGE));
         infoTabloTable.add(nextUnitSpawnLabel).left().row();
-        unitsSpawn = new Label("unitsSpawn:", new Label.LabelStyle(bitmapFont, Color.RED));
+        unitsSpawn = new VisLabel("unitsSpawn:", new VisLabel.LabelStyle(bitmapFont, Color.RED));
         infoTabloTable.add(unitsSpawn).left().row();
-        gamePaused = new Label("gamePaused:", new Label.LabelStyle(bitmapFont, Color.GREEN));
+        gamePaused = new VisLabel("gamePaused:", new VisLabel.LabelStyle(bitmapFont, Color.GREEN));
         infoTabloTable.add(gamePaused).left().row();
 
-        tableWithSelectors = new Table(skin); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
+        tableWithSelectors = new VisTable(); // WTF??? почему нельзя селекторы на одну таблицу со всем остальным??
         tableWithSelectors.setFillParent(true);
         addActor(tableWithSelectors);
 
@@ -215,7 +212,7 @@ public class GameScreenInterface extends GameInterface {
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- disconnectButtons.isChecked():" + disconnectButtons.isChecked());
 //                gameScreen.dispose();
-                gameScreen.game.removeTopScreen();
+                gameScreen.gameMaster.removeTopScreen();
             }
         });
         playersViewButton.addListener(new ChangeListener() {
@@ -236,7 +233,7 @@ public class GameScreenInterface extends GameInterface {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
-                gameScreen.game.nextGameLevel();
+                gameScreen.gameMaster.nextGameLevel();
             }
         });
         optionButton.addListener(new ChangeListener() {
@@ -251,7 +248,7 @@ public class GameScreenInterface extends GameInterface {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("GameInterface:changed:addListeners()", "-- exitButton.isChecked():" + exitButton.isChecked());
-                gameScreen.game.removeTopScreen();
+                gameScreen.gameMaster.removeTopScreen();
             }
         });
         gridNav1.addListener(new ChangeListener() {
@@ -358,7 +355,7 @@ public class GameScreenInterface extends GameInterface {
     public void setCameraController(final CameraController cameraController) {
         this.cameraController = cameraController;
 
-        infoTabloHideButton = new TextButton("Hide Info Tablo", skin);
+        infoTabloHideButton = new VisTextButton("Hide Info Tablo");
         infoTabloHideButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -375,11 +372,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(infoTabloHideButton).colspan(2).fill().prefHeight(Gdx.graphics.getHeight()*0.1f).row();
 
-        final Label drawGridLabel = new Label("drawGrid:" + cameraController.isDrawableGrid, skin);
+        final VisLabel drawGridLabel = new VisLabel("drawGrid:" + cameraController.isDrawableGrid);
         drawGridLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawGridLabel).left();
 
-        drawGrid = new Slider(0, 5, 1, false, skin);
+        drawGrid = new VisSlider(0, 5, 1, false);
         drawGrid.setValue(cameraController.isDrawableGrid);
         drawGrid.addListener(new ChangeListener() {
             @Override
@@ -393,11 +390,11 @@ public class GameScreenInterface extends GameInterface {
         drawGrid.getStyle().knob.setMinHeight(Gdx.graphics.getHeight()*0.05f);
         optionTable.add(drawGrid).expand().fill().prefWidth(Gdx.graphics.getHeight()*0.3f).row();
 
-        final Label drawUnitsLabel = new Label("drawUnits:" + cameraController.isDrawableUnits, skin);
+        final VisLabel drawUnitsLabel = new VisLabel("drawUnits:" + cameraController.isDrawableUnits);
         drawUnitsLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawUnitsLabel).left();
 
-        drawUnits = new Slider(0, 5, 1, false, skin);
+        drawUnits = new VisSlider(0, 5, 1, false);
         drawUnits.setValue(cameraController.isDrawableUnits);
         drawUnits.addListener(new ChangeListener() {
             @Override
@@ -409,11 +406,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawUnits).fill().row();
 
-        final Label drawTowersLabel = new Label("drawTowers:" + cameraController.isDrawableTowers, skin);
+        final VisLabel drawTowersLabel = new VisLabel("drawTowers:" + cameraController.isDrawableTowers);
         drawTowersLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawTowersLabel).left();
 
-        drawTowers = new Slider(0, 5, 1, false, skin);
+        drawTowers = new VisSlider(0, 5, 1, false);
         drawTowers.setValue(cameraController.isDrawableTowers);
         drawTowers.addListener(new ChangeListener() {
             @Override
@@ -425,11 +422,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawTowers).fill().row();
 
-        final Label drawBackgroundLabel = new Label("drawBackground:" + cameraController.isDrawableBackground, skin);
+        final VisLabel drawBackgroundLabel = new VisLabel("drawBackground:" + cameraController.isDrawableBackground);
         drawBackgroundLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawBackgroundLabel).left();
 
-        drawBackground = new Slider(0, 5, 1, false, skin);
+        drawBackground = new VisSlider(0, 5, 1, false);
         drawBackground.setValue(cameraController.isDrawableBackground);
         drawBackground.addListener(new ChangeListener() {
             @Override
@@ -441,11 +438,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawBackground).fill().row();
 
-        final Label drawGroundLabel = new Label("drawGround:" + cameraController.isDrawableGround, skin);
+        final VisLabel drawGroundLabel = new VisLabel("drawGround:" + cameraController.isDrawableGround);
         drawGroundLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawGroundLabel).left();
 
-        drawGround = new Slider(0, 5, 1, false, skin);
+        drawGround = new VisSlider(0, 5, 1, false);
         drawGround.setValue(cameraController.isDrawableGround);
         drawGround.addListener(new ChangeListener() {
             @Override
@@ -457,11 +454,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawGround).fill().row();
 
-        final Label drawForegroundLabel = new Label("drawForeground:" + cameraController.isDrawableForeground, skin);
+        final VisLabel drawForegroundLabel = new VisLabel("drawForeground:" + cameraController.isDrawableForeground);
         drawForegroundLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawForegroundLabel).left();
 
-        drawForeground = new Slider(0, 5, 1, false, skin);
+        drawForeground = new VisSlider(0, 5, 1, false);
         drawForeground.setValue(cameraController.isDrawableForeground);
         drawForeground.addListener(new ChangeListener() {
             @Override
@@ -473,11 +470,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawForeground).fill().row();
 
-        final Label drawGridNavLabel = new Label("drawGridNav:" + cameraController.isDrawableGridNav, skin);
+        final VisLabel drawGridNavLabel = new VisLabel("drawGridNav:" + cameraController.isDrawableGridNav);
         drawGridNavLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawGridNavLabel).left();
 
-        drawGridNav = new Slider(0, 5, 1, false, skin);
+        drawGridNav = new VisSlider(0, 5, 1, false);
         drawGridNav.setValue(cameraController.isDrawableGridNav);
         drawGridNav.addListener(new ChangeListener() {
             @Override
@@ -489,11 +486,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawGridNav).fill().row();
 
-        final Label drawRoutesLabel = new Label("drawRoutes:" + cameraController.isDrawableRoutes, skin);
+        final VisLabel drawRoutesLabel = new VisLabel("drawRoutes:" + cameraController.isDrawableRoutes);
         drawRoutesLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawRoutesLabel).left();
 
-        drawRoutes = new Slider(0, 5, 1, false, skin);
+        drawRoutes = new VisSlider(0, 5, 1, false);
         drawRoutes.setValue(cameraController.isDrawableRoutes);
         drawRoutes.addListener(new ChangeListener() {
             @Override
@@ -505,11 +502,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawRoutes).fill().row();
 
-        final Label drawOrderLabel = new Label("drawOrder:" + cameraController.drawOrder, skin);
+        final VisLabel drawOrderLabel = new VisLabel("drawOrder:" + cameraController.drawOrder);
         drawOrderLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawOrderLabel).left();
 
-        drawOrder = new Slider(0, 8, 1, false, skin);
+        drawOrder = new VisSlider(0, 8, 1, false);
         drawOrder.setValue(cameraController.drawOrder);
         drawOrder.addListener(new ChangeListener() {
             @Override
@@ -521,7 +518,7 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(drawOrder).fill().row();
 
-        resetDrawSettingsButton = new TextButton("Reset Draw Settings", skin);
+        resetDrawSettingsButton = new VisTextButton("Reset Draw Settings");
         resetDrawSettingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -537,11 +534,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(resetDrawSettingsButton).colspan(2).fill().prefHeight(Gdx.graphics.getHeight()*0.1f).row();
 
-        final Label drawAllLabel = new Label("drawAll:" + cameraController.isDrawableGrid, skin);
-        drawAllLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
+        final VisLabel drawAllLabel = new VisLabel("drawAll:" + cameraController.isDrawableGrid);
+//        drawAllLabel.setFontScale(Gdx.graphics.getHeight()*0.003f);
         optionTable.add(drawAllLabel).left();
 
-        drawAll = new Slider(0, 5, 1, false, skin);
+        drawAll = new VisSlider(0, 5, 1, false);
         drawAll.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -560,11 +557,11 @@ public class GameScreenInterface extends GameInterface {
         drawAll.setValue(cameraController.isDrawableGrid);
         optionTable.add(drawAll).fill().row();
 
-        topBottomLeftRightSelector = new CheckBox("topBottomLeftRightSelector", skin);
+        topBottomLeftRightSelector = new VisCheckBox("topBottomLeftRightSelector");
         topBottomLeftRightSelector.setChecked(gameScreen.gameField.gameSettings.topBottomLeftRightSelector);
-        topBottomLeftRightSelector.getImage().setScaling(Scaling.stretch);
-        topBottomLeftRightSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
-        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+//        topBottomLeftRightSelector.getBackgroundImage().setScaling(Scaling.stretch);
+//        topBottomLeftRightSelector.getTickImage().scaleBy(Gdx.graphics.getHeight()*0.06f);
+//        topBottomLeftRightSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         topBottomLeftRightSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -584,11 +581,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(topBottomLeftRightSelector).colspan(2).fill().row();
 
-        towerMoveAlgorithm = new CheckBox("towerMoveAlgorithm", skin);
+        towerMoveAlgorithm = new VisCheckBox("towerMoveAlgorithm");
         towerMoveAlgorithm.setChecked(gameScreen.gameField.gameSettings.towerMoveAlgorithm);
-        towerMoveAlgorithm.getImage().setScaling(Scaling.stretch);
-        towerMoveAlgorithm.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
-        towerMoveAlgorithm.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+        towerMoveAlgorithm.getBackgroundImage().setScaling(Scaling.stretch);
+//        towerMoveAlgorithm.getTickImage().scaleBy(Gdx.graphics.getHeight()*0.06f);
+//        towerMoveAlgorithm.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         towerMoveAlgorithm.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -602,11 +599,11 @@ public class GameScreenInterface extends GameInterface {
         });
         firstOptionTable.add(towerMoveAlgorithm).colspan(2).fill().row();
 
-        verticalSelector = new CheckBox("verticalSelector", skin);
+        verticalSelector = new VisCheckBox("verticalSelector");
         verticalSelector.setChecked(gameScreen.gameField.gameSettings.verticalSelector);
-        verticalSelector.getImage().setScaling(Scaling.stretch);
-        verticalSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
-        verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+        verticalSelector.getBackgroundImage().setScaling(Scaling.stretch);
+//        verticalSelector.getTickImage().scaleBy(Gdx.graphics.getHeight()*0.06f);
+//        verticalSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         verticalSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -626,11 +623,11 @@ public class GameScreenInterface extends GameInterface {
         });
         optionTable.add(verticalSelector).colspan(2).fill().row();
 
-        smoothFlingSelector = new CheckBox("smoothFlingSelector", skin);
+        smoothFlingSelector = new VisCheckBox("smoothFlingSelector");
         smoothFlingSelector.setChecked(gameScreen.gameField.gameSettings.smoothFlingSelector);
-        smoothFlingSelector.getImage().setScaling(Scaling.stretch);
-        smoothFlingSelector.getImageCell().size(Gdx.graphics.getHeight()*0.06f);
-        smoothFlingSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
+//        smoothFlingSelector.getBackgroundImage().setScaling(Scaling.stretch);
+//        smoothFlingSelector.getTickImage().setScale(Gdx.graphics.getHeight()*0.06f);
+//        smoothFlingSelector.getLabel().setFontScale(Gdx.graphics.getHeight()*0.003f);
         smoothFlingSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -659,11 +656,11 @@ public class GameScreenInterface extends GameInterface {
             towersSelector = new TowersSelector(gameScreen);
             tableWithSelectors.add(towersSelector).expand();
 
-            towersSelectorCoord = new Label("towersSelectorCoord:", new Label.LabelStyle(bitmapFont, Color.GREEN));
+            towersSelectorCoord = new VisLabel("towersSelectorCoord:", new VisLabel.LabelStyle(bitmapFont, Color.GREEN));
             infoTabloTable.add(towersSelectorCoord).left().row();
-            selectorBorderVertical = new Label("selectorBorderVertical:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+            selectorBorderVertical = new VisLabel("selectorBorderVertical:", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
             infoTabloTable.add(selectorBorderVertical).left().row();
-            selectorBorderHorizontal = new Label("selectorBorderHorizontal:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+            selectorBorderHorizontal = new VisLabel("selectorBorderHorizontal:", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
             infoTabloTable.add(selectorBorderHorizontal).left().row();
         }
     }
@@ -747,7 +744,7 @@ public class GameScreenInterface extends GameInterface {
         currentTextureTime += delta;
         if (currentTextureTime > maxTextureTime) {
 //            this.dispose();
-            gameScreen.game.nextGameLevel();
+            gameScreen.gameMaster.nextGameLevel();
             return; // It'is really need???
         }
         Batch batch = getBatch(); // Need have own batch. mb get from GameScreen

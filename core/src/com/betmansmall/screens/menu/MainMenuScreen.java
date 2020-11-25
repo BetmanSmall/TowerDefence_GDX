@@ -14,7 +14,6 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.screens.GameAutoTileScreen;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.screens.client.ClientSettingsScreen;
-import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -50,7 +49,7 @@ public class MainMenuScreen extends AbstractScreen {
         Logger.logFuncStart();
 
         stage = new Stage(new ScreenViewport());
-        stage.addActor(game.backgroundImages.get(0));
+        stage.addActor(this.gameMaster.backgroundImages.get(0));
 
         stage.setDebugUnderMouse(true);
         stage.setDebugParentUnderMouse(true);
@@ -66,7 +65,7 @@ public class MainMenuScreen extends AbstractScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     Gdx.app.log("MainMenuScreen::helpButton::clicked()", "-- event:" + event);
                     super.clicked(event, x, y);
-                    game.addScreen(game.helpMenuScreen);
+                    MainMenuScreen.this.gameMaster.addScreen(MainMenuScreen.this.gameMaster.helpMenuScreen);
                 }
             });
         }
@@ -78,7 +77,7 @@ public class MainMenuScreen extends AbstractScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     Gdx.app.log("MainMenuScreen::serverButton::clicked()", "-- event:" + event);
                     super.clicked(event, x, y);
-                    game.addScreen(new ServerSettingsScreen(game));
+                    MainMenuScreen.this.gameMaster.addScreen(new ServerSettingsScreen(MainMenuScreen.this.gameMaster));
                 }
             });
         }
@@ -90,7 +89,7 @@ public class MainMenuScreen extends AbstractScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     Gdx.app.log("MainMenuScreen::clientButton::clicked()", "-- event:" + event);
                     super.clicked(event, x, y);
-                    game.addScreen(new ClientSettingsScreen(game));
+                    MainMenuScreen.this.gameMaster.addScreen(new ClientSettingsScreen(MainMenuScreen.this.gameMaster));
                 }
             });
         }
@@ -230,7 +229,7 @@ public class MainMenuScreen extends AbstractScreen {
         Gdx.app.log("MainMenuScreen::show()", "-- Called!");
         Gdx.input.setInputProcessor(stage);
 //        resize();
-        menuLvl = 0;
+//        menuLvl = 0;
         switchMenuButtons();
     }
 
@@ -302,12 +301,12 @@ public class MainMenuScreen extends AbstractScreen {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE);");
             menuLvl--;
             if (menuLvl == -1) {
-                game.dispose();
+                gameMaster.dispose();
             }
             switchMenuButtons();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
             Gdx.app.log("HelpMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_0 || Input.Keys.NUM_0);");
-            game.addScreen(game.helpMenuScreen);
+            gameMaster.addScreen(gameMaster.helpMenuScreen);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.NUMPAD_1 || Input.Keys.NUM_1);");
             clickAnalyzer((short) 1);
@@ -319,8 +318,8 @@ public class MainMenuScreen extends AbstractScreen {
             clickAnalyzer((short) 3);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Gdx.app.log("MainMenuScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER || Input.Keys.SPACE);");
-            Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + game.gameLevelMaps.toString());
-            game.nextGameLevel();
+            Gdx.app.log("MainMenuScreen::inputHandler()", "-- Campaign levels:" + gameMaster.gameLevelMaps.toString());
+            gameMaster.nextGameLevel();
         }
     }
 
@@ -333,24 +332,24 @@ public class MainMenuScreen extends AbstractScreen {
                         switchMenuButtons();
                         break;
                     case 2:
-                        game.addScreen(game.optionMenuScreen);
+                        gameMaster.addScreen(gameMaster.optionMenuScreen);
                         break;
                     case 3:
                         //Exit button
-                        game.dispose();
+                        gameMaster.dispose();
                         break;
                 }
                 break;
             case 1:                                             //Play menu
                 switch (buttonNumber) {
                     case 1:
-                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Campaign levels:" + game.gameLevelMaps.toString());
-                        game.nextGameLevel();
+                        Gdx.app.log("MainMenuScreen::clickAnalyzer()", "-- Campaign levels:" + gameMaster.gameLevelMaps.toString());
+                        gameMaster.nextGameLevel();
                         break;
                     case 2:
                         menuLvl = 2;
 //                        switchMenuButtons();
-                        game.addScreen(new GameAutoTileScreen(game));
+                        gameMaster.addScreen(new GameAutoTileScreen(gameMaster));
                         break;
                     case 3:
                         //Editor mode
@@ -361,7 +360,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            game.setScreen(new MapEditorScreen(game, fileName));
 //                        } else {
-                        game.addScreen(new MapEditorScreen(game, "maps/old/arena3.tmx"));
+                        gameMaster.addScreen(new MapEditorScreen(gameMaster, gameMaster.gameLevelMaps.random()));
 //                        }
                         break;
                 }

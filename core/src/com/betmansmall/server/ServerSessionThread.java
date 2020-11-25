@@ -33,7 +33,7 @@ public class ServerSessionThread extends SessionThread {
     public ServerSessionThread(ServerGameScreen serverGameScreen) {
         Logger.logFuncStart();
         this.serverGameScreen = serverGameScreen;
-        this.sessionSettings = serverGameScreen.game.sessionSettings;
+        this.sessionSettings = serverGameScreen.gameMaster.sessionSettings;
         this.serverSocket = null;
         this.connections = new Array<>();
         this.sessionState = SessionState.INITIALIZATION;
@@ -70,7 +70,7 @@ public class ServerSessionThread extends SessionThread {
             }
         } catch (IOException exception) {
             Logger.logError("exception:" + exception);
-            serverGameScreen.game.removeTopScreen(); // TODO mb not good!
+            serverGameScreen.gameMaster.removeTopScreen(); // TODO mb not good!
             throw new RuntimeException(exception);
 //        } finally {
 //            if (serverSocket != null) {

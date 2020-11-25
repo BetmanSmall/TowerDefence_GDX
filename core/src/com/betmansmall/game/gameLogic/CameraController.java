@@ -10,27 +10,21 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
+import com.betmansmall.maps.TmxMap;
 import com.betmansmall.screens.client.GameScreen;
+import com.betmansmall.screens.menu.MapEditorScreen;
 import com.betmansmall.utils.logging.Logger;
 import org.lwjgl.input.Mouse;
-
 import java.util.Random;
 
-/**
- * Created by betma on 16.11.2018.
- */
 public class CameraController extends AbstractCameraController {
     public GameScreen gameScreen;
     public GameField gameField;
+    public TmxMap tmxMap;
     public GameInterface gameInterface;
 
-//    public float cameraX = 800;
-//    public float cameraY = 0;
     public OrthographicCamera camera;
-
     public int mapWidth, mapHeight;
-//    public float viewportWidth = 0;
-//    public float viewportHeight = 0;
 
     public int isDrawableGrid = 1;
     public int isDrawableUnits = 1;
@@ -47,15 +41,13 @@ public class CameraController extends AbstractCameraController {
     public float initialScale = 2f;
     public float velX;
     public float velY;
-//    public boolean lastCircleTouched = false;
 
-    public float sizeCellX, sizeCellY;
-    public float halfSizeCellX, halfSizeCellY;
     public float zoomMax = 5.0f;
     public float zoomMin = 0.1f;
-//    public float zoom = 1;
-    private float borderLeftX = 0.0f, borderRightX = 0.0f;
-    private float borderUpY = 0.0f, borderDownY = 0.0f;
+    public float sizeCellX, sizeCellY;
+    public float halfSizeCellX, halfSizeCellY;
+    protected float borderLeftX = 0.0f, borderRightX = 0.0f;
+    protected float borderUpY = 0.0f, borderDownY = 0.0f;
 
     public boolean panLeftMouseButton = true;
     public boolean panMidMouseButton = true;
@@ -73,19 +65,20 @@ public class CameraController extends AbstractCameraController {
 
     public CameraController(Screen screen) {
         Logger.logFuncStart("screen:" + screen);
-
         if (screen instanceof GameScreen) {
-            this.gameScreen = (GameScreen)screen;
-
+            this.gameScreen = (GameScreen) screen;
             this.gameField = gameScreen.gameField;
+            this.tmxMap = gameField.tmxMap;
             this.gameInterface = gameScreen.gameInterface;
-
-            this.mapWidth = gameField.tmxMap.width;
-            this.mapHeight = gameField.tmxMap.height;
-            this.sizeCellX = gameField.tmxMap.tileWidth;
-            this.sizeCellY = gameField.tmxMap.tileHeight;
-            this.halfSizeCellX = sizeCellX/2;
-            this.halfSizeCellY = sizeCellY/2;
+            this.mapWidth = tmxMap.width;
+            this.mapHeight = tmxMap.height;
+            this.sizeCellX = tmxMap.tileWidth;
+            this.sizeCellY = tmxMap.tileHeight;
+            this.halfSizeCellX = sizeCellX / 2;
+            this.halfSizeCellY = sizeCellY / 2;
+        } else if (screen instanceof MapEditorScreen) {
+            tmxMap = ((MapEditorScreen) screen).tmxMap;
+            gameInterface = ((MapEditorScreen) screen).mapEditorInterface;
         } else {
             Logger.logError("screen!=GameScreen");
         }
@@ -151,30 +144,17 @@ public class CameraController extends AbstractCameraController {
             this.touchDownY = screenY;
             this.prevMouseX = screenX;
             this.prevMouseY = screenY;
-            selectTower(screenX, screenY);
             if (((panLeftMouseButton && button == 0) ||
                     (panRightMouseButton && button == 1) ||
                     (panMidMouseButton && button == 2))) {
-//            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
-//            Gdx.graphics.setCursor(Cursor.SystemCursor.Arrow);
-//            setCursor(Qt::ClosedHandCursor);
+//                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+//                Gdx.graphics.setCursor(Cursor.SystemCursor.Arrow);
+//                setCursor(Qt::ClosedHandCursor);
                 paning = true;
             }
             flinging = false;
             initialScale = camera.zoom;
-            if (!gameInterface.interfaceTouched) {
-                UnderConstruction underConstruction = gameField.getUnderConstruction();
-                if (underConstruction != null) {
-                    if (button == 0) {
-                        Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-                        if (whichCell(touch, isDrawableTowers)) {
-                            underConstruction.setStartCoors((int) touch.x, (int) touch.y);
-                        }
-//                } else if (button == 1) {
-//                    gameField.cancelUnderConstruction();
-                    }
-                }
-            }
+            selectObject(screenX, screenY);
         }
         return false;
     }
@@ -182,78 +162,12 @@ public class CameraController extends AbstractCameraController {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         super.touchUp(screenX, screenY, pointer, button);
-        if (gameInterface != null) {
+        if (gameInterface != null && !gameInterface.interfaceTouched) {
             if (paning) {
                 if (((panLeftMouseButton && button == 0) ||
                         (panRightMouseButton && button == 1) ||
                         (panMidMouseButton && button == 2))) {
                     paning = false;
-                }
-            }
-            if (!gameInterface.interfaceTouched) {
-                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-                if (gameField.getUnderConstruction() != null) {
-                    if (button == 0) {
-                        if (whichCell(touch, isDrawableTowers)) {
-                            gameField.buildTowersWithUnderConstruction((int) touch.x, (int) touch.y);
-                        }
-                    } else if (button == 1) {
-                        gameField.cancelUnderConstruction();
-                    }
-                } else {
-//            int tmpCellX = screenX;
-//            int tmpCellY = screenY;
-//            whichCell(tmpCellX, tmpCellY, 5);
-                    if ((touchDownX == screenX && touchDownY == screenY) /*|| (prevCellX == tmpCellX && prevCellY == tmpCellY)*/) {
-                        if (gameField.gameSettings.gameType == GameType.LittleGame) {
-                            if (button == 0) {
-                                if (whichCell(touch, isDrawableUnits)) {
-                                    gameField.rerouteHero((int) touch.x, (int) touch.y);
-                                }
-                            } else if (button == 1) {
-                                if (whichCell(touch, isDrawableGround)) {
-                                    Cell cell = gameField.getCell((int) touch.x, (int) touch.y);
-                                    if (cell.isTerrain()) {
-                                        cell.removeTerrain(random.nextBoolean());
-                                        Gdx.app.log("CameraController::touchUp", "-- x:" + cell.cellX + " y:" + cell.cellY + " cell.isTerrain():" + cell.isTerrain());
-                                    } else if (cell.getTower() != null) {
-                                        Tower tower = cell.getTower();
-//                                    gameField.removeTowerWithGold(tower.cell.cellX, tower.cell.cellY);
-                                        gameField.removeTower(tower.cell.cellX, tower.cell.cellY);
-                                    } else if (cell.isEmpty()) {
-//                                gameField.towerActions(cell.cellX, cell.cellY);
-                                        gameField.createTower(cell.cellX, cell.cellY, gameField.factionsManager.getRandomTemplateForTowerFromAllFaction());
-                                        if (random.nextBoolean()) {
-                                            int randNumber = (125 + random.nextInt(2));
-                                            cell.setTerrain(gameField.tmxMap.getTileSets().getTileSet(0).getTile(randNumber), true, true);
-                                        }
-                                    }
-                                }
-                            } else if (button == 2) {
-                                if (whichCell(touch, isDrawableUnits)) {
-                                    if (random.nextInt(5) == 0) {
-                                        gameField.spawnLocalHero((int) touch.x, (int) touch.y);
-                                    } else {
-                                        gameField.spawnServerUnitToRandomExit((int) touch.x, (int) touch.y);
-                                    }
-                                }
-                            }
-                        } else if (gameField.gameSettings.gameType == GameType.TowerDefence) {
-                            if (button == 0 || button == 1) {
-                                if (whichCell(touch, isDrawableTowers)) {
-                                    gameScreen.createTower((int) touch.x, (int) touch.y);
-                                }
-                            } else if (button == 2) {
-                                if (whichCell(touch, isDrawableUnits)) {
-                                    gameField.spawnServerUnitToRandomExit((int) touch.x, (int) touch.y);
-                                }
-                            } else if (button == 4) {
-                                if (whichCell(touch, isDrawableUnits)) {
-//                            gameField.setExitPoint((int) touch.x, (int) touch.y);
-                                }
-                            }
-                        }
-                    }
                 }
             }
             gameInterface.interfaceTouched = false;
@@ -263,36 +177,23 @@ public class CameraController extends AbstractCameraController {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        super.touchDragged(screenX, screenY, pointer);
-        if (gameField != null) {
-            UnderConstruction underConstruction = gameField.getUnderConstruction();
-            if (underConstruction != null) {
-                Vector3 touch = new Vector3(screenX, screenY, 0.0f);
-                if (whichCell(touch, isDrawableTowers)) {
-                    underConstruction.setEndCoors((int) touch.x, (int) touch.y);
+        if (paning) {
+            float deltaX = this.prevMouseX - screenX;
+            float deltaY = this.prevMouseY - screenY;
+            prevMouseX = screenX;
+            prevMouseY = screenY;
+            float newCameraX = camera.position.x + (deltaX * camera.zoom);
+            float newCameraY = camera.position.y - (deltaY * camera.zoom);
+            if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
+                if (borderLeftX < newCameraX && newCameraX < borderRightX &&
+                        borderUpY > newCameraY && newCameraY > borderDownY) {
+                    camera.position.set(newCameraX, newCameraY, 0.0f);
                 }
-            }
-
-            if (underConstruction == null || Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
-                if (paning) {
-                    float deltaX = this.prevMouseX - screenX;
-                    float deltaY = this.prevMouseY - screenY;
-                    prevMouseX = screenX;
-                    prevMouseY = screenY;
-                    float newCameraX = camera.position.x + (deltaX * camera.zoom);
-                    float newCameraY = camera.position.y - (deltaY * camera.zoom);
-                    if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
-                        if (borderLeftX < newCameraX && newCameraX < borderRightX &&
-                                borderUpY > newCameraY && newCameraY > borderDownY) {
-                            camera.position.set(newCameraX, newCameraY, 0.0f);
-                        }
-                    } else {
-                        camera.position.set(newCameraX, newCameraY, 0.0f);
-                    }
-                }
+            } else {
+                camera.position.set(newCameraX, newCameraY, 0.0f);
             }
         }
-        return false;
+        return super.touchDragged(screenX, screenY, pointer);
     }
 
     @Override
@@ -330,43 +231,36 @@ public class CameraController extends AbstractCameraController {
                     camera.zoom -= 0.1f;
             }
             camera.update();
-//            Logger.logDebug("camera.zoom:" + camera.zoom);
         }
+//        Logger.logFuncEnd("camera.zoom:" + camera.zoom);
         return false;
     }
 
     public void update(float deltaTime) {
-        try {
-            if (gameField.getUnderConstruction() == null) {
-                if (flinging) {
-                    velX *= 0.98f;
-                    velY *= 0.98f;
-//                    float newCameraX = camera.position.x - velX;
-//                    float newCameraY = camera.position.y + velY;
-                    float newCameraX = camera.position.x - (velX * deltaTime);
-                    float newCameraY = camera.position.y + (velY * deltaTime);
-                    if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
-                        if (borderLeftX < newCameraX && newCameraX < borderRightX &&
-                                borderUpY > newCameraY && newCameraY > borderDownY) {
-                            this.camera.position.x = newCameraX;
-                            this.camera.position.y = newCameraY;
-                        }
-                    } else {
-                        this.camera.position.x = newCameraX;
-                        this.camera.position.y = newCameraY;
-                    }
-                    if (Math.abs(velX) < 0.01) velX = 0.0f;
-                    if (Math.abs(velY) < 0.01) velY = 0.0f;
-                    if (velX == 0.0 && velY == 0.0) {
-                        flinging = false;
-                    }
-//                    Gdx.app.log("CameraController::update()", "-- velX:" + velX + " velY:" + velY);
-//                    Gdx.app.log("CameraController::update()", "-- newCameraX:" + newCameraX + " newCameraY:" + newCameraY);
+        if (flinging) {
+            velX *= 0.98f;
+            velY *= 0.98f;
+//            float newCameraX = camera.position.x - velX;
+//            float newCameraY = camera.position.y + velY;
+            float newCameraX = camera.position.x - (velX * deltaTime);
+            float newCameraY = camera.position.y + (velY * deltaTime);
+            if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
+                if (borderLeftX < newCameraX && newCameraX < borderRightX &&
+                        borderUpY > newCameraY && newCameraY > borderDownY) {
+                    this.camera.position.x = newCameraX;
+                    this.camera.position.y = newCameraY;
                 }
+            } else {
+                this.camera.position.x = newCameraX;
+                this.camera.position.y = newCameraY;
             }
-            camera.update();
-        } catch (Exception exp) {
-            Gdx.app.error("CameraController::update()", "-- Exception:" + exp);
+            if (Math.abs(velX) < 0.01) velX = 0.0f;
+            if (Math.abs(velY) < 0.01) velY = 0.0f;
+            if (velX == 0.0 && velY == 0.0) {
+                flinging = false;
+            }
+//            Logger.logDebug("velX:" + velX + " velY:" + velY);
+//            Logger.logDebug("newCameraX:" + newCameraX + " newCameraY:" + newCameraY);
         }
 
         int mouseX = Gdx.input.getX();
@@ -394,6 +288,7 @@ public class CameraController extends AbstractCameraController {
         if (!Mouse.isInsideWindow()) {
             shiftCamera = 0f;
         }
+        camera.update();
     }
 
 //    void unproject(int &prevMouseX, int &prevMouseY) {
@@ -406,7 +301,7 @@ public class CameraController extends AbstractCameraController {
     /**
      * Selects tower in touched cell, if there is one.
      */
-    private void selectTower(final int screenX, final int screenY) {
+    private void selectObject(final int screenX, final int screenY) {
         Vector3 vector = new Vector3(screenX, screenY, 0);
         if (!whichCell(vector, 5)) return;
         Tower tower = gameField.getCell((int) vector.x, (int) vector.y).tower;
@@ -420,18 +315,21 @@ public class CameraController extends AbstractCameraController {
      * Returns false, touch was out of map.
      */
     protected boolean whichCell(Vector3 mouse, int map) {
-//        Gdx.app.log("CameraController::whichCell()", "-wind- mouseX:" + mouse.x + " mouseY:" + mouse.y);
+//        Logger.logDebug("-1- mouseX:" + mouse.x + " mouseY:" + mouse.y);
         if (camera != null) {
             camera.unproject(mouse);
+//            Logger.logDebug("-2- mouseX:" + mouse.x + " mouseY:" + mouse.y);
             float gameX = ((mouse.x / (halfSizeCellX)) + (mouse.y / (halfSizeCellY))) / 2;
             float gameY = ((mouse.y / (halfSizeCellY)) - (mouse.x / (halfSizeCellX))) / 2;
-            if (!gameField.tmxMap.isometric) {
+//            Logger.logDebug("-3- gameX:" + gameX + " gameY:" + gameY);
+//            Logger.logDebug("tmxMap:" + tmxMap);
+            if (!tmxMap.isometric) {
                 gameX = (mouse.x / sizeCellX);
                 gameY = (mouse.y / sizeCellY);
             }
             int cellX = Math.abs((int) gameX);
             int cellY = Math.abs((int) gameY);
-            if (gameField.tmxMap.isometric && gameY < 0) {
+            if (tmxMap.isometric && gameY < 0) {
                 int tmpX = cellX;
                 cellX = cellY;
                 cellY = tmpX;
@@ -458,7 +356,7 @@ public class CameraController extends AbstractCameraController {
 
     public boolean getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
         if(map == 1) {
-            if (!gameField.tmxMap.isometric) {
+            if (!tmxMap.isometric) {
                 towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
             } else {
                 towerPos.x += (-(halfSizeCellX * towerSize) );
@@ -466,13 +364,13 @@ public class CameraController extends AbstractCameraController {
             towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
         } else if(map == 2) {
             towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
-            if (!gameField.tmxMap.isometric) {
+            if (!tmxMap.isometric) {
                 towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
             } else {
                 towerPos.y += (-(halfSizeCellY * towerSize));
             }
         } else if(map == 3) {
-            if (!gameField.tmxMap.isometric) {
+            if (!tmxMap.isometric) {
                 towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
             } else {
                 towerPos.x += (-(halfSizeCellX * towerSize) );
@@ -480,7 +378,7 @@ public class CameraController extends AbstractCameraController {
             towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
         } else if(map == 4) {
             towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
-            if (!gameField.tmxMap.isometric) {
+            if (!tmxMap.isometric) {
                 towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
             } else {
                 towerPos.y += (-(halfSizeCellY * towerSize));

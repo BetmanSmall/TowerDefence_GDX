@@ -84,13 +84,13 @@ public class ServerSettingsScreen extends AbstractScreen {
         VisLabel authServerPortLabel = new VisLabel("authServerPort:");
         leftTable.add(authServerPortLabel).align(Align.right);
 
-        VisTextField authServerPortField = new VisTextField(game.sessionSettings.authServerPort.toString());
+        VisTextField authServerPortField = new VisTextField(gameMaster.sessionSettings.authServerPort.toString());
         leftTable.add(authServerPortField).align(Align.left).row();
 
         VisLabel gameServerPortLabel = new VisLabel("gameServerPort:");
         leftTable.add(gameServerPortLabel).align(Align.right);
 
-        VisTextField gameServerPortField = new VisTextField(game.sessionSettings.gameServerPort.toString());
+        VisTextField gameServerPortField = new VisTextField(gameMaster.sessionSettings.gameServerPort.toString());
         leftTable.add(gameServerPortField).align(Align.left).row();
 
         VisLabel gameTypeLabel = new VisLabel("gameType:");
@@ -105,21 +105,21 @@ public class ServerSettingsScreen extends AbstractScreen {
         leftTable.add(mapLabel).align(Align.right);
 
         VisSelectBox<String> mapSelectBox = new VisSelectBox<>();
-        mapSelectBox.setItems(game.gameLevelMaps);
+        mapSelectBox.setItems(gameMaster.gameLevelMaps);
 //        mapSelectBox.setSelected(game.gameLevelMaps.random());
         leftTable.add(mapSelectBox).colspan(2).align(Align.left).row();
 
         VisTable rightTable = new VisTable();
         rootTable.add(rightTable);
 
-        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
+        VisLabel versionLabel = new VisLabel(gameMaster.version.getVersionAndHash());
         rightTable.add(versionLabel).colspan(2).row();
 
         VisTextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.removeTopScreen();
+                gameMaster.removeTopScreen();
             }
         });
         rightTable.add(backButton);
@@ -132,20 +132,20 @@ public class ServerSettingsScreen extends AbstractScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Logger.logFuncStart("event:" + event + ", actor:" + actor);
-                game.sessionSettings.host = hostField.getSelected();
-                game.sessionSettings.authServerPort = Integer.parseInt(authServerPortField.getText());
-                game.sessionSettings.gameServerPort = Integer.parseInt(gameServerPortField.getText());
-                game.sessionSettings.gameSettings.gameType = gameTypeSelectBox.getSelected();
-                game.sessionSettings.gameSettings.mapPath = mapSelectBox.getSelected();
+                gameMaster.sessionSettings.host = hostField.getSelected();
+                gameMaster.sessionSettings.authServerPort = Integer.parseInt(authServerPortField.getText());
+                gameMaster.sessionSettings.gameServerPort = Integer.parseInt(gameServerPortField.getText());
+                gameMaster.sessionSettings.gameSettings.gameType = gameTypeSelectBox.getSelected();
+                gameMaster.sessionSettings.gameSettings.mapPath = mapSelectBox.getSelected();
 
                 if (withControlCheckBox.isChecked()) {
-                    game.userAccount.loginName = nameField.getText();
-                    game.userAccount.factionName = factionSelectBox.getSelected();
-                    game.sessionSettings.sessionType = SessionType.SERVER_AND_CLIENT;
+                    gameMaster.userAccount.loginName = nameField.getText();
+                    gameMaster.userAccount.factionName = factionSelectBox.getSelected();
+                    gameMaster.sessionSettings.sessionType = SessionType.SERVER_AND_CLIENT;
                 } else {
-                    game.sessionSettings.sessionType = SessionType.SERVER_STANDALONE;
+                    gameMaster.sessionSettings.sessionType = SessionType.SERVER_STANDALONE;
                 }
-                game.addScreen(new ServerGameScreen(game, game.userAccount));
+                gameMaster.addScreen(new ServerGameScreen(gameMaster, gameMaster.userAccount));
             }
         });
         midTable.add(startServer).colspan(2).align(Align.center).row();
@@ -166,7 +166,7 @@ public class ServerSettingsScreen extends AbstractScreen {
 
         playerSettings.add(new VisLabel("faction:"));
         factionSelectBox = new VisSelectBox();
-        factionSelectBox.setItems(game.factionsManager.getFactionsNames());
+        factionSelectBox.setItems(gameMaster.factionsManager.getFactionsNames());
         playerSettings.add(factionSelectBox).row();
         midTable.add(playerSettings).colspan(2).align(Align.center).row();
 
@@ -193,7 +193,7 @@ public class ServerSettingsScreen extends AbstractScreen {
     private void inputHandler(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Logger.logDebug("isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE);");
-            game.removeTopScreen();
+            gameMaster.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Logger.logDebug("isKeyJustPressed(Input.Keys.ENTER || Input.Keys.SPACE);");
             startServer.toggle();

@@ -55,8 +55,8 @@ public class GameField {
 
     public GameField(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.gameSettings = gameScreen.game.sessionSettings.gameSettings;
-        this.factionsManager = gameScreen.game.factionsManager;
+        this.gameSettings = gameScreen.gameMaster.sessionSettings.gameSettings;
+        this.factionsManager = gameScreen.gameMaster.factionsManager;
         this.waveManager = new WaveManager(gameSettings.mapPath);
         this.towersManager = new TowersManager();
         this.unitsManager = new UnitsManager();
@@ -415,7 +415,7 @@ public class GameField {
         if (spawnCell != null && destCell != null && pathFinder != null) {
             ArrayDeque<Cell> route = unitInstanceData.getRoute(this);
             if (route != null) {
-                TemplateForUnit templateForUnit = gameScreen.game.factionsManager.getTemplateForUnitByName(unitInstanceData.templateForUnit);
+                TemplateForUnit templateForUnit = gameScreen.gameMaster.factionsManager.getTemplateForUnitByName(unitInstanceData.templateForUnit);
                 Player player = gameScreen.playersManager.getPlayer(unitInstanceData.playerInfoData.playerID);
                 Cell exitCell = null;
                 if (unitInstanceData.exitCell != null) {

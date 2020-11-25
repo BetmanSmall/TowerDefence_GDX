@@ -83,9 +83,9 @@ public class GameAutoTileScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
-        super.render(delta);
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
 
         viewport.apply(true);
         renderer.setView(camera);

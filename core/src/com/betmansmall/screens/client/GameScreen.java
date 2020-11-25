@@ -12,7 +12,6 @@ import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
 import com.betmansmall.game.SessionThread;
-import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.game.gameInterface.GameScreenInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.Cell;
@@ -42,10 +41,10 @@ public class GameScreen extends AbstractScreen {
         Logger.logFuncStart();
         gameMaster.sessionSettings.sessionType = SessionType.CLIENT_STANDALONE;
 
-        game.userAccount.loginName = "ClientStandalone";
-        game.userAccount.factionName = game.factionsManager.getFactionsNames().random();
+        this.gameMaster.userAccount.loginName = "ClientStandalone";
+        this.gameMaster.userAccount.factionName = this.gameMaster.factionsManager.getFactionsNames().random();
 //        game.userAccount.accountID = "accID_12345";
-        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, gameMaster.factionsManager, game.userAccount);
+        this.playersManager = new PlayersManager(gameMaster.sessionSettings.sessionType, gameMaster.factionsManager, this.gameMaster.userAccount);
     }
 
     public GameScreen(GameMaster gameMaster, UserAccount userAccount) {
@@ -227,10 +226,10 @@ public class GameScreen extends AbstractScreen {
             Gdx.app.log("GameScreen::inputHandler()", "-- cameraController.drawOrder:" + cameraController.drawOrder);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.BACK)");
-            game.removeTopScreen();
+            gameMaster.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.ENTER)");
-            game.nextGameLevel();
+            gameMaster.nextGameLevel();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             Gdx.app.log("GameScreen::inputHandler()", "-- isKeyJustPressed(Input.Keys.A)");
             gameField.turnLeft();

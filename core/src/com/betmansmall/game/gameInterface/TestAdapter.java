@@ -42,10 +42,10 @@ class TestAdapter extends ArrayAdapter<MapLayer, VisTable> {
         visCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println(mapEditorScreen.map.getLayers().get(0).isVisible());
-                mapEditorScreen.map.getLayers().get(testListView.adapter.getSelection().get(0).getName()).setVisible(visCheckBox.isChecked());
+                System.out.println(mapEditorScreen.tmxMap.getLayers().get(0).isVisible());
+                mapEditorScreen.tmxMap.getLayers().get(testListView.adapter.getSelection().get(0).getName()).setVisible(visCheckBox.isChecked());
                 //map.getLayers().get(map.getLayers().getCount()-1).setVisible(false);
-                System.out.println(mapEditorScreen.map.getLayers().get(0).isVisible());
+                System.out.println(mapEditorScreen.tmxMap.getLayers().get(0).isVisible());
             }
         });
 

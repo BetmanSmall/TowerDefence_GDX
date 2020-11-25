@@ -1,6 +1,5 @@
 package com.betmansmall.game.gameInterface;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -141,7 +140,7 @@ public class TestListView extends VisWindow {
 
     public void updateLayersList(MapEditorScreen mapEditorScreen) {
         array.clear();
-        for (MapLayer mapLayer : mapEditorScreen.map.getLayers()) {
+        for (MapLayer mapLayer : mapEditorScreen.tmxMap.getLayers()) {
             array.add(mapLayer);
         }
         adapter = new TestAdapter(array, mapEditorScreen, this);

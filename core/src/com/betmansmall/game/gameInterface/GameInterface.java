@@ -30,14 +30,14 @@ import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.UnderConstruction;
 import com.betmansmall.utils.logging.Logger;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class GameInterface extends GameAbsInterface {
     protected CameraController cameraController;
     public BitmapFont bitmapFont;
-
-    public Skin skin;
 
     public PlayersViewTable playersViewTable;
     public Table tableConsoleLog;
@@ -47,7 +47,7 @@ public class GameInterface extends GameAbsInterface {
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
     public Slider drawGrid, drawUnits, drawTowers, drawBackground, drawGround, drawForeground, drawGridNav, drawRoutes, drawOrder, drawAll;
-    public CheckBox topBottomLeftRightSelector, verticalSelector, smoothFlingSelector, towerMoveAlgorithm;
+    public VisCheckBox topBottomLeftRightSelector, verticalSelector, smoothFlingSelector, towerMoveAlgorithm;
 
     // Console need
     public Array<String> arrayActionsHistory;
@@ -79,15 +79,15 @@ public class GameInterface extends GameAbsInterface {
     public VisTextButton sellTowerBtn, upgradeTowerBtn, closeTowerBtn;
 
     public GameInterface() {
+        super();
+        Logger.logFuncStart();
         this.bitmapFont = new BitmapFont();
         this.bitmapFont.getData().scale(Gdx.graphics.getHeight()*0.001f);
-
-        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         this.interfaceTouched = false;
 //        this.setDebugAll(true);
 
-        tableConsoleLog = new Table(skin);
+        tableConsoleLog = new VisTable();
         tableConsoleLog.setFillParent(true);
         addActor(tableConsoleLog);
 
@@ -95,7 +95,7 @@ public class GameInterface extends GameAbsInterface {
         arrayActionsHistory.add("actionsHistoryLabel");
         deleteActionThrough = 0f;
         actionInHistoryTime = 1f;
-        actionsHistoryLabel = new Label("actionsHistoryLabel", new Label.LabelStyle(bitmapFont, Color.WHITE));
+        actionsHistoryLabel = new VisLabel("actionsHistoryLabel", new Label.LabelStyle(bitmapFont, Color.WHITE));
         tableConsoleLog.add(actionsHistoryLabel).expand().left();
     }
 
@@ -105,11 +105,7 @@ public class GameInterface extends GameAbsInterface {
 //        this.cameraController.dispose();
 //        this.gameScreen.dispose();
         this.bitmapFont.dispose();
-
-        this.skin.dispose();
-
         super.dispose();
-
         this.arrayActionsHistory.clear();
     }
 
@@ -227,11 +223,13 @@ public class GameInterface extends GameAbsInterface {
 
     @Override
     public void resize() {
-        Logger.logFuncStart("skin:" + skin);
-        if (skin != null) {
-            skin.getFont("default-font").getData().setScale(2f, 2f);
-            resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }
+//        super.resize();
+        Logger.logFuncStart();
+//        Logger.logFuncStart("skin:" + skin);
+//        if (skin != null) {
+//            skin.getFont("default-font").getData().setScale(2f, 2f);
+//            resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        }
     }
 
     @Override

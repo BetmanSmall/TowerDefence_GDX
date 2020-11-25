@@ -12,6 +12,7 @@ import com.betmansmall.game.GameSettings;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForUnit;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.utils.logging.Logger;
+import com.kotcrab.vis.ui.VisUI;
 
 public class UnitsSelector extends InterfaceSelector {
     public Array<TemplateForUnit> templateForUnits;
@@ -24,7 +25,7 @@ public class UnitsSelector extends InterfaceSelector {
         this.templateForUnits = gameField.factionsManager.getAllTemplateForUnits();
         Gdx.app.log("UnitsSelector::UnitsSelector()", "-- templateForUnits:" + templateForUnits);
         this.setDebug(true);
-        GameSettings gameSettings = gameScreen.game.sessionSettings.gameSettings;
+        GameSettings gameSettings = gameScreen.gameMaster.sessionSettings.gameSettings;
         updateBorders(gameSettings.verticalSelector, !gameSettings.topBottomLeftRightSelector, gameSettings.smoothFlingSelector);
         initButtons();
     }
@@ -63,7 +64,7 @@ public class UnitsSelector extends InterfaceSelector {
             verticalGroupHar.add(costUnitLabel).row();
             unitTable.add(verticalGroupHar).expandY().left();
 
-            Button button = new Button(unitTable, gameInterface.skin);
+            Button button = new Button(unitTable, VisUI.getSkin());
             button.setName(nameUnit);
             button.setUserObject(unitIndex);
             Cell<Button> cellButton = this.add(button).expand().fill();

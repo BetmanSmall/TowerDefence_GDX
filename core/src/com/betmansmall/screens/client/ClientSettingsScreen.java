@@ -72,14 +72,14 @@ public class ClientSettingsScreen extends AbstractScreen {
         VisTable rightTable = new VisTable();
         rootTable.add(rightTable);
 
-        VisLabel versionLabel = new VisLabel(game.version.getVersionAndHash());
+        VisLabel versionLabel = new VisLabel(gameMaster.version.getVersionAndHash());
         rightTable.add(versionLabel).colspan(2).row();
 
         VisTextButton backButton = new VisTextButton("BACK");
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.removeTopScreen();
+                gameMaster.removeTopScreen();
             }
         });
         rightTable.add(backButton);
@@ -88,8 +88,8 @@ public class ClientSettingsScreen extends AbstractScreen {
         rootTable.add(midTable);
 
         midTable.add(new VisLabel("name:"));
-        if (game != null && game.cmd != null) {
-            nameField = new VisTextField("Player_Desktop" + (game.cmd.hasOption("client") ? game.cmd.getOptionValue("client") : "_"));
+        if (gameMaster != null && gameMaster.cmd != null) {
+            nameField = new VisTextField("Player_Desktop" + (gameMaster.cmd.hasOption("client") ? gameMaster.cmd.getOptionValue("client") : "_"));
         } else {
             nameField = new VisTextField("Player_Android");
         }
@@ -97,7 +97,7 @@ public class ClientSettingsScreen extends AbstractScreen {
 
         midTable.add(new VisLabel("faction:"));
         factionSelectBox = new VisSelectBox();
-        factionSelectBox.setItems(game.factionsManager.getFactionsNames());
+        factionSelectBox.setItems(gameMaster.factionsManager.getFactionsNames());
         midTable.add(factionSelectBox).row();
 
         VisLabel hostLabel = new VisLabel("host:");
@@ -115,7 +115,7 @@ public class ClientSettingsScreen extends AbstractScreen {
         VisLabel portLabel = new VisLabel("gameServerPort:");
         midTable.add(portLabel);
 
-        VisTextField portField = new VisTextField(game.sessionSettings.gameServerPort.toString());
+        VisTextField portField = new VisTextField(gameMaster.sessionSettings.gameServerPort.toString());
         midTable.add(portField).row();
 
         connectToServer = new VisTextButton("CONNECT TO SERVER");
@@ -123,13 +123,13 @@ public class ClientSettingsScreen extends AbstractScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 //                game.sessionSettings.host = hostField.getSelected();
-                game.sessionSettings.host = hostField.getText();
-                game.sessionSettings.gameServerPort = Integer.parseInt(portField.getText());
-                game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
+                gameMaster.sessionSettings.host = hostField.getText();
+                gameMaster.sessionSettings.gameServerPort = Integer.parseInt(portField.getText());
+                gameMaster.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
 
-                game.userAccount.loginName = nameField.getText();
-                game.userAccount.factionName = factionSelectBox.getSelected();
-                game.addScreen(new ClientGameScreen(game, game.userAccount));
+                gameMaster.userAccount.loginName = nameField.getText();
+                gameMaster.userAccount.factionName = factionSelectBox.getSelected();
+                gameMaster.addScreen(new ClientGameScreen(gameMaster, gameMaster.userAccount));
             }
         });
         midTable.add(connectToServer).colspan(2).row();
@@ -168,13 +168,13 @@ public class ClientSettingsScreen extends AbstractScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 ServerInformation serverInformation = (ServerInformation)actor.getUserObject();
                 Logger.logFuncStart("serverInformation:" + serverInformation);
-                game.sessionSettings.host = serverInformation.inetSocketAddress.getHostString();
-                game.sessionSettings.gameServerPort = serverInformation.inetSocketAddress.getPort();
-                game.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
+                gameMaster.sessionSettings.host = serverInformation.inetSocketAddress.getHostString();
+                gameMaster.sessionSettings.gameServerPort = serverInformation.inetSocketAddress.getPort();
+                gameMaster.sessionSettings.sessionType = SessionType.CLIENT_ONLY;
 
-                game.userAccount.loginName = nameField.getText();
-                game.userAccount.factionName = factionSelectBox.getSelected();
-                game.addScreen(new ClientGameScreen(game, game.userAccount));
+                gameMaster.userAccount.loginName = nameField.getText();
+                gameMaster.userAccount.factionName = factionSelectBox.getSelected();
+                gameMaster.addScreen(new ClientGameScreen(gameMaster, gameMaster.userAccount));
             }
         });
         serverInfoRowTable.add(joinBtn).row();
@@ -217,7 +217,7 @@ public class ClientSettingsScreen extends AbstractScreen {
     private void inputHandler(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) { //
             Logger.logDebug("isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE);");
-            game.removeTopScreen();
+            gameMaster.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Logger.logDebug("isKeyJustPressed(Input.Keys.ENTER || Input.Keys.SPACE);");
             connectToServer.toggle();

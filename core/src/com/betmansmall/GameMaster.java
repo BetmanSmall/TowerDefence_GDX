@@ -153,7 +153,7 @@ public class GameMaster extends Game {
         } else if (cmd != null && cmd.hasOption("client")) {
             addScreen(new ClientSettingsScreen(this));
         } else if (cmd != null && cmd.hasOption("mapeditor")) {
-            addScreen(new MapEditorScreen(this, "maps/old/arena3.tmx"));
+            addScreen(new MapEditorScreen(this, gameLevelMaps.random()));
         } else {
             addScreen(mainMenuScreen);
         }
