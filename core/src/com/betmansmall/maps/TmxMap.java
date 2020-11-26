@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.utils.logging.Logger;
 
 public class TmxMap extends TiledMap { // how good? 1
-    private TiledMap tiledMap; // how good? 2
+//    private TiledMap tiledMap; // how good? 2
 
     public String mapPath;
     public int width, height;
@@ -18,9 +18,10 @@ public class TmxMap extends TiledMap { // how good? 1
     public boolean isometric;
     public boolean turnedMap = false;
 
-    public TmxMap(TiledMap tiledMap, String mapPath) { // how good? 44444? // without MapLoader.loadTilemap()||loadTiledMap()
+    //    public TmxMap(TiledMap tiledMap, String mapPath) { // how good? 44444? // without MapLoader.loadTilemap()||loadTiledMap()
+    public void init(TiledMap tiledMap, String mapPath) {
         Logger.logFuncStart("tiledMap:" + tiledMap + ", mapPath:" + mapPath);
-        this.tiledMap = tiledMap;
+//        this.tiledMap = tiledMap;
         this.mapPath = mapPath;
         this.isometric = false;
 
@@ -85,7 +86,7 @@ public class TmxMap extends TiledMap { // how good? 1
             sb.append(",turnedMap:" + turnedMap);
             sb.append(",tileWidth:" + tileWidth);
             sb.append(",tileHeight:" + tileHeight);
-            sb.append(",tiledMap:" + tiledMap);
+//            sb.append(",tiledMap:" + tiledMap);
         }
         sb.append("]");
         return sb.toString();

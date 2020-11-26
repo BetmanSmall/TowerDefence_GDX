@@ -85,7 +85,8 @@ public class MapLoader extends TmxMapLoader {
         }
         Array<Element> tilesets = root.getChildrenByName("tileset");
         for (Element element : tilesets) {
-            loadTileSet(map, element, tmxFile, imageResolver);
+            loadTileSet(map, element, tmxFile, imageResolver); // gdx 1.9.9
+//            loadTileSet(element, tmxFile, imageResolver); // gdx 1.9.10
             root.removeChild(element);
         }
         for (int i = 0, j = root.getChildCount(); i < j; i++) {

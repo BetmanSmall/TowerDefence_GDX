@@ -65,7 +65,6 @@ public class MapEditorInterface extends GameInterface {
         rootTable.setFillParent(true);
         addActor(rootTable);
 
-        Logger.logDebug("0mapEditorScreen.tmxMap.mapPath:" + mapEditorScreen.tmxMap.mapPath);
         mapNameLabel = new VisLabel("Map: " + mapEditorScreen.tmxMap.mapPath);
         rootTable.add(mapNameLabel).align(Align.topRight).expand().row();
 
@@ -150,13 +149,7 @@ public class MapEditorInterface extends GameInterface {
                 updateTileList();
             }
         });
-        String selectedMap = selectMapsBox.getSelected();
-        Logger.logDebug("1selectedMap:" + selectedMap);
-        Logger.logDebug("1mapEditorScreen.tmxMap.mapPath:" + mapEditorScreen.tmxMap.mapPath);
         selectMapsBox.setSelected(mapEditorScreen.tmxMap.mapPath);
-        String selectedMap2 = selectMapsBox.getSelected();
-        Logger.logDebug("2selectedMap:" + selectedMap2);
-        Logger.logDebug("2selectedMap.getList:" + selectMapsBox.getItems());
         elemTable.add(selectMapsBox).colspan(2);
 
         updateTileList();

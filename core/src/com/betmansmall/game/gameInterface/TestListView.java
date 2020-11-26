@@ -19,101 +19,105 @@ import com.kotcrab.vis.ui.widget.ListView.UpdatePolicy;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 
-
 public class TestListView extends VisWindow {
-    private static final Drawable white = VisUI.getSkin().getDrawable("white");
+//    private static final Drawable white = VisUI.getSkin().getDrawable("white");
 
-    private ColorPicker picker;
+//    private ColorPicker picker;
     private Array<MapLayer> array;
     public TestAdapter adapter;
     private ListView<MapLayer> view;
 
     public TestListView(MapEditorScreen mapEditorScreen) {
-        super("listview");
+        super("TestListView");
 
-        TableUtils.setSpacingDefaults(this);
-        columnDefaults(0).left();
+//        TableUtils.setSpacingDefaults(this);
+//        columnDefaults(0).left();
 
         addCloseButton();
         closeOnEscape();
 
         array = new Array<>();
-        updateLayersList(mapEditorScreen);
+        array.addAll(mapEditorScreen.tmxMap.getLayers().getByType(MapLayer.class));
+//        for (MapLayer mapLayer : mapEditorScreen.tmxMap.getLayers()) {
+//            array.add(mapLayer);
+//        }
+        adapter = new TestAdapter(array, mapEditorScreen, this);
+        view = new ListView<>(adapter);
+//        updateLayersList(mapEditorScreen);
 
-        view.setUpdatePolicy(UpdatePolicy.ON_DRAW);
+//        view.setUpdatePolicy(UpdatePolicy.ON_DRAW);
 
-        VisTable footerTable = new VisTable();
-        footerTable.addSeparator();
-        footerTable.add("Table Footer");
-        view.setFooter(footerTable);
+//        VisTable footerTable = new VisTable();
+//        footerTable.addSeparator();
+//        footerTable.add("Table Footer");
+//        view.setFooter(footerTable);
 
-        final Image image = new Image(white);
-        picker = new ColorPicker("color picker", new ColorPickerAdapter() {
-            @Override
-            public void finished(Color newColor) {
-                image.setColor(newColor);
-            }
-        });
+//        final Image image = new Image(white);
+//        picker = new ColorPicker("color picker", new ColorPickerAdapter() {
+//            @Override
+//            public void finished(Color newColor) {
+//                image.setColor(newColor);
+//            }
+//        });
 
-        final Color c = new Color(27 / 255.0f, 161 / 255.0f, 226 / 255.0f, 1);
-        final Color newColorFromPicker = new Color(27 / 255.0f, 161 / 255.0f, 226 / 255.0f, 1);
-        final VisValidatableTextField nameField = new VisValidatableTextField();
-        VisTextButton addButton = new VisTextButton("Add");
-        VisTextButton deleteButton = new VisTextButton("Delete");
-        VisTextButton showPickerButton = new VisTextButton("show color picker");
-        picker.setColor(c);
-        image.setColor(c);
+//        final Color c = new Color(27 / 255.0f, 161 / 255.0f, 226 / 255.0f, 1);
+//        final Color newColorFromPicker = new Color(27 / 255.0f, 161 / 255.0f, 226 / 255.0f, 1);
+//        final VisValidatableTextField nameField = new VisValidatableTextField();
+//        VisTextButton addButton = new VisTextButton("Add");
+//        VisTextButton deleteButton = new VisTextButton("Delete");
+//        VisTextButton showPickerButton = new VisTextButton("show color picker");
+//        picker.setColor(c);
+//        image.setColor(c);
 
-        SimpleFormValidator validator = new SimpleFormValidator(addButton);
-        validator.notEmpty(nameField, "");
-
-        add(new VisLabel("New Name:"));
-        add(nameField);
-        add(addButton);
-        row();
-        add(showPickerButton);
-        add(image).size(32).pad(3);
-        row();
-        add(new VisLabel("Delete Name:"));
-        add(deleteButton);
-        row();
+//        SimpleFormValidator validator = new SimpleFormValidator(addButton);
+//        validator.notEmpty(nameField, "");
+//
+//        add(new VisLabel("New Name:"));
+//        add(nameField);
+//        add(addButton);
+//        row();
+//        add(showPickerButton);
+//        add(image).size(32).pad(3);
+//        row();
+//        add(new VisLabel("Delete Name:"));
+//        add(deleteButton);
+//        row();
         add(view.getMainTable()).colspan(3).grow();
 
-        addButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //by changing array using adapter view will be invalidated automatically
-                MapLayer ml = new MapLayer();
-                ml.setName(nameField.getText());
-                adapter.add(ml);
-                nameField.setText("");
-            }
-        });
-        picker = new ColorPicker("color picker", new ColorPickerAdapter() {
-            @Override
-            public void finished(Color newColor) {
-                image.setColor(newColor);
-                newColorFromPicker.set(newColor);
-            }
-        });
-
-
-        deleteButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //by changing array using adapter view will be invalidated automatically
-                if (adapter.getSelection().size > 0) {
-                    adapter.removeValue(adapter.getSelection().get(adapter.getSelection().size - 1), false);
-                    System.out.println("SiiiiiiiiiiiizzzzzzzzzzzzEEEEE" + adapter.getSelection().size);
-                }
-            }
-        });
-        showPickerButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                getStage().addActor(picker.fadeIn());
-            }
-        });
+//        addButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                by changing array using adapter view will be invalidated automatically
+//                MapLayer ml = new MapLayer();
+//                ml.setName(nameField.getText());
+//                adapter.add(ml);
+//                nameField.setText("");
+//            }
+//        });
+//        picker = new ColorPicker("color picker", new ColorPickerAdapter() {
+//            @Override
+//            public void finished(Color newColor) {
+//                image.setColor(newColor);
+//                newColorFromPicker.set(newColor);
+//            }
+//        });
+//
+//        deleteButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                by changing array using adapter view will be invalidated automatically
+//                if (adapter.getSelection().size > 0) {
+//                    adapter.removeValue(adapter.getSelection().get(adapter.getSelection().size - 1), false);
+//                    System.out.println("SiiiiiiiiiiiizzzzzzzzzzzzEEEEE" + adapter.getSelection().size);
+//                }
+//            }
+//        });
+//        showPickerButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                getStage().addActor(picker.fadeIn());
+//            }
+//        });
 
         adapter.setSelectionMode(AbstractListAdapter.SelectionMode.SINGLE);
         view.setItemClickListener(new ItemClickListener<MapLayer>() {
@@ -133,17 +137,14 @@ public class TestListView extends VisWindow {
                 System.out.println("ListSelection Deselected: " + item.getName());
             }
         });
-
-        setSize(500, 300);
-        setPosition(458, 245);
     }
 
-    public void updateLayersList(MapEditorScreen mapEditorScreen) {
-        array.clear();
-        for (MapLayer mapLayer : mapEditorScreen.tmxMap.getLayers()) {
-            array.add(mapLayer);
-        }
-        adapter = new TestAdapter(array, mapEditorScreen, this);
-        view = new ListView<>(adapter);
-    }
+//    public void updateLayersList(MapEditorScreen mapEditorScreen) {
+//        array.clear();
+//        for (MapLayer mapLayer : mapEditorScreen.tmxMap.getLayers()) {
+//            array.add(mapLayer);
+//        }
+//        adapter = new TestAdapter(array, mapEditorScreen, this);
+//        view = new ListView<>(adapter);
+//    }
 }

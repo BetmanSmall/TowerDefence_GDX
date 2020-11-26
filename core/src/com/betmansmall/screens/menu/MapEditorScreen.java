@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -29,14 +30,15 @@ public class MapEditorScreen extends AbstractScreen {
         super(gameMaster);
         Logger.logFuncStart("gameMaster:" + gameMaster + " mapPath:" + mapPath);
         this.tmxMap = (TmxMap) new MapLoader().load(mapPath);
+        Logger.logDebug("tmxMap:" + tmxMap);
+
+        this.spriteBatch = new SpriteBatch();
         if (tmxMap.isometric) {
-            this.renderer = new IsometricTiledMapRenderer(tmxMap, spriteBatch);
+            this.renderer = new IsometricTiledMapRenderer((TiledMap)tmxMap, spriteBatch);
         } else {
             this.renderer = new OrthogonalTiledMapRenderer(tmxMap, spriteBatch);
         }
-
-        this.spriteBatch = new SpriteBatch();
-        this.renderer = new IsometricTiledMapRenderer(tmxMap, spriteBatch);
+        Logger.logDebug("renderer:" + renderer);
 
         mapEditorCameraController = new MapEditorCameraController(this);
         mapEditorInterface = new MapEditorInterface(this);

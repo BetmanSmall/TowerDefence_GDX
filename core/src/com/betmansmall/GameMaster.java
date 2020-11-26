@@ -309,4 +309,18 @@ public class GameMaster extends Game {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("GameMaster{");
+        sb.append("version=").append(version);
+        sb.append(", allMaps=").append(allMaps);
+        sb.append(", gameLevelMaps=").append(gameLevelMaps);
+        sb.append(", userAccount=").append(userAccount);
+        sb.append(", sessionSettings=").append(sessionSettings);
+        sb.append(", factionsManager=").append(factionsManager);
+        sb.append(", cmd=").append(cmd);
+        sb.append('}');
+        return sb.toString();
+    }
 }

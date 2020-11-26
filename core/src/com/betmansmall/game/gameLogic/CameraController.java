@@ -304,9 +304,11 @@ public class CameraController extends AbstractCameraController {
     private void selectObject(final int screenX, final int screenY) {
         Vector3 vector = new Vector3(screenX, screenY, 0);
         if (!whichCell(vector, 5)) return;
-        Tower tower = gameField.getCell((int) vector.x, (int) vector.y).tower;
-        if (tower != null) {
-            gameField.towersManager.selectTower(gameScreen.playersManager.getLocalPlayer(), tower);
+        if (gameField != null) {
+            Tower tower = gameField.getCell((int) vector.x, (int) vector.y).tower;
+            if (tower != null) {
+                gameField.towersManager.selectTower(gameScreen.playersManager.getLocalPlayer(), tower);
+            }
         }
     }
 

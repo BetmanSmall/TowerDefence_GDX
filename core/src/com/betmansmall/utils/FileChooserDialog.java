@@ -77,6 +77,9 @@ public class FileChooserDialog extends VisDialog {
         this.skin = skin;
         this.baseDir = baseDir;
 
+        addCloseButton();
+        closeOnEscape();
+
         final Table content = getContentTable();
         content.top().left();
 
@@ -132,6 +135,15 @@ public class FileChooserDialog extends VisDialog {
                 if (!selected.file.isDirectory()) {
                     result = selected.file.name();
                     fileNameInput.setText(result);
+                }
+            }
+        });
+        fileList.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                if (getTapCount() == 2) {
+                    result(true);
                 }
             }
         });
