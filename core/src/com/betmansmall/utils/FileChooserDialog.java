@@ -153,10 +153,6 @@ public class FileChooserDialog extends VisDialog {
         fileList.setItems(items);
         fileList.setSelectedIndex(0);
         result = fileList.getSelected().string;
-        Logger.logDebug("fileList:" + fileList);
-        Logger.logDebug("fileList.getSelectedIndex():" + fileList.getSelectedIndex());
-        Logger.logDebug("fileList.getSelected():" + fileList.getSelected());
-        Logger.logDebug("result:" + result);
     }
 
     public FileHandle getResult() {

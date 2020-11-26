@@ -21,11 +21,8 @@ public class AbstractScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Logger.logFuncStart();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) ||
-                Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) ||
-                Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.BACK || Input.Keys.ESCAPE || Input.Keys.BACKSPACE);");
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
             gameMaster.removeTopScreen();
         }
     }

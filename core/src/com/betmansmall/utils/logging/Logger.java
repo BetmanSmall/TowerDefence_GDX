@@ -1,23 +1,16 @@
 package com.betmansmall.utils.logging;
 
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.StringBuilder;
-
-import org.apache.commons.cli.CommandLine;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
-/**
- * Logs messages appending tags like:
- *  {caller class name}::{caller method name}
- *  before message.
- *
- * @author Alexander Kuzyakov on 22.04.2019.
- */
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.StringBuilder;
+
+import org.apache.commons.cli.CommandLine;
+
 public class Logger implements Disposable {
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLACK = "\u001B[30m";
@@ -41,10 +34,10 @@ public class Logger implements Disposable {
     private static String convert(String ... strings) {
         StringBuilder sb = new StringBuilder();
         for (String string : strings) {
-            sb.append(string + ",");
+            sb.append(string + ", ");
         }
-        if (sb.length > 0) {
-            sb.deleteCharAt(sb.length - 1);
+        if (sb.length() > 0) {
+            sb.delete(sb.length()-2, sb.length());
         }
         return sb.toString();
     }
@@ -82,6 +75,11 @@ public class Logger implements Disposable {
     }
 
     public static void logDebug(String ... strings) {
+        instance().log(convert(strings), ANSI_GREEN);
+    }
+
+    public static void logConsole(String ... strings) {
+        ConsoleLoggerTable.log(convert(strings));
         instance().log(convert(strings), ANSI_GREEN);
     }
 
@@ -134,9 +132,11 @@ public class Logger implements Disposable {
     private void log(String message, String color) {
         StackTraceElement callerElement = getCallerElement(Thread.currentThread().getStackTrace());
         if (callerElement == null) return;
+        String className = getClassName(callerElement);
         String outStr = ((useColors == true) ? color : "") +
-                getClassName(callerElement) + "::" + callerElement.getMethodName() + "();" +
+                className + "." + callerElement.getMethodName() + "();" +
                 ((useColors == true) ? ANSI_RESET : "") + " -- " + message;
+//        outStr = outStr.replace("<init>", className);
         System.out.println(outStr);
 //        System.out.println(color + getClassName(callerElement) + "::" + callerElement.getMethodName() + "();" + ANSI_RESET + " -- " + message);
         if (bufferedWriter != null) {

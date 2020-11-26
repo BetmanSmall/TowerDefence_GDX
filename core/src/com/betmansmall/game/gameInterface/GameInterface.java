@@ -1,46 +1,26 @@
 package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.betmansmall.enums.GameState;
-import com.betmansmall.game.gameLogic.Tower;
-import com.betmansmall.screens.client.GameScreen;
-import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.CameraController;
-import com.betmansmall.game.gameLogic.UnderConstruction;
+import com.betmansmall.utils.logging.ConsoleLoggerTable;
 import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class GameInterface extends GameAbsInterface {
     protected CameraController cameraController;
     public BitmapFont bitmapFont;
+    public ConsoleLoggerTable consoleLoggerTable;
 
     public PlayersViewTable playersViewTable;
-    public Table tableConsoleLog;
     public Table tableWithButtons, tableWithSelectors, tableInfoTablo, pauseMenuTable, optionTable, firstOptionTable;
     public Table infoTabloTable;
 
@@ -48,12 +28,6 @@ public class GameInterface extends GameAbsInterface {
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
     public Slider drawGrid, drawUnits, drawTowers, drawBackground, drawGround, drawForeground, drawGridNav, drawRoutes, drawOrder, drawAll;
     public VisCheckBox topBottomLeftRightSelector, verticalSelector, smoothFlingSelector, towerMoveAlgorithm;
-
-    // Console need
-    public Array<String> arrayActionsHistory;
-    private float deleteActionThrough, actionInHistoryTime;
-    private Label actionsHistoryLabel;
-    // Console need
 
     public TextButton gridNav1, gridNav2, gridNav3;
     public TextButton disconnectButtons;
@@ -87,55 +61,24 @@ public class GameInterface extends GameAbsInterface {
         this.interfaceTouched = false;
 //        this.setDebugAll(true);
 
-        tableConsoleLog = new VisTable();
-        tableConsoleLog.setFillParent(true);
-        addActor(tableConsoleLog);
-
-        arrayActionsHistory = new Array<String>();
-        arrayActionsHistory.add("actionsHistoryLabel");
-        deleteActionThrough = 0f;
-        actionInHistoryTime = 1f;
-        actionsHistoryLabel = new VisLabel("actionsHistoryLabel", new Label.LabelStyle(bitmapFont, Color.WHITE));
-        tableConsoleLog.add(actionsHistoryLabel).expand().left();
+        consoleLoggerTable = ConsoleLoggerTable.instance();
+        addActor(consoleLoggerTable);
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("GameInterface::dispose()", "-- Called!");
+//        Logger.logFuncStart();
+//        this.consoleLoggerTable.dispose();
 //        this.cameraController.dispose();
 //        this.gameScreen.dispose();
         this.bitmapFont.dispose();
         super.dispose();
-        this.arrayActionsHistory.clear();
-    }
-
-    public void addActionToHistory(String action) {
-        if(arrayActionsHistory != null) {
-            arrayActionsHistory.add(action);
-        }
     }
 
     @Override
     public void render(float delta) {
         act(delta);
         draw();
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        if(arrayActionsHistory.size > 0) {
-            deleteActionThrough += delta;
-            if (deleteActionThrough > actionInHistoryTime) {
-                arrayActionsHistory.removeIndex(0);
-                deleteActionThrough = 0f;
-            }
-            StringBuilder sb = new StringBuilder();
-            for(String str : arrayActionsHistory) {
-                sb.append("\n" + str);
-            }
-            actionsHistoryLabel.setText(sb.toString());
-        }
     }
 
     @Override

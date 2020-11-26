@@ -13,7 +13,6 @@ import com.betmansmall.utils.logging.Logger;
 import java.util.StringTokenizer;
 
 public class MapLoader extends TmxMapLoader {
-
 //    @Override
 //    public TmxMap load(String mapPath) { // how good? 3
 //        Logger.logFuncStart("mapPath:" + mapPath);

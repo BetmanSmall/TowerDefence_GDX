@@ -49,7 +49,7 @@ public class MapEditorInterface extends GameInterface {
 //                    mapNaaeIsSelected = result.file().getName();
                 mapNameLabel.setText("Map1:" + result.file().getName());
                 Logger.logDebug("result.file().getName():" + result.file().getName());
-                mapEditorScreen.gameMaster.addScreen(new MapEditorScreen(mapEditorScreen.gameMaster, result.file().getAbsolutePath()));
+                mapEditorScreen.gameMaster.addScreen(new MapEditorScreen(mapEditorScreen.gameMaster, result.file().getPath()));
             }
             return true;
         });
@@ -65,6 +65,7 @@ public class MapEditorInterface extends GameInterface {
         rootTable.setFillParent(true);
         addActor(rootTable);
 
+        Logger.logDebug("0mapEditorScreen.tmxMap.mapPath:" + mapEditorScreen.tmxMap.mapPath);
         mapNameLabel = new VisLabel("Map: " + mapEditorScreen.tmxMap.mapPath);
         rootTable.add(mapNameLabel).align(Align.topRight).expand().row();
 
@@ -137,18 +138,25 @@ public class MapEditorInterface extends GameInterface {
 
         selectMapsBox = new VisSelectBox<>();
         updateTileList();
-        selectTileBox.setSelected(mapEditorScreen.tmxMap.mapPath);
         selectMapsBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Logger.logDebug(selectMapsBox.getSelected());
                 mapEditorScreen.tmxMap = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
                 mapEditorScreen.renderer = new IsometricTiledMapRenderer(mapEditorScreen.tmxMap, mapEditorScreen.spriteBatch);
+                if (mapEditorScreen.mapEditorCameraController != null)
                 mapEditorScreen.mapEditorCameraController.camera.position.set((mapEditorScreen.tmxMap.width*mapEditorScreen.tmxMap.tileWidth)/2f, 0, 0f);
                 mapEditorScreen.mapEditorCameraController.camera.update();
                 updateTileList();
             }
         });
+        String selectedMap = selectMapsBox.getSelected();
+        Logger.logDebug("1selectedMap:" + selectedMap);
+        Logger.logDebug("1mapEditorScreen.tmxMap.mapPath:" + mapEditorScreen.tmxMap.mapPath);
+        selectMapsBox.setSelected(mapEditorScreen.tmxMap.mapPath);
+        String selectedMap2 = selectMapsBox.getSelected();
+        Logger.logDebug("2selectedMap:" + selectedMap2);
+        Logger.logDebug("2selectedMap.getList:" + selectMapsBox.getItems());
         elemTable.add(selectMapsBox).colspan(2);
 
         updateTileList();
@@ -157,15 +165,11 @@ public class MapEditorInterface extends GameInterface {
     public void updateTileList() {
         selectTileBox.setItems(mapEditorScreen.tmxMap.getTiledMapTilesIds());
         for (MapLayer mapLayer : mapEditorScreen.tmxMap.getLayers()) {
-            Logger.logDebug("mapLayer.getName():" + mapLayer.getName());
             arrName.add(mapLayer.getName());
         }
-        String selectedLayer = mapLayersBox.getSelected();
-        Logger.logDebug("selectedLayer:" + selectedLayer);
         mapLayersBox.setItems(mapEditorScreen.tmxMap.getMapLayersNames());
         layerVisibleCheckBox.setChecked(mapEditorScreen.tmxMap.getLayers().get(mapLayersBox.getSelected()).isVisible());
         String selectedMap = selectMapsBox.getSelected();
-        Logger.logDebug("selectedMap:" + selectedMap);
         selectMapsBox.setItems(mapEditorScreen.gameMaster.gameLevelMaps);
         if (mapEditorScreen.gameMaster.gameLevelMaps.contains(selectedMap, false)) {
             selectMapsBox.setSelected(selectedMap);
