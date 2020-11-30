@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" renderorder="right-up" width="64" height="64" tilewidth="512" tileheight="256" nextobjectid="1">
  <tileset firstgid="1" name="grassAndTree" tilewidth="512" tileheight="512" tilecount="6" columns="3">
-  <image source="textures/grassAndTree.png" width="1536" height="1024"/>
+  <image source="../textures/old/grassAndTree.png" width="1536" height="1024"/>
   <tile id="5">
    <properties>
     <property name="terrain" value=""/>
@@ -9,10 +9,10 @@
   </tile>
  </tileset>
  <tileset firstgid="7" name="diablo" tilewidth="512" tileheight="512" tilecount="1" columns="1">
-  <image source="textures/diablo.png" width="512" height="512"/>
+  <image source="../textures/old/diablo.png" width="512" height="512"/>
  </tileset>
  <tileset firstgid="8" name="tower2" tilewidth="512" tileheight="512" tilecount="1" columns="1">
-  <image source="textures/tower2.png" width="512" height="512"/>
+  <image source="../textures/old/tower2.png" width="512" height="512"/>
  </tileset>
  <layer name="layer1" width="64" height="64">
   <properties>

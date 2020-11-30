@@ -108,33 +108,48 @@ public class GameMaster extends Game {
 
         gameLevelMaps = new Array<>();
         gameLevelMaps.add("maps/3dArena0.tmx");
-        gameLevelMaps.add("maps/arenaEmpty.tmx");
+        gameLevelMaps.add("maps/aaagen.tmx");
         gameLevelMaps.add("maps/arena0.tmx");
-        gameLevelMaps.add("maps/randomMap.tmx");
-        gameLevelMaps.add("maps/island.tmx");
         gameLevelMaps.add("maps/arena1.tmx");
         gameLevelMaps.add("maps/arena2.tmx");
-        gameLevelMaps.add("maps/old/arena3.tmx");
         gameLevelMaps.add("maps/arena4.tmx");
         gameLevelMaps.add("maps/arena4_1.tmx");
-        gameLevelMaps.add("maps/sample.tmx");
+        gameLevelMaps.add("maps/arenaEmpty.tmx");
+        gameLevelMaps.add("maps/arenaEmpty2.tmx");
         gameLevelMaps.add("maps/desert.tmx");
+        gameLevelMaps.add("maps/FirstMap(ByART_).tmx");
+        gameLevelMaps.add("maps/island.tmx");
+        gameLevelMaps.add("maps/randomMap.tmx");
+        gameLevelMaps.add("maps/sample.tmx");
         gameLevelMaps.add("maps/summer.tmx");
         gameLevelMaps.add("maps/winter.tmx");
-        gameLevelMaps.add("maps/old/NoNameMap.tmx");
-        Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.size:" + gameLevelMaps.size);
-        allMaps = new Array<>();
+//        gameLevelMaps.add("maps/old/arena3.tmx");
+//        gameLevelMaps.add("maps/old/arena666.tmx");
+//        gameLevelMaps.add("maps/old/govnoAndreyMapa.tmx");
+//        gameLevelMaps.add("maps/old/NoNameMap.tmx");
+//        gameLevelMaps.add("maps/old/people.tmx");
+//        gameLevelMaps.add("maps/old/test.tmx");
+
         FileHandle mapsDir = Gdx.files.internal("maps");
-        if (mapsDir.length() > 0) {
-            for (FileHandle fileHandle : mapsDir.list()) {
+        Array<FileHandle> handles = new Array<>();
+        getHandles(mapsDir, handles);
+
+        allMaps = new Array<>();
+        if (!handles.isEmpty()) {
+            for (FileHandle fileHandle : handles) {
                 if (fileHandle.extension().equals("tmx")) {
-                    Gdx.app.log("GameMaster::GameMaster()", "-- gameLevelMaps.add():" + fileHandle.path());
+                    Logger.logDebug("allMaps.add():" + fileHandle.path());
                     allMaps.add(fileHandle.path());
                 }
             }
         } else {
             allMaps.addAll(gameLevelMaps);
         }
+
+        Logger.logDebug("gameLevelMaps:" + gameLevelMaps);
+        Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
+        Logger.logDebug("allMaps:" + allMaps);
+        Logger.logDebug("allMaps.size:" + allMaps.size);
 
         this.userAccount = new UserAccount("root", null, "accID_" + System.currentTimeMillis());
         this.assetManager = new AssetManager();
@@ -208,6 +223,17 @@ public class GameMaster extends Game {
     public void resize(int width, int height) {
         Logger.logDebug("resize(" + width + ", " + height + ")");
         super.resize(width, height);
+    }
+
+    public void getHandles(FileHandle begin, Array<FileHandle> handles) {
+        FileHandle[] newHandles = begin.list();
+        for (FileHandle f : newHandles) {
+            if (f.isDirectory()) {
+                getHandles(f, handles);
+            } else {
+                handles.add(f);
+            }
+        }
     }
 
     public void addScreen(Screen screen) {

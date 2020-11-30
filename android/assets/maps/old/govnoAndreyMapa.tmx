@@ -4,7 +4,7 @@
   <properties>
    <property name="background" value="ground"/>
   </properties>
-  <image source="textures/iso-64x64-outside.png" width="640" height="1024"/>
+  <image source="../textures/iso-64x64-outside.png" width="640" height="1024"/>
   <tile id="1">
    <properties>
     <property name="wrong" value="1"/>

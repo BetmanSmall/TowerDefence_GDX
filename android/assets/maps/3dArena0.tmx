@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="isometric" renderorder="right-down" width="20" height="30" tilewidth="128" tileheight="64" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.3" orientation="isometric" renderorder="right-down" width="20" height="30" tilewidth="128" tileheight="64" infinite="0" nextlayerid="3" nextobjectid="1">
  <tileset firstgid="1" source="other/iso-128x128-models-tileset.tsx"/>
- <layer name="background" width="20" height="30">
+ <layer id="1" name="background" width="20" height="30">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -35,7 +35,7 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <layer name="foreground" width="20" height="30">
+ <layer id="2" name="foreground" width="20" height="30">
   <data encoding="csv">
 31,32,33,34,35,36,37,38,39,40,0,0,0,0,0,0,0,0,0,0,
 41,42,43,44,45,46,47,48,49,50,31,32,33,34,35,36,37,38,39,40,

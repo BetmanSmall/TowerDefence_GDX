@@ -75,10 +75,10 @@ public class GameFieldRenderer {
         if (cameraController.isDrawableFullField) {
             drawFullField();
         }
-        if(cameraController.isDrawableBackground > 0) {
+        if (cameraController.isDrawableBackground > 0) {
             drawBackGrounds();
         }
-        if(cameraController.isDrawableGround > 0 || cameraController.isDrawableUnits > 0 || cameraController.isDrawableTowers > 0) {
+        if (cameraController.isDrawableGround > 0 || cameraController.isDrawableUnits > 0 || cameraController.isDrawableTowers > 0) {
             drawGroundsWithUnitsAndTowers();
         }
         if (cameraController.isDrawableForeground > 0) {

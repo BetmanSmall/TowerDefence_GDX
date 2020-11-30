@@ -258,7 +258,7 @@ public class GameScreenInterface extends GameInterface {
                 cameraController.isDrawableGrid++;
                 cameraController.isDrawableGridNav++;
                 cameraController.isDrawableRoutes++;
-                if (cameraController.isDrawableGrid > 5) {
+                if (cameraController.isDrawableGrid > 5 || cameraController.isDrawableGridNav > 5 || cameraController.isDrawableRoutes > 5) {
                     cameraController.isDrawableGrid = 0;
                     cameraController.isDrawableGridNav = 0;
                     cameraController.isDrawableRoutes = 0;

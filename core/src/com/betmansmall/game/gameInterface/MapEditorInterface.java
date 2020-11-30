@@ -111,8 +111,9 @@ public class MapEditorInterface extends GameInterface {
             }
         });
         rootTable.add(generateBtn).left().top().row();
+
         Table elemTable = new VisTable();
-        rootTable.add(elemTable).expand().left().bottom();
+        rootTable.add(elemTable).expand().left().top();
 
         selectTileBox = new VisSelectBox<>();
         elemTable.add(selectTileBox).colspan(2).row();
@@ -136,16 +137,17 @@ public class MapEditorInterface extends GameInterface {
         elemTable.add(layerVisibleCheckBox).left().row();
 
         selectMapsBox = new VisSelectBox<>();
-        updateTileList();
+//        updateTileList();
         selectMapsBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Logger.logDebug(selectMapsBox.getSelected());
                 mapEditorScreen.tmxMap = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
                 mapEditorScreen.renderer = new IsometricTiledMapRenderer(mapEditorScreen.tmxMap, mapEditorScreen.spriteBatch);
-                if (mapEditorScreen.mapEditorCameraController != null)
-                mapEditorScreen.mapEditorCameraController.camera.position.set((mapEditorScreen.tmxMap.width*mapEditorScreen.tmxMap.tileWidth)/2f, 0, 0f);
-                mapEditorScreen.mapEditorCameraController.camera.update();
+                if (mapEditorScreen.mapEditorCameraController != null) {
+                    mapEditorScreen.mapEditorCameraController.camera.position.set((mapEditorScreen.tmxMap.width * mapEditorScreen.tmxMap.tileWidth) / 2f, 0, 0f);
+                    mapEditorScreen.mapEditorCameraController.camera.update();
+                }
                 updateTileList();
             }
         });

@@ -9,7 +9,7 @@
   <property name="speed" value="0.8"/>
   <property name="type" value="unit"/>
  </properties>
- <image source="../textures/people.png" width="264" height="255"/>
+ <image source="../../textures/old/people.png" width="264" height="255"/>
  <tile id="0">
   <properties>
    <property name="actionAndDirection" value="walk_DOWN"/>
