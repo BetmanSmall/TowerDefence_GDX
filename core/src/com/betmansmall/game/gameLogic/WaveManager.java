@@ -15,9 +15,6 @@ import com.betmansmall.utils.logging.Logger;
 import java.util.ArrayDeque;
 import java.util.Random;
 
-/**
- * Created by betmansmall on 29.03.2016.
- */
 public class WaveManager {
     class TemplateNameAndPoints {
         public String templateName;
@@ -39,7 +36,7 @@ public class WaveManager {
     public float waitForNextSpawnUnit;
 
     WaveManager(String filePath) {
-        Gdx.app.log("WaveManager::WaveManager()", "--");
+        Logger.logFuncStart();
         this.allTogether = false;
         this.currentWave = null;
         this.waves = new Array<Wave>();
@@ -69,7 +66,7 @@ public class WaveManager {
             }
             return true;
         } else {
-            Gdx.app.log("WaveManager::load()", "-- Not found waves block in tmxMap:" + tmxFile);
+            Logger.logError("Not found waves block in tmxMap:" + tmxFile);
         }
         return false;
     }

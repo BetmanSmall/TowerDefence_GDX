@@ -7,9 +7,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
+import com.betmansmall.maps.TsxLoader;
 import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.menu.HelpMenuScreen;
@@ -35,6 +37,8 @@ public class GameMaster extends Game {
     public Array<Image> backgroundImages;
     public Array<String> allMaps;
     public Array<String> gameLevelMaps;
+
+    public Array<FileHandle> tileSetsFileHandles;
 
     public UserAccount userAccount;
     public AssetManager assetManager;
@@ -119,6 +123,7 @@ public class GameMaster extends Game {
         gameLevelMaps.add("maps/desert.tmx");
         gameLevelMaps.add("maps/FirstMap(ByART_).tmx");
         gameLevelMaps.add("maps/island.tmx");
+        gameLevelMaps.add("maps/isometric_grass_and_water.tmx");
         gameLevelMaps.add("maps/randomMap.tmx");
         gameLevelMaps.add("maps/sample.tmx");
         gameLevelMaps.add("maps/summer.tmx");
@@ -134,12 +139,21 @@ public class GameMaster extends Game {
         Array<FileHandle> handles = new Array<>();
         getHandles(mapsDir, handles);
 
+        tileSetsFileHandles = new Array<>();
         allMaps = new Array<>();
         if (!handles.isEmpty()) {
             for (FileHandle fileHandle : handles) {
-                if (fileHandle.extension().equals("tmx")) {
+                String fileHandleExtension = fileHandle.extension();
+                if (fileHandleExtension.equals("tmx")) {
                     Logger.logDebug("allMaps.add():" + fileHandle.path());
                     allMaps.add(fileHandle.path());
+                } else if (fileHandleExtension.equals("tsx")) {
+                    if (fileHandle.parent().name().equals("other")) {
+                        Logger.logDebug("tileSetsFileHandles.add():" + fileHandle.path());
+                        tileSetsFileHandles.add(fileHandle);
+                        TiledMapTileSet tiledMapTileSet = TsxLoader.loadTiledMapTiles(fileHandle, TsxLoader.loadTileSet(fileHandle));
+                        Logger.logDebug("tiledMapTileSet:" + tiledMapTileSet);
+                    }
                 }
             }
         } else {
@@ -150,6 +164,7 @@ public class GameMaster extends Game {
         Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
         Logger.logDebug("allMaps:" + allMaps);
         Logger.logDebug("allMaps.size:" + allMaps.size);
+        Logger.logDebug("tileSetsFileHandles:" + tileSetsFileHandles);
 
         this.userAccount = new UserAccount("root", null, "accID_" + System.currentTimeMillis());
         this.assetManager = new AssetManager();
@@ -182,6 +197,7 @@ public class GameMaster extends Game {
         screensStack.clear();
 
         backgroundImages.clear();
+        allMaps.clear();
         gameLevelMaps.clear();
 
         assetManager.dispose();

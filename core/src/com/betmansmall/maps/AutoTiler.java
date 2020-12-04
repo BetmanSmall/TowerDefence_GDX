@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +78,6 @@ public class AutoTiler {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.random = new Random();
-
         init(tilesetConfigFile);
     }
 
@@ -99,23 +99,19 @@ public class AutoTiler {
                 mapLayer.setCell(col, row, cell);
             }
         }
-
         return map;
     }
 
     private int pickTile(final int col, final int row) {
         final byte[] matchMask = new byte[]{MATCH_ANY, MATCH_ANY, MATCH_ANY, MATCH_ANY};
-
         updateMatchMaskForTile(matchMask,
                 col - 1, row,
                 TOP_LEFT.id(), TOP_RIGHT.id(),
                 BOTTOM_LEFT.id(), BOTTOM_RIGHT.id());
-
         updateMatchMaskForTile(matchMask,
                 col, row - 1,
                 BOTTOM_LEFT.id(), TOP_LEFT.id(),
                 BOTTOM_RIGHT.id(), TOP_RIGHT.id());
-
         final int tileId = getTileId(col + 1, row - 1);
         if (tileId >= 0) {
             final byte tileCorner = getTerrainCodes(tileId)[TOP_RIGHT.id()];
@@ -127,11 +123,8 @@ public class AutoTiler {
                 }
             }
         }
-
         final List<Integer> matchingTiles = findMatchingTiles(matchMask);
-
         final int selectedTile = random.nextInt(matchingTiles.size());
-
         return matchingTiles.get(selectedTile);
     }
 
@@ -191,6 +184,7 @@ public class AutoTiler {
     private void init(FileHandle tilesetConfigFile) {
         final Json json = new Json();
         final TilesetConfig conf = json.fromJson(TilesetConfig.class, tilesetConfigFile);
+        Logger.logDebug("conf:" + conf);
         final FileHandle tilesTextureHandle = Gdx.files.internal(conf.getTexturePath());
         if (!tilesTextureHandle.exists() || tilesTextureHandle.isDirectory()) {
             throw new IllegalArgumentException("Invalid Tile-set texture path");

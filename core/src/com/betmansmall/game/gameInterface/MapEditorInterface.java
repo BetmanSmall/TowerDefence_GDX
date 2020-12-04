@@ -26,7 +26,7 @@ import java.io.FileFilter;
 public class MapEditorInterface extends GameInterface {
     private final MapEditorScreen mapEditorScreen;
     private final Stage stage;
-    private final FileChooserDialog dialog;
+
     private VisLabel mapNameLabel;
     private VisTextButton chooiseMapButton;
     private VisTextButton exitButton;
@@ -36,37 +36,19 @@ public class MapEditorInterface extends GameInterface {
     Array<String> arrName = new Array<String>();
     private TestListView testListView;
 
+    private final FileChooserDialog dialog;
+
     public MapEditorInterface(MapEditorScreen _mapEditorScreen) {
         super();
         this.mapEditorScreen = _mapEditorScreen;
         this.stage = this;
-
-        dialog = FileChooserDialog.createLoadDialog("LoadDialog", VisUI.getSkin(), Gdx.files.internal("maps/"));
-//        dialog = FileChooserDialog.createSaveDialog("SaveDialog", VisUI.getSkin(), Gdx.files.internal("maps/"));
-        dialog.setResultListener((success, result) -> {
-            if (success) {
-                Logger.logDebug("result.file().getPath():" + result.file().getPath());
-//                    mapNaaeIsSelected = result.file().getName();
-                mapNameLabel.setText("Map1:" + result.file().getName());
-                Logger.logDebug("result.file().getName():" + result.file().getName());
-                mapEditorScreen.gameMaster.addScreen(new MapEditorScreen(mapEditorScreen.gameMaster, result.file().getPath()));
-            }
-            return true;
-        });
-        dialog.setFilter(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                String path = pathname.getPath();
-                return path.matches(".*(?:tmx)");
-            }
-        });
 
         Table rootTable = new VisTable();
         rootTable.setFillParent(true);
         addActor(rootTable);
 
         mapNameLabel = new VisLabel("Map: " + mapEditorScreen.tmxMap.mapPath);
-        rootTable.add(mapNameLabel).align(Align.topRight).expand().row();
+        rootTable.add(mapNameLabel).top().expand().row();
 
         chooiseMapButton = new VisTextButton("LoadMap");
         chooiseMapButton.addListener(new ClickListener(){
@@ -76,7 +58,7 @@ public class MapEditorInterface extends GameInterface {
                 dialog.show(stage);
             }
         });
-        rootTable.add(chooiseMapButton).expandX().align(Align.right).row();
+        rootTable.add(chooiseMapButton).expandX().right().row();
 
         exitButton = new VisTextButton("exit");
         exitButton.addListener(new ClickListener() {
@@ -107,7 +89,7 @@ public class MapEditorInterface extends GameInterface {
 //                mapEditorScreen.renderer = new IsometricTiledMapRenderer(tmxMap, spriteBatch);
 //                mapEditorCameraController.camera.position.set((tmxMap.width* tmxMap.tileWidth)/2f, 0, 0f);
 //                mapEditorCameraController.camera.update();
-                updateTileList();
+//                updateTileList();
             }
         });
         rootTable.add(generateBtn).left().top().row();
@@ -136,49 +118,68 @@ public class MapEditorInterface extends GameInterface {
         });
         elemTable.add(layerVisibleCheckBox).left().row();
 
-        selectMapsBox = new VisSelectBox<>();
+//        selectMapsBox = new VisSelectBox<>();
 //        updateTileList();
-        selectMapsBox.addListener(new ChangeListener() {
+//        selectMapsBox.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                Logger.logDebug(selectMapsBox.getSelected());
+//                mapEditorScreen.tmxMap = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
+//                mapEditorScreen.renderer = new IsometricTiledMapRenderer(mapEditorScreen.tmxMap, mapEditorScreen.spriteBatch);
+//                if (mapEditorScreen.mapEditorCameraController != null) {
+//                    mapEditorScreen.mapEditorCameraController.camera.position.set((mapEditorScreen.tmxMap.width * mapEditorScreen.tmxMap.tileWidth) / 2f, 0, 0f);
+//                    mapEditorScreen.mapEditorCameraController.camera.update();
+//                }
+//                updateTileList();
+//            }
+//        });
+//        selectMapsBox.setSelected(mapEditorScreen.tmxMap.mapPath);
+//        elemTable.add(selectMapsBox).colspan(2);
+//        updateTileList();
+
+        dialog = FileChooserDialog.createLoadDialog("LoadDialog", VisUI.getSkin(), Gdx.files.internal("maps/"));
+//        dialog = FileChooserDialog.createSaveDialog("SaveDialog", VisUI.getSkin(), Gdx.files.internal("maps/"));
+        dialog.setResultListener((success, result) -> {
+            if (success) {
+                Logger.logDebug("result.file().getPath():" + result.file().getPath());
+//                    mapNaaeIsSelected = result.file().getName();
+                mapNameLabel.setText("Map1:" + result.file().getName());
+                Logger.logDebug("result.file().getName():" + result.file().getName());
+                mapEditorScreen.gameMaster.addScreen(new MapEditorScreen(mapEditorScreen.gameMaster, result.file().getPath()));
+            }
+            return true;
+        });
+        dialog.setFilter(new FileFilter() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Logger.logDebug(selectMapsBox.getSelected());
-                mapEditorScreen.tmxMap = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
-                mapEditorScreen.renderer = new IsometricTiledMapRenderer(mapEditorScreen.tmxMap, mapEditorScreen.spriteBatch);
-                if (mapEditorScreen.mapEditorCameraController != null) {
-                    mapEditorScreen.mapEditorCameraController.camera.position.set((mapEditorScreen.tmxMap.width * mapEditorScreen.tmxMap.tileWidth) / 2f, 0, 0f);
-                    mapEditorScreen.mapEditorCameraController.camera.update();
-                }
-                updateTileList();
+            public boolean accept(File pathname) {
+                String path = pathname.getPath();
+                return path.matches(".*(?:tmx)");
             }
         });
-        selectMapsBox.setSelected(mapEditorScreen.tmxMap.mapPath);
-        elemTable.add(selectMapsBox).colspan(2);
-
-        updateTileList();
     }
 
-    public void updateTileList() {
-        selectTileBox.setItems(mapEditorScreen.tmxMap.getTiledMapTilesIds());
-        for (MapLayer mapLayer : mapEditorScreen.tmxMap.getLayers()) {
-            arrName.add(mapLayer.getName());
-        }
-        mapLayersBox.setItems(mapEditorScreen.tmxMap.getMapLayersNames());
-        layerVisibleCheckBox.setChecked(mapEditorScreen.tmxMap.getLayers().get(mapLayersBox.getSelected()).isVisible());
-        String selectedMap = selectMapsBox.getSelected();
-        selectMapsBox.setItems(mapEditorScreen.gameMaster.gameLevelMaps);
-        if (mapEditorScreen.gameMaster.gameLevelMaps.contains(selectedMap, false)) {
-            selectMapsBox.setSelected(selectedMap);
-        }
-        float testListViewPosX = -1, testListViewPosY = -1;
-        if (testListView != null) {
-            testListViewPosX = testListView.getX();
-            testListViewPosY = testListView.getY();
-            testListView.remove();
-        }
-        testListView = new TestListView(mapEditorScreen);
-        if (testListViewPosX != -1 && testListViewPosY != -1) {
-            testListView.setPosition(testListViewPosX, testListViewPosY);
-        }
-        addActor(testListView);
-    }
+//    public void updateTileList() {
+//        selectTileBox.setItems(mapEditorScreen.tmxMap.getTiledMapTilesIds());
+//        for (MapLayer mapLayer : mapEditorScreen.tmxMap.getLayers()) {
+//            arrName.add(mapLayer.getName());
+//        }
+//        mapLayersBox.setItems(mapEditorScreen.tmxMap.getMapLayersNames());
+//        layerVisibleCheckBox.setChecked(mapEditorScreen.tmxMap.getLayers().get(mapLayersBox.getSelected()).isVisible());
+//        String selectedMap = selectMapsBox.getSelected();
+//        selectMapsBox.setItems(mapEditorScreen.gameMaster.gameLevelMaps);
+//        if (mapEditorScreen.gameMaster.gameLevelMaps.contains(selectedMap, false)) {
+//            selectMapsBox.setSelected(selectedMap);
+//        }
+//        float testListViewPosX = -1, testListViewPosY = -1;
+//        if (testListView != null) {
+//            testListViewPosX = testListView.getX();
+//            testListViewPosY = testListView.getY();
+//            testListView.remove();
+//        }
+//        testListView = new TestListView(mapEditorScreen);
+//        if (testListViewPosX != -1 && testListViewPosY != -1) {
+//            testListView.setPosition(testListViewPosX, testListViewPosY);
+//        }
+//        addActor(testListView);
+//    }
 }

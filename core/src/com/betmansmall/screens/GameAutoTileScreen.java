@@ -19,8 +19,8 @@ import com.betmansmall.maps.AutoTiler;
 import com.betmansmall.utils.AbstractScreen;
 
 public class GameAutoTileScreen extends AbstractScreen {
-    private static final int MAP_WIDTH = 16;
-    private static final int MAP_HEIGHT = 12;
+    private static final int MAP_WIDTH = 32;
+    private static final int MAP_HEIGHT = 32;
     private static final String PROMPT_TEXT = "Click anywhere to generate a new map";
     private static final Color PROMPT_COLOR = Color.CORAL;
     private static final float PROMPT_FADE_IN = 2f;

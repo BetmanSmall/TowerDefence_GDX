@@ -39,4 +39,15 @@ public class TilesetConfig {
     public Array<Array<String>> getTerrainDefs() {
         return terrainDefs;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TilesetConfig{");
+        sb.append("texturePath='").append(texturePath).append('\'');
+        sb.append(", tileWidth=").append(tileWidth);
+        sb.append(", tileHeight=").append(tileHeight);
+        sb.append(", terrainDefs=").append(terrainDefs);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -13,10 +13,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.XmlReader;
 import com.betmansmall.maps.MapLoader;
-
-/**
- * Created by betma on 06.11.2018.
- */
+import com.betmansmall.utils.logging.Logger;
 
 public class Template {
     public String templateName;
@@ -25,7 +22,7 @@ public class Template {
     public ObjectMap<Integer, AnimatedTiledMapTile> animatedTiles;
 
     public Template() {
-        Gdx.app.log("Template::Template()", "-- ");
+        Logger.logFuncStart();
         templateName = "NULL";
         properties = new ObjectMap<String, String>();
         tiles = new ObjectMap<Integer, TiledMapTile>();
@@ -33,11 +30,11 @@ public class Template {
     }
 
     public void dispose() {
-        Gdx.app.log("Template::dispose()", "-- ");
+        Logger.logFuncStart();
     }
 
     public void loadBasicTemplate(FileHandle templateFile) throws Exception {
-    Gdx.app.log("Template::loadBasicTemplate()", "-- templateFile:" + templateFile);
+        Logger.logFuncStart("templateFile:" + templateFile);
         try {
             XmlReader xmlReader = new XmlReader();
             XmlReader.Element templateORtileset = xmlReader.parse(templateFile);
@@ -54,8 +51,8 @@ public class Template {
             String source = imageElement.getAttribute("source", null);
             FileHandle textureFile = MapLoader.getRelativeFileHandle(templateFile, source);
             Texture texture = new Texture(textureFile);
-            Gdx.app.log("Template::loadBasicTemplate()", "-- textureFile:" + textureFile);
-            Gdx.app.log("Template::loadBasicTemplate()", "-- texture:" + texture);
+            Logger.logDebug("textureFile:" + textureFile);
+            Logger.logDebug("texture:" + texture);
 
             int stopWidth = texture.getWidth() - tilewidth;
             int stopHeight = texture.getHeight() - tileheight;
@@ -92,16 +89,16 @@ public class Template {
                 }
             }
         } catch (Exception exp) {
-            Gdx.app.log("Template::loadBasicTemplate()", "-- Could not load Template from " + templateFile.path() + " Exp:" + exp);
-            throw new Exception("Template::loadBasicTemplate() -- Could not load Template from " + templateFile.path() + " Exp:" + exp);
+            Logger.logError("Could not load Template from " + templateFile.path() + " Exp:" + exp);
+            throw new Exception("Could not load Template from " + templateFile.path() + " Exp:" + exp);
         }
     }
 
     public void basicValidate() {
         if (properties.containsKey("templateName") || templateName != null) {
-            Gdx.app.log("Template::basicValidate()", "-- templateName:" + templateName);
-            Gdx.app.log("Template::basicValidate()", "-- tiles.size:" + tiles.size);
-            Gdx.app.log("Template::basicValidate()", "-- animatedTiles.size:" + animatedTiles.size);
+            Logger.logDebug("templateName:" + templateName);
+            Logger.logDebug("tiles.size:" + tiles.size);
+            Logger.logDebug("animatedTiles.size:" + animatedTiles.size);
         }
     }
 
