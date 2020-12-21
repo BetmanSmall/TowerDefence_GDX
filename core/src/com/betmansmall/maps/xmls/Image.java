@@ -1,4 +1,4 @@
-package com.betmansmall.maps;
+package com.betmansmall.maps.xmls;
 
 import javax.xml.bind.annotation.XmlAttribute;
 

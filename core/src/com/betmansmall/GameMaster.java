@@ -153,6 +153,7 @@ public class GameMaster extends Game {
                         tileSetsFileHandles.add(fileHandle);
                         TiledMapTileSet tiledMapTileSet = TsxLoader.loadTiledMapTiles(fileHandle, TsxLoader.loadTileSet(fileHandle));
                         Logger.logDebug("tiledMapTileSet:" + tiledMapTileSet);
+                        Logger.logDebug("tiledMapTileSet.getName():" + tiledMapTileSet.getName());
                     }
                 }
             }

@@ -1,26 +1,17 @@
-package com.betmansmall.maps;
+package com.betmansmall.maps.xmls;
 
 import com.badlogic.gdx.maps.MapProperties;
+import com.betmansmall.maps.jsons.TileSet;
+import com.betmansmall.maps.xmls.Image;
+import com.betmansmall.maps.xmls.Terraintypes;
+import com.betmansmall.maps.xmls.Tile;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Arrays;
 
 @XmlRootElement
-public class Tileset {
-    private String version;
-    private String tiledversion;
-    private String name;
-    private String tilewidth;
-    private String tileheight;
-    private String spacing;
-    private String margin;
-    private String tilecount;
-    private String columns;
-
-    private Image image;
-    private Terraintypes terraintypes;
-    private Tile[] tile;
+public class Tileset extends TileSet {
 
     public MapProperties getProperties() {
         MapProperties mapProperties = new MapProperties();

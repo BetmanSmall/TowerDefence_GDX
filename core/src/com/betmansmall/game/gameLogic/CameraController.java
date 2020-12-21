@@ -1,5 +1,6 @@
 package com.betmansmall.game.gameLogic;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -285,8 +286,10 @@ public class CameraController extends AbstractCameraController {
         if (mouseX >= space && mouseX < camera.viewportWidth - space && mouseY >= space && mouseY < camera.viewportHeight - space) {
             shiftCamera = 0;
         }
-        if (!Mouse.isInsideWindow()) {
-            shiftCamera = 0f;
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            if (!Mouse.isInsideWindow()) {
+                shiftCamera = 0f;
+            }
         }
         camera.update();
     }

@@ -314,7 +314,7 @@ public class Tower {
                     float animationTime = Float.parseFloat(simpleTemplate.properties.get("animationTime"));
                     burningAnimation = new Animation(animationTime / staticTiledMapTiles.length, textureRegions);
                 }
-                Gdx.app.log("Tower::setBurningAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
+//                Gdx.app.log("Tower::setBurningAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
             } else {
                 Gdx.app.log("Tower::setBurningAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
             }
