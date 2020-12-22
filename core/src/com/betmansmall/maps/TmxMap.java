@@ -18,8 +18,8 @@ public class TmxMap extends TiledMap { // how good? 1
     public boolean isometric;
     public boolean turnedMap = false;
 
-    //    public TmxMap(TiledMap tiledMap, String mapPath) { // how good? 44444? // without MapLoader.loadTilemap()||loadTiledMap()
-    public void init(TiledMap tiledMap, String mapPath) {
+    public TmxMap(TiledMap tiledMap, String mapPath) { // how good? 44444? // without MapLoader.loadTilemap()||loadTiledMap()
+//    public void init(TiledMap tiledMap, String mapPath) {
         Logger.logFuncStart("tiledMap:" + tiledMap + ", mapPath:" + mapPath);
 //        this.tiledMap = tiledMap;
         this.mapPath = mapPath;
@@ -34,11 +34,11 @@ public class TmxMap extends TiledMap { // how good? 1
 //        super.setOwnedResources(getOwnedResources); // pizda libGDX? why?
         MapProperties mapProperties = this.getProperties();
         mapProperties.putAll(tiledMap.getProperties());
-        this.width = mapProperties.get("width", Integer.class);
-        this.height = mapProperties.get("height", Integer.class);
-        this.tileWidth = mapProperties.get("tilewidth", Integer.class);
-        this.tileHeight = mapProperties.get("tileheight", Integer.class);
-        this.isometric = mapProperties.get("orientation", String.class).equals("isometric");
+        this.width = mapProperties.get("width", 0, Integer.class);
+        this.height = mapProperties.get("height", 0, Integer.class);
+        this.tileWidth = mapProperties.get("tilewidth", 0, Integer.class);
+        this.tileHeight = mapProperties.get("tileheight", 0, Integer.class);
+        this.isometric = mapProperties.get("orientation", "", String.class).equals("isometric");
     }
 
     public TmxMap(String mapPath) {

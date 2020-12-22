@@ -10,28 +10,32 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.maps.AutoTiler;
+import com.betmansmall.maps.TmxMap;
 import com.betmansmall.utils.AbstractScreen;
 
 public class GameAutoTileScreen extends AbstractScreen {
-    private static final int MAP_WIDTH = 32;
+    private static final int MAP_WIDTH = 64;
     private static final int MAP_HEIGHT = 32;
     private static final String PROMPT_TEXT = "Click anywhere to generate a new map";
     private static final Color PROMPT_COLOR = Color.CORAL;
     private static final float PROMPT_FADE_IN = 2f;
     private static final float PROMPT_FADE_OUT = 4f;
 
-    private TiledMap map;
+    private TmxMap tmxMap;
+//    private TiledMap map;
     private OrthographicCamera camera;
     private OrthographicCamera guiCam;
     private Viewport viewport;
     private ScreenViewport screenViewport;
-    private OrthogonalTiledMapRenderer renderer;
+    private BatchTiledMapRenderer renderer;
     private AutoTiler autoTiler;
     private BitmapFont font;
     private final GlyphLayout layout = new GlyphLayout();
@@ -58,20 +62,29 @@ public class GameAutoTileScreen extends AbstractScreen {
         font.setColor(PROMPT_COLOR);
         layout.setText(font, PROMPT_TEXT);
 
-        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("utils/tileset.json"));
-        map = autoTiler.generateMap();
+        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter.json"));
+        tmxMap = new TmxMap(autoTiler.generateMap(), "");
 
-        final float unitScale = 1f / Math.max(autoTiler.getTileWidth(), autoTiler.getTileHeight());
-        renderer = new OrthogonalTiledMapRenderer(map, unitScale);
+        someHappens();
 
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                map = autoTiler.generateMap();
-                elapsedTime = 0;
+                someHappens();
                 return true;
             }
         });
+    }
+
+    public void someHappens() {
+        final float unitScale = 1f / Math.max(autoTiler.getTileWidth(), autoTiler.getTileHeight());
+        if (tmxMap.isometric) {
+            renderer = new IsometricTiledMapRenderer(tmxMap, unitScale);
+        } else {
+            renderer = new OrthogonalTiledMapRenderer(tmxMap, unitScale);
+        }
+        tmxMap = new TmxMap(autoTiler.generateMap(), "");
+        elapsedTime = 0;
     }
 
     @Override
@@ -104,7 +117,7 @@ public class GameAutoTileScreen extends AbstractScreen {
     @Override
     public void dispose() {
         super.dispose();
-        map.dispose();
+        tmxMap.dispose();
         font.dispose();
         batch.dispose();
     }

@@ -1,35 +1,18 @@
 package com.betmansmall.maps.xmls;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import com.google.common.base.MoreObjects;
 
 public class Tile {
-    private String id;
-    private String terrain;
-
-    @XmlAttribute
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @XmlAttribute
-    public String getTerrain() {
-        return terrain;
-    }
-
-    public void setTerrain(String terrain) {
-        this.terrain = terrain;
-    }
+    public String id;
+    public String terrain;
+    public String probability;
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Tile{");
-        sb.append("id='").append(id).append('\'');
-        sb.append(", terrain='").append(terrain).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return MoreObjects.toStringHelper(this).omitNullValues()
+                .add("id", id)
+                .add("terrain", terrain)
+                .add("probability", probability)
+                .toString();
     }
 }

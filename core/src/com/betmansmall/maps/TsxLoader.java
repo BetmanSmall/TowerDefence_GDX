@@ -4,10 +4,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.betmansmall.game.gameLogic.playerTemplates.SimpleTemplate;
 import com.betmansmall.maps.jsons.GsonTileSet;
-import com.betmansmall.maps.xmls.Tileset;
+import com.betmansmall.maps.jsons.TileSet;
 import com.betmansmall.utils.json.JSONObject;
 import com.betmansmall.utils.json.XML;
-import com.betmansmall.utils.logging.Logger;
 
 //import com.google.common.base.MoreObjects;
 //import org.json.JSONObject;
@@ -19,11 +18,11 @@ import com.google.gson.GsonBuilder;
 public class TsxLoader {
     private static Gson gson = new GsonBuilder().create();
 
-    public static TiledMapTileSet loadTiledMapTiles(FileHandle fileHandle, Tileset tileset) {
+    public static TiledMapTileSet loadTiledMapTiles(FileHandle fileHandle, TileSet tileSet) {
 //        Logger.logFuncStart("fileHandle:" + fileHandle, "tileset:" + tileset);
         TiledMapTileSet tiledMapTileSet = new TiledMapTileSet();
-        tiledMapTileSet.setName(tileset.getName());
-        tiledMapTileSet.getProperties().putAll(tileset.getProperties());
+        tiledMapTileSet.setName(tileSet.name);
+        tiledMapTileSet.getProperties().putAll(tileSet.getProperties());
         SimpleTemplate simpleTemplate = null;
         try {
             simpleTemplate = new SimpleTemplate(fileHandle);
@@ -38,7 +37,7 @@ public class TsxLoader {
         return tiledMapTileSet;
     }
 
-    public static Tileset loadTileSet(FileHandle fileHandle) {
+    public static TileSet loadTileSet(FileHandle fileHandle) {
         try {
 //            Logger.logDebug("fileHandle.readString():" + fileHandle.readString());
             JSONObject xmlJSONObj = XML.toJSONObject(fileHandle.readString());
@@ -46,7 +45,7 @@ public class TsxLoader {
 //            Logger.logDebug("jsonPrettyPrintString:" + jsonPrettyPrintString);
             GsonTileSet gsonTileSet = gson.fromJson(jsonPrettyPrintString, GsonTileSet.class);
 
-            return gsonTileSet.tileset;
+            return gsonTileSet.tileSet;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,5 +1,5 @@
 {
-  "texturePath": "utils/RPGTiles.png",
+  "texturePath": "maps/textures/RPGTiles.png",
   "tileWidth": 32,
   "tileHeight": 32,
   "terrainDefs": [

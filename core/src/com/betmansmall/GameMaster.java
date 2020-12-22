@@ -126,6 +126,7 @@ public class GameMaster extends Game {
         gameLevelMaps.add("maps/isometric_grass_and_water.tmx");
         gameLevelMaps.add("maps/randomMap.tmx");
         gameLevelMaps.add("maps/sample.tmx");
+        gameLevelMaps.add("maps/SandWaterGrass.tmx");
         gameLevelMaps.add("maps/summer.tmx");
         gameLevelMaps.add("maps/winter.tmx");
 //        gameLevelMaps.add("maps/old/arena3.tmx");

@@ -124,6 +124,7 @@ public class AutoTiler {
             }
         }
         final List<Integer> matchingTiles = findMatchingTiles(matchMask);
+        Logger.logDebug("matchingTiles:" + matchingTiles);
         final int selectedTile = random.nextInt(matchingTiles.size());
         return matchingTiles.get(selectedTile);
     }

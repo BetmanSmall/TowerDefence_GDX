@@ -1,7 +1,8 @@
 package com.betmansmall.maps.jsons;
 
-import com.betmansmall.maps.xmls.Tileset;
+import com.google.gson.annotations.SerializedName;
 
 public class GsonTileSet {
-    public Tileset tileset;
+    @SerializedName("tileset")
+    public TileSet tileSet;
 }

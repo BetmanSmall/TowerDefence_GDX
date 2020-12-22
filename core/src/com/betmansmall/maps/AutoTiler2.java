@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.betmansmall.maps.jsons.TileSet;
 import com.betmansmall.utils.logging.Logger;
 
 import java.util.ArrayList;
@@ -75,13 +76,17 @@ public class AutoTiler2 {
     private TiledMap map;
     private TiledMapTileLayer mapLayer;
 
+    public TileSet tileSet2;
+
     public AutoTiler2(final int mapWidth,
                       final int mapHeight,
-                      final FileHandle tilesetConfigFile) {
+                      FileHandle tileSetFileHandle) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.random = new Random();
-        init(tilesetConfigFile);
+        tileSet2 = TsxLoader.loadTileSet(tileSetFileHandle);
+        tileSet = TsxLoader.loadTiledMapTiles(tileSetFileHandle, tileSet2);
+//        init(tilesetConfigFile);
     }
 
     public int getTileWidth() {
@@ -262,15 +267,6 @@ public class AutoTiler2 {
                 tileSet.putTile(tile.getId(), tile);
             }
         }
-        map = new TiledMap();
-        mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, tileWidth, tileHeight);
-        map.getLayers().add(mapLayer);
-        final Array<Texture> textures = Array.with(tilesTexture);
-        map.setOwnedResources(textures);
-    }
-
-    private void initMap2(TiledMapTileSet tiledMapTiles) {
-        tileSet = tiledMapTiles;
         map = new TiledMap();
         mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, tileWidth, tileHeight);
         map.getLayers().add(mapLayer);
