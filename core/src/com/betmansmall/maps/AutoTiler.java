@@ -71,6 +71,7 @@ public class AutoTiler {
     private TiledMapTileSet tileSet;
     private TiledMap map;
     private TiledMapTileLayer mapLayer;
+    private StaticTiledMapTile nullTile;
 
     public AutoTiler(final int mapWidth,
                      final int mapHeight,
@@ -79,6 +80,10 @@ public class AutoTiler {
         this.mapHeight = mapHeight;
         this.random = new Random();
         init(tilesetConfigFile);
+        nullTile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("maps/textures/redTexture.png"))));
+        nullTile.getTextureRegion().setRegionWidth(tileWidth);
+        nullTile.getTextureRegion().setRegionHeight(tileHeight);
+//        nullTile.getTextureRegion().getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
     }
 
     public int getTileWidth() {
@@ -92,10 +97,14 @@ public class AutoTiler {
     public TiledMap generateMap() {
         for (int row = 0; row < mapHeight; row++) {
             for (int col = 0; col < mapWidth; col++) {
+                final TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 // Pick next tile
                 final int tileId = pickTile(col, row);
-                final TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(tileSet.getTile(tileId));
+                if (tileId >= 0) {
+                    cell.setTile(tileSet.getTile(tileId));
+                } else {
+                    cell.setTile(nullTile);
+                }
                 mapLayer.setCell(col, row, cell);
             }
         }
@@ -124,9 +133,12 @@ public class AutoTiler {
             }
         }
         final List<Integer> matchingTiles = findMatchingTiles(matchMask);
-        Logger.logDebug("matchingTiles:" + matchingTiles);
-        final int selectedTile = random.nextInt(matchingTiles.size());
-        return matchingTiles.get(selectedTile);
+        if (matchingTiles.isEmpty()) {
+            return -1;
+        } else {
+            final int selectedTile = random.nextInt(matchingTiles.size());
+            return matchingTiles.get(selectedTile);
+        }
     }
 
     private void updateMatchMaskForTile(final byte[] mask,

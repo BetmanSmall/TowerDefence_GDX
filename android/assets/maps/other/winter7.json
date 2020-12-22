@@ -1,0 +1,35 @@
+{
+  "texturePath": "maps/textures/winter7.png",
+  "tileWidth": 32,
+  "tileHeight": 32,
+  "terrainDefs": [
+    [
+      "snow",
+      "dirtSnow"
+    ],
+    [
+      "snow",
+      "dirtSnow2"
+    ],
+    [
+      "snow",
+      "dirtSnow3"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "ice",
+      "water"
+    ]
+  ]
+}

@@ -321,7 +321,7 @@ public class CameraController extends AbstractCameraController {
      */
     protected boolean whichCell(Vector3 mouse, int map) {
 //        Logger.logDebug("-1- mouseX:" + mouse.x + " mouseY:" + mouse.y);
-        if (camera != null) {
+        if (camera != null && tmxMap != null) {
             camera.unproject(mouse);
 //            Logger.logDebug("-2- mouseX:" + mouse.x + " mouseY:" + mouse.y);
             float gameX = ((mouse.x / (halfSizeCellX)) + (mouse.y / (halfSizeCellY))) / 2;

@@ -1,0 +1,51 @@
+{
+  "texturePath": "maps/textures/winter11.png",
+  "tileWidth": 32,
+  "tileHeight": 32,
+  "terrainDefs": [
+    [
+      "snow",
+      "dirtSnow"
+    ],
+    [
+      "snow",
+      "dirtSnow2"
+    ],
+    [
+      "snow",
+      "dirtSnow3"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "ice",
+      "water1"
+    ],
+    [
+      "ice",
+      "water2"
+    ],
+    [
+      "ice",
+      "water3"
+    ],
+    [
+      "ice",
+      "deepIce"
+    ],
+    [
+      "ice",
+      "deepIce"
+    ]
+  ]
+}
