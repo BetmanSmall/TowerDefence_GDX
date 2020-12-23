@@ -129,6 +129,7 @@ public class GameMaster extends Game {
         gameLevelMaps.add("maps/SandWaterGrass.tmx");
         gameLevelMaps.add("maps/summer.tmx");
         gameLevelMaps.add("maps/winter.tmx");
+        gameLevelMaps.add("maps/winter2.tmx");
 //        gameLevelMaps.add("maps/old/arena3.tmx");
 //        gameLevelMaps.add("maps/old/arena666.tmx");
 //        gameLevelMaps.add("maps/old/govnoAndreyMapa.tmx");

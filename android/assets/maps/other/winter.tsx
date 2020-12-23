@@ -8,7 +8,64 @@
   <terrain name="deepIce" tile="340"/>
   <terrain name="water" tile="319"/>
   <terrain name="deepWater" tile="325"/>
+  <terrain name="snowTrees" tile="136"/>
+  <terrain name="iceRock" tile="174"/>
  </terraintypes>
+ <tile id="102" terrain="0,6,0,0"/>
+ <tile id="103" terrain="0,6,0,6"/>
+ <tile id="104" terrain="0,0,0,6"/>
+ <tile id="105" terrain="0,6,6,6"/>
+ <tile id="106" terrain="0,0,6,6"/>
+ <tile id="107" terrain="0,0,6,0"/>
+ <tile id="108" terrain="6,0,6,6"/>
+ <tile id="109" terrain="6,0,6,0"/>
+ <tile id="110" terrain="6,0,0,0"/>
+ <tile id="111" terrain="6,6,6,0"/>
+ <tile id="112" terrain="6,6,0,6"/>
+ <tile id="113" terrain="6,0,0,6"/>
+ <tile id="114" terrain="0,6,6,0"/>
+ <tile id="124" terrain="6,6,0,0"/>
+ <tile id="125" terrain="6,6,6,6"/>
+ <tile id="126" terrain="0,0,0,0"/>
+ <tile id="127" terrain="0,6,0,0"/>
+ <tile id="128" terrain="0,6,0,6"/>
+ <tile id="129" terrain="0,0,0,6"/>
+ <tile id="130" terrain="0,0,6,6"/>
+ <tile id="131" terrain="0,0,6,0"/>
+ <tile id="132" terrain="6,0,6,0"/>
+ <tile id="133" terrain="6,0,0,0"/>
+ <tile id="134" terrain="6,6,0,0"/>
+ <tile id="135" terrain="6,6,6,6"/>
+ <tile id="136" terrain="6,6,6,6"/>
+ <tile id="137" terrain="2,7,2,2"/>
+ <tile id="138" terrain="2,7,2,7"/>
+ <tile id="139" terrain="2,2,2,7"/>
+ <tile id="140" terrain="2,7,7,7"/>
+ <tile id="141" terrain="2,2,7,7"/>
+ <tile id="142" terrain="2,2,7,2"/>
+ <tile id="143" terrain="7,2,7,7"/>
+ <tile id="144" terrain="7,2,7,2"/>
+ <tile id="145" terrain="7,2,2,2"/>
+ <tile id="146" terrain="7,7,7,2"/>
+ <tile id="147" terrain="7,7,2,7"/>
+ <tile id="148" terrain="7,2,2,7"/>
+ <tile id="149" terrain="2,7,7,2"/>
+ <tile id="159" terrain="7,7,2,2"/>
+ <tile id="160" terrain="7,7,7,7"/>
+ <tile id="161" terrain="2,2,2,2"/>
+ <tile id="162" terrain="2,7,2,2"/>
+ <tile id="163" terrain="2,7,2,7"/>
+ <tile id="164" terrain="2,2,2,7"/>
+ <tile id="165" terrain="2,2,7,7"/>
+ <tile id="166" terrain="2,2,7,2"/>
+ <tile id="167" terrain="7,2,7,2"/>
+ <tile id="168" terrain="7,2,2,2"/>
+ <tile id="169" terrain="7,2,2,7"/>
+ <tile id="170" terrain="2,7,7,2"/>
+ <tile id="171" terrain="7,7,2,2"/>
+ <tile id="172" terrain="7,7,7,7"/>
+ <tile id="173" terrain="7,7,7,7"/>
+ <tile id="174" terrain="7,7,7,7"/>
  <tile id="175" terrain="3,2,2,2"/>
  <tile id="176" terrain="3,2,2,2"/>
  <tile id="177" terrain="2,3,2,2"/>

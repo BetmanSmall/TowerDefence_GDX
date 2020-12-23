@@ -1,0 +1,67 @@
+{
+  "texturePath": "maps/textures/winter15.png",
+  "tileWidth": 32,
+  "tileHeight": 32,
+  "terrainDefs": [
+    [
+      "snow",
+      "dirtSnow"
+    ],
+    [
+      "snow",
+      "dirtSnow"
+    ],
+    [
+      "snow",
+      "dirtSnow"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "snow",
+      "ice"
+    ],
+    [
+      "ice",
+      "water"
+    ],
+    [
+      "ice",
+      "water"
+    ],
+    [
+      "ice",
+      "water"
+    ],
+    [
+      "ice",
+      "deepIce"
+    ],
+    [
+      "ice",
+      "deepIce"
+    ],
+    [
+      "water",
+      "deepWater"
+    ],
+    [
+      "water",
+      "deepWater"
+    ],
+    [
+      "water",
+      "deepWater"
+    ],
+    [
+      "ice",
+      "iceRock"
+    ]
+  ]
+}

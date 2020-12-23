@@ -27,8 +27,8 @@ import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.utils.logging.Logger;
 
 public class GameAutoTileScreen extends AbstractScreen {
-    private static final int MAP_WIDTH = 64;
-    private static final int MAP_HEIGHT = 32;
+    private static final int MAP_WIDTH = 32;
+    private static final int MAP_HEIGHT = 16;
 //    private static final String PROMPT_TEXT = "Click anywhere to generate a new map";
 //    private static final Color PROMPT_COLOR = Color.CORAL;
 //    private static final float PROMPT_FADE_IN = 2f;
@@ -70,7 +70,7 @@ public class GameAutoTileScreen extends AbstractScreen {
 //        font.setColor(PROMPT_COLOR);
 //        layout.setText(font, PROMPT_TEXT);
 
-        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter14.json"));
+        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter18.json"));
         tmxMap = new TmxMap(autoTiler.generateMap(), "");
 
         someHappens();
