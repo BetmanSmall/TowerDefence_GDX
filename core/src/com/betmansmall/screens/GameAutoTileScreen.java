@@ -47,7 +47,7 @@ public class GameAutoTileScreen extends AbstractScreen {
     private TmxMap tmxMap;
 //    private TiledMap map;
     private BatchTiledMapRenderer renderer;
-    private float elapsedTime = 0;
+//    private float elapsedTime = 0;
 
     private MapEditorCameraController mapEditorCameraController;
 
@@ -71,8 +71,12 @@ public class GameAutoTileScreen extends AbstractScreen {
 //        layout.setText(font, PROMPT_TEXT);
 
         autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter18.json"));
-        tmxMap = new TmxMap(autoTiler.generateMap(), "");
-
+        tmxMap = autoTiler.generateMap();
+        if (tmxMap.isometric) {
+            renderer = new IsometricTiledMapRenderer(tmxMap);
+        } else {
+            renderer = new OrthogonalTiledMapRenderer(tmxMap);
+        }
         someHappens();
 
         mapEditorCameraController = new MapEditorCameraController(this);
@@ -88,19 +92,24 @@ public class GameAutoTileScreen extends AbstractScreen {
                 }
                 return true;
             }
+
+            @Override
+            public boolean keyDown(int keycode) {
+                if (Input.Keys.PLUS == keycode) {
+                    autoTiler.setTimeSleep(true);
+                } else if (Input.Keys.MINUS == keycode) {
+                    autoTiler.setTimeSleep(false);
+                }
+                return super.keyDown(keycode);
+            }
         });
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     public void someHappens() {
 //        final float unitScale = 1f / Math.max(autoTiler.getTileWidth(), autoTiler.getTileHeight());
-        if (tmxMap.isometric) {
-            renderer = new IsometricTiledMapRenderer(tmxMap);
-        } else {
-            renderer = new OrthogonalTiledMapRenderer(tmxMap);
-        }
-        tmxMap = new TmxMap(autoTiler.generateMap(), "");
-        elapsedTime = 0;
+        autoTiler.generateMap();
+//        elapsedTime = 0;
     }
 
     @Override
@@ -126,8 +135,7 @@ public class GameAutoTileScreen extends AbstractScreen {
         renderer.setView(mapEditorCameraController.camera);
         renderer.render();
 
-        elapsedTime += delta;
-
+//        elapsedTime += delta;
 //        screenViewport.apply(true);
 //        batch.setProjectionMatrix(guiCam.combined);
 //        batch.begin();

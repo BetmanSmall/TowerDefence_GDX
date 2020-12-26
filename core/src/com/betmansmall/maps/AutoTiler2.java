@@ -20,10 +20,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
 
-import static com.betmansmall.maps.AutoTiler.TILE_BITS.BOTTOM_LEFT;
-import static com.betmansmall.maps.AutoTiler.TILE_BITS.BOTTOM_RIGHT;
-import static com.betmansmall.maps.AutoTiler.TILE_BITS.TOP_LEFT;
-import static com.betmansmall.maps.AutoTiler.TILE_BITS.TOP_RIGHT;
+import static com.betmansmall.maps.AutoTiler2.TILE_BITS.BOTTOM_LEFT;
+import static com.betmansmall.maps.AutoTiler2.TILE_BITS.BOTTOM_RIGHT;
+import static com.betmansmall.maps.AutoTiler2.TILE_BITS.TOP_LEFT;
+import static com.betmansmall.maps.AutoTiler2.TILE_BITS.TOP_RIGHT;
 
 public class AutoTiler2 {
     private static final byte MATCH_ANY = 127;

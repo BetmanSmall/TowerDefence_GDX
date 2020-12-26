@@ -21,23 +21,13 @@ import java.util.TreeSet;
 
 import static com.betmansmall.maps.AutoTiler.TILE_BITS.*;
 
-public class AutoTiler {
+public class AutoTiler implements Runnable {
     private static final byte MATCH_ANY = 127;
     private static final int TERRAINS_PER_ROW = 2;
     private static final int TILES_PER_TERRAIN = 16;
 
     public enum TILE_BITS {
-        TOP_LEFT(0), TOP_RIGHT(1), BOTTOM_LEFT(2), BOTTOM_RIGHT(3);
-
-        private final int value;
-
-        TILE_BITS(int value) {
-            this.value = value;
-        }
-
-        public int id() {
-            return value;
-        }
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
     public static class TerrainType {
@@ -62,20 +52,21 @@ public class AutoTiler {
     private final int mapHeight;
     private final Random random;
 
-    private int tileWidth;
-    private int tileHeight;
+    public int tileWidth;
+    public int tileHeight;
     private List<List<Byte>> tileRowTerrains;
     private Map<Byte, TerrainType> terrainTypes;
     private int maxTransitions;
     private Texture tilesTexture;
     private TiledMapTileSet tileSet;
-    private TiledMap map;
+    private TmxMap map;
     private TiledMapTileLayer mapLayer;
-    private StaticTiledMapTile nullTile;
+    private final StaticTiledMapTile nullTile;
 
-    public AutoTiler(final int mapWidth,
-                     final int mapHeight,
-                     final FileHandle tilesetConfigFile) {
+    private Thread thread;
+    private int timeSleep = 0;
+
+    public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.random = new Random();
@@ -86,79 +77,111 @@ public class AutoTiler {
 //        nullTile.getTextureRegion().getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
     }
 
-    public int getTileWidth() {
-        return tileWidth;
-    }
-
-    public int getTileHeight() {
-        return tileHeight;
-    }
-
-    public TiledMap generateMap() {
-        for (int row = 0; row < mapHeight; row++) {
-            for (int col = 0; col < mapWidth; col++) {
-                final TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                // Pick next tile
-                final int tileId = pickTile(col, row);
-                if (tileId >= 0) {
-                    cell.setTile(tileSet.getTile(tileId));
+    public void setTimeSleep(boolean b) {
+        if (timeSleep > 0 && timeSleep < 1000) {
+            if (timeSleep <= 100) {
+                if (!b) {
+                    timeSleep -= 10;
                 } else {
-                    cell.setTile(nullTile);
+                    timeSleep += 10;
                 }
-                mapLayer.setCell(col, row, cell);
+            } else {
+                if (!b) {
+                    timeSleep -= 100;
+                } else {
+                    timeSleep += 100;
+                }
             }
+        } else {
+            timeSleep = 500;
         }
+        Logger.logFuncStart("timeSleep:" + timeSleep);
+    }
+
+    public TmxMap generateMap() {
+        Logger.logWithTime("currentThread:" + Thread.currentThread().toString());
+        Logger.logDebug("thread:" + thread);
+        if (thread == null) {
+            thread = new Thread(this);
+            thread.start();
+        }
+        Logger.logFuncEnd(Thread.currentThread().toString());
         return map;
     }
 
-    private int pickTile(final int col, final int row) {
-        final byte[] matchMask = new byte[]{MATCH_ANY, MATCH_ANY, MATCH_ANY, MATCH_ANY};
-        updateMatchMaskForTile(matchMask,
-                col - 1, row,
-                TOP_LEFT.id(), TOP_RIGHT.id(),
-                BOTTOM_LEFT.id(), BOTTOM_RIGHT.id());
-        updateMatchMaskForTile(matchMask,
-                col, row - 1,
-                BOTTOM_LEFT.id(), TOP_LEFT.id(),
-                BOTTOM_RIGHT.id(), TOP_RIGHT.id());
-        final int tileId = getTileId(col + 1, row - 1);
-        if (tileId >= 0) {
-            final byte tileCorner = getTerrainCodes(tileId)[TOP_RIGHT.id()];
-            final byte maskCorner = matchMask[TOP_LEFT.id()];
-            if (maskCorner != tileCorner) {
-                final TreeSet<Byte> validTransitions = terrainTypes.get(tileCorner).getTransitions();
-                if (validTransitions.size() < maxTransitions) {
-                    matchMask[TOP_RIGHT.id()] = validTransitions.first();
+    @Override
+    public void run() {
+        Logger.logWithTime(Thread.currentThread().toString());
+        try {
+            map.getLayers().remove(0);
+            mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, tileWidth, tileHeight);
+            map.getLayers().add(mapLayer);
+//            for (int row = mapHeight - 1; row > 0; row--) {
+            for (int row = 0; row < mapHeight; row++) {
+                for (int col = 0; col < mapWidth; col++) {
+                    TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+                    int tileId = pickTile(col, row);
+                    if (tileId >= 0) {
+                        cell.setTile(tileSet.getTile(tileId));
+                        mapLayer.setCell(col, row, cell);
+                    } else {
+                        cell.setTile(nullTile);
+                        mapLayer.setCell(col, row, cell);
+                        col -= 2;
+                    }
+                    Thread.sleep(timeSleep);
                 }
             }
+        } catch (Exception exception) {
+            Logger.logError("exception:" + exception);
+            exception.printStackTrace();
         }
-        final List<Integer> matchingTiles = findMatchingTiles(matchMask);
+        thread.interrupt();
+        thread = null;
+        Logger.logFuncEnd(Thread.currentThread().toString());
+    }
+
+    private int pickTile(int col, int row) {
+        byte[] matchMask = new byte[]{MATCH_ANY, MATCH_ANY, MATCH_ANY, MATCH_ANY};
+//        updateMatchMaskForTile(matchMask, col-1, row, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT);
+//        updateMatchMaskForTile(matchMask, col, row-1, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT);
+        updateMatchMaskForTile(matchMask, col-1, row, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT);
+        updateMatchMaskForTile(matchMask, col, row-1, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT);
+//        int tileId = getTileId(col+1, row-1);
+//        if (tileId >= 0) {
+//            byte tileCorner = getTerrainCodes(tileId)[TOP_RIGHT.ordinal()];
+//            byte maskCorner = matchMask[TOP_LEFT.ordinal()];
+//            if (maskCorner != tileCorner) {
+//                TreeSet<Byte> validTransitions = terrainTypes.get(tileCorner).getTransitions();
+//                if (validTransitions.size() < maxTransitions) {
+//                    matchMask[TOP_RIGHT.ordinal()] = validTransitions.first();
+//                }
+//            }
+//        }
+        List<Integer> matchingTiles = findMatchingTiles(matchMask);
         if (matchingTiles.isEmpty()) {
             return -1;
         } else {
-            final int selectedTile = random.nextInt(matchingTiles.size());
+            int selectedTile = random.nextInt(matchingTiles.size());
             return matchingTiles.get(selectedTile);
         }
     }
 
-    private void updateMatchMaskForTile(final byte[] mask,
-                                        final int col, final int row,
-                                        final int mask_corner0, final int tile_corner0,
-                                        final int mask_corner1, final int tile_corner1) {
-        final int tileId = getTileId(col, row);
+    private void updateMatchMaskForTile(byte[] mask, int col, int row, TILE_BITS mask_corner0, TILE_BITS tile_corner0, TILE_BITS mask_corner1, TILE_BITS tile_corner1) {
+        int tileId = getTileId(col, row);
         if (tileId >= 0) {
-            final byte[] tileCodes = getTerrainCodes(tileId);
-            mask[mask_corner0] = tileCodes[tile_corner0];
-            mask[mask_corner1] = tileCodes[tile_corner1];
+            byte[] tileCodes = getTerrainCodes(tileId);
+            mask[mask_corner0.ordinal()] = tileCodes[tile_corner0.ordinal()];
+            mask[mask_corner1.ordinal()] = tileCodes[tile_corner1.ordinal()];
         }
     }
 
-    private List<Integer> findMatchingTiles(final byte[] mask) {
-        final List<Integer> matchingTiles = new ArrayList<>();
-        final int maskLength = mask.length;
-        final int numTiles = tileSet.size();
+    private List<Integer> findMatchingTiles(byte[] mask) {
+        List<Integer> matchingTiles = new ArrayList<>();
+        int maskLength = mask.length;
+        int numTiles = tileSet.size();
         for (int i = 0; i < numTiles; i++) {
-            final byte[] bits = getTerrainCodes(i);
+            byte[] bits = getTerrainCodes(i);
             int j = 0;
             for (; j < maskLength; j++) {
                 if (mask[j] != MATCH_ANY && mask[j] != bits[j]) {
@@ -172,22 +195,22 @@ public class AutoTiler {
         return matchingTiles;
     }
 
-    private int getTileId(final int col, final int row) {
+    private int getTileId(int col, int row) {
         if (col < 0 || row < 0 || col >= mapWidth || row >= mapHeight) {
             return -1;
         }
         return mapLayer.getCell(col, row).getTile().getId();
     }
 
-    private byte[] getTerrainCodes(final int tileId) {
+    private byte[] getTerrainCodes(int tileId) {
         byte[] values = new byte[]{
                 (byte) (tileId & 0x1),
                 (byte) ((tileId & 0x2) >> 1),
                 (byte) ((tileId & 0x4) >> 2),
                 (byte) ((tileId & 0x8) >> 3)
         };
-        final int tilesRowIndex = tileId / TILES_PER_TERRAIN;
-        final List<Byte> terrainRow = tileRowTerrains.get(tilesRowIndex);
+        int tilesRowIndex = tileId / TILES_PER_TERRAIN;
+        List<Byte> terrainRow = tileRowTerrains.get(tilesRowIndex);
         for (int i = 0; i < values.length; i++) {
             values[i] = terrainRow.get(values[i]);
         }
@@ -195,10 +218,10 @@ public class AutoTiler {
     }
 
     private void init(FileHandle tilesetConfigFile) {
-        final Json json = new Json();
-        final TilesetConfig conf = json.fromJson(TilesetConfig.class, tilesetConfigFile);
+        Json json = new Json();
+        TilesetConfig conf = json.fromJson(TilesetConfig.class, tilesetConfigFile);
         Logger.logDebug("conf:" + conf);
-        final FileHandle tilesTextureHandle = Gdx.files.internal(conf.getTexturePath());
+        FileHandle tilesTextureHandle = Gdx.files.internal(conf.getTexturePath());
         if (!tilesTextureHandle.exists() || tilesTextureHandle.isDirectory()) {
             throw new IllegalArgumentException("Invalid Tile-set texture path");
         }
@@ -221,18 +244,18 @@ public class AutoTiler {
     }
 
     private void loadTerrainDefinitions(TilesetConfig config) {
-        final Array<Array<String>> terrainDefs = config.getTerrainDefs();
-        final HashMap<String, Byte> nameToIdMap = new HashMap<>();
+        Array<Array<String>> terrainDefs = config.getTerrainDefs();
+        HashMap<String, Byte> nameToIdMap = new HashMap<>();
         terrainTypes = new HashMap<>();
         tileRowTerrains = new ArrayList<>();
         byte currentTerrainId = 0;
-        for (final Array<String> terrainDefsRow : terrainDefs) {
+        for (Array<String> terrainDefsRow : terrainDefs) {
             if (terrainDefsRow.size != TERRAINS_PER_ROW) {
                 throw new IllegalArgumentException(
                         "Each terrain_defs row must contain exactly " + TERRAINS_PER_ROW + " terrain types");
             }
-            final List<Byte> terrainRow = new ArrayList<>(TERRAINS_PER_ROW);
-            for (final String terrainName : terrainDefsRow) {
+            List<Byte> terrainRow = new ArrayList<>(TERRAINS_PER_ROW);
+            for (String terrainName : terrainDefsRow) {
                 TerrainType terrainType;
                 Byte id = nameToIdMap.get(terrainName);
                 if (id == null) {
@@ -244,8 +267,8 @@ public class AutoTiler {
                 terrainRow.add(id);
             }
             this.tileRowTerrains.add(terrainRow);
-            final byte firstTerrainId = terrainRow.get(0);
-            final byte secondTerrainId = terrainRow.get(1);
+            byte firstTerrainId = terrainRow.get(0);
+            byte secondTerrainId = terrainRow.get(1);
             terrainTypes.get(firstTerrainId).getTransitions().add(secondTerrainId);
             terrainTypes.get(secondTerrainId).getTransitions().add(firstTerrainId);
         }
@@ -253,12 +276,12 @@ public class AutoTiler {
     }
 
     private void initMap() {
-        final TextureRegion[][] splitTiles = TextureRegion.split(tilesTexture, tileWidth, tileHeight);
-        final int numRows = splitTiles.length;
+        TextureRegion[][] splitTiles = TextureRegion.split(tilesTexture, tileWidth, tileHeight);
+        int numRows = splitTiles.length;
         if (numRows != tileRowTerrains.size()) {
             throw new IllegalArgumentException("Tileset rows do not match terrain definitions");
         }
-        for (final TextureRegion[] splitTile : splitTiles) {
+        for (TextureRegion[] splitTile : splitTiles) {
             if (splitTile.length != TILES_PER_TERRAIN) {
                 throw new IllegalArgumentException("Each tileset row must have exactly " + TILES_PER_TERRAIN + " tiles");
             }
@@ -267,15 +290,15 @@ public class AutoTiler {
         int tid = 0;
         for (int i = 0; i < splitTiles.length; i++) {
             for (int j = 0; j < splitTiles[i].length; j++) {
-                final StaticTiledMapTile tile = new StaticTiledMapTile(splitTiles[i][j]);
+                StaticTiledMapTile tile = new StaticTiledMapTile(splitTiles[i][j]);
                 tile.setId(tid++);
                 tileSet.putTile(tile.getId(), tile);
             }
         }
-        map = new TiledMap();
+        map = new TmxMap(new TiledMap(), "");
         mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, tileWidth, tileHeight);
         map.getLayers().add(mapLayer);
-        final Array<Texture> textures = Array.with(tilesTexture);
+        Array<Texture> textures = Array.with(tilesTexture);
         map.setOwnedResources(textures);
     }
 }
