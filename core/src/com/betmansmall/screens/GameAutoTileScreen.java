@@ -20,14 +20,22 @@ public class GameAutoTileScreen extends AbstractScreen {
     private static final int MAP_WIDTH = 32;
     private static final int MAP_HEIGHT = 16;
 
-    private AutoTiler autoTiler;
-    private TmxMap tmxMap;
-    private BatchTiledMapRenderer renderer;
-
-    private MapEditorCameraController mapEditorCameraController;
+    public AutoTiler autoTiler;
+    public TmxMap tmxMap;
+    public BatchTiledMapRenderer renderer;
+    public MapEditorCameraController mapEditorCameraController;
 
     public GameAutoTileScreen(GameMaster game) {
         super(game);
+
+        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter18.json"));
+        tmxMap = autoTiler.generateMap();
+        if (tmxMap.isometric) {
+            renderer = new IsometricTiledMapRenderer(tmxMap);
+        } else {
+            renderer = new OrthogonalTiledMapRenderer(tmxMap);
+        }
+        mapEditorCameraController = new MapEditorCameraController(this);
     }
 
     @Override
@@ -43,16 +51,6 @@ public class GameAutoTileScreen extends AbstractScreen {
     public void show() {
         super.show();
 
-        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter18.json"));
-        tmxMap = autoTiler.generateMap();
-        if (tmxMap.isometric) {
-            renderer = new IsometricTiledMapRenderer(tmxMap);
-        } else {
-            renderer = new OrthogonalTiledMapRenderer(tmxMap);
-        }
-
-        mapEditorCameraController = new MapEditorCameraController(this);
-
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(mapEditorCameraController);
         inputMultiplexer.addProcessor(new GestureDetector(mapEditorCameraController));
@@ -62,6 +60,7 @@ public class GameAutoTileScreen extends AbstractScreen {
                 if (button == Input.Buttons.RIGHT) {
                     autoTiler.generateMap();
                 }
+                Logger.logDebug(mapEditorCameraController.toString());
                 return true;
             }
             @Override
@@ -85,6 +84,11 @@ public class GameAutoTileScreen extends AbstractScreen {
         mapEditorCameraController.update(delta);
         renderer.setView(mapEditorCameraController.camera);
         renderer.render();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.ESCAPE);");
+            gameMaster.removeTopScreen();
+        }
 
         super.render(delta);
     }

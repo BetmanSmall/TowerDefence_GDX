@@ -222,6 +222,7 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 default:
+                case 13:
                 case 12:
                 case 11:
                 case 10:
@@ -232,7 +233,7 @@ public class AutoTiler implements Runnable {
                 }
             }
             order++;
-            if (order > 12) {
+            if (order > 13) {
                 order = 8;
             }
         } catch (Exception exception) {
@@ -245,7 +246,7 @@ public class AutoTiler implements Runnable {
     }
 
     private void diagonalOrder() throws Exception {
-        boolean returned = false;
+        int returned = 0;
         int x = 0, y = 0;
         int length = Math.max(map.width, map.height);
         while (x < length) {
@@ -271,11 +272,11 @@ public class AutoTiler implements Runnable {
                     }
                     case 11: {
                         if (!makeCell(x, y)) {
-                            returned = true;
+                            returned = 1;
                             x -= 1;
                             continue;
-                        } else if (returned) {
-                            returned = false;
+                        } else if (returned == 1) {
+                            returned = 0;
                             x += 1;
                             continue;
                         }
@@ -283,12 +284,34 @@ public class AutoTiler implements Runnable {
                     }
                     case 12: {
                         if (!makeCell(x, y)) {
-                            returned = true;
+                            returned = 1;
                             y -= 1;
                             continue;
-                        } else if (returned) {
-                            returned = false;
+                        } else if (returned == 1) {
+                            returned = 0;
                             y += 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 13: {
+                        if (returned == 0) {
+                            if (!makeCell(x, y)) {
+                                returned = 1;
+                                x -= 1;
+                                continue;
+                            }
+                        } else if (returned == 1) {
+                            if (!makeCell(x, y)) {
+                                Logger.logError("x:" + x, "y:" + y);
+                                returned = 0;
+                                continue;
+                            }
+                            returned = 2;
+                            continue;
+                        } else if (returned == 2) {
+                            y += 1;
+                            returned = 0;
                             continue;
                         }
                         break;

@@ -12,6 +12,7 @@ import com.betmansmall.game.gameInterface.GameInterface;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.maps.TmxMap;
+import com.betmansmall.screens.GameAutoTileScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.menu.MapEditorScreen;
 import com.betmansmall.utils.logging.Logger;
@@ -66,6 +67,9 @@ public class CameraController extends AbstractCameraController {
 
     public CameraController(Screen screen) {
         Logger.logFuncStart("screen:" + screen);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(185, -110, 0);
+        camera.zoom = 0.5f;
         if (screen instanceof GameScreen) {
             this.gameScreen = (GameScreen) screen;
             this.gameField = gameScreen.gameField;
@@ -80,14 +84,15 @@ public class CameraController extends AbstractCameraController {
         } else if (screen instanceof MapEditorScreen) {
             tmxMap = ((MapEditorScreen) screen).tmxMap;
             gameInterface = ((MapEditorScreen) screen).mapEditorInterface;
+        } else if (screen instanceof GameAutoTileScreen) {
+            tmxMap = ((GameAutoTileScreen) screen).tmxMap;
+            camera.position.set(515, 255, 0);
+            camera.zoom = 1.05f;
         } else {
             Logger.logError("screen!=GameScreen");
         }
         random = new Random();
 //        Gdx.input.setCursorCatched(true);
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(185, -110, 0);
-        camera.zoom = 0.5f;
     }
 
     @Override
