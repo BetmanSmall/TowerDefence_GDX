@@ -73,8 +73,8 @@ public class AutoTiler implements Runnable {
     private final StaticTiledMapTile nullTile;
 
     private Thread thread = null;
-    private int timeSleep = 10;
-    private int order = 0;
+    private int timeSleep = 2;
+    private int order = 4;
 
     public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
         this.mapWidth = mapWidth;
@@ -91,10 +91,18 @@ public class AutoTiler implements Runnable {
     public void setTimeSleep(boolean b) {
         if (timeSleep > 0 && timeSleep < 1000) {
             if (timeSleep <= 100) {
-                if (!b) {
-                    timeSleep -= 10;
+                if (timeSleep <= 10) {
+                    if (!b) {
+                        timeSleep -= 2;
+                    } else {
+                        timeSleep += 2;
+                    }
                 } else {
-                    timeSleep += 10;
+                    if (!b) {
+                        timeSleep -= 10;
+                    } else {
+                        timeSleep += 10;
+                    }
                 }
             } else {
                 if (!b) {
@@ -168,9 +176,49 @@ public class AutoTiler implements Runnable {
                     }
                     break;
                 }
+                case 4: {
+                    for (int col = 0; col < mapWidth; col++) {
+                        for (int row = 0; row < mapHeight; row++) {
+                            if (!makeCell(col, row)) {
+                                row -= 2;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 5: {
+                    for (int col = 0; col < mapWidth; col++) {
+                        for (int row = mapHeight - 1; row >= 0; row--) {
+                            if (!makeCell(col, row)) {
+                                row += 2;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 6: {
+                    for (int col = mapWidth - 1; col >= 0; col--) {
+                        for (int row = 0; row < mapHeight; row++) {
+                            if (!makeCell(col, row)) {
+                                row -= 2;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 7: {
+                    for (int col = mapWidth - 1; col >= 0; col--) {
+                        for (int row = mapHeight - 1; row >= 0; row--) {
+                            if (!makeCell(col, row)) {
+                                row += 2;
+                            }
+                        }
+                    }
+                    break;
+                }
             }
             order++;
-            if (order > 3) {
+            if (order > 7) {
                 order = 0;
             }
         } catch (Exception exception) {
@@ -200,21 +248,25 @@ public class AutoTiler implements Runnable {
     private int pickTile(int col, int row) {
         byte[] matchMask = new byte[]{MATCH_ANY, MATCH_ANY, MATCH_ANY, MATCH_ANY};
         switch (order) {
+            case 4:
             case 0: {
                 updateMatchMaskForTile(matchMask, col-1, row, TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT);
                 updateMatchMaskForTile(matchMask, col, row-1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
                 break;
             }
+            case 5:
             case 1: {
                 updateMatchMaskForTile(matchMask, col-1, row, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT);
                 updateMatchMaskForTile(matchMask, col, row+1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
                 break;
             }
+            case 6:
             case 2: {
                 updateMatchMaskForTile(matchMask, col+1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
                 updateMatchMaskForTile(matchMask, col, row-1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
                 break;
             }
+            case 7:
             case 3: {
                 updateMatchMaskForTile(matchMask, col+1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
                 updateMatchMaskForTile(matchMask, col, row+1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
@@ -285,6 +337,8 @@ public class AutoTiler implements Runnable {
 //                (byte) ((tileId & 0x8) >> 3)
 //        };
         switch (order) {
+            case 6:
+            case 4:
             case 2:
             case 0: {
                 values[0] = (byte) (tileId & 0x1);
@@ -293,6 +347,8 @@ public class AutoTiler implements Runnable {
                 values[3] = (byte) ((tileId & 0x8) >> 3);
                 break;
             }
+            case 7:
+            case 5:
             case 3:
             case 1: {
                 values[0] = (byte) ((tileId & 0x4) >> 2);
