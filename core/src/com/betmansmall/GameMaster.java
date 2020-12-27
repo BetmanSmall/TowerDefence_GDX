@@ -149,14 +149,14 @@ public class GameMaster extends Game {
                 if (fileHandleExtension.equals("tmx")) {
                     Logger.logDebug("allMaps.add():" + fileHandle.path());
                     allMaps.add(fileHandle.path());
-                } else if (fileHandleExtension.equals("tsx")) {
-                    if (fileHandle.parent().name().equals("other")) {
-                        Logger.logDebug("tileSetsFileHandles.add():" + fileHandle.path());
-                        tileSetsFileHandles.add(fileHandle);
-                        TiledMapTileSet tiledMapTileSet = TsxLoader.loadTiledMapTiles(fileHandle, TsxLoader.loadTileSet(fileHandle));
-                        Logger.logDebug("tiledMapTileSet:" + tiledMapTileSet);
-                        Logger.logDebug("tiledMapTileSet.getName():" + tiledMapTileSet.getName());
-                    }
+//                } else if (fileHandleExtension.equals("tsx")) {
+//                    if (fileHandle.parent().name().equals("other")) {
+//                        Logger.logDebug("tileSetsFileHandles.add():" + fileHandle.path());
+//                        tileSetsFileHandles.add(fileHandle);
+//                        TiledMapTileSet tiledMapTileSet = TsxLoader.loadTiledMapTiles(fileHandle, TsxLoader.loadTileSet(fileHandle));
+//                        Logger.logDebug("tiledMapTileSet:" + tiledMapTileSet);
+//                        Logger.logDebug("tiledMapTileSet.getName():" + tiledMapTileSet.getName());
+//                    }
                 }
             }
         } else {
