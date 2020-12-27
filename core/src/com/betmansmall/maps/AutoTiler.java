@@ -74,7 +74,7 @@ public class AutoTiler implements Runnable {
 
     private Thread thread = null;
     private int timeSleep = 2;
-    private int order = 4;
+    private int order = 8;
 
     public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
         this.mapWidth = mapWidth;
@@ -85,6 +85,10 @@ public class AutoTiler implements Runnable {
         nullTile.getTextureRegion().setRegionWidth(tileWidth);
         nullTile.getTextureRegion().setRegionHeight(tileHeight);
 //        nullTile.getTextureRegion().getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        map.width = mapWidth;
+        map.height = mapHeight;
+        map.tileWidth = tileWidth;
+        map.tileHeight = tileHeight;
         Logger.logFuncEnd("this:" + this);
     }
 
@@ -124,6 +128,7 @@ public class AutoTiler implements Runnable {
             thread = new Thread(this);
             thread.start();
         }
+        Logger.logDebug("order:" + order);
         Logger.logFuncEnd(Thread.currentThread().toString());
         return map;
     }
@@ -216,10 +221,19 @@ public class AutoTiler implements Runnable {
                     }
                     break;
                 }
+                default:
+                case 12:
+                case 11:
+                case 10:
+                case 9:
+                case 8: {
+                    diagonalOrder();
+                    break;
+                }
             }
             order++;
-            if (order > 7) {
-                order = 0;
+            if (order > 12) {
+                order = 8;
             }
         } catch (Exception exception) {
             Logger.logError("exception:" + exception);
@@ -228,6 +242,70 @@ public class AutoTiler implements Runnable {
         thread.interrupt();
         thread = null;
         Logger.logFuncEnd(Thread.currentThread().toString());
+    }
+
+    private void diagonalOrder() throws Exception {
+        boolean returned = false;
+        int x = 0, y = 0;
+        int length = Math.max(map.width, map.height);
+        while (x < length) {
+            if (x < map.width && y < map.height) {
+                switch (order) {
+                    case 8: {
+                        makeCell(x, y);
+                        break;
+                    }
+                    case 9: {
+                        if (!makeCell(x, y)) {
+                            x -= 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 10: {
+                        if (!makeCell(x, y)) {
+                            y -= 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 11: {
+                        if (!makeCell(x, y)) {
+                            returned = true;
+                            x -= 1;
+                            continue;
+                        } else if (returned) {
+                            returned = false;
+                            x += 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 12: {
+                        if (!makeCell(x, y)) {
+                            returned = true;
+                            y -= 1;
+                            continue;
+                        } else if (returned) {
+                            returned = false;
+                            y += 1;
+                            continue;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (x == length - 1) {
+                x = y + 1;
+                y = length - 1;
+            } else if (y == 0) {
+                y = x + 1;
+                x = 0;
+            } else {
+                x++;
+                y--;
+            }
+        }
     }
 
     private boolean makeCell(int col, int row) throws Exception {
@@ -248,6 +326,7 @@ public class AutoTiler implements Runnable {
     private int pickTile(int col, int row) {
         byte[] matchMask = new byte[]{MATCH_ANY, MATCH_ANY, MATCH_ANY, MATCH_ANY};
         switch (order) {
+            default:
             case 4:
             case 0: {
                 updateMatchMaskForTile(matchMask, col-1, row, TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT);
@@ -337,6 +416,7 @@ public class AutoTiler implements Runnable {
 //                (byte) ((tileId & 0x8) >> 3)
 //        };
         switch (order) {
+            default:
             case 6:
             case 4:
             case 2:
