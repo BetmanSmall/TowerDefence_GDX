@@ -16,9 +16,7 @@ import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.TreeSet;
 
 import static com.betmansmall.maps.AutoTiler.TILE_BITS.*;
 
@@ -74,7 +72,7 @@ public class AutoTiler implements Runnable {
 
     private Thread thread = null;
     private int timeSleep = 2;
-    private int order = 8;
+    private int order = 20;
 
     public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
         this.mapWidth = mapWidth;
@@ -221,20 +219,33 @@ public class AutoTiler implements Runnable {
                     }
                     break;
                 }
-                default:
                 case 13:
                 case 12:
                 case 11:
                 case 10:
                 case 9:
                 case 8: {
-                    diagonalOrder();
+                    diagonalOrder11();
+                    break;
+                }
+                case 19:
+                case 18:
+                case 17:
+                case 16:
+                case 15:
+                case 14: {
+                    diagonalOrder12();
+                    break;
+                }
+                default:
+                case 20: {
+                    diagonalUp0();
                     break;
                 }
             }
             order++;
-            if (order > 13) {
-                order = 8;
+            if (order > 20) {
+                order = 0;
             }
         } catch (Exception exception) {
             Logger.logError("exception:" + exception);
@@ -245,7 +256,7 @@ public class AutoTiler implements Runnable {
         Logger.logFuncEnd(Thread.currentThread().toString());
     }
 
-    private void diagonalOrder() throws Exception {
+    private void diagonalOrder11() throws Exception {
         int returned = 0;
         int x = 0, y = 0;
         int length = Math.max(map.width, map.height);
@@ -327,6 +338,116 @@ public class AutoTiler implements Runnable {
             } else {
                 x++;
                 y--;
+            }
+        }
+    }
+
+    private void diagonalOrder12() throws Exception {
+        int returned = 0;
+        int x = 0, y = 0;
+        int length = Math.max(map.width, map.height);
+        while (y < length) {
+            if (x < map.width && y < map.height) {
+                switch (order) {
+                    case 14: {
+                        makeCell(x, y);
+                        break;
+                    }
+                    case 15: {
+                        if (!makeCell(x, y)) {
+                            x -= 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 16: {
+                        if (!makeCell(x, y)) {
+                            y -= 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 17: {
+                        if (!makeCell(x, y)) {
+                            returned = 1;
+                            x -= 1;
+                            continue;
+                        } else if (returned == 1) {
+                            returned = 0;
+                            x += 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 18: {
+                        if (!makeCell(x, y)) {
+                            returned = 1;
+                            y -= 1;
+                            continue;
+                        } else if (returned == 1) {
+                            returned = 0;
+                            y += 1;
+                            continue;
+                        }
+                        break;
+                    }
+                    case 19: {
+                        if (returned == 0) {
+                            if (!makeCell(x, y)) {
+                                returned = 1;
+                                x -= 1;
+                                continue;
+                            }
+                        } else if (returned == 1) {
+                            if (!makeCell(x, y)) {
+                                Logger.logError("x:" + x, "y:" + y);
+                                returned = 0;
+                                continue;
+                            }
+                            returned = 2;
+                            continue;
+                        } else if (returned == 2) {
+                            y += 1;
+                            returned = 0;
+                            continue;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (y == length - 1) {
+                y = x + 1;
+                x = length - 1;
+            } else if (x == 0) {
+                x = y + 1;
+                y = 0;
+            } else {
+                y++;
+                x--;
+            }
+        }
+    }
+
+    private void diagonalUp0() throws Exception {
+        for (int x1 = 0; x1 < map.width; x1++) {
+            for (int y3 = 0, x2 = x1; y3 < map.height && x2 >= 0; y3++, x2--) {
+                Logger.logDebug("x2:" + x2, "y3:" + y3);
+                if (!makeCell(x2, y3)) {
+                    Logger.logError("x2:" + x2, "y3:" + y3);
+                    x1 -= 1;
+                    x2 += 1;
+                    y3 -= 2;
+                }
+            }
+        }
+        for (int y1 = 1; y1 < map.height; y1++) {
+            for (int x3 = map.width - 1, y2 = y1; x3 >= 0 && y2 < map.height; x3--, y2++) {
+                if (!makeCell(x3, y2)) {
+                    Logger.logError("x3:" + x3, "y2:" + y2);
+                    y1 -= 1;
+                    y2 -= 2;
+                    x3 += 1;
+                }
             }
         }
     }

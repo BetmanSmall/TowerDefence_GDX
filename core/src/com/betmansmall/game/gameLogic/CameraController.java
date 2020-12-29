@@ -88,6 +88,7 @@ public class CameraController extends AbstractCameraController {
             tmxMap = ((GameAutoTileScreen) screen).tmxMap;
             camera.position.set(515, 255, 0);
             camera.zoom = 1.05f;
+            zoomMax = 10f;
         } else {
             Logger.logError("screen!=GameScreen");
         }
