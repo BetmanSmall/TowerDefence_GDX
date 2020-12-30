@@ -73,7 +73,7 @@ public class AutoTiler implements Runnable {
 
     private Thread thread = null;
     private int timeSleep = 0;
-    private int order = 22;
+    private int order = 26;
 
     public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
         this.mapWidth = mapWidth;
@@ -255,10 +255,26 @@ public class AutoTiler implements Runnable {
                     zigZag3();
                     break;
                 }
+                case 24: {
+                    zigZag4();
+                    break;
+                }
+                case 25: {
+                    zigZag5();
+                    break;
+                }
+                case 26: {
+                    zigZag6();
+                    break;
+                }
+                case 27: {
+                    zigZag7();
+                    break;
+                }
                 default:
             }
             order++;
-            if (order > 23) {
+            if (order > 27) {
                 order = 0;
             }
         } catch (Exception exception) {
@@ -467,18 +483,18 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag0() throws Exception {
-        int rows = map.width;
-        int cols = map.height;
+        int width = map.width;
+        int height = map.height;
         int x = 0;
         int y = 0;
         makeCell(x, y);
-        while (x <= rows && y <= cols) {
-            if (y < cols - 1) {
+        while (x <= width && y <= height) {
+            if (y < height - 1) {
                 y++;
             } else {
                 x++;
             }
-            while (x < rows && y >= 0) {
+            while (x < width && y >= 0) {
                 if (makeCell(x, y)) {
                     x++;
                     y--;
@@ -488,12 +504,12 @@ public class AutoTiler implements Runnable {
             }
             x--;
             y++;
-            if (x < rows - 1) {
+            if (x < width - 1) {
                 x++;
             } else {
                 y++;
             }
-            while (x >= 0 && y < cols) {
+            while (x >= 0 && y < height) {
                 if (makeCell(x, y)) {
                     x--;
                     y++;
@@ -507,18 +523,18 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag1() throws Exception {
-        int rows = map.width;
-        int cols = map.height;
+        int width = map.width;
+        int height = map.height;
         int x = 0;
         int y = 0;
         makeCell(x, y);
-        while (x <= rows && y <= cols) {
-            if (x < rows - 1) {
+        while (x <= width && y <= height) {
+            if (x < width - 1) {
                 x++;
             } else {
                 y++;
             }
-            while (x >= 0 && y < cols) {
+            while (x >= 0 && y < height) {
                 if (makeCell(x, y)) {
                     x--;
                     y++;
@@ -528,12 +544,12 @@ public class AutoTiler implements Runnable {
             }
             x++;
             y--;
-            if (y < cols - 1) {
+            if (y < height - 1) {
                 y++;
             } else {
                 x++;
             }
-            while (x < rows && y >= 0) {
+            while (x < width && y >= 0) {
                 if (makeCell(x, y)) {
                     x++;
                     y--;
@@ -547,8 +563,8 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag2() throws Exception {
-        int rows = map.width;
-        int cols = map.height;
+        int width = map.width;
+        int height = map.height;
         int x = map.width-1;
         int y = map.height-1;
         makeCell(x, y);
@@ -558,7 +574,7 @@ public class AutoTiler implements Runnable {
             } else {
                 y--;
             }
-            while (x < rows && y >= 0) {
+            while (x < width && y >= 0) {
                 if (makeCell(x, y)) {
                     x++;
                     y--;
@@ -573,7 +589,7 @@ public class AutoTiler implements Runnable {
             } else {
                 x--;
             }
-            while (x >= 0 && y < cols) {
+            while (x >= 0 && y < height) {
                 if (makeCell(x, y)) {
                     x--;
                     y++;
@@ -587,8 +603,8 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag3() throws Exception {
-        int rows = map.width;
-        int cols = map.height;
+        int width = map.width;
+        int height = map.height;
         int x = map.width-1;
         int y = map.height-1;
         makeCell(x, y);
@@ -598,7 +614,7 @@ public class AutoTiler implements Runnable {
             } else {
                 x--;
             }
-            while (x >= 0 && y < cols) {
+            while (x >= 0 && y < height) {
                 if (makeCell(x, y)) {
                     x--;
                     y++;
@@ -613,7 +629,7 @@ public class AutoTiler implements Runnable {
             } else {
                 y--;
             }
-            while (x < rows && y >= 0) {
+            while (x < width && y >= 0) {
                 if (makeCell(x, y)) {
                     x++;
                     y--;
@@ -623,6 +639,166 @@ public class AutoTiler implements Runnable {
             }
             x--;
             y++;
+        }
+    }
+
+    private void zigZag4() throws Exception {
+        int width = map.width;
+        int height = map.height;
+        int x = map.width-1;
+        int y = 0;
+        makeCell(x, y);
+        while (x >= 0 && y <= height) {
+            if (y < height - 1) {
+                y++;
+            } else {
+                x--;
+            }
+            while (x >= 0 && y >= 0) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y--;
+                } else {
+                    y--;
+                }
+            }
+            x++;
+            y++;
+            if (x > 0) {
+                x--;
+            } else {
+                y++;
+            }
+            while (x < width && y < height) {
+                if (makeCell(x, y)) {
+                    x++;
+                    y++;
+                } else {
+                    y--;
+                }
+            }
+            x--;
+            y--;
+        }
+    }
+
+    private void zigZag5() throws Exception {
+        int width = map.width;
+        int height = map.height;
+        int x = map.width-1;
+        int y = 0;
+        makeCell(x, y);
+        while (x >= 0 && y <= height) {
+            if (x > 0) {
+                x--;
+            } else {
+                y++;
+            }
+            while (x < width && y < height) {
+                if (makeCell(x, y)) {
+                    x++;
+                    y++;
+                } else {
+                    y--;
+                }
+            }
+            x--;
+            y--;
+            if (y < height - 1) {
+                y++;
+            } else {
+                x--;
+            }
+            while (x >= 0 && y >= 0) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y--;
+                } else {
+                    y--;
+                }
+            }
+            x++;
+            y++;
+        }
+    }
+
+    private void zigZag6() throws Exception {
+        int width = map.width;
+        int height = map.height;
+        int x = 0;
+        int y = map.height-1;
+        makeCell(x, y);
+        while (y >= 0 && x <= width) {
+            if (y > 0) {
+                y--;
+            } else {
+                x++;
+            }
+            while (y < height && x < width) {
+                if (makeCell(x, y)) {
+                    y++;
+                    x++;
+                } else {
+                    y++;
+                }
+            }
+            x--;
+            y--;
+            if (x < width - 1) {
+                x++;
+            } else {
+                y--;
+            }
+            while (x >= 0 && y >= 0) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y--;
+                } else {
+                    y++;
+                }
+            }
+            x++;
+            y++;
+        }
+    }
+
+    private void zigZag7() throws Exception {
+        int width = map.width;
+        int height = map.height;
+        int x = 0;
+        int y = map.height-1;
+        makeCell(x, y);
+        while (y >= 0 && x <= width) {
+            if (x < width - 1) {
+                x++;
+            } else {
+                y--;
+            }
+            while (x >= 0 && y >= 0) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y--;
+                } else {
+                    y++;
+                }
+            }
+            x++;
+            y++;
+            if (y > 0) {
+                y--;
+            } else {
+                x++;
+            }
+            while (y < height && x < width) {
+                if (makeCell(x, y)) {
+                    y++;
+                    x++;
+                } else {
+                    y++;
+                }
+            }
+            x--;
+            y--;
         }
     }
 
@@ -662,12 +838,16 @@ public class AutoTiler implements Runnable {
                 updateMatchMaskForTile(matchMask, col, row-1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
                 break;
             }
+            case 27:
+            case 26:
             case 5:
             case 1: {
                 updateMatchMaskForTile(matchMask, col-1, row, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT);
                 updateMatchMaskForTile(matchMask, col, row+1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
                 break;
             }
+            case 25:
+            case 24:
             case 6:
             case 2: {
                 updateMatchMaskForTile(matchMask, col+1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
@@ -756,6 +936,8 @@ public class AutoTiler implements Runnable {
 //        };
         switch (order) {
             default:
+            case 25:
+            case 24:
             case 6:
             case 4:
             case 2:
@@ -766,6 +948,8 @@ public class AutoTiler implements Runnable {
                 values[3] = (byte) ((tileId & 0x8) >> 3);
                 break;
             }
+            case 27:
+            case 26:
             case 23:
             case 22:
             case 7:
