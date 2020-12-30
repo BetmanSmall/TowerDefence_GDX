@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
@@ -71,8 +72,8 @@ public class AutoTiler implements Runnable {
     private final StaticTiledMapTile nullTile;
 
     private Thread thread = null;
-    private int timeSleep = 2;
-    private int order = 20;
+    private int timeSleep = 0;
+    private int order = 22;
 
     public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
         this.mapWidth = mapWidth;
@@ -237,14 +238,27 @@ public class AutoTiler implements Runnable {
                     diagonalOrder12();
                     break;
                 }
-                default:
                 case 20: {
-                    diagonalUp0();
+//                    diagonalUp0();
+                    zigZag0();
                     break;
                 }
+                case 21: {
+                    zigZag1();
+                    break;
+                }
+                case 22: {
+                    zigZag2();
+                    break;
+                }
+                case 23: {
+                    zigZag3();
+                    break;
+                }
+                default:
             }
             order++;
-            if (order > 20) {
+            if (order > 23) {
                 order = 0;
             }
         } catch (Exception exception) {
@@ -431,9 +445,9 @@ public class AutoTiler implements Runnable {
     private void diagonalUp0() throws Exception {
         for (int x1 = 0; x1 < map.width; x1++) {
             for (int y3 = 0, x2 = x1; y3 < map.height && x2 >= 0; y3++, x2--) {
-                Logger.logDebug("x2:" + x2, "y3:" + y3);
+//                Logger.logDebug("x2:" + x2, "y3:" + y3);
                 if (!makeCell(x2, y3)) {
-                    Logger.logError("x2:" + x2, "y3:" + y3);
+//                    Logger.logError("x2:" + x2, "y3:" + y3);
                     x1 -= 1;
                     x2 += 1;
                     y3 -= 2;
@@ -443,12 +457,172 @@ public class AutoTiler implements Runnable {
         for (int y1 = 1; y1 < map.height; y1++) {
             for (int x3 = map.width - 1, y2 = y1; x3 >= 0 && y2 < map.height; x3--, y2++) {
                 if (!makeCell(x3, y2)) {
-                    Logger.logError("x3:" + x3, "y2:" + y2);
+//                    Logger.logError("x3:" + x3, "y2:" + y2);
                     y1 -= 1;
                     y2 -= 2;
                     x3 += 1;
                 }
             }
+        }
+    }
+
+    private void zigZag0() throws Exception {
+        int rows = map.width;
+        int cols = map.height;
+        int x = 0;
+        int y = 0;
+        makeCell(x, y);
+        while (x <= rows && y <= cols) {
+            if (y < cols - 1) {
+                y++;
+            } else {
+                x++;
+            }
+            while (x < rows && y >= 0) {
+                if (makeCell(x, y)) {
+                    x++;
+                    y--;
+                } else {
+                    y--;
+                }
+            }
+            x--;
+            y++;
+            if (x < rows - 1) {
+                x++;
+            } else {
+                y++;
+            }
+            while (x >= 0 && y < cols) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y++;
+                } else {
+                    y--;
+                }
+            }
+            x++;
+            y--;
+        }
+    }
+
+    private void zigZag1() throws Exception {
+        int rows = map.width;
+        int cols = map.height;
+        int x = 0;
+        int y = 0;
+        makeCell(x, y);
+        while (x <= rows && y <= cols) {
+            if (x < rows - 1) {
+                x++;
+            } else {
+                y++;
+            }
+            while (x >= 0 && y < cols) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y++;
+                } else {
+                    y--;
+                }
+            }
+            x++;
+            y--;
+            if (y < cols - 1) {
+                y++;
+            } else {
+                x++;
+            }
+            while (x < rows && y >= 0) {
+                if (makeCell(x, y)) {
+                    x++;
+                    y--;
+                } else {
+                    y--;
+                }
+            }
+            x--;
+            y++;
+        }
+    }
+
+    private void zigZag2() throws Exception {
+        int rows = map.width;
+        int cols = map.height;
+        int x = map.width-1;
+        int y = map.height-1;
+        makeCell(x, y);
+        while (x >= 0 && y >= 0) {
+            if (x > 0) {
+                x--;
+            } else {
+                y--;
+            }
+            while (x < rows && y >= 0) {
+                if (makeCell(x, y)) {
+                    x++;
+                    y--;
+                } else {
+                    y++;
+                }
+            }
+            x--;
+            y++;
+            if (y > 0) {
+                y--;
+            } else {
+                x--;
+            }
+            while (x >= 0 && y < cols) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y++;
+                } else {
+                    y++;
+                }
+            }
+            x++;
+            y--;
+        }
+    }
+
+    private void zigZag3() throws Exception {
+        int rows = map.width;
+        int cols = map.height;
+        int x = map.width-1;
+        int y = map.height-1;
+        makeCell(x, y);
+        while (x >= 0 && y >= 0) {
+            if (y > 0) {
+                y--;
+            } else {
+                x--;
+            }
+            while (x >= 0 && y < cols) {
+                if (makeCell(x, y)) {
+                    x--;
+                    y++;
+                } else {
+                    y++;
+                }
+            }
+            x++;
+            y--;
+            if (x > 0) {
+                x--;
+            } else {
+                y--;
+            }
+            while (x < rows && y >= 0) {
+                if (makeCell(x, y)) {
+                    x++;
+                    y--;
+                } else {
+                    y++;
+                }
+            }
+            x--;
+            y++;
         }
     }
 
@@ -470,6 +644,17 @@ public class AutoTiler implements Runnable {
     private int pickTile(int col, int row) {
         byte[] matchMask = new byte[]{MATCH_ANY, MATCH_ANY, MATCH_ANY, MATCH_ANY};
         switch (order) {
+//            default: {
+//                updateMatchMaskForTile(matchMask, col - 1, row, TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT);
+//                updateMatchMaskForTile(matchMask, col, row - 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
+//                updateMatchMaskForTile(matchMask, col - 1, row, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT);
+//                updateMatchMaskForTile(matchMask, col, row + 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
+//                updateMatchMaskForTile(matchMask, col + 1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
+//                updateMatchMaskForTile(matchMask, col, row - 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
+//                updateMatchMaskForTile(matchMask, col + 1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
+//                updateMatchMaskForTile(matchMask, col, row + 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
+//                break;
+//            }
             default:
             case 4:
             case 0: {
@@ -489,6 +674,8 @@ public class AutoTiler implements Runnable {
                 updateMatchMaskForTile(matchMask, col, row-1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
                 break;
             }
+            case 23:
+            case 22:
             case 7:
             case 3: {
                 updateMatchMaskForTile(matchMask, col+1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
@@ -548,7 +735,15 @@ public class AutoTiler implements Runnable {
         if (col < 0 || row < 0 || col >= mapWidth || row >= mapHeight) {
             return -1;
         }
-        return mapLayer.getCell(col, row).getTile().getId();
+        TiledMapTileLayer.Cell cell = mapLayer.getCell(col, row);
+        if (cell != null) {
+            TiledMapTile tiledMapTile = cell.getTile();
+            if (tiledMapTile != null) {
+                return tiledMapTile.getId();
+            }
+        }
+        return -1;
+//        return mapLayer.getCell(col, row).getTile().getId();
     }
 
     private byte[] getTerrainCodes(int tileId) {
@@ -571,6 +766,8 @@ public class AutoTiler implements Runnable {
                 values[3] = (byte) ((tileId & 0x8) >> 3);
                 break;
             }
+            case 23:
+            case 22:
             case 7:
             case 5:
             case 3:
