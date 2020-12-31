@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.utils.logging.Logger;
 import com.google.common.base.MoreObjects;
 
@@ -72,8 +73,8 @@ public class AutoTiler implements Runnable {
     private final StaticTiledMapTile nullTile;
 
     private Thread thread = null;
-    private int timeSleep = 0;
-    private int order = 26;
+    private int timeSleep = 2;
+    private int order = 28;
 
     public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
         this.mapWidth = mapWidth;
@@ -83,6 +84,7 @@ public class AutoTiler implements Runnable {
         nullTile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("maps/textures/redTexture.png"))));
         nullTile.getTextureRegion().setRegionWidth(tileWidth);
         nullTile.getTextureRegion().setRegionHeight(tileHeight);
+        nullTile.setId(-1);
 //        nullTile.getTextureRegion().getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         map.width = mapWidth;
         map.height = mapHeight;
@@ -271,10 +273,14 @@ public class AutoTiler implements Runnable {
                     zigZag7();
                     break;
                 }
+                case 28: {
+                    circular();
+                    break;
+                }
                 default:
             }
             order++;
-            if (order > 27) {
+            if (order > 28) {
                 order = 0;
             }
         } catch (Exception exception) {
@@ -802,6 +808,71 @@ public class AutoTiler implements Runnable {
         }
     }
 
+    private void circular() throws Exception {
+        int rows = map.width;
+        int cols = map.height;
+        Dot dot = new Dot(0, 0, rows - 1, cols - 1, 0, 0);
+        Direction directionState = Direction.RIGHT; // initial direction
+        int p = 1;
+        makeCell(dot.row, dot.col);
+        while (p < rows * cols) {
+            switch (directionState) {
+                case RIGHT:
+                    if (dot.TryMoveRight()) {
+                        if (!makeCell(dot.row, dot.col)) {
+//                            Logger.logError("dot:" + dot);
+//                            dot.row--;
+//                        } else {
+//                            p++;
+                        }
+                        p++;
+                    } else {
+                        directionState = Direction.DOWN;
+                    }
+                    break;
+                case DOWN:
+                    if (dot.TryMoveDown()) {
+                        if (!makeCell(dot.row, dot.col)) {
+//                            Logger.logError("dot:" + dot);
+//                            dot.col++;
+//                        } else {
+//                            p++;
+                        }
+                        p++;
+                    } else {
+                        directionState = Direction.LEFT;
+                    }
+                    break;
+                case LEFT:
+                    if (dot.TryMoveLeft()) {
+                        if (!makeCell(dot.row, dot.col)) {
+//                            Logger.logError("dot:" + dot);
+//                            dot.row++;
+//                        } else {
+//                            p++;
+                        }
+                        p++;
+                    } else {
+                        directionState = Direction.UP;
+                    }
+                    break;
+                case UP:
+                    if (dot.TryMoveUp()) {
+                        if (!makeCell(dot.row, dot.col)) {
+//                            Logger.logError("dot:" + dot);
+//                            dot.col--;
+//                        } else {
+//                            p++;
+                        }
+                        p++;
+                    } else {
+                        directionState = Direction.RIGHT;
+                    }
+                    break;
+            }
+        }
+    }
+
     private boolean makeCell(int col, int row) throws Exception {
         Thread.sleep(timeSleep);
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -820,18 +891,28 @@ public class AutoTiler implements Runnable {
     private int pickTile(int col, int row) {
         byte[] matchMask = new byte[]{MATCH_ANY, MATCH_ANY, MATCH_ANY, MATCH_ANY};
         switch (order) {
-//            default: {
-//                updateMatchMaskForTile(matchMask, col - 1, row, TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT);
-//                updateMatchMaskForTile(matchMask, col, row - 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
-//                updateMatchMaskForTile(matchMask, col - 1, row, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT);
-//                updateMatchMaskForTile(matchMask, col, row + 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
-//                updateMatchMaskForTile(matchMask, col + 1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
-//                updateMatchMaskForTile(matchMask, col, row - 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
-//                updateMatchMaskForTile(matchMask, col + 1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
-//                updateMatchMaskForTile(matchMask, col, row + 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
-//                break;
-//            }
-            default:
+            default: {
+                updateMatchMaskForTile(matchMask, col - 1, row, TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT);
+                updateMatchMaskForTile(matchMask, col, row - 1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
+                updateMatchMaskForTile(matchMask, col + 1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
+                updateMatchMaskForTile(matchMask, col, row + 1, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT);
+                break;
+            }
+//            default:
+            case 21:
+            case 20:
+            case 19:
+            case 18:
+            case 17:
+            case 16:
+            case 15:
+//            case 14:
+            case 13:
+            case 12:
+            case 11:
+            case 10:
+            case 9:
+//            case 8:
             case 4:
             case 0: {
                 updateMatchMaskForTile(matchMask, col-1, row, TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT);
@@ -843,7 +924,7 @@ public class AutoTiler implements Runnable {
             case 5:
             case 1: {
                 updateMatchMaskForTile(matchMask, col-1, row, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT);
-                updateMatchMaskForTile(matchMask, col, row+1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
+                updateMatchMaskForTile(matchMask, col, row+1, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT);
                 break;
             }
             case 25:
@@ -859,7 +940,7 @@ public class AutoTiler implements Runnable {
             case 7:
             case 3: {
                 updateMatchMaskForTile(matchMask, col+1, row, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT, TOP_LEFT);
-                updateMatchMaskForTile(matchMask, col, row+1, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT);
+                updateMatchMaskForTile(matchMask, col, row+1, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT);
                 break;
             }
         }
@@ -948,20 +1029,20 @@ public class AutoTiler implements Runnable {
                 values[3] = (byte) ((tileId & 0x8) >> 3);
                 break;
             }
-            case 27:
-            case 26:
-            case 23:
-            case 22:
-            case 7:
-            case 5:
-            case 3:
-            case 1: {
-                values[0] = (byte) ((tileId & 0x4) >> 2);
-                values[1] = (byte) ((tileId & 0x8) >> 3);
-                values[2] = (byte) (tileId & 0x1);
-                values[3] = (byte) ((tileId & 0x2) >> 1);
-                break;
-            }
+//            case 27:
+//            case 26:
+//            case 23:
+//            case 22:
+//            case 7:
+//            case 5:
+//            case 3:
+//            case 1: {
+//                values[0] = (byte) ((tileId & 0x4) >> 2);
+//                values[1] = (byte) ((tileId & 0x8) >> 3);
+//                values[2] = (byte) (tileId & 0x1);
+//                values[3] = (byte) ((tileId & 0x2) >> 1);
+//                break;
+//            }
         }
         int tilesRowIndex = tileId / TILES_PER_TERRAIN;
         List<Byte> terrainRow = tileRowTerrains.get(tilesRowIndex);
