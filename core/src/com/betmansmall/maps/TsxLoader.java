@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.betmansmall.game.gameLogic.playerTemplates.SimpleTemplate;
 import com.betmansmall.maps.jsons.GsonTileSet;
 import com.betmansmall.maps.jsons.TileSet;
+import com.betmansmall.maps.xmls.Tile;
 import com.betmansmall.utils.json.JSONObject;
 import com.betmansmall.utils.json.XML;
 
@@ -14,6 +15,8 @@ import com.betmansmall.utils.json.XML;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.HashMap;
 
 public class TsxLoader {
     private static Gson gson = new GsonBuilder().create();
@@ -29,9 +32,15 @@ public class TsxLoader {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (Integer integer : simpleTemplate.tiles.keys()) {
-            tiledMapTileSet.putTile(integer, simpleTemplate.tiles.get(integer));
+        tileSet.tileHashMap = new HashMap<>();
+        for (Tile tile : tileSet.tile) {
+            int tileId = Integer.parseInt(tile.id);
+            tileSet.tileHashMap.put(tileId, tile);
+            tiledMapTileSet.putTile(tileId, simpleTemplate.tiles.get(tileId));
         }
+//        for (Integer integer : simpleTemplate.tiles.keys()) {
+//            tiledMapTileSet.putTile(integer, simpleTemplate.tiles.get(integer));
+//        }
 //        Logger.logDebug("MoreObjects.toStringHelper(tiledMapTileSet).toString():" + MoreObjects.toStringHelper(tiledMapTileSet).toString());
 //        Logger.logDebug("gson.toJson(tiledMapTileSet):" + gson.toJson(tiledMapTileSet));
         return tiledMapTileSet;

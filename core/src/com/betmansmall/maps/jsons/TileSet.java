@@ -7,6 +7,8 @@ import com.betmansmall.maps.xmls.Tile;
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+
 public class TileSet {
     public String version;
     public String tiledversion;
@@ -22,6 +24,7 @@ public class TileSet {
     @SerializedName("terraintypes")
     public TerrainTypes terrainTypes;
     public Tile[] tile;
+    public HashMap<Integer, Tile> tileHashMap;
 
     public MapProperties getProperties() {
         MapProperties mapProperties = new MapProperties();
