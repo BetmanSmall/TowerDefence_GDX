@@ -29,7 +29,7 @@ public class GameAutoTileScreen extends AbstractScreen {
         super(game);
 
 //        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter18.json"));
-        autoTiler = new AutoTiler(Gdx.files.internal("maps/other/summer.tsx"), MAP_WIDTH, MAP_HEIGHT);
+        autoTiler = new AutoTiler(Gdx.files.internal("maps/other/longWinter.tsx"), MAP_WIDTH, MAP_HEIGHT);
         tmxMap = autoTiler.generateMap();
         if (tmxMap.isometric) {
             renderer = new IsometricTiledMapRenderer(tmxMap);
