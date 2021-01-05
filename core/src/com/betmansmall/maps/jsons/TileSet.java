@@ -1,6 +1,8 @@
 package com.betmansmall.maps.jsons;
 
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.GridPoint2;
+import com.betmansmall.maps.xmls.Grid;
 import com.betmansmall.maps.xmls.Image;
 import com.betmansmall.maps.xmls.TerrainTypes;
 import com.betmansmall.maps.xmls.Tile;
@@ -20,6 +22,8 @@ public class TileSet {
     public String tilecount;
     public String columns;
 
+    public GridPoint2 tileoffset;
+    public Grid grid;
     public Image image;
     @SerializedName("terraintypes")
     public TerrainTypes terrainTypes;
@@ -52,9 +56,12 @@ public class TileSet {
                 .add("margin", margin)
                 .add("tilecount", tilecount)
                 .add("columns", columns)
+                .add("tileoffset", tileoffset)
+                .add("grid", grid)
                 .add("image", image)
                 .add("terrainTypes", terrainTypes)
-                .add("tile", tile)
+//                .add("tile", tile)
+//                .add("tileHashMap", tileHashMap)
                 .toString();
     }
 }

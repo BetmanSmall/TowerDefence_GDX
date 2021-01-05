@@ -18,7 +18,6 @@ import com.betmansmall.utils.logging.Logger;
 import com.google.common.base.MoreObjects;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -26,49 +25,15 @@ import static com.betmansmall.maps.AutoTiler.TILE_BITS.*;
 
 public class AutoTiler implements Runnable {
     private static final byte MATCH_ANY = 127;
-    private static final int TERRAINS_PER_ROW = 2;
-    private static final int TILES_PER_TERRAIN = 16;
 
     public enum TILE_BITS {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-//    public static class TerrainType {
-//        private final byte id;
-//        private final TreeSet<Byte> transitions;
-//
-//        public TerrainType(byte id) {
-//            this.id = id;
-//            this.transitions = new TreeSet<>();
-//        }
-//
-//        public byte getId() {
-//            return id;
-//        }
-//
-//        public TreeSet<Byte> getTransitions() {
-//            return transitions;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return MoreObjects.toStringHelper(this)
-//                    .add("id", id)
-//                    .add("transitions", transitions)
-//                    .toString();
-//        }
-//    }
-
     public int mapWidth;
     public int mapHeight;
     private Random random;
 
-    public int tileWidth;
-    public int tileHeight;
-    private List<List<Byte>> tileRowTerrains;
-//    private Map<Byte, TerrainType> terrainTypes;
-//    private int maxTransitions;
-    private Texture tilesTexture;
     private TileSet tileSet;
     private TiledMapTileSet tiledMapTiles;
     private TmxMap map;
@@ -83,18 +48,7 @@ public class AutoTiler implements Runnable {
         tileSet = TsxLoader.loadTileSet(tilesetFile);
         tiledMapTiles = TsxLoader.loadTiledMapTiles(tilesetFile, tileSet);
 
-        this.tileWidth = Integer.parseInt(tileSet.tilewidth);
-        this.tileHeight = Integer.parseInt(tileSet.tileheight);
-
-        mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, tileWidth, tileHeight);
         map = new TmxMap(new TiledMap(), "");
-        map.getLayers().add(mapLayer);
-
-        init(mapWidth, mapHeight);
-    }
-
-    public AutoTiler(int mapWidth, int mapHeight, FileHandle tilesetConfigFile) {
-        init(tilesetConfigFile);
         init(mapWidth, mapHeight);
     }
 
@@ -102,15 +56,16 @@ public class AutoTiler implements Runnable {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.random = new Random();
-        nullTile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("maps/textures/redTexture.png"))));
-        nullTile.getTextureRegion().setRegionWidth(tileWidth);
-        nullTile.getTextureRegion().setRegionHeight(tileHeight);
-        nullTile.setId(-1);
-//        nullTile.getTextureRegion().getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         map.width = mapWidth;
         map.height = mapHeight;
-        map.tileWidth = tileWidth;
-        map.tileHeight = tileHeight;
+        map.tileWidth = Integer.parseInt(tileSet.tilewidth);
+        map.tileHeight = Integer.parseInt(tileSet.tileheight);
+
+        nullTile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("maps/textures/redTexture.png"))));
+        nullTile.getTextureRegion().setRegionWidth(map.tileWidth);
+        nullTile.getTextureRegion().setRegionHeight(map.tileHeight);
+//        nullTile.getTextureRegion().getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        nullTile.setId(-1);
         Logger.logFuncEnd("this:" + this);
     }
 
@@ -143,6 +98,25 @@ public class AutoTiler implements Runnable {
         Logger.logFuncStart("timeSleep:" + timeSleep);
     }
 
+    public TmxMap generateMap(FileHandle fileHandle) {
+        Logger.logFuncStart("fileHandle:" + fileHandle);
+        tileSet = TsxLoader.loadTileSet(fileHandle);
+        if (tileSet.terrainTypes != null) {
+            tiledMapTiles = TsxLoader.loadTiledMapTiles(fileHandle, tileSet);
+            map.tileWidth = Integer.parseInt(tileSet.tilewidth);
+            map.tileHeight = Integer.parseInt(tileSet.tileheight);
+
+            map.isometric = false;
+            if (tileSet.grid != null) {
+                if (tileSet.grid.orientation.equals("isometric")) {
+                    map.isometric = true;
+                }
+            }
+            return generateMap();
+        }
+        return null;
+    }
+
     public TmxMap generateMap() {
         Logger.logWithTime("currentThread:" + Thread.currentThread().toString());
         Logger.logDebug("thread:" + thread);
@@ -159,8 +133,14 @@ public class AutoTiler implements Runnable {
     public void run() {
         Logger.logWithTime(Thread.currentThread().toString());
         try {
-            map.getLayers().remove(0);
-            mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, tileWidth, tileHeight);
+            if (map.getLayers().size() != 0) {
+                map.getLayers().remove(0); // .remove(mapLayer);
+            }
+            if (map.isometric) {
+                mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, map.tileWidth, map.tileHeight / 2);
+            } else {
+                mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, map.tileWidth, map.tileHeight);
+            }
             map.getLayers().add(mapLayer);
             switch (order) {
                 case 0: {
@@ -1030,51 +1010,6 @@ public class AutoTiler implements Runnable {
 //        return mapLayer.getCell(col, row).getTile().getId();
     }
 
-//    private byte[] getTerrainCodes(int tileId) {
-//        byte[] values = new byte[4];
-////        byte[] values = new byte[] {
-////                (byte) (tileId & 0x1),
-////                (byte) ((tileId & 0x2) >> 1),
-////                (byte) ((tileId & 0x4) >> 2),
-////                (byte) ((tileId & 0x8) >> 3)
-////        };
-//        switch (order) {
-//            default:
-//            case 25:
-//            case 24:
-//            case 6:
-//            case 4:
-//            case 2:
-//            case 0: {
-//                values[0] = (byte) (tileId & 0x1);
-//                values[1] = (byte) ((tileId & 0x2) >> 1);
-//                values[2] = (byte) ((tileId & 0x4) >> 2);
-//                values[3] = (byte) ((tileId & 0x8) >> 3);
-//                break;
-//            }
-////            case 27:
-////            case 26:
-////            case 23:
-////            case 22:
-////            case 7:
-////            case 5:
-////            case 3:
-////            case 1: {
-////                values[0] = (byte) ((tileId & 0x4) >> 2);
-////                values[1] = (byte) ((tileId & 0x8) >> 3);
-////                values[2] = (byte) (tileId & 0x1);
-////                values[3] = (byte) ((tileId & 0x2) >> 1);
-////                break;
-////            }
-//        }
-//        int tilesRowIndex = tileId / TILES_PER_TERRAIN;
-//        List<Byte> terrainRow = tileRowTerrains.get(tilesRowIndex);
-//        for (int i = 0; i < values.length; i++) {
-//            values[i] = terrainRow.get(values[i]);
-//        }
-//        return values;
-//    }
-
     private byte[] getTerrainCodes(int tileId) {
         byte[] values = new byte[4];
         Tile tile = tileSet.tileHashMap.get(tileId);
@@ -1087,109 +1022,20 @@ public class AutoTiler implements Runnable {
         return values;
     }
 
-    private void init(FileHandle tilesetConfigFile) {
-        Json json = new Json();
-        TilesetConfig conf = json.fromJson(TilesetConfig.class, tilesetConfigFile);
-        Logger.logDebug("conf:" + conf);
-        FileHandle tilesTextureHandle = Gdx.files.internal(conf.getTexturePath());
-        if (!tilesTextureHandle.exists() || tilesTextureHandle.isDirectory()) {
-            throw new IllegalArgumentException("Invalid Tile-set texture path");
-        }
-        tileWidth = conf.getTileWidth();
-        if (tileWidth <= 0 || tileWidth > 128) {
-            throw new IllegalArgumentException("Invalid tile width");
-        }
-        tileHeight = conf.getTileHeight();
-        if (tileHeight <= 0 || tileHeight > 128) {
-            throw new IllegalArgumentException("Invalid tile height");
-        }
-        loadTerrainDefinitions(conf);
-        tilesTexture = new Texture(conf.getTexturePath());
-        try {
-            initMap();
-        } catch (Exception e) {
-            tilesTexture.dispose();
-            throw e;
-        }
-    }
-
-    private void loadTerrainDefinitions(TilesetConfig config) {
-        Array<Array<String>> terrainDefs = config.getTerrainDefs();
-        HashMap<String, Byte> nameToIdMap = new HashMap<>();
-//        terrainTypes = new HashMap<>();
-        tileRowTerrains = new ArrayList<>();
-        byte currentTerrainId = 0;
-        for (Array<String> terrainDefsRow : terrainDefs) {
-            if (terrainDefsRow.size != TERRAINS_PER_ROW) {
-                throw new IllegalArgumentException(
-                        "Each terrain_defs row must contain exactly " + TERRAINS_PER_ROW + " terrain types");
-            }
-            List<Byte> terrainRow = new ArrayList<>(TERRAINS_PER_ROW);
-            for (String terrainName : terrainDefsRow) {
-//                TerrainType terrainType;
-                Byte id = nameToIdMap.get(terrainName);
-                if (id == null) {
-                    id = currentTerrainId++;
-                    nameToIdMap.put(terrainName, id);
-//                    terrainType = new TerrainType(id);
-//                    terrainTypes.put(id, terrainType);
-                }
-                terrainRow.add(id);
-            }
-            this.tileRowTerrains.add(terrainRow);
-//            byte firstTerrainId = terrainRow.get(0);
-//            byte secondTerrainId = terrainRow.get(1);
-//            terrainTypes.get(firstTerrainId).getTransitions().add(secondTerrainId);
-//            terrainTypes.get(secondTerrainId).getTransitions().add(firstTerrainId);
-        }
-//        maxTransitions = terrainTypes.size() - 1;
-    }
-
-    private void initMap() {
-        TextureRegion[][] splitTiles = TextureRegion.split(tilesTexture, tileWidth, tileHeight);
-        int numRows = splitTiles.length;
-        if (numRows != tileRowTerrains.size()) {
-            throw new IllegalArgumentException("Tileset rows do not match terrain definitions");
-        }
-        for (TextureRegion[] splitTile : splitTiles) {
-            if (splitTile.length != TILES_PER_TERRAIN) {
-                throw new IllegalArgumentException("Each tileset row must have exactly " + TILES_PER_TERRAIN + " tiles");
-            }
-        }
-        tiledMapTiles = new TiledMapTileSet();
-        int tid = 0;
-        for (int i = 0; i < splitTiles.length; i++) {
-            for (int j = 0; j < splitTiles[i].length; j++) {
-                StaticTiledMapTile tile = new StaticTiledMapTile(splitTiles[i][j]);
-                tile.setId(tid++);
-                tiledMapTiles.putTile(tile.getId(), tile);
-            }
-        }
-        map = new TmxMap(new TiledMap(), "");
-        mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, tileWidth, tileHeight);
-        map.getLayers().add(mapLayer);
-        Array<Texture> textures = Array.with(tilesTexture);
-        map.setOwnedResources(textures);
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("mapWidth", mapWidth)
                 .add("mapHeight", mapHeight)
                 .add("random", random)
-                .add("tileWidth", tileWidth)
-                .add("tileHeight", tileHeight)
-                .add("tileRowTerrains", tileRowTerrains)
-//                .add("terrainTypes", terrainTypes)
-//                .add("maxTransitions", maxTransitions)
-                .add("tilesTexture", tilesTexture)
 //                .add("tileSet", tileSet)
+//                .add("tiledMapTiles", tiledMapTiles)
 //                .add("map", map)
 //                .add("mapLayer", mapLayer)
 //                .add("nullTile", nullTile)
 //                .add("thread", thread)
 //                .add("timeSleep", timeSleep)
+//                .add("order", order)
                 .toString();
     }
 }

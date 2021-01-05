@@ -124,10 +124,15 @@ public class GameMaster extends Game {
         gameLevelMaps.add("maps/FirstMap(ByART_).tmx");
         gameLevelMaps.add("maps/island.tmx");
         gameLevelMaps.add("maps/isometric_grass_and_water.tmx");
+        gameLevelMaps.add("maps/longForest.tmx");
+        gameLevelMaps.add("maps/longSwamp.tmx");
+        gameLevelMaps.add("maps/longWasteland.tmx");
+        gameLevelMaps.add("maps/longWinter.tmx");
         gameLevelMaps.add("maps/randomMap.tmx");
         gameLevelMaps.add("maps/sample.tmx");
         gameLevelMaps.add("maps/SandWaterGrass.tmx");
         gameLevelMaps.add("maps/summer.tmx");
+        gameLevelMaps.add("maps/wasteland.tmx");
         gameLevelMaps.add("maps/winter.tmx");
         gameLevelMaps.add("maps/winter2.tmx");
 //        gameLevelMaps.add("maps/old/arena3.tmx");
@@ -149,14 +154,11 @@ public class GameMaster extends Game {
                 if (fileHandleExtension.equals("tmx")) {
                     Logger.logDebug("allMaps.add():" + fileHandle.path());
                     allMaps.add(fileHandle.path());
-//                } else if (fileHandleExtension.equals("tsx")) {
-//                    if (fileHandle.parent().name().equals("other")) {
-//                        Logger.logDebug("tileSetsFileHandles.add():" + fileHandle.path());
-//                        tileSetsFileHandles.add(fileHandle);
-//                        TiledMapTileSet tiledMapTileSet = TsxLoader.loadTiledMapTiles(fileHandle, TsxLoader.loadTileSet(fileHandle));
-//                        Logger.logDebug("tiledMapTileSet:" + tiledMapTileSet);
-//                        Logger.logDebug("tiledMapTileSet.getName():" + tiledMapTileSet.getName());
-//                    }
+                } else if (fileHandleExtension.equals("tsx")) {
+                    if (fileHandle.parent().name().equals("other")) {
+                        Logger.logDebug("tileSetsFileHandles.add():" + fileHandle.path());
+                        tileSetsFileHandles.add(fileHandle);
+                    }
                 }
             }
         } else {

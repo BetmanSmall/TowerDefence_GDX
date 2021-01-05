@@ -29,7 +29,7 @@ public class GameAutoTileScreen extends AbstractScreen {
         super(game);
 
 //        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter18.json"));
-        autoTiler = new AutoTiler(Gdx.files.internal("maps/other/longWinter.tsx"), MAP_WIDTH, MAP_HEIGHT);
+        autoTiler = new AutoTiler(Gdx.files.internal("maps/other/desert.tsx"), MAP_WIDTH, MAP_HEIGHT);
         tmxMap = autoTiler.generateMap();
         if (tmxMap.isometric) {
             renderer = new IsometricTiledMapRenderer(tmxMap);
@@ -53,6 +53,23 @@ public class GameAutoTileScreen extends AbstractScreen {
         super.show();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(new GestureDetector(new GestureDetector.GestureAdapter() {
+            @Override
+            public boolean longPress(float x, float y) {
+                Logger.logDebug("x:" + x, "y:" + y);
+                while (true) {
+                    if (autoTiler.generateMap(gameMaster.tileSetsFileHandles.random()) != null) {
+                        if (tmxMap.isometric) {
+                            renderer = new IsometricTiledMapRenderer(tmxMap);
+                        } else {
+                            renderer = new OrthogonalTiledMapRenderer(tmxMap);
+                        }
+                        break;
+                    }
+                }
+                return super.longPress(x, y);
+            }
+        }));
         inputMultiplexer.addProcessor(mapEditorCameraController);
         inputMultiplexer.addProcessor(new GestureDetector(mapEditorCameraController));
         inputMultiplexer.addProcessor(new InputAdapter() {
