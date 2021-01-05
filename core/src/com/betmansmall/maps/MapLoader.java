@@ -21,8 +21,8 @@ public class MapLoader extends TmxMapLoader {
 //    }
 
     @Override
-//    public TiledMap loadTiledMap(FileHandle tmxFile, Parameters parameter, ImageResolver imageResolver) { // gdx 1.9.10
-    protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) { // gdx 1.9.9
+    public TiledMap loadTiledMap(FileHandle tmxFile, Parameters parameter, ImageResolver imageResolver) { // gdx 1.9.13
+//    protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) { // gdx 1.9.9
         Logger.logFuncStart();
         TmxMap map = new TmxMap(tmxFile.path());
 
@@ -85,8 +85,8 @@ public class MapLoader extends TmxMapLoader {
         }
         Array<Element> tilesets = root.getChildrenByName("tileset");
         for (Element element : tilesets) {
-            loadTileSet(map, element, tmxFile, imageResolver); // gdx 1.9.9
-//            loadTileSet(element, tmxFile, imageResolver); // gdx 1.9.10
+//            loadTileSet(map, element, tmxFile, imageResolver); // gdx 1.9.9
+            loadTileSet(element, tmxFile, imageResolver); // gdx 1.9.13
             root.removeChild(element);
         }
         for (int i = 0, j = root.getChildCount(); i < j; i++) {

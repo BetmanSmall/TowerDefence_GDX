@@ -224,16 +224,16 @@ public class CameraController extends AbstractCameraController {
     }
 
     @Override
-    public boolean scrolled(int amount) {
-        super.scrolled(amount);
+    public boolean scrolled(float amountX, float amountY) {
+        super.scrolled(amountX, amountY);
 //        if (gameInterface.scrolled(amount)) {
 //            return false;
 //        }
         if (camera != null) {
-            if (amount > 0) {
+            if (amountY > 0) {
                 if (camera.zoom <= zoomMax)
                     camera.zoom += 0.1f;
-            } else if (amount < 0) {
+            } else if (amountY < 0) {
                 if (camera.zoom >= zoomMin)
                     camera.zoom -= 0.1f;
             }

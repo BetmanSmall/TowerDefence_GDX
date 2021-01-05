@@ -37,7 +37,7 @@ allprojects {
     version = "build-" + getGitHash() + "-" + getDate()
     ext {
         appName = "TowerDefence"
-        gdxVersion = '1.9.9'
+        gdxVersion = '1.9.13'
 //        roboVMVersion = '2.3.7'
 //        box2DLightsVersion = '1.4'
 //        ashleyVersion = '1.6.0'

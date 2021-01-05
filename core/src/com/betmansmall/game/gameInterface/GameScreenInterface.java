@@ -775,8 +775,8 @@ public class GameScreenInterface extends GameInterface {
     }
 
     @Override
-    public boolean scrolled(int amount) {
-//        Gdx.app.log("GameInterface::scrolled()", "-- amount:" + amount);
+    public boolean scrolled(float amountX, float amountY) {
+//        Logger.logFuncStart("amountX:" + amountX, "amountY:" + amountY);
 
 //        if (tableTowerButtons != null) {
 //            tableTowerButtons.scaleBy(cameraController.camera.zoom);
@@ -789,16 +789,17 @@ public class GameScreenInterface extends GameInterface {
 //            }
 //        }
         if (unitsSelector != null) {
-            if (unitsSelector.scrolled(amount)) {
+            if (unitsSelector.scrolled(amountY)) {
                 return true;
             }
         }
         if (towersSelector != null) {
-            if (towersSelector.scrolled(amount)) {
+            if (towersSelector.scrolled(amountY)) {
                 return true;
             }
         }
-        return false;
+        return super.scrolled(amountX, amountY);
+//        return false;
     }
 
 

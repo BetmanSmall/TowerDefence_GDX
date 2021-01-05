@@ -49,8 +49,8 @@ public abstract class AbstractCameraController implements GestureDetector.Gestur
     }
 
     @Override
-    public boolean scrolled(int amount) {
-//        Logger.logFuncStart("-- amount:" + amount);
+    public boolean scrolled(float amountX, float amountY) {
+//        Logger.logFuncStart("amountX:" + amountX, "amountY:" + amountY);
         return false;
     }
 

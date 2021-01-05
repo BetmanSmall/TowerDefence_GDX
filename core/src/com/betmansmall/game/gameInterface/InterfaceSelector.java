@@ -358,7 +358,7 @@ public class InterfaceSelector extends Table {
         return flinging;
     }
 
-    public boolean scrolled(int amount) {
+    public boolean scrolled(float amount) {
         int x = gameInterface.prevMouseX;
         int y = gameInterface.prevMouseY;
         if (vertical) {
