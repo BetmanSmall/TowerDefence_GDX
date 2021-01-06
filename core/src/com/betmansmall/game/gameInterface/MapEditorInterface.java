@@ -145,7 +145,7 @@ public class MapEditorInterface extends GameInterface {
 //                    mapNaaeIsSelected = result.file().getName();
                 mapNameLabel.setText("Map1:" + result.file().getName());
                 Logger.logDebug("result.file().getName():" + result.file().getName());
-                mapEditorScreen.gameMaster.addScreen(new MapEditorScreen(mapEditorScreen.gameMaster, result.file().getPath()));
+                mapEditorScreen.gameMaster.addScreen(new MapEditorScreen(mapEditorScreen.gameMaster)); // result.file().getPath()
             }
             return true;
         });

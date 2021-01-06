@@ -17,9 +17,6 @@ import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.utils.logging.Logger;
 
 public class GameAutoTileScreen extends AbstractScreen {
-    private static final int MAP_WIDTH = 32;
-    private static final int MAP_HEIGHT = 16;
-
     public AutoTiler autoTiler;
     public TmxMap tmxMap;
     public BatchTiledMapRenderer renderer;
@@ -28,8 +25,7 @@ public class GameAutoTileScreen extends AbstractScreen {
     public GameAutoTileScreen(GameMaster game) {
         super(game);
 
-//        autoTiler = new AutoTiler(MAP_WIDTH, MAP_HEIGHT, Gdx.files.internal("maps/other/winter18.json"));
-        autoTiler = new AutoTiler(Gdx.files.internal("maps/other/desert.tsx"), MAP_WIDTH, MAP_HEIGHT);
+        autoTiler = new AutoTiler(Gdx.files.internal("maps/other/desert.tsx"));
         tmxMap = autoTiler.generateMap();
         if (tmxMap.isometric) {
             renderer = new IsometricTiledMapRenderer(tmxMap);

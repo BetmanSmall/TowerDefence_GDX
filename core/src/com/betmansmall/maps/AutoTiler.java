@@ -9,8 +9,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import com.betmansmall.game.gameLogic.playerTemplates.Direction;
 import com.betmansmall.maps.jsons.TileSet;
 import com.betmansmall.maps.xmls.Tile;
@@ -30,8 +28,8 @@ public class AutoTiler implements Runnable {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    public int mapWidth;
-    public int mapHeight;
+    public int mapWidth = 32;
+    public int mapHeight = 16;
     private Random random;
 
     private TileSet tileSet;
@@ -44,10 +42,9 @@ public class AutoTiler implements Runnable {
     private int timeSleep = 2;
     private int order = 28;
 
-    public AutoTiler(FileHandle tilesetFile, int mapWidth, int mapHeight) {
+    public AutoTiler(FileHandle tilesetFile) {
         tileSet = TsxLoader.loadTileSet(tilesetFile);
         tiledMapTiles = TsxLoader.loadTiledMapTiles(tilesetFile, tileSet);
-
         map = new TmxMap(new TiledMap(), "");
         init(mapWidth, mapHeight);
     }

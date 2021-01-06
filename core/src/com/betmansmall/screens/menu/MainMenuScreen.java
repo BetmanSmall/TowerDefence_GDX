@@ -360,7 +360,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                            String fileName = fileopen.getSelectedFile().getAbsolutePath();
 //                            game.setScreen(new MapEditorScreen(game, fileName));
 //                        } else {
-                        gameMaster.addScreen(new MapEditorScreen(gameMaster, gameMaster.gameLevelMaps.random()));
+                        gameMaster.addScreen(new MapEditorScreen(gameMaster)); // gameMaster.gameLevelMaps.random()
 //                        }
                         break;
                 }

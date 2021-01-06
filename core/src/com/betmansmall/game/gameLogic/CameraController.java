@@ -84,6 +84,9 @@ public class CameraController extends AbstractCameraController {
         } else if (screen instanceof MapEditorScreen) {
             tmxMap = ((MapEditorScreen) screen).tmxMap;
             gameInterface = ((MapEditorScreen) screen).mapEditorInterface;
+            camera.position.set(515, 255, 0);
+            camera.zoom = 1.05f;
+            zoomMax = 10f;
         } else if (screen instanceof GameAutoTileScreen) {
             tmxMap = ((GameAutoTileScreen) screen).tmxMap;
             camera.position.set(515, 255, 0);
