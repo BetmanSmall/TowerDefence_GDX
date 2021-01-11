@@ -29,11 +29,9 @@ import java.util.Iterator;
  *
  * @author Alexander on 14.10.2019.
  */
-public class GameFieldRenderer {
+public class GameFieldRenderer extends BasicRender {
     private final GameField gameField;
-    private final CameraController cameraController;
 
-    private ShapeRenderer shapeRenderer;
     private SpriteBatch spriteBatch;
     private BitmapFont bitmapFont;
 
@@ -41,10 +39,9 @@ public class GameFieldRenderer {
     private Texture redCross;
 
     public GameFieldRenderer(final GameField gameField, final CameraController cameraController) {
+        super(cameraController);
         this.gameField = gameField;
-        this.cameraController = cameraController;
 
-        this.shapeRenderer = new ShapeRenderer();
         this.spriteBatch = new SpriteBatch();
         this.bitmapFont = new BitmapFont();
 
@@ -57,9 +54,7 @@ public class GameFieldRenderer {
 
     public void dispose() {
 //        this.gameField = null;
-//        this.cameraController = null;
 
-        this.shapeRenderer.dispose();
         this.spriteBatch.dispose();
         this.bitmapFont.dispose();
 
@@ -109,10 +104,7 @@ public class GameFieldRenderer {
         spriteBatch.end();
         shapeRenderer.end();
 
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(0f, 0f, 5);
-        shapeRenderer.end();
+        drawRedCenterDot();
     }
 
     void drawFullField() {
@@ -132,73 +124,6 @@ public class GameFieldRenderer {
                 isometricSpaceX = isometricSpaceX != 0 ? 0 : sizeCellX / 2;
             }
         }
-    }
-
-    private void drawGrid() {
-        TmxMap map = gameField.tmxMap;
-        shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.BROWN);
-        if (!map.isometric) {
-            float sizeCellX = cameraController.sizeCellX;
-//            float sizeCellY = cameraController.sizeCellY;
-            if (cameraController.isDrawableGrid == 1 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x < map.width+1; x++)
-                    shapeRenderer.line(-(x*sizeCellX), 0, -(x*sizeCellX), -(sizeCellX*map.height));
-                for (int y = 0; y < map.height+1; y++)
-                    shapeRenderer.line(0, -(y*sizeCellX), -(sizeCellX*map.width), -(y*sizeCellX));
-            }
-            if (cameraController.isDrawableGrid == 2 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x < map.width+1; x++)
-                    shapeRenderer.line(x*sizeCellX, 0, x*sizeCellX, -(sizeCellX*map.height));
-                for (int y = 0; y < map.height+1; y++)
-                    shapeRenderer.line(0, -(y*sizeCellX), sizeCellX*map.width, -(y*sizeCellX));
-            }
-            if (cameraController.isDrawableGrid == 3 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x < map.width+1; x++)
-                    shapeRenderer.line(x*sizeCellX, 0, x*sizeCellX, sizeCellX*map.height);
-                for (int y = 0; y < map.height+1; y++)
-                    shapeRenderer.line(0, y*sizeCellX, sizeCellX*map.width, y*sizeCellX);
-            }
-            if (cameraController.isDrawableGrid == 4 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x < map.width+1; x++)
-                    shapeRenderer.line(-(x*sizeCellX), 0, -(x*sizeCellX), sizeCellX*map.height);
-                for (int y = 0; y < map.height+1; y++)
-                    shapeRenderer.line(0, y*sizeCellX, -(sizeCellX*map.width), y*sizeCellX);
-            }
-        } else {
-            float halfSizeCellX = cameraController.halfSizeCellX;
-            float halfSizeCellY = cameraController.halfSizeCellY;
-            float widthForTop = map.height * halfSizeCellX; // A - B
-            float heightForTop = map.height * halfSizeCellY; // B - Top
-            float widthForBottom = map.width * halfSizeCellX; // A - C
-            float heightForBottom = map.width * halfSizeCellY; // C - Bottom
-            if (cameraController.isDrawableGrid == 1 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.width; x++)
-                    shapeRenderer.line((halfSizeCellX*x),-(halfSizeCellY*x),-(widthForTop)+(halfSizeCellX*x),-(heightForTop)-(x*halfSizeCellY));
-                for (int y = 0; y <= map.height; y++)
-                    shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y),(widthForBottom)-(halfSizeCellX*y),-(heightForBottom)-(halfSizeCellY*y));
-            }
-            if (cameraController.isDrawableGrid == 2 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.width; x++)
-                    shapeRenderer.line((halfSizeCellX*x),-(halfSizeCellY*x),(widthForTop)+(halfSizeCellX*x),(heightForTop)-(x*halfSizeCellY));
-                for (int y = 0; y <= map.height; y++)
-                    shapeRenderer.line((halfSizeCellX*y),(halfSizeCellY*y),(widthForBottom)+(halfSizeCellX*y),-(heightForBottom)+(halfSizeCellY*y));
-            }
-            if (cameraController.isDrawableGrid == 3 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.height; x++) // WHT??? map.height check groundDraw
-                    shapeRenderer.line(-(halfSizeCellX*x),(halfSizeCellY*x),(widthForBottom)-(halfSizeCellX*x),(heightForBottom)+(x*halfSizeCellY));
-                for (int y = 0; y <= map.width; y++) // WHT??? map.width check groundDraw
-                    shapeRenderer.line((halfSizeCellX*y),(halfSizeCellY*y),-(widthForTop)+(halfSizeCellX*y),(heightForTop)+(halfSizeCellY*y));
-            }
-            if (cameraController.isDrawableGrid == 4 || cameraController.isDrawableGrid == 5) {
-                for (int x = 0; x <= map.height; x++) // WHT??? map.height check groundDraw
-                    shapeRenderer.line(-(halfSizeCellX*x),(halfSizeCellY*x),-(widthForBottom)-(halfSizeCellX*x),-(heightForBottom)+(x*halfSizeCellY));
-                for (int y = 0; y <= map.width; y++) // WHT??? map.width check groundDraw
-                    shapeRenderer.line(-(halfSizeCellX*y),-(halfSizeCellY*y),-(widthForTop)-(halfSizeCellX*y),(heightForTop)-(halfSizeCellY*y));
-            }
-        }
-        shapeRenderer.end();
     }
 
     private void drawBackGrounds() {

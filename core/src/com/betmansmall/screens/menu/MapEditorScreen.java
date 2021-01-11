@@ -13,16 +13,18 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.game.gameInterface.MapEditorInterface;
 import com.betmansmall.game.gameLogic.MapEditorCameraController;
 import com.betmansmall.maps.AutoTiler;
-import com.betmansmall.maps.MapLoader;
 import com.betmansmall.maps.TmxMap;
+import com.betmansmall.render.BasicRender;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.utils.logging.Logger;
 
 public class MapEditorScreen extends AbstractScreen {
     public AutoTiler autoTiler;
     public TmxMap tmxMap;
-    public BatchTiledMapRenderer renderer;
+
     public MapEditorCameraController mapEditorCameraController;
+    public BatchTiledMapRenderer renderer;
+    public BasicRender basicRender;
     public MapEditorInterface mapEditorInterface;
 
     public MapEditorScreen(GameMaster gameMaster) {
@@ -31,14 +33,17 @@ public class MapEditorScreen extends AbstractScreen {
 
         autoTiler = new AutoTiler(Gdx.files.internal("maps/other/desert.tsx"));
         tmxMap = autoTiler.generateMap();
+
+        mapEditorCameraController = new MapEditorCameraController(this);
+
         if (tmxMap.isometric) {
             this.renderer = new IsometricTiledMapRenderer(tmxMap);
         } else {
             this.renderer = new OrthogonalTiledMapRenderer(tmxMap);
         }
         Logger.logDebug("renderer:" + renderer);
+        this.basicRender = new BasicRender(mapEditorCameraController);
 
-        mapEditorCameraController = new MapEditorCameraController(this);
         mapEditorInterface = new MapEditorInterface(this);
         mapEditorInterface.setDebugUnderMouse(true);
         mapEditorInterface.setDebugInvisible(true);
@@ -52,8 +57,11 @@ public class MapEditorScreen extends AbstractScreen {
         super.dispose();
 //        autoTiler.dispose();
         tmxMap.dispose();
-        renderer.dispose();
         mapEditorCameraController.dispose();
+
+        renderer.dispose();
+        basicRender.dispose();
+
         mapEditorInterface.dispose();
     }
 
@@ -110,8 +118,11 @@ public class MapEditorScreen extends AbstractScreen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         mapEditorCameraController.update(delta);
+
         renderer.setView(mapEditorCameraController.camera);
         renderer.render();
+        basicRender.render();
+
         mapEditorInterface.act();
         mapEditorInterface.draw();
 

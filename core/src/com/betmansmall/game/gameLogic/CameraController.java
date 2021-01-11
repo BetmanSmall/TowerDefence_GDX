@@ -75,18 +75,13 @@ public class CameraController extends AbstractCameraController {
             this.gameField = gameScreen.gameField;
             this.tmxMap = gameField.tmxMap;
             this.gameInterface = gameScreen.gameInterface;
-            this.mapWidth = tmxMap.width;
-            this.mapHeight = tmxMap.height;
-            this.sizeCellX = tmxMap.tileWidth;
-            this.sizeCellY = tmxMap.tileHeight;
-            this.halfSizeCellX = sizeCellX / 2;
-            this.halfSizeCellY = sizeCellY / 2;
         } else if (screen instanceof MapEditorScreen) {
             tmxMap = ((MapEditorScreen) screen).tmxMap;
             gameInterface = ((MapEditorScreen) screen).mapEditorInterface;
             camera.position.set(515, 255, 0);
             camera.zoom = 1.05f;
             zoomMax = 10f;
+            isDrawableGrid = 3;
         } else if (screen instanceof GameAutoTileScreen) {
             tmxMap = ((GameAutoTileScreen) screen).tmxMap;
             camera.position.set(515, 255, 0);
@@ -95,6 +90,12 @@ public class CameraController extends AbstractCameraController {
         } else {
             Logger.logError("screen!=GameScreen");
         }
+        this.mapWidth = tmxMap.width;
+        this.mapHeight = tmxMap.height;
+        this.sizeCellX = tmxMap.tileWidth;
+        this.sizeCellY = tmxMap.tileHeight;
+        this.halfSizeCellX = sizeCellX / 2;
+        this.halfSizeCellY = sizeCellY / 2;
         random = new Random();
 //        Gdx.input.setCursorCatched(true);
     }
