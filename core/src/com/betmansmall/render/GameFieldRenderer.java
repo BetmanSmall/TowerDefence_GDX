@@ -110,12 +110,12 @@ public class GameFieldRenderer extends BasicRender {
     void drawFullField() {
         if (cameraController.gameField.tmxMap.isometric) {
             TextureRegion textureRegion = cameraController.gameField.tmxMap.getTileSets().getTile(85).getTextureRegion(); // draw water2
-            float sizeCellX = cameraController.sizeCellX;
-            float sizeCellY = cameraController.sizeCellY;
+            float sizeCellX = cameraController.tmxMap.tileWidth;
+            float sizeCellY = cameraController.tmxMap.tileHeight;
             int sizeX = cameraController.gameField.tmxMap.width*2;//30;//width()/sizeCellX)+1;
             int sizeY = cameraController.gameField.tmxMap.height*2;//30;//(height()/sizeCellY)*2+2;
             float isometricSpaceX = 0;
-            float isometricSpaceY = +(cameraController.sizeCellY / 2) * (sizeY/2);
+            float isometricSpaceY = +(sizeCellY / 2) * (sizeY/2);
             for (int y = -sizeY/2; y <= sizeY; y++) {
                 for (int x = -sizeX/2; x <= sizeX; x++) {
                     spriteBatch.draw(textureRegion, isometricSpaceX + sizeCellX / 2 - x * sizeCellX, isometricSpaceY - sizeCellY, sizeCellX, sizeCellY*2);
@@ -212,12 +212,12 @@ public class GameFieldRenderer extends BasicRender {
     }
 
     private void drawBackGroundCell(Cell cell) {
-        float sizeCellX = cameraController.sizeCellX;
-        float sizeCellY = cameraController.sizeCellY*2;
-        float deltaX = cameraController.halfSizeCellX;
-        float deltaY = cameraController.halfSizeCellY;
+        float sizeCellX = cameraController.tmxMap.tileWidth;
+        float sizeCellY = cameraController.tmxMap.tileHeight*2;
+        float deltaX = cameraController.tmxMap.halfTileWidth;
+        float deltaY = cameraController.tmxMap.halfTileHeight;
         if (!cameraController.gameField.tmxMap.isometric) {
-            sizeCellY = cameraController.sizeCellY;
+            sizeCellY = cameraController.tmxMap.tileHeight;
         }
         Array<TiledMapTile> tiledMapTiles = cell.backgroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
@@ -311,12 +311,12 @@ public class GameFieldRenderer extends BasicRender {
     }
 
     private void drawGroundCellWithUnitsAndTower(Cell cell) {
-        float sizeCellX = cameraController.sizeCellX;
-        float sizeCellY = cameraController.sizeCellY*2;
-        float deltaX = cameraController.halfSizeCellX;
-        float deltaY = cameraController.halfSizeCellY;
+        float sizeCellX = cameraController.tmxMap.tileWidth;
+        float sizeCellY = cameraController.tmxMap.tileHeight*2;
+        float deltaX = cameraController.tmxMap.halfTileWidth;
+        float deltaY = cameraController.tmxMap.halfTileHeight;
         if (!cameraController.gameField.tmxMap.isometric) {
-            sizeCellY = cameraController.sizeCellY;
+            sizeCellY = cameraController.tmxMap.tileHeight;
         }
         Array<TiledMapTile> tiledMapTiles = cell.groundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
@@ -368,13 +368,13 @@ public class GameFieldRenderer extends BasicRender {
             currentFrame = unit.getCurrentDeathFrame();
         }
 
-        float sizeCellX = cameraController.sizeCellX;
-        float sizeCellY = cameraController.sizeCellY*2;
-        float deltaX = cameraController.halfSizeCellX;
-        float deltaY = cameraController.sizeCellY;
+        float sizeCellX = cameraController.tmxMap.tileWidth;
+        float sizeCellY = cameraController.tmxMap.tileHeight*2;
+        float deltaX = cameraController.tmxMap.halfTileWidth;
+        float deltaY = cameraController.tmxMap.tileHeight;
         if (!cameraController.gameField.tmxMap.isometric) {
-            sizeCellY = cameraController.sizeCellY;
-            deltaY = cameraController.halfSizeCellY;
+            sizeCellY = cameraController.tmxMap.tileHeight;
+            deltaY = cameraController.tmxMap.halfTileHeight;
         }
         float fVx = 0f, fVy = 0f;
         if (cameraController.isDrawableUnits == 5) {
@@ -418,8 +418,8 @@ public class GameFieldRenderer extends BasicRender {
         float hp = unit.hp;
         if (maxHP != hp) {
             TextureRegion currentFrame = unit.getCurrentFrame();
-            fVx -= cameraController.sizeCellX/2;
-            fVy -= cameraController.sizeCellY;
+            fVx -= cameraController.tmxMap.tileWidth/2;
+            fVy -= cameraController.tmxMap.tileHeight;
             float currentFrameWidth = currentFrame.getRegionWidth();
             float currentFrameHeight = currentFrame.getRegionHeight();
             float hpBarSpace = 0.8f;
@@ -470,8 +470,8 @@ public class GameFieldRenderer extends BasicRender {
         int towerSize = tower.templateForTower.size;
 //        Vector2 towerPos = new Vector2(cell.getGraphicCoordinates(isDrawableTowers));
 //        shapeRenderer.circle(towerPos.x, towerPos.y, 3);
-        float sizeCellX = cameraController.sizeCellX;
-        float sizeCellY = cameraController.sizeCellY*2;
+        float sizeCellX = cameraController.tmxMap.tileWidth;
+        float sizeCellY = cameraController.tmxMap.tileHeight*2;
 
         TextureRegion burningFrame = null;
         TextureRegion currentFrame = null;
@@ -481,11 +481,11 @@ public class GameFieldRenderer extends BasicRender {
                 burningFrame = tower.getCurrentBurningFrame();
             }
         } else {
-            sizeCellY = cameraController.sizeCellY*1.5f;
+            sizeCellY = cameraController.tmxMap.tileHeight*1.5f;
             currentFrame = tower.getCurrentDestroyFrame();
         }
         if (!cameraController.gameField.tmxMap.isometric) {
-            sizeCellY = cameraController.sizeCellY;
+            sizeCellY = cameraController.tmxMap.tileHeight;
         }
         Vector2 towerPos = new Vector2();
         if (cameraController.isDrawableTowers == 5) {
@@ -606,15 +606,15 @@ public class GameFieldRenderer extends BasicRender {
     }
 
     private void drawForeGroundCell(Cell cell) {
-        float sizeCellX = cameraController.sizeCellX;
-        float sizeCellY = cameraController.sizeCellY*2;
+        float sizeCellX = cameraController.tmxMap.tileWidth;
+        float sizeCellY = cameraController.tmxMap.tileHeight*2;
 //        if (cameraController.gameField.tmxMap. == cameraController.gameField.tmxMap.tileHeight) {
-//            sizeCellY = cameraController.sizeCellY;
+//            sizeCellY = cameraController.tmxMap.tileHeight;
 //        }
-        float deltaX = cameraController.halfSizeCellX;
-        float deltaY = cameraController.halfSizeCellY;
+        float deltaX = cameraController.tmxMap.halfTileWidth;
+        float deltaY = cameraController.tmxMap.halfTileHeight;
         if (!cameraController.gameField.tmxMap.isometric) {
-            sizeCellY = cameraController.sizeCellY;
+            sizeCellY = cameraController.tmxMap.tileHeight;
         }
         Array<TiledMapTile> tiledMapTiles = cell.foregroundTiles;
         for (TiledMapTile tiledMapTile : tiledMapTiles) {
@@ -653,8 +653,8 @@ public class GameFieldRenderer extends BasicRender {
         float hp = tower.hp;
         if (maxHP != hp) {
             TextureRegion currentFrame = tower.templateForTower.idleTile.getTextureRegion();
-            fVx -= cameraController.sizeCellX/2;
-            fVy -= cameraController.sizeCellY;
+            fVx -= cameraController.tmxMap.tileWidth/2;
+            fVy -= cameraController.tmxMap.tileHeight;
             float currentFrameWidth = currentFrame.getRegionWidth();
             float currentFrameHeight = currentFrame.getRegionHeight();
             float hpBarSpace = 0.8f;
@@ -696,7 +696,7 @@ public class GameFieldRenderer extends BasicRender {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         TmxMap map = gameField.tmxMap;
         Vector2 pos = new Vector2();
-        float gridNavRadius = cameraController.sizeCellX/20f;
+        float gridNavRadius = cameraController.tmxMap.tileWidth/20f;
         for (int y = 0; y < map.height; y++) {
             for (int x = 0; x < map.width; x++) {
                 Cell cell = gameField.getCellNoCheck(x, y);
@@ -766,7 +766,7 @@ public class GameFieldRenderer extends BasicRender {
         shapeRenderer.setColor(Color.ORANGE);
         for (Tower tower : gameField.towersManager.towers) {
             for (Bullet bullet : tower.bullets) {
-                shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, cameraController.sizeCellX/40f);
+                shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, cameraController.tmxMap.tileWidth/40f);
                 if (null != bullet.currCircle) {
                     if (bullet.animation == null) {
                         shapeRenderer.circle(bullet.currCircle.x, bullet.currCircle.y, bullet.currCircle.radius);
@@ -776,7 +776,7 @@ public class GameFieldRenderer extends BasicRender {
         }
         for (Unit unit : gameField.unitsManager.units) {
             for (UnitBullet bullet : unit.bullets) {
-                shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, cameraController.sizeCellX/40f);
+                shapeRenderer.rectLine(bullet.currentPoint.x, bullet.currentPoint.y, bullet.endPoint.x, bullet.endPoint.y, cameraController.tmxMap.tileWidth/40f);
                 if (null != bullet.currCircle) {
                     if (bullet.animation == null) {
                         shapeRenderer.circle(bullet.currCircle.x, bullet.currCircle.y, bullet.currCircle.radius);
@@ -910,7 +910,7 @@ public class GameFieldRenderer extends BasicRender {
             if (tower.templateForTower.towerAttackType == TowerAttackType.Pit) {
                 bitmapFont.setColor(Color.YELLOW);
                 bitmapFont.getData().setScale(0.5f);
-                float halfSizeCellY = cameraController.halfSizeCellY/2;
+                float halfSizeCellY = cameraController.tmxMap.halfTileHeight/2;
                 if(cameraController.isDrawableGridNav == 5) {
                     if(cameraController.isDrawableTowers  == 5) {
                         for (int m = 1; m <= cameraController.isDrawableTowers; m++) {
@@ -978,7 +978,7 @@ public class GameFieldRenderer extends BasicRender {
         shapeRenderer.setProjectionMatrix(cameraController.camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        float gridNavRadius = cameraController.sizeCellX/22f;
+        float gridNavRadius = cameraController.tmxMap.tileWidth/22f;
         for (int u = 0; u < gameField.unitsManager.units.size; u++) {
             Unit unit = gameField.unitsManager.units.get(u);
 //        for (Unit unit : gameField.unitsManager.units) {
@@ -1040,7 +1040,7 @@ public class GameFieldRenderer extends BasicRender {
 
     private void drawWave(Wave wave) {
 //        Gdx.app.log("GameField::drawWave(" + wave + ")", "--");
-        float linesWidth = cameraController.sizeCellX/15f;
+        float linesWidth = cameraController.tmxMap.tileWidth/15f;
         ArrayDeque<Node> route = wave.route;
         if (route != null && !route.isEmpty()) {
             Iterator<Node> nodeIterator = route.iterator();
@@ -1145,10 +1145,10 @@ public class GameFieldRenderer extends BasicRender {
     }
 
     private void drawTowerUnderConstructionAndMarks(int map, TemplateForTower templateForTower, Cell mainCell, GridPoint2 startDrawCell, GridPoint2 finishDrawCell) {
-        float sizeCellX = cameraController.sizeCellX;
-        float sizeCellY = cameraController.sizeCellY*2;
+        float sizeCellX = cameraController.tmxMap.tileWidth;
+        float sizeCellY = cameraController.tmxMap.tileHeight*2;
         if (!cameraController.gameField.tmxMap.isometric) {
-            sizeCellY = cameraController.sizeCellY;
+            sizeCellY = cameraController.tmxMap.tileHeight;
         }
         TextureRegion textureRegion = templateForTower.idleTile.getTextureRegion();
         int towerSize = templateForTower.size;
@@ -1166,7 +1166,7 @@ public class GameFieldRenderer extends BasicRender {
                     Cell markCell = gameField.getCell(mainCell.cellX + x, mainCell.cellY + y);
                     if (markCell != null) {
                         markPos.set(markCell.getGraphicCoordinates(map));
-                        markPos.add(-(cameraController.halfSizeCellX), -(cameraController.halfSizeCellY));
+                        markPos.add(-(cameraController.tmxMap.halfTileWidth), -(cameraController.tmxMap.halfTileHeight));
                         if(markCell.isEmpty()) {
                             spriteBatch.draw(greenCheckmark, markPos.x, markPos.y, sizeCellX, sizeCellY);
                         } else {

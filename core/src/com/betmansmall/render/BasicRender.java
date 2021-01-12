@@ -42,7 +42,7 @@ public class BasicRender implements Disposable {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.BROWN);
         if (!tmxMap.isometric) {
-            float sizeCellX = cameraController.sizeCellX;
+            float sizeCellX = cameraController.tmxMap.tileWidth;
 //            float sizeCellY = cameraController.sizeCellY;
             if (cameraController.isDrawableGrid == 1 || cameraController.isDrawableGrid == 5) {
                 for (int x = 0; x < tmxMap.width+1; x++)
@@ -69,8 +69,8 @@ public class BasicRender implements Disposable {
                     shapeRenderer.line(0, y*sizeCellX, -(sizeCellX*tmxMap.width), y*sizeCellX);
             }
         } else {
-            float halfSizeCellX = cameraController.halfSizeCellX;
-            float halfSizeCellY = cameraController.halfSizeCellY;
+            float halfSizeCellX = cameraController.tmxMap.halfTileWidth;
+            float halfSizeCellY = cameraController.tmxMap.halfTileHeight;
             float widthForTop = tmxMap.height * halfSizeCellX; // A - B
             float heightForTop = tmxMap.height * halfSizeCellY; // B - Top
             float widthForBottom = tmxMap.width * halfSizeCellX; // A - C

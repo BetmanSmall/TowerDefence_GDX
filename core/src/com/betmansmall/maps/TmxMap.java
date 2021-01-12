@@ -15,6 +15,7 @@ public class TmxMap extends TiledMap { // how good? 1
     public String mapPath;
     public int width, height;
     public int tileWidth, tileHeight;
+    public float halfTileWidth, halfTileHeight;
     public boolean isometric;
     public boolean turnedMap = false;
 
@@ -38,6 +39,8 @@ public class TmxMap extends TiledMap { // how good? 1
         this.height = mapProperties.get("height", 0, Integer.class);
         this.tileWidth = mapProperties.get("tilewidth", 0, Integer.class);
         this.tileHeight = mapProperties.get("tileheight", 0, Integer.class);
+        this.halfTileWidth = tileWidth / 2f;
+        this.halfTileHeight = tileHeight / 2f;
         this.isometric = mapProperties.get("orientation", "", String.class).equals("isometric");
     }
 
@@ -86,6 +89,8 @@ public class TmxMap extends TiledMap { // how good? 1
             sb.append(",turnedMap:" + turnedMap);
             sb.append(",tileWidth:" + tileWidth);
             sb.append(",tileHeight:" + tileHeight);
+            sb.append(",halfTileWidth:" + halfTileWidth);
+            sb.append(",halfTileHeight:" + halfTileHeight);
 //            sb.append(",tiledMap:" + tiledMap);
         }
         sb.append("]");

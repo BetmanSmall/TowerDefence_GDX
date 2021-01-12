@@ -64,6 +64,8 @@ public class MapLoader extends TmxMapLoader {
         map.height = mapHeight;
         map.tileWidth = tileWidth;
         map.tileHeight = tileHeight;
+        map.halfTileWidth = tileWidth / 2f;
+        map.halfTileHeight = tileHeight / 2f;
         if (mapOrientation != null && mapOrientation.equals("isometric")) {
             map.isometric = true;
         }

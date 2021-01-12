@@ -28,14 +28,13 @@ public class AutoTiler implements Runnable {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    public int mapWidth = 32;
-    public int mapHeight = 16;
-    private Random random;
+    private final TmxMap tmxMap;
+    private final Random random;
 
     private TileSet tileSet;
     private TiledMapTileSet tiledMapTiles;
-    private TmxMap map;
     private TiledMapTileLayer mapLayer;
+
     private StaticTiledMapTile nullTile;
 
     private Thread thread = null;
@@ -43,27 +42,37 @@ public class AutoTiler implements Runnable {
     private int order = 28;
 
     public AutoTiler(FileHandle tilesetFile) {
-        tileSet = TsxLoader.loadTileSet(tilesetFile);
-        tiledMapTiles = TsxLoader.loadTiledMapTiles(tilesetFile, tileSet);
-        map = new TmxMap(new TiledMap(), "");
-        init(mapWidth, mapHeight);
-    }
-
-    private void init(int mapWidth, int mapHeight) {
-        this.mapWidth = mapWidth;
-        this.mapHeight = mapHeight;
+        tmxMap = new TmxMap(new TiledMap(), "");
+        tmxMap.width = 32;
+        tmxMap.height = 16;
         this.random = new Random();
-        map.width = mapWidth;
-        map.height = mapHeight;
-        map.tileWidth = Integer.parseInt(tileSet.tilewidth);
-        map.tileHeight = Integer.parseInt(tileSet.tileheight);
+
+        updateTileSet(tilesetFile);
 
         nullTile = new StaticTiledMapTile(new TextureRegion(new Texture(Gdx.files.internal("maps/textures/redTexture.png"))));
-        nullTile.getTextureRegion().setRegionWidth(map.tileWidth);
-        nullTile.getTextureRegion().setRegionHeight(map.tileHeight);
+        nullTile.getTextureRegion().setRegionWidth(tmxMap.tileWidth);
+        nullTile.getTextureRegion().setRegionHeight(tmxMap.tileHeight);
 //        nullTile.getTextureRegion().getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         nullTile.setId(-1);
         Logger.logFuncEnd("this:" + this);
+    }
+
+    private void updateTileSet(FileHandle tilesetFile) {
+        this.tileSet = TsxLoader.loadTileSet(tilesetFile);
+        this.tiledMapTiles = TsxLoader.loadTiledMapTiles(tilesetFile, tileSet);
+        tmxMap.isometric = false;
+        if (tileSet.grid != null) {
+            if (tileSet.grid.orientation.equals("isometric")) {
+                tmxMap.isometric = true;
+            }
+        }
+        tmxMap.tileWidth = Integer.parseInt(tileSet.tilewidth);
+        tmxMap.tileHeight = Integer.parseInt(tileSet.tileheight);
+        if (tmxMap.isometric) {
+            tmxMap.tileHeight /= 2f;
+        }
+        tmxMap.halfTileWidth = tmxMap.tileWidth/2f;
+        tmxMap.halfTileHeight = tmxMap.tileHeight/2f;
     }
 
     public void setTimeSleep(boolean b) {
@@ -99,16 +108,7 @@ public class AutoTiler implements Runnable {
         Logger.logFuncStart("fileHandle:" + fileHandle);
         tileSet = TsxLoader.loadTileSet(fileHandle);
         if (tileSet.terrainTypes != null) {
-            tiledMapTiles = TsxLoader.loadTiledMapTiles(fileHandle, tileSet);
-            map.tileWidth = Integer.parseInt(tileSet.tilewidth);
-            map.tileHeight = Integer.parseInt(tileSet.tileheight);
-
-            map.isometric = false;
-            if (tileSet.grid != null) {
-                if (tileSet.grid.orientation.equals("isometric")) {
-                    map.isometric = true;
-                }
-            }
+            updateTileSet(fileHandle);
             return generateMap();
         }
         return null;
@@ -123,26 +123,25 @@ public class AutoTiler implements Runnable {
         }
         Logger.logDebug("order:" + order);
         Logger.logFuncEnd(Thread.currentThread().toString());
-        return map;
+        return tmxMap;
     }
 
     @Override
     public void run() {
         Logger.logWithTime(Thread.currentThread().toString());
         try {
-            if (map.getLayers().size() != 0) {
-                map.getLayers().remove(0); // .remove(mapLayer);
+            if (tmxMap.getLayers().size() != 0) {
+                tmxMap.getLayers().remove(0); // .remove(mapLayer);
             }
-            if (map.isometric) {
-                mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, map.tileWidth, map.tileHeight / 2);
-            } else {
-                mapLayer = new TiledMapTileLayer(mapWidth, mapHeight, map.tileWidth, map.tileHeight);
+            mapLayer = new TiledMapTileLayer(tmxMap.width, tmxMap.height, tmxMap.tileWidth, tmxMap.tileHeight);
+            if (tileSet.tileoffset != null) {
+                mapLayer.setOffsetY(tileSet.tileoffset.y*2);
             }
-            map.getLayers().add(mapLayer);
+            tmxMap.getLayers().add(mapLayer);
             switch (order) {
                 case 0: {
-                    for (int row = 0; row < mapHeight; row++) {
-                        for (int col = 0; col < mapWidth; col++) {
+                    for (int row = 0; row < tmxMap.height; row++) {
+                        for (int col = 0; col < tmxMap.width; col++) {
                             if (!makeCell(col, row)) {
                                 col -= 2;
                             }
@@ -151,8 +150,8 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 case 1: {
-                    for (int row = mapHeight - 1; row >= 0; row--) {
-                        for (int col = 0; col < mapWidth; col++) {
+                    for (int row = tmxMap.height - 1; row >= 0; row--) {
+                        for (int col = 0; col < tmxMap.width; col++) {
                             if (!makeCell(col, row)) {
                                 col -= 2;
                             }
@@ -161,8 +160,8 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 case 2: {
-                    for (int row = 0; row < mapHeight; row++) {
-                        for (int col = mapWidth - 1; col >= 0; col--) {
+                    for (int row = 0; row < tmxMap.height; row++) {
+                        for (int col = tmxMap.width - 1; col >= 0; col--) {
                             if (!makeCell(col, row)) {
                                 col += 2;
                             }
@@ -171,8 +170,8 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 case 3: {
-                    for (int row = mapHeight - 1; row >= 0; row--) {
-                        for (int col = mapWidth - 1; col >= 0; col--) {
+                    for (int row = tmxMap.height - 1; row >= 0; row--) {
+                        for (int col = tmxMap.width - 1; col >= 0; col--) {
                             if (!makeCell(col, row)) {
                                 col += 2;
                             }
@@ -181,8 +180,8 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 case 4: {
-                    for (int col = 0; col < mapWidth; col++) {
-                        for (int row = 0; row < mapHeight; row++) {
+                    for (int col = 0; col < tmxMap.width; col++) {
+                        for (int row = 0; row < tmxMap.height; row++) {
                             if (!makeCell(col, row)) {
                                 row -= 2;
                             }
@@ -191,8 +190,8 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 case 5: {
-                    for (int col = 0; col < mapWidth; col++) {
-                        for (int row = mapHeight - 1; row >= 0; row--) {
+                    for (int col = 0; col < tmxMap.width; col++) {
+                        for (int row = tmxMap.height - 1; row >= 0; row--) {
                             if (!makeCell(col, row)) {
                                 row += 2;
                             }
@@ -201,8 +200,8 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 case 6: {
-                    for (int col = mapWidth - 1; col >= 0; col--) {
-                        for (int row = 0; row < mapHeight; row++) {
+                    for (int col = tmxMap.width - 1; col >= 0; col--) {
+                        for (int row = 0; row < tmxMap.height; row++) {
                             if (!makeCell(col, row)) {
                                 row -= 2;
                             }
@@ -211,8 +210,8 @@ public class AutoTiler implements Runnable {
                     break;
                 }
                 case 7: {
-                    for (int col = mapWidth - 1; col >= 0; col--) {
-                        for (int row = mapHeight - 1; row >= 0; row--) {
+                    for (int col = tmxMap.width - 1; col >= 0; col--) {
+                        for (int row = tmxMap.height - 1; row >= 0; row--) {
                             if (!makeCell(col, row)) {
                                 row += 2;
                             }
@@ -293,9 +292,9 @@ public class AutoTiler implements Runnable {
     private void diagonalOrder11() throws Exception {
         int returned = 0;
         int x = 0, y = 0;
-        int length = Math.max(map.width, map.height);
+        int length = Math.max(tmxMap.width, tmxMap.height);
         while (x < length) {
-            if (x < map.width && y < map.height) {
+            if (x < tmxMap.width && y < tmxMap.height) {
                 switch (order) {
                     case 8: {
                         makeCell(x, y);
@@ -379,9 +378,9 @@ public class AutoTiler implements Runnable {
     private void diagonalOrder12() throws Exception {
         int returned = 0;
         int x = 0, y = 0;
-        int length = Math.max(map.width, map.height);
+        int length = Math.max(tmxMap.width, tmxMap.height);
         while (y < length) {
-            if (x < map.width && y < map.height) {
+            if (x < tmxMap.width && y < tmxMap.height) {
                 switch (order) {
                     case 14: {
                         makeCell(x, y);
@@ -463,8 +462,8 @@ public class AutoTiler implements Runnable {
     }
 
     private void diagonalUp0() throws Exception {
-        for (int x1 = 0; x1 < map.width; x1++) {
-            for (int y3 = 0, x2 = x1; y3 < map.height && x2 >= 0; y3++, x2--) {
+        for (int x1 = 0; x1 < tmxMap.width; x1++) {
+            for (int y3 = 0, x2 = x1; y3 < tmxMap.height && x2 >= 0; y3++, x2--) {
 //                Logger.logDebug("x2:" + x2, "y3:" + y3);
                 if (!makeCell(x2, y3)) {
 //                    Logger.logError("x2:" + x2, "y3:" + y3);
@@ -474,8 +473,8 @@ public class AutoTiler implements Runnable {
                 }
             }
         }
-        for (int y1 = 1; y1 < map.height; y1++) {
-            for (int x3 = map.width - 1, y2 = y1; x3 >= 0 && y2 < map.height; x3--, y2++) {
+        for (int y1 = 1; y1 < tmxMap.height; y1++) {
+            for (int x3 = tmxMap.width - 1, y2 = y1; x3 >= 0 && y2 < tmxMap.height; x3--, y2++) {
                 if (!makeCell(x3, y2)) {
 //                    Logger.logError("x3:" + x3, "y2:" + y2);
                     y1 -= 1;
@@ -487,8 +486,8 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag0() throws Exception {
-        int width = map.width;
-        int height = map.height;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
         int x = 0;
         int y = 0;
         makeCell(x, y);
@@ -527,8 +526,8 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag1() throws Exception {
-        int width = map.width;
-        int height = map.height;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
         int x = 0;
         int y = 0;
         makeCell(x, y);
@@ -567,10 +566,10 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag2() throws Exception {
-        int width = map.width;
-        int height = map.height;
-        int x = map.width-1;
-        int y = map.height-1;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
+        int x = tmxMap.width-1;
+        int y = tmxMap.height-1;
         makeCell(x, y);
         while (x >= 0 && y >= 0) {
             if (x > 0) {
@@ -607,10 +606,10 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag3() throws Exception {
-        int width = map.width;
-        int height = map.height;
-        int x = map.width-1;
-        int y = map.height-1;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
+        int x = tmxMap.width-1;
+        int y = tmxMap.height-1;
         makeCell(x, y);
         while (x >= 0 && y >= 0) {
             if (y > 0) {
@@ -647,9 +646,9 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag4() throws Exception {
-        int width = map.width;
-        int height = map.height;
-        int x = map.width-1;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
+        int x = tmxMap.width-1;
         int y = 0;
         makeCell(x, y);
         while (x >= 0 && y <= height) {
@@ -687,9 +686,9 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag5() throws Exception {
-        int width = map.width;
-        int height = map.height;
-        int x = map.width-1;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
+        int x = tmxMap.width-1;
         int y = 0;
         makeCell(x, y);
         while (x >= 0 && y <= height) {
@@ -727,10 +726,10 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag6() throws Exception {
-        int width = map.width;
-        int height = map.height;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
         int x = 0;
-        int y = map.height-1;
+        int y = tmxMap.height-1;
         makeCell(x, y);
         while (y >= 0 && x <= width) {
             if (y > 0) {
@@ -767,10 +766,10 @@ public class AutoTiler implements Runnable {
     }
 
     private void zigZag7() throws Exception {
-        int width = map.width;
-        int height = map.height;
+        int width = tmxMap.width;
+        int height = tmxMap.height;
         int x = 0;
-        int y = map.height-1;
+        int y = tmxMap.height-1;
         makeCell(x, y);
         while (y >= 0 && x <= width) {
             if (x < width - 1) {
@@ -807,8 +806,8 @@ public class AutoTiler implements Runnable {
     }
 
     private void circular() throws Exception {
-        int rows = map.width;
-        int cols = map.height;
+        int rows = tmxMap.width;
+        int cols = tmxMap.height;
         Dot dot = new Dot(0, 0, rows - 1, cols - 1, 0, 0);
         Direction directionState = Direction.RIGHT; // initial direction
         int p = 1;
@@ -993,7 +992,7 @@ public class AutoTiler implements Runnable {
     }
 
     private int getTileId(int col, int row) {
-        if (col < 0 || row < 0 || col >= mapWidth || row >= mapHeight) {
+        if (col < 0 || row < 0 || col >= tmxMap.width || row >= tmxMap.height) {
             return -1;
         }
         TiledMapTileLayer.Cell cell = mapLayer.getCell(col, row);
@@ -1022,8 +1021,8 @@ public class AutoTiler implements Runnable {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("mapWidth", mapWidth)
-                .add("mapHeight", mapHeight)
+                .add("tmxMap.width", tmxMap.width)
+                .add("tmxMap.height", tmxMap.height)
                 .add("random", random)
 //                .add("tileSet", tileSet)
 //                .add("tiledMapTiles", tiledMapTiles)

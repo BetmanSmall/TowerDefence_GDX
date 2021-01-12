@@ -360,8 +360,8 @@ public class Unit {
     }
 
     private void calculateDirection(int currX, int currY, int nextX, int nextY, CameraController cameraController) {
-        float sizeCellX = cameraController.sizeCellX;
-        float sizeCellY = cameraController.sizeCellY;
+        float sizeCellX = cameraController.tmxMap.tileWidth;
+        float sizeCellY = cameraController.tmxMap.tileHeight;
         float halfSizeCellX = sizeCellX/2;
         float halfSizeCellY = sizeCellY/2;
         Vector2 fVc = new Vector2(); // fVc = floatVectorCoordinates
@@ -710,7 +710,7 @@ public class Unit {
                 }
             } else if (unitAttack.attackType == UnitAttack.AttackType.Range) {
                 Vector2 vector2 = new Vector2(currentPoint);
-                vector2.add(0, cameraController.halfSizeCellY);
+                vector2.add(0, cameraController.tmxMap.tileHeight);
                 bullets.add(new UnitBullet(vector2, this, towerAttack));
             }
             if (!unitAttack.stayToDie) {

@@ -17,6 +17,8 @@ import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.menu.MapEditorScreen;
 import com.betmansmall.utils.logging.ConsoleLoggerTable;
 import com.betmansmall.utils.logging.Logger;
+import com.google.common.base.MoreObjects;
+
 import org.lwjgl.input.Mouse;
 import java.util.Random;
 
@@ -27,7 +29,7 @@ public class CameraController extends AbstractCameraController {
     public GameInterface gameInterface;
 
     public OrthographicCamera camera;
-    public int mapWidth, mapHeight;
+//    public int mapWidth, mapHeight;
 
     public int isDrawableGrid = 1;
     public int isDrawableUnits = 1;
@@ -47,8 +49,8 @@ public class CameraController extends AbstractCameraController {
 
     public float zoomMax = 5.0f;
     public float zoomMin = 0.1f;
-    public float sizeCellX, sizeCellY;
-    public float halfSizeCellX, halfSizeCellY;
+//    public float sizeCellX, sizeCellY;
+//    public float halfSizeCellX, halfSizeCellY;
     protected float borderLeftX = 0.0f, borderRightX = 0.0f;
     protected float borderUpY = 0.0f, borderDownY = 0.0f;
 
@@ -91,12 +93,12 @@ public class CameraController extends AbstractCameraController {
         } else {
             Logger.logError("screen!=GameScreen");
         }
-        this.mapWidth = tmxMap.width;
-        this.mapHeight = tmxMap.height;
-        this.sizeCellX = tmxMap.tileWidth;
-        this.sizeCellY = tmxMap.tileHeight;
-        this.halfSizeCellX = sizeCellX / 2;
-        this.halfSizeCellY = sizeCellY / 2;
+//        this.mapWidth = tmxMap.width;
+//        this.mapHeight = tmxMap.height;
+//        this.sizeCellX = tmxMap.tileWidth;
+//        this.sizeCellY = tmxMap.tileHeight;
+//        this.halfSizeCellX = sizeCellX / 2;
+//        this.halfSizeCellY = sizeCellY / 2;
         random = new Random();
 //        Gdx.input.setCursorCatched(true);
     }
@@ -112,10 +114,10 @@ public class CameraController extends AbstractCameraController {
     }
 
     void setBorders() {
-        float borderLeftX  = (0 - (halfSizeCellX * mapHeight));
-        float borderRightX = (0 + (halfSizeCellX * mapWidth));
+        float borderLeftX  = (0 - (tmxMap.halfTileWidth * tmxMap.height));
+        float borderRightX = (0 + (tmxMap.halfTileWidth * tmxMap.width));
         float borderUpY    = (0);
-        float borderDownY  = (0 - (sizeCellY * (mapWidth>mapHeight ? mapWidth : mapHeight)));
+        float borderDownY  = (0 - (tmxMap.tileHeight * (tmxMap.width>tmxMap.height ? tmxMap.width : tmxMap.height)));
         this.setBorders(borderLeftX, borderRightX, borderUpY, borderDownY);
     }
 
@@ -487,6 +489,8 @@ public class CameraController extends AbstractCameraController {
         Vector3 vector = new Vector3(screenX, screenY, 0);
         if (!whichCell(vector, 5)) return;
         if (gameField != null) {
+            Logger.logDebug("tmxMap:" + tmxMap);
+            Logger.logDebug("gameField.tmxMap:" + gameField.tmxMap);
             Tower tower = gameField.getCell((int) vector.x, (int) vector.y).tower;
             if (tower != null) {
                 gameField.towersManager.selectTower(gameScreen.playersManager.getLocalPlayer(), tower);
@@ -503,13 +507,13 @@ public class CameraController extends AbstractCameraController {
         if (camera != null && tmxMap != null) {
             camera.unproject(mouse);
 //            Logger.logDebug("-2- mouseX:" + mouse.x + " mouseY:" + mouse.y);
-            float gameX = ((mouse.x / (halfSizeCellX)) + (mouse.y / (halfSizeCellY))) / 2;
-            float gameY = ((mouse.y / (halfSizeCellY)) - (mouse.x / (halfSizeCellX))) / 2;
+            float gameX = ((mouse.x / (tmxMap.halfTileWidth)) + (mouse.y / (tmxMap.halfTileHeight))) / 2;
+            float gameY = ((mouse.y / (tmxMap.halfTileHeight)) - (mouse.x / (tmxMap.halfTileWidth))) / 2;
 //            Logger.logDebug("-3- gameX:" + gameX + " gameY:" + gameY);
 //            Logger.logDebug("tmxMap:" + tmxMap);
             if (!tmxMap.isometric) {
-                gameX = (mouse.x / sizeCellX);
-                gameY = (mouse.y / sizeCellY);
+                gameX = (mouse.x / tmxMap.tileWidth);
+                gameY = (mouse.y / tmxMap.tileHeight);
             }
             int cellX = Math.abs((int) gameX);
             int cellY = Math.abs((int) gameY);
@@ -521,7 +525,7 @@ public class CameraController extends AbstractCameraController {
             // если это убирать то нужно будет править Cell::setGraphicCoordinates() для 3 и 4 карты-java // c++ ?? or ??
             mouse.x = cellX;
             mouse.y = cellY;
-            if (cellX < mapWidth && cellY < mapHeight) {
+            if (cellX < tmxMap.width && cellY < tmxMap.height) {
                 if (map == 5) {
                     return true;
                 } else {
@@ -541,31 +545,31 @@ public class CameraController extends AbstractCameraController {
     public boolean getCorrectGraphicTowerCoord(Vector2 towerPos, int towerSize, int map) {
         if(map == 1) {
             if (!tmxMap.isometric) {
-                towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
+                towerPos.x += (-(tmxMap.halfTileWidth * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
             } else {
-                towerPos.x += (-(halfSizeCellX * towerSize) );
+                towerPos.x += (-(tmxMap.halfTileWidth * towerSize) );
             }
-            towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
+            towerPos.y += (-(tmxMap.halfTileHeight * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
         } else if(map == 2) {
-            towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
+            towerPos.x += (-(tmxMap.halfTileWidth * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
             if (!tmxMap.isometric) {
-                towerPos.y += (-(halfSizeCellY * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
+                towerPos.y += (-(tmxMap.halfTileHeight * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))));
             } else {
-                towerPos.y += (-(halfSizeCellY * towerSize));
+                towerPos.y += (-(tmxMap.halfTileHeight * towerSize));
             }
         } else if(map == 3) {
             if (!tmxMap.isometric) {
-                towerPos.x += (-(halfSizeCellX * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
+                towerPos.x += (-(tmxMap.halfTileWidth * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
             } else {
-                towerPos.x += (-(halfSizeCellX * towerSize) );
+                towerPos.x += (-(tmxMap.halfTileWidth * towerSize) );
             }
-            towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
+            towerPos.y += (-(tmxMap.halfTileHeight * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
         } else if(map == 4) {
-            towerPos.x += (-(halfSizeCellX * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
+            towerPos.x += (-(tmxMap.halfTileWidth * (towerSize - ((towerSize % 2 != 0) ? 0 : 1))) );
             if (!tmxMap.isometric) {
-                towerPos.y += (-(halfSizeCellY * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
+                towerPos.y += (-(tmxMap.halfTileHeight * ((towerSize % 2 != 0) ? towerSize : towerSize+1)) );
             } else {
-                towerPos.y += (-(halfSizeCellY * towerSize));
+                towerPos.y += (-(tmxMap.halfTileHeight * towerSize));
             }
         } else {
             Gdx.app.log("GameField::getCorrectGraphicTowerCoord(" + towerPos + ", " + towerSize + ", " + map + ")", "-- Bad map[1-4] value:" + map);
@@ -574,21 +578,47 @@ public class CameraController extends AbstractCameraController {
         return true;
     }
 
+    @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Camera[");
-        sb.append("cameraX:" + camera.position.x);
-        sb.append(",cameraY:" + camera.position.y);
-        sb.append(",sizeCellX:" + sizeCellX);
-        sb.append(",sizeCellY:" + sizeCellY);
-        sb.append(",camera.zoom:" + camera.zoom);
-//        sb.append(",zoomMax:" + zoomMax);
-//        sb.append(",zoomMin:" + zoomMin);
-//        sb.append(",borderLeftX:" + borderLeftX);
-//        sb.append(",borderRightX:" + borderRightX);
-//        sb.append(",borderUpY:" + borderUpY);
-//        sb.append(",borderDownY:" + borderDownY);
-        sb.append("]");
-        return sb.toString();
+        return MoreObjects.toStringHelper(this).omitNullValues()
+//                .add("gameScreen", gameScreen)
+//                .add("gameField", gameField)
+                .add("tmxMap", tmxMap)
+//                .add("gameInterface", gameInterface)
+                .add("camera", camera)
+                .add("isDrawableGrid", isDrawableGrid)
+                .add("isDrawableUnits", isDrawableUnits)
+                .add("isDrawableTowers", isDrawableTowers)
+                .add("isDrawableBackground", isDrawableBackground)
+                .add("isDrawableGround", isDrawableGround)
+                .add("isDrawableForeground", isDrawableForeground)
+                .add("isDrawableGridNav", isDrawableGridNav)
+                .add("isDrawableRoutes", isDrawableRoutes)
+                .add("drawOrder", drawOrder)
+                .add("isDrawableFullField", isDrawableFullField)
+                .add("flinging", flinging)
+                .add("initialScale", initialScale)
+                .add("velX", velX)
+                .add("velY", velY)
+                .add("zoomMax", zoomMax)
+                .add("zoomMin", zoomMin)
+                .add("borderLeftX", borderLeftX)
+                .add("borderRightX", borderRightX)
+                .add("borderUpY", borderUpY)
+                .add("borderDownY", borderDownY)
+                .add("panLeftMouseButton", panLeftMouseButton)
+                .add("panMidMouseButton", panMidMouseButton)
+                .add("panRightMouseButton", panRightMouseButton)
+                .add("paning", paning)
+                .add("touchDownX", touchDownX)
+                .add("touchDownY", touchDownY)
+                .add("prevMouseX", prevMouseX)
+                .add("prevMouseY", prevMouseY)
+                .add("random", random)
+                .add("space", space)
+                .add("shiftCamera", shiftCamera)
+                .add("limitSpeedBorder", limitSpeedBorder)
+                .add("templateForTower", templateForTower)
+                .toString();
     }
 }
