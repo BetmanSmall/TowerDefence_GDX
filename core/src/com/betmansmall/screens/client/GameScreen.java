@@ -82,174 +82,6 @@ public class GameScreen extends AbstractScreen {
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
-    private void inputHandler(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
-                Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.MINUS && ALT_LEFT)");
-                gameInterface.infoTabloTable.setVisible(!gameInterface.infoTabloTable.isVisible());
-            }
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
-                Logger.logDebug("-- Gdx.input.isKeyJustPressed(Input.Keys.C && ALT_LEFT)");
-                gameInterface.playersViewTable.setVisible(!gameInterface.playersViewTable.isVisible());
-            }
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
-            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.MINUS)");
-            if (cameraController.camera.zoom <= cameraController.zoomMax) {
-                cameraController.camera.zoom += 0.1f;
-            }
-            cameraController.camera.update();
-            Logger.logConsole("cameraController.camera.zoom:" + cameraController.camera.zoom);
-            if (gameField.gameSpeed > 0.1f) {
-                gameField.gameSpeed -= 0.1f;
-            }
-            this.sendGameFieldVariables();
-            Logger.logConsole("gameField.gameSpeed:" + gameField.gameSpeed);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
-            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.PLUS)");
-            if (cameraController.camera.zoom >= cameraController.zoomMin) {
-                cameraController.camera.zoom -= 0.1f;
-            }
-            cameraController.camera.update();
-            Logger.logConsole("cameraController.camera.zoom:" + cameraController.camera.zoom);
-            gameField.gameSpeed += 0.1f;
-            this.sendGameFieldVariables();
-            Logger.logConsole("gameField.gameSpeed:" + gameField.gameSpeed);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
-//            gameInterface.unitsSelector.changeGameState(); need func() here
-            cameraController.isDrawableFullField = !cameraController.isDrawableFullField;
-            cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
-            Logger.logConsole("cameraController.camera.position:" + cameraController.camera.position);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.SPACE)");
-            gameInterface.startAndPauseButton.toggle();
-            Logger.logConsole("gameField.gamePaused:" + gameField.gamePaused);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
-            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.F1)");
-            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-                cameraController.isDrawableGrid--;
-                if (cameraController.isDrawableGrid < 0) {
-                    cameraController.isDrawableGrid = 5;
-                }
-            } else {
-                cameraController.isDrawableGrid++;
-                if (cameraController.isDrawableGrid > 5) {
-                    cameraController.isDrawableGrid = 0;
-                }
-            }
-            cameraController.isDrawableUnits = cameraController.isDrawableGrid;
-            cameraController.isDrawableTowers = cameraController.isDrawableGrid;
-            cameraController.isDrawableBackground = cameraController.isDrawableGrid;
-            cameraController.isDrawableGround = cameraController.isDrawableGrid;
-            cameraController.isDrawableForeground = cameraController.isDrawableGrid;
-            cameraController.isDrawableGridNav = cameraController.isDrawableGrid;
-            cameraController.isDrawableRoutes = cameraController.isDrawableGrid;
-            Logger.logConsole("-and other- cameraController.isDrawableGrid:" + cameraController.isDrawableGrid);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
-            cameraController.isDrawableGrid++;
-            if (cameraController.isDrawableGrid > 5) {
-                cameraController.isDrawableGrid = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableGrid:" + cameraController.isDrawableGrid);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2)");
-            cameraController.isDrawableUnits++;
-            if (cameraController.isDrawableUnits > 5) {
-                cameraController.isDrawableUnits = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableUnits:" + cameraController.isDrawableUnits);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3)");
-            cameraController.isDrawableTowers++;
-            if (cameraController.isDrawableTowers > 5) {
-                cameraController.isDrawableTowers = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableTowers:" + cameraController.isDrawableTowers);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_4)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_4 || Input.Keys.NUMPAD_4)");
-            cameraController.isDrawableBackground++;
-            if (cameraController.isDrawableBackground > 5) {
-                cameraController.isDrawableBackground = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableBackground:" + cameraController.isDrawableBackground);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_5)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5)");
-            cameraController.isDrawableGround++;
-            if (cameraController.isDrawableGround > 5) {
-                cameraController.isDrawableGround = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableGround:" + cameraController.isDrawableGround);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6)");
-            cameraController.isDrawableForeground++;
-            if (cameraController.isDrawableForeground > 5) {
-                cameraController.isDrawableForeground = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableForeground:" + cameraController.isDrawableForeground);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7)");
-            cameraController.isDrawableGridNav++;
-            if (cameraController.isDrawableGridNav > 5) {
-                cameraController.isDrawableGridNav = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableGridNav:" + cameraController.isDrawableGridNav);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8)");
-            cameraController.isDrawableRoutes++;
-            if (cameraController.isDrawableRoutes > 5) {
-                cameraController.isDrawableRoutes = 0;
-            }
-            Logger.logConsole("cameraController.isDrawableRoutes:" + cameraController.isDrawableRoutes);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9)");
-            cameraController.drawOrder++;
-            if (cameraController.drawOrder > 8) {
-                cameraController.drawOrder = 0;
-            }
-            Logger.logConsole("cameraController.drawOrder:" + cameraController.drawOrder);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) ||  Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
-            gameMaster.removeTopScreen();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.ENTER)");
-            gameMaster.nextGameLevel();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.A)");
-            gameField.turnLeft();
-            Logger.logConsole("gameField.turnLeft()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.S)");
-            gameField.turnRight();
-            Logger.logConsole("gameField.turnRight()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.Q)");
-            gameField.flipX();
-            Logger.logConsole("gameField.flipX()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.W)");
-            gameField.flipY();
-            Logger.logConsole("gameField.flipY()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.PERIOD)");
-            ConsoleLoggerTable.clearArr();
-            Logger.logConsole("gameInterface.arrayActionsHistory.clear()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.ESCAPE)");
-            gameInterface.pauseMenuButton.toggle();
-            Logger.logConsole("gameInterface.pauseMenuButton.toggle()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.N)");
-            gameField.cancelUnderConstruction();
-            Logger.logConsole("gameField.cancelUnderConstruction()");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
-            Logger.logDebug("isKeyJustPressed(Input.Keys.B)");
-            UnderConstruction underConstruction = gameField.createdRandomUnderConstruction();
-            Logger.logConsole("factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
-        }
-    }
-
     public boolean spawnUnitFromServerScreenByWaves() {
         return true; // useless;
     }
@@ -279,7 +111,7 @@ public class GameScreen extends AbstractScreen {
             Gdx.app.log("GameScreen::render()", "-- Not get normal gameState:" + gameState);
         }
 //        super.render(delta);
-        inputHandler(delta);
+        cameraController.inputHandler(delta);
     }
 
     @Override
@@ -297,6 +129,7 @@ public class GameScreen extends AbstractScreen {
     }
 
     public void sendGameFieldVariables() {
+        Logger.logFuncStart();
     }
 
     public Tower createTowerWithGoldCheck(int buildX, int buildY, TemplateForTower templateForTower) {

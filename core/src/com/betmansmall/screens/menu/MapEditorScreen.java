@@ -131,6 +131,7 @@ public class MapEditorScreen extends AbstractScreen {
             gameMaster.removeTopScreen();
         }
 
+        mapEditorCameraController.inputHandler(delta);
         super.render(delta);
     }
 

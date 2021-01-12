@@ -15,6 +15,7 @@ import com.betmansmall.maps.TmxMap;
 import com.betmansmall.screens.GameAutoTileScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.menu.MapEditorScreen;
+import com.betmansmall.utils.logging.ConsoleLoggerTable;
 import com.betmansmall.utils.logging.Logger;
 import org.lwjgl.input.Mouse;
 import java.util.Random;
@@ -123,6 +124,174 @@ public class CameraController extends AbstractCameraController {
         this.borderRightX = borderRightX;
         this.borderUpY    = borderUpY;
         this.borderDownY  = borderDownY;
+    }
+
+    public void inputHandler(float delta) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+                Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.MINUS && ALT_LEFT)");
+                gameInterface.infoTabloTable.setVisible(!gameInterface.infoTabloTable.isVisible());
+            }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+                Logger.logDebug("-- Gdx.input.isKeyJustPressed(Input.Keys.C && ALT_LEFT)");
+                gameInterface.playersViewTable.setVisible(!gameInterface.playersViewTable.isVisible());
+            }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.MINUS)");
+            if (camera.zoom <= zoomMax) {
+                camera.zoom += 0.1f;
+            }
+            camera.update();
+            Logger.logConsole("camera.zoom:" + camera.zoom);
+            if (gameField.gameSpeed > 0.1f) {
+                gameField.gameSpeed -= 0.1f;
+            }
+            gameScreen.sendGameFieldVariables();
+            Logger.logConsole("gameField.gameSpeed:" + gameField.gameSpeed);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
+            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.PLUS)");
+            if (camera.zoom >= zoomMin) {
+                camera.zoom -= 0.1f;
+            }
+            camera.update();
+            Logger.logConsole("camera.zoom:" + camera.zoom);
+            gameField.gameSpeed += 0.1f;
+            gameScreen.sendGameFieldVariables();
+            Logger.logConsole("gameField.gameSpeed:" + gameField.gameSpeed);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_0 || Input.Keys.NUMPAD_0)");
+//            gameInterface.unitsSelector.changeGameState(); need func() here
+            isDrawableFullField = !isDrawableFullField;
+            camera.position.set(0.0f, 0.0f, 0.0f);
+            Logger.logConsole("camera.position:" + camera.position);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.SPACE)");
+            gameInterface.startAndPauseButton.toggle();
+            Logger.logConsole("gameField.gamePaused:" + gameField.gamePaused);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
+            Logger.logDebug("Gdx.input.isKeyJustPressed(Input.Keys.F1)");
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                isDrawableGrid--;
+                if (isDrawableGrid < 0) {
+                    isDrawableGrid = 5;
+                }
+            } else {
+                isDrawableGrid++;
+                if (isDrawableGrid > 5) {
+                    isDrawableGrid = 0;
+                }
+            }
+            isDrawableUnits = isDrawableGrid;
+            isDrawableTowers = isDrawableGrid;
+            isDrawableBackground = isDrawableGrid;
+            isDrawableGround = isDrawableGrid;
+            isDrawableForeground = isDrawableGrid;
+            isDrawableGridNav = isDrawableGrid;
+            isDrawableRoutes = isDrawableGrid;
+            Logger.logConsole("-and other- isDrawableGrid:" + isDrawableGrid);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_1 || Input.Keys.NUMPAD_1)");
+            isDrawableGrid++;
+            if (isDrawableGrid > 5) {
+                isDrawableGrid = 0;
+            }
+            Logger.logConsole("isDrawableGrid:" + isDrawableGrid);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_2 || Input.Keys.NUMPAD_2)");
+            isDrawableUnits++;
+            if (isDrawableUnits > 5) {
+                isDrawableUnits = 0;
+            }
+            Logger.logConsole("isDrawableUnits:" + isDrawableUnits);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_3 || Input.Keys.NUMPAD_3)");
+            isDrawableTowers++;
+            if (isDrawableTowers > 5) {
+                isDrawableTowers = 0;
+            }
+            Logger.logConsole("isDrawableTowers:" + isDrawableTowers);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_4)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_4 || Input.Keys.NUMPAD_4)");
+            isDrawableBackground++;
+            if (isDrawableBackground > 5) {
+                isDrawableBackground = 0;
+            }
+            Logger.logConsole("isDrawableBackground:" + isDrawableBackground);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_5)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_5 || Input.Keys.NUMPAD_5)");
+            isDrawableGround++;
+            if (isDrawableGround > 5) {
+                isDrawableGround = 0;
+            }
+            Logger.logConsole("isDrawableGround:" + isDrawableGround);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_6)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_6 || Input.Keys.NUMPAD_6)");
+            isDrawableForeground++;
+            if (isDrawableForeground > 5) {
+                isDrawableForeground = 0;
+            }
+            Logger.logConsole("isDrawableForeground:" + isDrawableForeground);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_7)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_7 || Input.Keys.NUMPAD_7)");
+            isDrawableGridNav++;
+            if (isDrawableGridNav > 5) {
+                isDrawableGridNav = 0;
+            }
+            Logger.logConsole("isDrawableGridNav:" + isDrawableGridNav);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_8)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_8 || Input.Keys.NUMPAD_8)");
+            isDrawableRoutes++;
+            if (isDrawableRoutes > 5) {
+                isDrawableRoutes = 0;
+            }
+            Logger.logConsole("isDrawableRoutes:" + isDrawableRoutes);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.NUM_9 || Input.Keys.NUMPAD_9)");
+            drawOrder++;
+            if (drawOrder > 8) {
+                drawOrder = 0;
+            }
+            Logger.logConsole("drawOrder:" + drawOrder);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) ||  Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.BACK || Input.Keys.BACKSPACE);");
+            gameScreen.gameMaster.removeTopScreen();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.ENTER)");
+            gameScreen.gameMaster.nextGameLevel();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.A)");
+            gameField.turnLeft();
+            Logger.logConsole("gameField.turnLeft()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.S)");
+            gameField.turnRight();
+            Logger.logConsole("gameField.turnRight()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.Q)");
+            gameField.flipX();
+            Logger.logConsole("gameField.flipX()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.W)");
+            gameField.flipY();
+            Logger.logConsole("gameField.flipY()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.PERIOD)");
+            ConsoleLoggerTable.clearArr();
+            Logger.logConsole("gameInterface.arrayActionsHistory.clear()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.ESCAPE)");
+            gameInterface.pauseMenuButton.toggle();
+            Logger.logConsole("gameInterface.pauseMenuButton.toggle()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.N)");
+            gameField.cancelUnderConstruction();
+            Logger.logConsole("gameField.cancelUnderConstruction()");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            Logger.logDebug("isKeyJustPressed(Input.Keys.B)");
+            UnderConstruction underConstruction = gameField.createdRandomUnderConstruction();
+            Logger.logConsole("factionsManager.createdRandomUnderConstruction(" + underConstruction.templateForTower.name + ")");
+        }
     }
 
     @Override
