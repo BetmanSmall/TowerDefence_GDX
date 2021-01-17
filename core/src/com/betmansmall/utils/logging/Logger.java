@@ -1,19 +1,21 @@
 package com.betmansmall.utils.logging;
 
 import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.StringBuilder;
 
 import org.apache.commons.cli.CommandLine;
 
-public class Logger implements Disposable {
+public class Logger implements Closeable {
     private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_BLACK = "\u001b[30;1m"; //"\u001B[30m";
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_GREEN = "\u001B[32m";
     private static final String ANSI_YELLOW = "\u001B[33m";
@@ -23,13 +25,17 @@ public class Logger implements Disposable {
     private static final String ANSI_WHITE = "\u001B[37m";
     private boolean useColors = true;
 
-    private static SimpleDateFormat simpleDateFormat;
-    private static Logger instance = new Logger();
+    private static Logger instance;
     private HashMap<String, String> classNamesCache;
-    private String threadClassName;
+    private ArrayList<String> excludeClassNames;
+    private SimpleDateFormat simpleDateFormat;
 
     private CommandLine cmd;
-    private BufferedWriter bufferedWriter;
+    private boolean useStdOut = true;
+    private boolean userWantOutput = false;
+    private BufferedWriter bufferedWriter = null;
+    private File outputFile = null;
+    private File userCustomOutputFile = null;
 
     private static String convert(String ... strings) {
         StringBuilder sb = new StringBuilder();
@@ -59,11 +65,11 @@ public class Logger implements Disposable {
     }
 
     public static void logWithTime(String ... strings) {
-        instance().log("[" + simpleDateFormat.format(System.currentTimeMillis()) + "] -- " + convert(strings), ANSI_BLACK);
+        instance().log("[" + instance().simpleDateFormat.format(System.currentTimeMillis()) + "] -- " + convert(strings), ANSI_BLACK);
     }
 
     public static void logError(String ... strings) {
-        instance().log(convert(strings), ANSI_RED);
+        instance().log("[ERROR] -- " + convert(strings), ANSI_RED);
     }
 
     public static void logWarn(String ... strings) {
@@ -89,20 +95,18 @@ public class Logger implements Disposable {
     }
 
     public Logger() {
-        classNamesCache = new HashMap<String, String>();
-        threadClassName = Thread.class.getName();
+        classNamesCache = new HashMap<>();
+        excludeClassNames = new ArrayList<>();
+        excludeClassNames.add(Thread.class.getName());
+        excludeClassNames.add(Logger.class.getName());
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss.SSS");//yyyy-MM-dd 'at' HH:mm:ss z");
     }
 
     @Override
-    public void dispose() {
-        if (bufferedWriter != null) {
-            try {
-                bufferedWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public void close() {
+        this.useStdOut = true;
+        logWithTime("Logger.close();");
+        closeBufferedWriter();
     }
 
     public void setCmd(CommandLine cmd) {
@@ -126,48 +130,109 @@ public class Logger implements Disposable {
         }
     }
 
-    /**
-     * Appends color symbols to log tag.
-     */
-    private void log(String message, String color) {
-        StackTraceElement callerElement = getCallerElement(Thread.currentThread().getStackTrace());
-        if (callerElement == null) return;
-        String className = getClassName(callerElement);
-        String outStr = ((useColors == true) ? color : "") +
-                className + "." + callerElement.getMethodName() + "();" +
-                ((useColors == true) ? ANSI_RESET : "") + " -- " + message;
-//        outStr = outStr.replace("<init>", className);
-        System.out.println(outStr);
-//        System.out.println(color + getClassName(callerElement) + "::" + callerElement.getMethodName() + "();" + ANSI_RESET + " -- " + message);
+    public void setUseStdOut(boolean useStdOut) {
+        this.useStdOut = useStdOut;
+        log("[" + simpleDateFormat.format(System.currentTimeMillis()) + "] -- useStdOut:" + useStdOut, ANSI_PURPLE);
+    }
+
+    public void setUserCustomOutputFile(File file) {
+        this.userWantOutput = true;
+        if (file != null && !file.getPath().isEmpty()) {
+            this.userCustomOutputFile = file;
+        }
+        setFileOutput(userCustomOutputFile);
+    }
+
+    public void setFileOutput() {
+        if (userWantOutput && userCustomOutputFile == null) {
+            setFileOutput(null);
+        }
+    }
+
+    public void setFileOutput(File fileOutput) {
+        if (userWantOutput) {
+            File outputFile;
+            if (fileOutput != null) {
+                outputFile = fileOutput.getParentFile();
+                if (outputFile != null) {
+                    outputFile.mkdirs();
+                }
+                outputFile = fileOutput;
+            } else {
+                String classAndMethodName = getClassAndMethodName();
+                classAndMethodName = classAndMethodName.substring(0, classAndMethodName.indexOf("::"));
+//                classAndMethodName = classAndMethodName.replaceAll("::", "-");
+                File logsDir = new File("logs");
+                logsDir.mkdirs();
+                outputFile = new File(logsDir + "/" + classAndMethodName + ".log");
+            }
+            logWarn("change outputFile:" + outputFile);
+            closeBufferedWriter();
+            try {
+                this.bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+                this.outputFile = outputFile;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void closeBufferedWriter() {
         if (bufferedWriter != null) {
             try {
-                bufferedWriter.write(getClassName(callerElement) + "::" + callerElement.getMethodName() + "(); -- " + message + "\n");
+                logFuncEnd("close outputFile:" + outputFile, "bufferedWriter:" + bufferedWriter);
+                bufferedWriter.close();
+                bufferedWriter = null;
+                outputFile = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    /**
-     * Fetches stacktrace and returns caller of method log.
-     */
+    private void log(String message, String color) {
+        if (useStdOut || bufferedWriter != null) {
+            String classAndMethodName = getClassAndMethodName();
+            if (useStdOut) {
+                String outStr = ((useColors) ? color : "") + classAndMethodName + ((useColors) ? ANSI_RESET : "") + " -- " + message;
+//                outStr = outStr.replace("<init>", className);
+                System.out.println(outStr);
+            }
+            if (bufferedWriter != null) {
+                try {
+                    bufferedWriter.write(classAndMethodName + " -- " + message + "\n");
+                    bufferedWriter.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private StackTraceElement getCallerElement(StackTraceElement[] elements) {
         for (StackTraceElement element : elements) {
-            if(element.getClassName().equals(threadClassName)) continue;
-            if (!element.getClassName().equals(getClass().getName())) return element;
+            String elementClassName = element.getClassName();
+            if (!excludeClassNames.contains(elementClassName)) {
+                return element;
+            }
         }
         return null;
     }
 
-    /**
-     * Gets class name without packages from {@link StackTraceElement}.
-     * Stores names in cache for faster querying.
-     */
     private String getClassName(StackTraceElement element) {
-        if (!classNamesCache.containsKey(element.getClassName())) {
-            String[] nameParts = element.getClassName().split("\\.");
-            classNamesCache.put(element.getClassName(), nameParts[nameParts.length - 1]);
+        String elementClassName = element.getClassName();
+        if (!classNamesCache.containsKey(elementClassName)) {
+            classNamesCache.put(elementClassName, elementClassName.substring(elementClassName.lastIndexOf(".") + 1));
         }
-        return classNamesCache.get(element.getClassName());
+        return classNamesCache.get(elementClassName);
+    }
+
+    private String getClassAndMethodName() {
+        StackTraceElement callerElement = getCallerElement(Thread.currentThread().getStackTrace());
+        if (callerElement != null) {
+            return getClassName(callerElement) + "::" + callerElement.getMethodName() + "();";
+        }
+        return "NULL::null();";
+//        return getClassName(Objects.requireNonNull(getCallerElement(Thread.currentThread().getStackTrace())));
     }
 }

@@ -213,7 +213,7 @@ public class GameMaster extends Game {
         helpMenuScreen.dispose();
 //        removeAllScreens();
 //        removeTopScreen();
-        Logger.instance().dispose();
+        Logger.instance().close();
         Gdx.app.exit();
     }
 
