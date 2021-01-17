@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -28,9 +29,10 @@ public class MapEditorInterface extends GameInterface {
     private final Stage stage;
 
     private VisLabel mapNameLabel;
-    private VisTextButton chooiseMapButton;
+    private VisTextButton chooseMapButton;
     private VisTextButton exitButton;
 
+    private VisSelectBox<FileHandle> tileSetVisSelectBox;
     private VisCheckBox layerVisibleCheckBox;
     private VisSelectBox<String> selectMapsBox, selectTileBox, mapLayersBox;
     Array<String> arrName = new Array<String>();
@@ -48,17 +50,27 @@ public class MapEditorInterface extends GameInterface {
         addActor(rootTable);
 
         mapNameLabel = new VisLabel("Map: " + mapEditorScreen.tmxMap.mapPath);
-        rootTable.add(mapNameLabel).top().expand().row();
+        rootTable.add(mapNameLabel).top().expand();
 
-        chooiseMapButton = new VisTextButton("LoadMap");
-        chooiseMapButton.addListener(new ClickListener(){
+        tileSetVisSelectBox = new VisSelectBox<>();
+        tileSetVisSelectBox.setItems(mapEditorScreen.gameMaster.tileSetsFileHandles);
+        tileSetVisSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mapEditorScreen.autoTiler.generateMap(tileSetVisSelectBox.getSelected());
+            }
+        });
+        rootTable.add(tileSetVisSelectBox).top().right().expand().row();
+
+        chooseMapButton = new VisTextButton("LoadMap");
+        chooseMapButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 dialog.show(stage);
             }
         });
-        rootTable.add(chooiseMapButton).expandX().right().row();
+        rootTable.add(chooseMapButton).expandX().right().row();
 
         exitButton = new VisTextButton("exit");
         exitButton.addListener(new ClickListener() {
@@ -119,13 +131,13 @@ public class MapEditorInterface extends GameInterface {
         elemTable.add(layerVisibleCheckBox).left().row();
 
 //        selectMapsBox = new VisSelectBox<>();
-//        updateTileList();
+////        updateTileList();
 //        selectMapsBox.addListener(new ChangeListener() {
 //            @Override
 //            public void changed(ChangeEvent event, Actor actor) {
 //                Logger.logDebug(selectMapsBox.getSelected());
 //                mapEditorScreen.tmxMap = (TmxMap) new MapLoader().load(selectMapsBox.getSelected());
-//                mapEditorScreen.renderer = new IsometricTiledMapRenderer(mapEditorScreen.tmxMap, mapEditorScreen.spriteBatch);
+//                mapEditorScreen.renderer = new IsometricTiledMapRenderer(mapEditorScreen.tmxMap);
 //                if (mapEditorScreen.mapEditorCameraController != null) {
 //                    mapEditorScreen.mapEditorCameraController.camera.position.set((mapEditorScreen.tmxMap.width * mapEditorScreen.tmxMap.tileWidth) / 2f, 0, 0f);
 //                    mapEditorScreen.mapEditorCameraController.camera.update();
