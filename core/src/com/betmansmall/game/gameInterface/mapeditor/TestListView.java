@@ -1,6 +1,5 @@
-package com.betmansmall.game.gameInterface;
+package com.betmansmall.game.gameInterface.mapeditor;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;

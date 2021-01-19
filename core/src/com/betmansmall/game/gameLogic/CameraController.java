@@ -95,6 +95,9 @@ public class CameraController extends AbstractCameraController {
         camera.zoom = 0.5f;
     }
 
+    public CameraController() {
+    }
+
     @Override
     public void dispose() {
         Gdx.app.log("CameraController::dispose()", "--");

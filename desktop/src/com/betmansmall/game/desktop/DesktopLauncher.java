@@ -51,7 +51,7 @@ public class DesktopLauncher {
         config.y = 0;
         config.width = 1000;
         config.height = 500;
-//        config.foregroundFPS = 90;
+        config.foregroundFPS = 1000;
         config.addIcon("icons8-batman-emoji-32.png", Files.FileType.Internal);
         if (cmd.hasOption("server")) {
             config.width = (int)width/2;

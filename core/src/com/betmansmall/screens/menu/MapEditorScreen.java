@@ -3,14 +3,11 @@ package com.betmansmall.screens.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,11 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
-import com.betmansmall.game.gameInterface.TestListView;
+import com.betmansmall.game.gameInterface.mapeditor.TestListView;
+import com.betmansmall.game.gameInterface.mapeditor.TestTabbedPane;
 import com.betmansmall.game.gameLogic.MapEditorCameraController;
-import com.betmansmall.maps.AutoTiler;
 import com.betmansmall.maps.MapLoader;
-import com.betmansmall.maps.TilesetConfig;
 import com.betmansmall.maps.TmxMap;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.utils.logging.Logger;
@@ -44,6 +40,7 @@ public class MapEditorScreen extends AbstractScreen {
     private VisSelectBox<String> selectMapsBox, selectTileBox, mapLayersBox;
     Array<String> arrName = new Array<String>();
     private TestListView testListView;
+    private TestTabbedPane testTabbedPane;
 
     public MapEditorScreen(GameMaster gameMaster, String fileName) {
         super(gameMaster);
@@ -109,7 +106,6 @@ public class MapEditorScreen extends AbstractScreen {
         elemTable.add(layerVisibleCheckBox).left().row();
 
         selectMapsBox = new VisSelectBox<>();
-        updateTileList();
         selectTileBox.setSelected(fileName);
         selectMapsBox.addListener(new ChangeListener() {
             @Override
@@ -149,11 +145,20 @@ public class MapEditorScreen extends AbstractScreen {
             testListViewPosY = testListView.getY();
             testListView.remove();
         }
+
         testListView = new TestListView(this);
         if (testListViewPosX != -1 && testListViewPosY != -1) {
             testListView.setPosition(testListViewPosX, testListViewPosY);
         }
         stage.addActor(testListView);
+
+        if (testTabbedPane != null) {
+            testTabbedPane.remove();
+        }
+
+        testTabbedPane = new TestTabbedPane(map ,false);
+
+        stage.addActor(testTabbedPane);
     }
 
     @Override

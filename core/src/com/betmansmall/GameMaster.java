@@ -155,6 +155,7 @@ public class GameMaster extends Game {
         } else {
             addScreen(mainMenuScreen);
         }
+        Gdx.graphics.setVSync(false);
     }
 
     @Override
