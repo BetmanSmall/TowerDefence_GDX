@@ -40,9 +40,12 @@ public class MapEditorInterface extends GameInterface {
 
     private final FileChooserDialog dialog;
 
+    public TileSelector tileSelector;
+
     public MapEditorInterface(MapEditorScreen _mapEditorScreen) {
         super();
         this.mapEditorScreen = _mapEditorScreen;
+        this.mapEditorScreen.mapEditorInterface = this; // wtf?
         this.stage = this;
 
         Table rootTable = new VisTable();
@@ -105,6 +108,13 @@ public class MapEditorInterface extends GameInterface {
             }
         });
         rootTable.add(generateBtn).left().top().row();
+
+        Table selectorsTable = new VisTable();
+        selectorsTable.setFillParent(true);
+        addActor(selectorsTable);
+
+        tileSelector = new TileSelector(mapEditorScreen);
+        selectorsTable.add(tileSelector).expand();
 
         Table elemTable = new VisTable();
         rootTable.add(elemTable).expand().left().top();
@@ -194,4 +204,67 @@ public class MapEditorInterface extends GameInterface {
 //        }
 //        addActor(testListView);
 //    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        if (tileSelector != null) {
+            tileSelector.panStop(x, y, pointer, button);
+        }
+        return super.panStop(x, y, pointer, button);
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        if (tileSelector != null) {
+            tileSelector.scrolled(amountY);
+        }
+        return super.scrolled(amountX, amountY);
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        this.prevMouseX = screenX;
+        this.prevMouseY = screenY;
+        if (tileSelector != null) {
+            tileSelector.touchDown(screenX, screenY, pointer, button);
+        }
+        return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (tileSelector != null) {
+            tileSelector.panStop(screenX, screenY, pointer, button);
+        }
+        return super.touchUp(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        float deltaX = screenX - prevMouseX;
+        float deltaY = screenY - prevMouseY;
+        this.prevMouseX = screenX;
+        this.prevMouseY = screenY;
+        boolean returnSuperTouchDragged = super.touchDragged(screenX, screenY, pointer);
+        if (tileSelector != null) {
+            if (tileSelector.pan(screenX, screenY, deltaX, deltaY)) {
+                return true;
+            }
+        }
+        return super.touchDragged(screenX, screenY, pointer);
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        this.prevMouseX = screenX;
+        this.prevMouseY = screenY;
+        return super.mouseMoved(screenX, screenY);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        if (tileSelector != null) {
+            tileSelector.resize(width, height);
+        }
+    }
 }

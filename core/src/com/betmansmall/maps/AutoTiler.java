@@ -28,18 +28,18 @@ public class AutoTiler implements Runnable {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    private final TmxMap tmxMap;
-    private final Random random;
+    public final TmxMap tmxMap;
+    public final Random random;
 
-    private TileSet tileSet;
-    private TiledMapTileSet tiledMapTiles;
-    private TiledMapTileLayer mapLayer;
+    public TileSet tileSet;
+    public TiledMapTileSet tiledMapTiles;
+    public TiledMapTileLayer mapLayer;
 
-    private StaticTiledMapTile nullTile;
+    public StaticTiledMapTile nullTile;
 
-    private Thread thread = null;
-    private int timeSleep = 2;
-    private int order = 28;
+    public Thread thread = null;
+    public int timeSleep = 2;
+    public int order = 28;
 
     public AutoTiler(FileHandle tilesetFile) {
         tmxMap = new TmxMap(new TiledMap(), "");

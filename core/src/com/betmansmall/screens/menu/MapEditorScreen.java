@@ -69,45 +69,46 @@ public class MapEditorScreen extends AbstractScreen {
     public void show() {
         Logger.logFuncStart();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(new GestureDetector(new GestureDetector.GestureAdapter() {
-            @Override
-            public boolean longPress(float x, float y) {
-                Logger.logDebug("x:" + x, "y:" + y);
-                while (true) {
-                    if (autoTiler.generateMap(gameMaster.tileSetsFileHandles.random()) != null) {
-                        if (tmxMap.isometric) {
-                            renderer = new IsometricTiledMapRenderer(tmxMap);
-                        } else {
-                            renderer = new OrthogonalTiledMapRenderer(tmxMap);
-                        }
-                        break;
-                    }
-                }
-                return super.longPress(x, y);
-            }
-        }));
+//        inputMultiplexer.addProcessor(new GestureDetector(new GestureDetector.GestureAdapter() {
+//            @Override
+//            public boolean longPress(float x, float y) {
+//                Logger.logDebug("x:" + x, "y:" + y);
+//                while (true) {
+//                    if (autoTiler.generateMap(gameMaster.tileSetsFileHandles.random()) != null) {
+//                        if (tmxMap.isometric) {
+//                            renderer = new IsometricTiledMapRenderer(tmxMap);
+//                        } else {
+//                            renderer = new OrthogonalTiledMapRenderer(tmxMap);
+//                        }
+//                        break;
+//                    }
+//                }
+//                return super.longPress(x, y);
+//            }
+//        }));
+        inputMultiplexer.addProcessor(new GestureDetector(mapEditorInterface));
         inputMultiplexer.addProcessor(mapEditorInterface);
         inputMultiplexer.addProcessor(mapEditorCameraController);
         inputMultiplexer.addProcessor(new GestureDetector(mapEditorCameraController));
-        inputMultiplexer.addProcessor(new InputAdapter() {
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (button == Input.Buttons.RIGHT) {
-                    autoTiler.generateMap();
-                }
-                Logger.logDebug(mapEditorCameraController.toString());
-                return true;
-            }
-            @Override
-            public boolean keyDown(int keycode) {
-                if (Input.Keys.PLUS == keycode) {
-                    autoTiler.setTimeSleep(true);
-                } else if (Input.Keys.MINUS == keycode) {
-                    autoTiler.setTimeSleep(false);
-                }
-                return super.keyDown(keycode);
-            }
-        });
+//        inputMultiplexer.addProcessor(new InputAdapter() {
+//            @Override
+//            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+//                if (button == Input.Buttons.RIGHT) {
+//                    autoTiler.generateMap();
+//                }
+////                Logger.logDebug(mapEditorCameraController.toString());
+//                return true;
+//            }
+//            @Override
+//            public boolean keyDown(int keycode) {
+//                if (Input.Keys.PLUS == keycode) {
+//                    autoTiler.setTimeSleep(true);
+//                } else if (Input.Keys.MINUS == keycode) {
+//                    autoTiler.setTimeSleep(false);
+//                }
+//                return super.keyDown(keycode);
+//            }
+//        });
         Gdx.input.setInputProcessor(inputMultiplexer);
 //        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
