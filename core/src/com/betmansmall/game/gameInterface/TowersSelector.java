@@ -22,7 +22,7 @@ public class TowersSelector extends InterfaceSelector {
         this.gameInterface = gameScreen.gameInterface;
 
         this.templateForTowers = gameField.factionsManager.getAllTemplateForTowers();
-//        Logger.logDebug("templateForTowers:" + templateForTowers);
+        Logger.logDebug("templateForTowers:" + templateForTowers);
         this.setDebug(true);
         GameSettings gameSettings = gameScreen.gameMaster.sessionSettings.gameSettings;
         updateBorders(gameSettings.verticalSelector, gameSettings.topBottomLeftRightSelector, gameSettings.smoothFlingSelector);
@@ -30,7 +30,7 @@ public class TowersSelector extends InterfaceSelector {
     }
 
     public void dispose() {
-//        Gdx.app.log("TowersSelector::dispose()", "--");
+        Logger.logFuncStart();
     }
 
     @Override

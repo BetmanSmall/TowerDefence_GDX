@@ -21,8 +21,8 @@ public class GameInterface extends GameAbsInterface {
     public ConsoleLoggerTable consoleLoggerTable;
 
     public PlayersViewTable playersViewTable;
-    public Table tableWithButtons, tableWithSelectors, tableInfoTablo, pauseMenuTable, optionTable, firstOptionTable;
-    public Table infoTabloTable;
+    public Table tableWithButtons, tableWithSelectors, pauseMenuTable, optionTable, firstOptionTable;
+    public Table tableInfoTablo, infoTabloTable;
 
     public TextButton resumeButton, nextLevelButton, optionButton, exitButton;
     public TextButton infoTabloHideButton, resetDrawSettingsButton;
@@ -164,16 +164,16 @@ public class GameInterface extends GameAbsInterface {
         return super.keyTyped(character);
     }
 
-    @Override
-    public void resize() {
+//    @Override
+//    public void resize() {
 //        super.resize();
-        Logger.logFuncStart();
+//        Logger.logFuncStart();
 //        Logger.logFuncStart("skin:" + skin);
 //        if (skin != null) {
 //            skin.getFont("default-font").getData().setScale(2f, 2f);
 //            resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        }
-    }
+//    }
 
     @Override
     public void resize(int width, int height) {

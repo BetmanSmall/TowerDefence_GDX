@@ -10,7 +10,7 @@ public abstract class GameAbsInterface extends Stage implements GestureDetector.
     }
 
     public abstract void render(float delta);
-    public abstract void resize();
+//    public abstract void resize();
     public abstract void resize(int width, int height);
 //        initInterface();
 //        addListeners();

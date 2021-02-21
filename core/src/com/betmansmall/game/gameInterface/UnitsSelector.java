@@ -23,7 +23,7 @@ public class UnitsSelector extends InterfaceSelector {
         this.gameInterface = gameScreen.gameInterface;
 
         this.templateForUnits = gameField.factionsManager.getAllTemplateForUnits();
-        Gdx.app.log("UnitsSelector::UnitsSelector()", "-- templateForUnits:" + templateForUnits);
+        Logger.logDebug("templateForUnits:" + templateForUnits);
         this.setDebug(true);
         GameSettings gameSettings = gameScreen.gameMaster.sessionSettings.gameSettings;
         updateBorders(gameSettings.verticalSelector, !gameSettings.topBottomLeftRightSelector, gameSettings.smoothFlingSelector);
@@ -31,7 +31,7 @@ public class UnitsSelector extends InterfaceSelector {
     }
 
     public void dispose() {
-        Gdx.app.log("UnitsSelector::dispose()", "--");
+        Logger.logFuncStart();
     }
 
     @Override

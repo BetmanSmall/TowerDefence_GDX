@@ -195,7 +195,7 @@ public class GameScreenInterface extends GameInterface {
         tableTowerButtons.add(closeTowerBtn);
 
         addListeners();
-        resize();
+//        resize();
     }
 
     @Override

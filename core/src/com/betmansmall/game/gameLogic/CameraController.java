@@ -7,9 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.game.gameInterface.GameInterface;
-import com.betmansmall.enums.GameType;
 import com.betmansmall.game.gameLogic.playerTemplates.TemplateForTower;
 import com.betmansmall.maps.TmxMap;
 import com.betmansmall.screens.GameAutoTileScreen;
@@ -29,7 +27,6 @@ public class CameraController extends AbstractCameraController {
     public GameInterface gameInterface;
 
     public OrthographicCamera camera;
-//    public int mapWidth, mapHeight;
 
     public int isDrawableGrid = 1;
     public int isDrawableUnits = 1;
@@ -49,8 +46,6 @@ public class CameraController extends AbstractCameraController {
 
     public float zoomMax = 5.0f;
     public float zoomMin = 0.1f;
-//    public float sizeCellX, sizeCellY;
-//    public float halfSizeCellX, halfSizeCellY;
     protected float borderLeftX = 0.0f, borderRightX = 0.0f;
     protected float borderUpY = 0.0f, borderDownY = 0.0f;
 
@@ -80,7 +75,7 @@ public class CameraController extends AbstractCameraController {
             this.gameInterface = gameScreen.gameInterface;
         } else if (screen instanceof MapEditorScreen) {
             tmxMap = ((MapEditorScreen) screen).tmxMap;
-            gameInterface = ((MapEditorScreen) screen).mapEditorInterface;
+            gameInterface = ((MapEditorScreen) screen).gameInterface;
             camera.position.set(515, 255, 0);
             camera.zoom = 1.05f;
             zoomMax = 10f;
@@ -93,12 +88,6 @@ public class CameraController extends AbstractCameraController {
         } else {
             Logger.logError("screen!=GameScreen");
         }
-//        this.mapWidth = tmxMap.width;
-//        this.mapHeight = tmxMap.height;
-//        this.sizeCellX = tmxMap.tileWidth;
-//        this.sizeCellY = tmxMap.tileHeight;
-//        this.halfSizeCellX = sizeCellX / 2;
-//        this.halfSizeCellY = sizeCellY / 2;
         random = new Random();
 //        Gdx.input.setCursorCatched(true);
     }

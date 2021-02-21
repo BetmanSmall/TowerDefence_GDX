@@ -117,7 +117,6 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-//        Gdx.app.log("GameScreen::resize(" + width + ", " + height + ")", "--");
         if (gameInterface != null) {
             gameInterface.resize(width, height);
         }
@@ -126,6 +125,7 @@ public class GameScreen extends AbstractScreen {
             cameraController.camera.viewportHeight = height;
             cameraController.camera.update();
         }
+        Logger.logDebug("New width:" + width + " height:" + height);
     }
 
     public void sendGameFieldVariables() {

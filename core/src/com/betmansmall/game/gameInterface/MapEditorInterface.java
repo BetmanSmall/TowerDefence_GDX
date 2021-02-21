@@ -2,8 +2,6 @@ package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,8 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.betmansmall.maps.MapLoader;
-import com.betmansmall.maps.TmxMap;
 import com.betmansmall.screens.menu.MapEditorScreen;
 import com.betmansmall.utils.FileChooserDialog;
 import com.betmansmall.utils.logging.Logger;
@@ -45,7 +41,7 @@ public class MapEditorInterface extends GameInterface {
     public MapEditorInterface(MapEditorScreen _mapEditorScreen) {
         super();
         this.mapEditorScreen = _mapEditorScreen;
-        this.mapEditorScreen.mapEditorInterface = this; // wtf?
+        this.mapEditorScreen.gameInterface = this; // wtf?
         this.stage = this;
 
         Table rootTable = new VisTable();
@@ -178,6 +174,7 @@ public class MapEditorInterface extends GameInterface {
                 return path.matches(".*(?:tmx)");
             }
         });
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
 //    public void updateTileList() {
@@ -216,7 +213,9 @@ public class MapEditorInterface extends GameInterface {
     @Override
     public boolean scrolled(float amountX, float amountY) {
         if (tileSelector != null) {
-            tileSelector.scrolled(amountY);
+            if (tileSelector.scrolled(amountY)) {
+                return true;
+            }
         }
         return super.scrolled(amountX, amountY);
     }
@@ -263,6 +262,14 @@ public class MapEditorInterface extends GameInterface {
 
     @Override
     public void resize(int width, int height) {
+        Logger.logFuncStart("width:" + width, "height:" + height);
+        for (Actor actor : getActors()) {
+            if (actor instanceof Table) {
+                actor.setSize(width, height);
+            }
+        }
+        super.getViewport().update(width, height, true);
+
         if (tileSelector != null) {
             tileSelector.resize(width, height);
         }

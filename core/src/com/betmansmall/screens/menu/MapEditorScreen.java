@@ -2,7 +2,6 @@ package com.betmansmall.screens.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.input.GestureDetector;
@@ -22,10 +21,10 @@ public class MapEditorScreen extends AbstractScreen {
     public AutoTiler autoTiler;
     public TmxMap tmxMap;
 
-    public MapEditorCameraController mapEditorCameraController;
+    public MapEditorCameraController cameraController;
     public BatchTiledMapRenderer renderer;
     public BasicRender basicRender;
-    public MapEditorInterface mapEditorInterface;
+    public MapEditorInterface gameInterface;
 
     public MapEditorScreen(GameMaster gameMaster) {
         super(gameMaster);
@@ -34,7 +33,7 @@ public class MapEditorScreen extends AbstractScreen {
         autoTiler = new AutoTiler(Gdx.files.internal("maps/other/desert.tsx"));
         tmxMap = autoTiler.generateMap();
 
-        mapEditorCameraController = new MapEditorCameraController(this);
+        cameraController = new MapEditorCameraController(this);
 
         if (tmxMap.isometric) {
             this.renderer = new IsometricTiledMapRenderer(tmxMap);
@@ -42,13 +41,13 @@ public class MapEditorScreen extends AbstractScreen {
             this.renderer = new OrthogonalTiledMapRenderer(tmxMap);
         }
         Logger.logDebug("renderer:" + renderer);
-        this.basicRender = new BasicRender(mapEditorCameraController);
+        this.basicRender = new BasicRender(cameraController);
 
-        mapEditorInterface = new MapEditorInterface(this);
-        mapEditorInterface.setDebugUnderMouse(true);
-        mapEditorInterface.setDebugInvisible(true);
-        mapEditorInterface.setDebugParentUnderMouse(true);
-        mapEditorInterface.setDebugTableUnderMouse(true);
+        gameInterface = new MapEditorInterface(this);
+        gameInterface.setDebugUnderMouse(true);
+        gameInterface.setDebugInvisible(true);
+        gameInterface.setDebugParentUnderMouse(true);
+        gameInterface.setDebugTableUnderMouse(true);
     }
 
     @Override
@@ -57,12 +56,12 @@ public class MapEditorScreen extends AbstractScreen {
         super.dispose();
 //        autoTiler.dispose();
         tmxMap.dispose();
-        mapEditorCameraController.dispose();
+        cameraController.dispose();
 
         renderer.dispose();
         basicRender.dispose();
 
-        mapEditorInterface.dispose();
+        gameInterface.dispose();
     }
 
     @Override
@@ -86,10 +85,10 @@ public class MapEditorScreen extends AbstractScreen {
 //                return super.longPress(x, y);
 //            }
 //        }));
-        inputMultiplexer.addProcessor(new GestureDetector(mapEditorInterface));
-        inputMultiplexer.addProcessor(mapEditorInterface);
-        inputMultiplexer.addProcessor(mapEditorCameraController);
-        inputMultiplexer.addProcessor(new GestureDetector(mapEditorCameraController));
+        inputMultiplexer.addProcessor(new GestureDetector(gameInterface));
+        inputMultiplexer.addProcessor(gameInterface);
+        inputMultiplexer.addProcessor(cameraController);
+        inputMultiplexer.addProcessor(new GestureDetector(cameraController));
 //        inputMultiplexer.addProcessor(new InputAdapter() {
 //            @Override
 //            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -118,31 +117,35 @@ public class MapEditorScreen extends AbstractScreen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        mapEditorCameraController.update(delta);
+        cameraController.update(delta);
 
-        renderer.setView(mapEditorCameraController.camera);
+        renderer.setView(cameraController.camera);
         renderer.render();
         basicRender.render();
 
-        mapEditorInterface.act();
-        mapEditorInterface.draw();
+        gameInterface.act();
+        gameInterface.draw();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Logger.logDebug("isKeyJustPressed(Input.Keys.ESCAPE);");
             gameMaster.removeTopScreen();
         }
 
-        mapEditorCameraController.inputHandler(delta);
+        cameraController.inputHandler(delta);
         super.render(delta);
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-        mapEditorCameraController.camera.viewportHeight = height;
-        mapEditorCameraController.camera.viewportWidth = width;
-        mapEditorCameraController.camera.update();
-        mapEditorInterface.getViewport().update(width, height, true);
+        if (gameInterface != null) {
+            gameInterface.resize(width, height);
+        }
+        if (cameraController != null) {
+            cameraController.camera.viewportWidth = width;
+            cameraController.camera.viewportHeight = height;
+            cameraController.camera.update();
+        }
         Logger.logDebug("New width:" + width + " height:" + height);
     }
 
@@ -150,8 +153,8 @@ public class MapEditorScreen extends AbstractScreen {
     public String toString() {
         final StringBuilder sb = new StringBuilder("MapEditorScreen{");
         sb.append("tmxMap=").append(tmxMap);
-        sb.append(", mapEditorInterface=").append(mapEditorInterface);
-        sb.append(", mapEditorCameraController=").append(mapEditorCameraController);
+        sb.append(", gameInterface=").append(gameInterface);
+        sb.append(", cameraController=").append(cameraController);
         sb.append('}');
         return sb.toString();
     }
