@@ -33,6 +33,12 @@ public class MapEditorScreen extends AbstractScreen {
         autoTiler = new AutoTiler(Gdx.files.internal("maps/other/desert.tsx"));
         tmxMap = autoTiler.generateMap();
 
+        gameInterface = new MapEditorInterface(this);
+        gameInterface.setDebugUnderMouse(true);
+        gameInterface.setDebugInvisible(true);
+        gameInterface.setDebugParentUnderMouse(true);
+        gameInterface.setDebugTableUnderMouse(true);
+
         cameraController = new MapEditorCameraController(this);
 
         if (tmxMap.isometric) {
@@ -42,12 +48,6 @@ public class MapEditorScreen extends AbstractScreen {
         }
         Logger.logDebug("renderer:" + renderer);
         this.basicRender = new BasicRender(cameraController);
-
-        gameInterface = new MapEditorInterface(this);
-        gameInterface.setDebugUnderMouse(true);
-        gameInterface.setDebugInvisible(true);
-        gameInterface.setDebugParentUnderMouse(true);
-        gameInterface.setDebugTableUnderMouse(true);
     }
 
     @Override

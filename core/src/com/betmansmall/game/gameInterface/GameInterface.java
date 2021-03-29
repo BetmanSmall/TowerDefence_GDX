@@ -1,6 +1,7 @@
 package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -12,6 +13,7 @@ import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.utils.logging.ConsoleLoggerTable;
 import com.betmansmall.utils.logging.Logger;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
@@ -43,9 +45,6 @@ public class GameInterface extends GameAbsInterface {
             towersSelectorCoord,
             selectorBorderVertical, selectorBorderHorizontal;
 
-    public UnitsSelector unitsSelector;
-    public TowersSelector towersSelector;
-
     public int prevMouseX, prevMouseY;
     public boolean interfaceTouched;
 
@@ -63,6 +62,19 @@ public class GameInterface extends GameAbsInterface {
 
         consoleLoggerTable = ConsoleLoggerTable.instance();
         addActor(consoleLoggerTable);
+
+        tableInfoTablo = new VisTable();
+        tableInfoTablo.setFillParent(true);
+        addActor(tableInfoTablo);
+
+        infoTabloTable = new VisTable();
+        infoTabloTable.setVisible(false);
+        tableInfoTablo.add(infoTabloTable).expand().left().top();
+
+        fpsLabel = new VisLabel("FPS:000", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
+        infoTabloTable.add(fpsLabel).left().row();
+        deltaTimeLabel = new VisLabel("deltaTime:000", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
+        infoTabloTable.add(deltaTimeLabel).left().row();
     }
 
     @Override
@@ -79,6 +91,14 @@ public class GameInterface extends GameAbsInterface {
     public void render(float delta) {
         act(delta);
         draw();
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+
+        fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        deltaTimeLabel.setText("delta:" + String.valueOf(delta));
     }
 
     @Override
@@ -103,18 +123,6 @@ public class GameInterface extends GameAbsInterface {
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
 //        Gdx.app.log("GameInterface::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
-        if (unitsSelector != null) {
-             if (unitsSelector.fling(velocityX, velocityY, button)) {
-//                 this.interfaceTouched = true;
-                 return true;
-             }
-        }
-        if (towersSelector != null) {
-            if (towersSelector.fling(velocityX, velocityY, button)) {
-//                this.interfaceTouched = true;
-                return true;
-            }
-        }
         return false;
     }
 

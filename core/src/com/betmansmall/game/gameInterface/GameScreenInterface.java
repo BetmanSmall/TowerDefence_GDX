@@ -31,6 +31,9 @@ public class GameScreenInterface extends GameInterface {
     private VisLabel connectedPlayerCount;
     private VisLabel unitsCount; // duplicate unitsManagerSize
 
+    public UnitsSelector unitsSelector;
+    public TowersSelector towersSelector;
+
     public GameScreenInterface(final GameScreen gameScreen) {
         super();
         Logger.logFuncStart();
@@ -114,18 +117,6 @@ public class GameScreenInterface extends GameInterface {
         gameSpeedPlus = new VisTextButton(">>");
         horizontalGroupBottom.add(gameSpeedPlus).prefWidth(Gdx.graphics.getWidth()*0.1f).prefHeight(Gdx.graphics.getHeight()*0.1f);
 
-        tableInfoTablo = new VisTable();
-        tableInfoTablo.setFillParent(true);
-        addActor(tableInfoTablo);
-
-        infoTabloTable = new VisTable();
-        infoTabloTable.setVisible(false);
-        tableInfoTablo.add(infoTabloTable).expand().left();
-
-        fpsLabel = new VisLabel("FPS:000", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
-        infoTabloTable.add(fpsLabel).left().row();
-        deltaTimeLabel = new VisLabel("deltaTime:000", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
-        infoTabloTable.add(deltaTimeLabel).left().row();
         mapPathLabel = new VisLabel("MapName:arena0tmx", new VisLabel.LabelStyle(bitmapFont, Color.WHITE));
         infoTabloTable.add(mapPathLabel).left().row();
         gameType = new VisLabel("gameType:", new VisLabel.LabelStyle(bitmapFont, Color.YELLOW));
@@ -694,8 +685,6 @@ public class GameScreenInterface extends GameInterface {
             }
         }
 
-        fpsLabel.setText("FPS:" + String.valueOf(Gdx.graphics.getFramesPerSecond()));
-        deltaTimeLabel.setText("delta:" + String.valueOf(delta));
         mapPathLabel.setText("gameScreen.gameField.tmxMap.mapPath:" + gameScreen.gameField.tmxMap.mapPath);
         gameType.setText("gameScreen.gameField.gameSettings.gameType:" + gameScreen.gameField.gameSettings.gameType);
         isometricLabel.setText("gameScreen.gameField.tmxMap.isometric:" + gameScreen.gameField.tmxMap.isometric);
@@ -756,6 +745,24 @@ public class GameScreenInterface extends GameInterface {
             batch.draw(loseTexture, 0, 0, getWidth(), getHeight());
         }
         batch.end();
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+//        Gdx.app.log("GameInterface::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
+        if (unitsSelector != null) {
+            if (unitsSelector.fling(velocityX, velocityY, button)) {
+//                 this.interfaceTouched = true;
+                return true;
+            }
+        }
+        if (towersSelector != null) {
+            if (towersSelector.fling(velocityX, velocityY, button)) {
+//                this.interfaceTouched = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

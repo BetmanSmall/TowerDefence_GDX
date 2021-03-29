@@ -254,6 +254,18 @@ public class MapEditorInterface extends GameInterface {
     }
 
     @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+//        Gdx.app.log("GameInterface::fling()", "-- velocityX:" + velocityX + " velocityY:" + velocityY);
+        if (tileSelector != null) {
+            if (tileSelector.fling(velocityX, velocityY, button)) {
+//                 this.interfaceTouched = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean mouseMoved(int screenX, int screenY) {
         this.prevMouseX = screenX;
         this.prevMouseY = screenY;
