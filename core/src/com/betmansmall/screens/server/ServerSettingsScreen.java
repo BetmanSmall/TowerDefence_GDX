@@ -98,7 +98,7 @@ public class ServerSettingsScreen extends AbstractScreen {
 
         VisSelectBox<GameType> gameTypeSelectBox = new VisSelectBox<>();
         gameTypeSelectBox.setItems(GameType.values());
-        gameTypeSelectBox.setSelected(GameType.TowerDefence);
+        gameTypeSelectBox.setSelected(GameType.ProtoServer);
         leftTable.add(gameTypeSelectBox).colspan(2).align(Align.left).row();
 
         VisLabel mapLabel = new VisLabel("map:");
@@ -145,7 +145,11 @@ public class ServerSettingsScreen extends AbstractScreen {
                 } else {
                     gameMaster.sessionSettings.sessionType = SessionType.SERVER_STANDALONE;
                 }
-                gameMaster.addScreen(new ServerGameScreen(gameMaster, gameMaster.userAccount));
+                if (gameMaster.sessionSettings.gameSettings.gameType == GameType.ProtoServer) {
+                    gameMaster.addScreen(new ProtoServerGameScreen(gameMaster, gameMaster.userAccount));
+                } else {
+                    gameMaster.addScreen(new ServerGameScreen(gameMaster, gameMaster.userAccount));
+                }
             }
         });
         midTable.add(startServer).colspan(2).align(Align.center).row();

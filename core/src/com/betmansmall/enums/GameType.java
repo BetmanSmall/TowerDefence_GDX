@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
  */
 
 public enum GameType {
+    ProtoServer("ProtoServer"),
     LittleGame("LittleGame"),
     TowerDefence("TowerDefence");
 //    OrthogonalityTowerDefence("OrthogonalityTowerDefence");

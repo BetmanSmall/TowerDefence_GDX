@@ -7,9 +7,15 @@ import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.playerTemplates.Faction;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.PlayerInfoData;
+import com.betmansmall.server.networking.ProtoTcpConnection;
 import com.betmansmall.server.networking.TcpConnection;
 
+import protobuf.Proto;
+
 public class Player {
+    public ProtoTcpConnection protoTcpConnection;
+    public Proto.Transform transform;
+
     public TcpConnection connection; // only for ServerSessionThread class
     public PlayerType type;
     public PlayerStatus playerStatus;
@@ -63,6 +69,13 @@ public class Player {
         init(null, playerInfoData, faction);
     }
 
+    public Player(ProtoTcpConnection tcpConnection, Proto.SendObject sendObject) { // only for ProtoServerSessionThread class
+        this.protoTcpConnection = tcpConnection;
+        this.accountID = sendObject.getUuid();
+        this.playerID = sendObject.getIndex();
+        this.transform = sendObject.getTransform();
+    }
+
     public Player(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) { // only for ServerSessionThread class
         init(tcpConnection, playerInfoData, faction);
     }
@@ -92,6 +105,7 @@ public class Player {
         StringBuilder sb = new StringBuilder();
         sb.append("Player[");
         sb.append("type:" + type);
+        sb.append(",transform:" + transform);
         sb.append(",playerStatus:" + playerStatus);
         sb.append(",accountID:" + accountID);
         sb.append(",playerID:" + playerID);
@@ -105,7 +119,8 @@ public class Player {
 
             sb.append(",maxOfMissedUnits:" + maxOfMissedUnits);
             sb.append(",missedUnits:" + missedUnits);
-//            sb.append(",connection:" + connection);
+//            sb.append(",protoTcpConnection:" + protoTcpConnection);
+//            sb.append(",tcpConnection:" + tcpConnection);
         }
         sb.append("]");
         return sb.toString();

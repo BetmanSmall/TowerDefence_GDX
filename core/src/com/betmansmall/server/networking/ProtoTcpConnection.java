@@ -1,54 +1,55 @@
 package com.betmansmall.server.networking;
 
 import com.badlogic.gdx.utils.StringBuilder;
-import com.betmansmall.server.data.SendObject;
 import com.betmansmall.utils.logging.Logger;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class TcpConnection {
-    private final TcpSocketListener tcpSocketListener;
+import protobuf.Proto;
+
+public class ProtoTcpConnection {
+    private final ProtoTcpSocketListener tcpSocketListener;
     private final Socket socket;
     private final Thread thread;
 
-    private final ObjectInputStream objectInputStream;
-    private final ObjectOutputStream objectOutputStream;
+    private final InputStream inputStream;
+    private final OutputStream outputStream;
 
-    public TcpConnection(TcpSocketListener tcpSocketListener, String host, int port) throws IOException {
+    public ProtoTcpConnection(ProtoTcpSocketListener tcpSocketListener, String host, int port) throws IOException {
         this(tcpSocketListener, new Socket(host, port));
         Logger.logFuncEnd();
     }
 
-    public TcpConnection(final TcpSocketListener tcpSocketListener, final Socket socket) throws IOException {
+    public ProtoTcpConnection(final ProtoTcpSocketListener tcpSocketListener, final Socket socket) throws IOException {
         Logger.logFuncStart();
         this.tcpSocketListener = tcpSocketListener;
         this.socket = socket;
 
-        objectInputStream = new ObjectInputStream(socket.getInputStream());
-        objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        inputStream = socket.getInputStream();
+        outputStream = socket.getOutputStream();
 
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    tcpSocketListener.onConnectionReady(TcpConnection.this);
+                    tcpSocketListener.onConnectionReady(ProtoTcpConnection.this);
                     while (!thread.isInterrupted() && !socket.isClosed()) {
-                        SendObject sendObject = (SendObject)objectInputStream.readObject();
-                        tcpSocketListener.onReceiveObject(TcpConnection.this, sendObject);
+                        Proto.SendObject sendObject = Proto.SendObject.parseDelimitedFrom(inputStream);
+                        tcpSocketListener.onReceiveObject(ProtoTcpConnection.this, sendObject);
                     }
                 } catch (EOFException e) { // AuthServerThread Client Disconnect
-                    tcpSocketListener.onException(TcpConnection.this, e);
+                    tcpSocketListener.onException(ProtoTcpConnection.this, e);
                 } catch (SocketException e) { // ServerSessionThread Player Disconnect
-                    tcpSocketListener.onException(TcpConnection.this, e);
+                    tcpSocketListener.onException(ProtoTcpConnection.this, e);
                 } catch (Exception e) { // Other Exceptions
-                    tcpSocketListener.onException(TcpConnection.this, e);
+                    tcpSocketListener.onException(ProtoTcpConnection.this, e);
                 } finally {
-                    tcpSocketListener.onDisconnect(TcpConnection.this);
+                    tcpSocketListener.onDisconnect(ProtoTcpConnection.this);
                 }
             }
         });
@@ -56,13 +57,13 @@ public class TcpConnection {
         Logger.logFuncEnd();
     }
 
-    public synchronized void sendObject(final SendObject sendObject) {
+    public synchronized void sendObject(final Proto.SendObject sendObject) {
         Logger.logFuncStart("sendObject:" + sendObject);
         try {
-            objectOutputStream.writeObject(sendObject);
-            objectOutputStream.flush();
+            sendObject.writeDelimitedTo(outputStream);
+            outputStream.flush();
         } catch (IOException e) {
-            tcpSocketListener.onException(TcpConnection.this, e);
+            tcpSocketListener.onException(ProtoTcpConnection.this, e);
             disconnect();
         }
     }
@@ -73,7 +74,7 @@ public class TcpConnection {
         try {
             socket.close();
         } catch (IOException e) {
-            tcpSocketListener.onException(TcpConnection.this, e);
+            tcpSocketListener.onException(ProtoTcpConnection.this, e);
         }
     }
 
@@ -92,13 +93,13 @@ public class TcpConnection {
 
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
-        sb.append("TcpConnection[");
+        sb.append("ProtoTcpConnection[");
         if (full) {
             sb.append("tcpSocketListener:" + tcpSocketListener);
             sb.append(",socket:" + socket);
             sb.append(",thread:" + thread);
-            sb.append(",objectInputStream:" + objectInputStream);
-            sb.append(",objectOutputStream:" + objectOutputStream);
+            sb.append(",inputStream:" + inputStream);
+            sb.append(",outputStream:" + outputStream);
         } else {
             sb.append("inetAddress:" + socket.getInetAddress());
         }

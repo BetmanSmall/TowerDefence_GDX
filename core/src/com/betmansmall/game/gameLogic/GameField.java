@@ -1023,6 +1023,8 @@ public class GameField {
                     }
                 }
             }
+        } else if (gameSettings.gameType == GameType.ProtoServer) {
+
         } else {
             Gdx.app.log("GameField::getGameState()", "-bad- gameSettings.gameType:" + gameSettings.gameType);
         }

@@ -156,6 +156,8 @@ project(":core") {
 //        compile group: 'org.json', name: 'json', version: '20201115'
         // https://mvnrepository.com/artifact/com.google.guava/guava
         compile group: 'com.google.guava', name: 'guava', version: '30.1-jre'
+        // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+        implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.13.0'
     }
 
     dependencies {

@@ -9,8 +9,11 @@ import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.data.PlayersManagerData;
+import com.betmansmall.server.networking.ProtoTcpConnection;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.utils.logging.Logger;
+
+import protobuf.Proto;
 
 public class PlayersManager {
     private SessionType sessionType;
@@ -115,6 +118,15 @@ public class PlayersManager {
         return null;
     }
 
+    public Player addPlayerByServer(ProtoTcpConnection tcpConnection, Proto.SendObject sendObject) {
+        Player player = new Player(tcpConnection, sendObject);
+        if (addPlayer(player)) {
+            player.playerStatus = PlayerStatus.CONNECTED;
+            return player;
+        }
+        return null;
+    }
+
     public Player addPlayerByServer(TcpConnection tcpConnection, PlayerInfoData playerInfoData) {
         Player player = disconnectedPlayer(playerInfoData.accountID);
         if (player == null) {
@@ -147,6 +159,16 @@ public class PlayersManager {
         } else {
             player.playerStatus = PlayerStatus.CONNECTED;
             return player;
+        }
+        return null;
+    }
+
+    public Player getPlayerByConnection(ProtoTcpConnection connection) {
+        Logger.logFuncStart("connection:" + connection, "players:" + players);
+        for (Player player : players) {
+            if (player.protoTcpConnection != null && player.protoTcpConnection.equals(connection)) {
+                return player;
+            }
         }
         return null;
     }
