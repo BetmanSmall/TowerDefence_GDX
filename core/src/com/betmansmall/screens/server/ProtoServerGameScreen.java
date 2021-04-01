@@ -45,11 +45,11 @@ public class ProtoServerGameScreen extends GameScreen {
         this.sessionThread.dispose();
     }
 
-    @Override
-    public void render(float delta) {
-        super.render(delta);
-        Logger.logFuncStart();
-    }
+//    @Override
+//    public void render(float delta) {
+//        super.render(delta);
+//        Logger.logFuncStart();
+//    }
 
     @Override
     public boolean spawnUnitFromServerScreenByWaves() {

@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.betmansmall.enums.GameState;
 import com.betmansmall.enums.GameType;
+import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.UnderConstruction;
@@ -149,6 +150,7 @@ public class GameScreenInterface extends GameInterface {
         addActor(tableWithSelectors);
 
         tableTowerButtons = new VisTable();
+        tableTowerButtons.setVisible(false);
         addActor(tableTowerButtons);
 
         sellTowerBtn = new VisTextButton("SELL");
@@ -669,19 +671,22 @@ public class GameScreenInterface extends GameInterface {
     public void act(float delta) {
         super.act(delta);
 
-        Tower tower = gameScreen.playersManager.getLocalPlayer().selectedTower;
-        if (tower != null) {
+        Player localPlayer = gameScreen.playersManager.getLocalPlayer();
+        if (localPlayer != null) {
+            Tower tower = localPlayer.selectedTower;
 //            Logger.logDebug("tower:" + tower);
-            Vector2 vector2 = getStagePositionOfWorldPosition(tower.getCircle(cameraController.isDrawableTowers));
-            if (vector2 != null) {
-                tableTowerButtons.setPosition(vector2.x, vector2.y - (-1f * cameraController.camera.zoom)*50f, Align.center);
-                if (!tableTowerButtons.isVisible()) {
-                    tableTowerButtons.setVisible(true);
+            if (tower != null) {
+                Vector2 vector2 = getStagePositionOfWorldPosition(tower.getCircle(cameraController.isDrawableTowers));
+                if (vector2 != null) {
+                    tableTowerButtons.setPosition(vector2.x, vector2.y - (-1f * cameraController.camera.zoom) * 50f, Align.center);
+                    if (!tableTowerButtons.isVisible()) {
+                        tableTowerButtons.setVisible(true);
+                    }
                 }
-            }
-        } else {
-            if (tableTowerButtons.isVisible()) {
-                tableTowerButtons.setVisible(false);
+            } else {
+                if (tableTowerButtons.isVisible()) {
+                    tableTowerButtons.setVisible(false);
+                }
             }
         }
 

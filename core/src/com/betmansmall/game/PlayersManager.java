@@ -13,6 +13,8 @@ import com.betmansmall.server.networking.ProtoTcpConnection;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.utils.logging.Logger;
 
+import java.util.UUID;
+
 import protobuf.Proto;
 
 public class PlayersManager {
@@ -118,10 +120,16 @@ public class PlayersManager {
         return null;
     }
 
-    public Player addPlayerByServer(ProtoTcpConnection tcpConnection, Proto.SendObject sendObject) {
-        Player player = new Player(tcpConnection, sendObject);
+    public Player addPlayerByServer(ProtoTcpConnection tcpConnection) {
+        Player player = new Player(tcpConnection);
         if (addPlayer(player)) {
             player.playerStatus = PlayerStatus.CONNECTED;
+            player.playerID = ++connectedCount;
+            player.accountID = UUID.randomUUID().toString();
+            player.transform = Proto.Transform.newBuilder()
+                    .setPosition(Proto.Position.newBuilder())
+                    .setRotation(Proto.Rotation.newBuilder())
+                    .build();
             return player;
         }
         return null;

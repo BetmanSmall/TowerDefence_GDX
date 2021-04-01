@@ -69,11 +69,9 @@ public class Player {
         init(null, playerInfoData, faction);
     }
 
-    public Player(ProtoTcpConnection tcpConnection, Proto.SendObject sendObject) { // only for ProtoServerSessionThread class
+    public Player(ProtoTcpConnection tcpConnection) { // only for ProtoServerSessionThread class
         this.protoTcpConnection = tcpConnection;
-        this.accountID = sendObject.getUuid();
-        this.playerID = sendObject.getIndex();
-        this.transform = sendObject.getTransform();
+        this.type = PlayerType.CLIENT;
     }
 
     public Player(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) { // only for ServerSessionThread class

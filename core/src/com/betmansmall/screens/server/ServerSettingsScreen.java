@@ -146,6 +146,7 @@ public class ServerSettingsScreen extends AbstractScreen {
                     gameMaster.sessionSettings.sessionType = SessionType.SERVER_STANDALONE;
                 }
                 if (gameMaster.sessionSettings.gameSettings.gameType == GameType.ProtoServer) {
+                    gameMaster.sessionSettings.sessionType = SessionType.SERVER_STANDALONE;
                     gameMaster.addScreen(new ProtoServerGameScreen(gameMaster, gameMaster.userAccount));
                 } else {
                     gameMaster.addScreen(new ServerGameScreen(gameMaster, gameMaster.userAccount));

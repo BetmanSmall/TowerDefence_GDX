@@ -1,9 +1,9 @@
 package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.Array;
-import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.enums.SessionState;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.PlayerType;
 import com.betmansmall.game.ProtoSessionThread;
 import com.betmansmall.screens.server.ProtoServerGameScreen;
 import com.betmansmall.server.networking.ProtoTcpConnection;
@@ -76,24 +76,22 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
 
-        String uuid = UUID.randomUUID().toString();
-        Integer index = connections.size;
-
+        Player newPlayer = serverGameScreen.playersManager.addPlayerByServer(tcpConnection);
         Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                 .setActionEnum(Proto.ActionEnum.START)
-                .setUuid(uuid).setIndex(index)
-                .setTransform(Proto.Transform.newBuilder()
-                        .setPosition(Proto.Position.newBuilder())
-                        .setRotation(Proto.Rotation.newBuilder())).build();
+                .setUuid(newPlayer.accountID).setIndex(newPlayer.playerID)
+                .setTransform(newPlayer.transform).build();
         Logger.logDebug("sendObject:" + sendObject);
-        serverGameScreen.playersManager.addPlayerByServer(tcpConnection, sendObject);
         tcpConnection.sendObject(sendObject);
 
         sendObject = sendObject.toBuilder().setActionEnum(Proto.ActionEnum.NEW_PLAYER).build();
         sendObject(sendObject, tcpConnection);
 
+        Array<Player> players = serverGameScreen.playersManager.getPlayers();
+        Logger.logDebug("players.size:" + players.size);
         for (Player player : serverGameScreen.playersManager.getPlayers()) {
-            if (!player.playerStatus.equals(PlayerStatus.LOCAL_SERVER)) {
+            Logger.logDebug("player:" + player);
+            if (!player.type.equals(PlayerType.SERVER) && player.protoTcpConnection != tcpConnection) {
                 sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.transform).build();
                 tcpConnection.sendObject(sendObject);
             }

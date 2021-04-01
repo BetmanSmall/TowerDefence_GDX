@@ -38,7 +38,7 @@ public class ProtoTcpConnection {
             public void run() {
                 try {
                     tcpSocketListener.onConnectionReady(ProtoTcpConnection.this);
-                    while (!thread.isInterrupted() && !socket.isClosed()) {
+                    while (!thread.isInterrupted() && !socket.isClosed() && socket.isConnected()) {
                         Proto.SendObject sendObject = Proto.SendObject.parseDelimitedFrom(inputStream);
                         tcpSocketListener.onReceiveObject(ProtoTcpConnection.this, sendObject);
                     }
