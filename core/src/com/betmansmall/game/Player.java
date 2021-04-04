@@ -1,5 +1,8 @@
 package com.betmansmall.game;
 
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.game.gameLogic.Cell;
@@ -15,6 +18,9 @@ import protobuf.Proto;
 public class Player {
     public ProtoTcpConnection protoTcpConnection;
     public Proto.Transform transform;
+    public Vector3 position;
+    public Quaternion rotation;
+    public ModelInstance modelInstance;
 
     public TcpConnection connection; // only for ServerSessionThread class
     public PlayerType type;
@@ -72,6 +78,8 @@ public class Player {
     public Player(ProtoTcpConnection tcpConnection) { // only for ProtoServerSessionThread class
         this.protoTcpConnection = tcpConnection;
         this.type = PlayerType.CLIENT;
+        this.position = new Vector3();
+        this.rotation = new Quaternion();
     }
 
     public Player(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) { // only for ServerSessionThread class
@@ -92,6 +100,15 @@ public class Player {
         this.name = playerInfoData.name;
 //        this.faction = playerInfoData.factionName;
         this.gold = playerInfoData.gold;
+    }
+
+    public void updateData(Proto.SendObject sendObject) {
+        this.transform = sendObject.getTransform();
+        Proto.Position position = transform.getPosition();
+        Proto.Rotation rotation = transform.getRotation();
+        this.position.set(position.getX(), position.getY(), position.getZ());
+        this.rotation.set(rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW());
+        this.modelInstance.transform.set(this.position, this.rotation);
     }
 
     @Override

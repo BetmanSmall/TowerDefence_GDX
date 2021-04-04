@@ -722,8 +722,8 @@ public class GameScreenInterface extends GameInterface {
         }
 
         startAndPauseButton.setText((gameScreen.gameField.gamePaused) ? "PLAY" : (gameScreen.gameField.unitsSpawn) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : (gameScreen.gameField.unitsManager.units.size > 0) ? "PAUSE | GameSpeed:" + gameScreen.gameField.gameSpeed : "START NEXT WAVE");
-        if (playersViewTable.getChildren().size != playersViewTable.playersManager.getPlayers().size) {
-            connectedPlayerCount.setText("players:" + playersViewTable.playersManager.getPlayers().size);
+        if (playersViewTable.getChildren().size != playersViewTable.playersManager.getPlayers().size()) {
+            connectedPlayerCount.setText("players:" + playersViewTable.playersManager.getPlayers().size());
             playersViewTable.updateView(); // real time update if new player connected!
         }
         unitsCount.setText("unitsCount:" + gameScreen.gameField.unitsManager.units.size);

@@ -1009,7 +1009,7 @@ public class GameField {
                 }
             }
         } else if (gameSettings.gameType == GameType.TowerDefence) {
-            if (gameScreen.playersManager.getPlayers().size > 2) {
+            if (gameScreen.playersManager.getPlayers().size() > 2) {
                 if (gameScreen.playersManager.getLocalServer() != null && gameScreen.playersManager.getLocalPlayer() != null) {
                     if (gameScreen.playersManager.getLocalPlayer().missedUnits >= gameScreen.playersManager.getLocalPlayer().maxOfMissedUnits) {
                         return GameState.LOSE;

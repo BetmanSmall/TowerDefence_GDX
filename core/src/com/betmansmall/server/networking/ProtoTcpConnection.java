@@ -17,8 +17,8 @@ public class ProtoTcpConnection {
     private final Socket socket;
     private final Thread thread;
 
-    private final InputStream inputStream;
     private final OutputStream outputStream;
+    private final InputStream inputStream;
 
     public ProtoTcpConnection(ProtoTcpSocketListener tcpSocketListener, String host, int port) throws IOException {
         this(tcpSocketListener, new Socket(host, port));
@@ -30,8 +30,8 @@ public class ProtoTcpConnection {
         this.tcpSocketListener = tcpSocketListener;
         this.socket = socket;
 
-        inputStream = socket.getInputStream();
         outputStream = socket.getOutputStream();
+        inputStream = socket.getInputStream();
 
         thread = new Thread(new Runnable() {
             @Override
@@ -58,7 +58,7 @@ public class ProtoTcpConnection {
     }
 
     public synchronized void sendObject(final Proto.SendObject sendObject) {
-        Logger.logFuncStart("sendObject:" + sendObject);
+//        Logger.logFuncStart("sendObject:" + sendObject);
         try {
             sendObject.writeDelimitedTo(outputStream);
             outputStream.flush();

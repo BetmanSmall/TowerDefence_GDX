@@ -11,7 +11,6 @@ import com.betmansmall.GameMaster;
 import com.betmansmall.enums.SessionType;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
-import com.betmansmall.game.SessionThread;
 import com.betmansmall.game.gameInterface.GameScreenInterface;
 import com.betmansmall.game.gameLogic.CameraController;
 import com.betmansmall.game.gameLogic.Cell;
@@ -35,7 +34,6 @@ public class GameScreen extends AbstractScreen {
     public CameraController cameraController;
 
     public PlayersManager playersManager;
-    public SessionThread sessionThread;
 
     public GameScreen(GameMaster gameMaster) {
         super(gameMaster);
@@ -88,8 +86,9 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl20.glClearColor(0, 0, 0, 1);
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
+//        Gdx.gl20.glClearColor(0, 0, 0, 1);
+//        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (gameField == null) {
             initGameField();

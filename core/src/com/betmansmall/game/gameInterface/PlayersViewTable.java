@@ -10,6 +10,8 @@ import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
 
+import java.util.ArrayList;
+
 public class PlayersViewTable extends Table {
     public PlayersManager playersManager;
     public ScrollPane scrollPane; // pizdec
@@ -34,8 +36,8 @@ public class PlayersViewTable extends Table {
 
     public void updateView() {
         clear();
-        Array<Player> players = playersManager.getPlayers();
-        for (int p = 0; p < players.size; p++) {
+        ArrayList<Player> players = playersManager.getPlayers();
+        for (int p = 0; p < players.size(); p++) {
             Player player = players.get(p);
             if (player != null) {
                 Table table = new Table();

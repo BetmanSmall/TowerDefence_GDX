@@ -358,10 +358,10 @@ public class CameraController extends AbstractCameraController {
             if (borderLeftX != 0.0f || borderRightX != 0.0f || borderUpY != 0.0f || borderDownY != 0.0f) {
                 if (borderLeftX < newCameraX && newCameraX < borderRightX &&
                         borderUpY > newCameraY && newCameraY > borderDownY) {
-                    camera.position.set(newCameraX, newCameraY, 0.0f);
+                    camera.position.set(newCameraX, newCameraY, camera.position.z);
                 }
             } else {
-                camera.position.set(newCameraX, newCameraY, 0.0f);
+                camera.position.set(newCameraX, newCameraY, camera.position.z);
             }
         }
         return super.touchDragged(screenX, screenY, pointer);
@@ -478,8 +478,8 @@ public class CameraController extends AbstractCameraController {
         Vector3 vector = new Vector3(screenX, screenY, 0);
         if (!whichCell(vector, 5)) return;
         if (gameField != null) {
-            Logger.logDebug("tmxMap:" + tmxMap);
-            Logger.logDebug("gameField.tmxMap:" + gameField.tmxMap);
+//            Logger.logDebug("tmxMap:" + tmxMap);
+//            Logger.logDebug("gameField.tmxMap:" + gameField.tmxMap);
             Tower tower = gameField.getCell((int) vector.x, (int) vector.y).tower;
             if (tower != null) {
                 gameField.towersManager.selectTower(gameScreen.playersManager.getLocalPlayer(), tower);

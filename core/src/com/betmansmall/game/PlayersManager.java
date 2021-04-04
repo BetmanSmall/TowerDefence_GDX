@@ -1,6 +1,12 @@
 package com.betmansmall.game;
 
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.enums.SessionType;
@@ -13,6 +19,7 @@ import com.betmansmall.server.networking.ProtoTcpConnection;
 import com.betmansmall.server.networking.TcpConnection;
 import com.betmansmall.utils.logging.Logger;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import protobuf.Proto;
@@ -21,14 +28,21 @@ public class PlayersManager {
     private SessionType sessionType;
     private FactionsManager factionsManager;
     private int connectedCount;
-    private Array<Player> players;
+    private ArrayList<Player> players;
+
+    public Model model;
 
     public PlayersManager(SessionType sessionType, FactionsManager factionsManager, UserAccount userAccount) {
         Logger.logFuncStart("sessionType:" + sessionType, "userAccount:" + userAccount);
         this.sessionType = sessionType;
         this.factionsManager = factionsManager;
         this.connectedCount = 0;
-        this.players = new Array<>();
+        this.players = new ArrayList<>();
+
+        ModelBuilder modelBuilder = new ModelBuilder();
+        model = modelBuilder.createBox(1f, 1f, 1f,
+                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
         if (sessionType == SessionType.SERVER_STANDALONE) {
             Player server = new Player("ServerStandalone", factionsManager.getServerFaction());
@@ -66,15 +80,16 @@ public class PlayersManager {
 
     public void dispose() {
         this.players.clear();
+        this.model.dispose();
     }
 
-    public Array<Player> getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
     public Player setServer(Player player) {
         if (player != null && player.playerID == 0 && player.type == PlayerType.SERVER) {
-            if (players.size > 0) {
+            if (players.size() > 0) {
                 players.set(0, player);
                 return player;
             } else {
@@ -87,7 +102,7 @@ public class PlayersManager {
 
     public Player setLocalPlayer(Player player) {
         if (player != null && player.type == PlayerType.CLIENT) { // && player.playerID > 0
-            if (players.size > 1) {
+            if (players.size() > 1) {
                 players.set(1, player);
                 return player;
             } else {
@@ -100,7 +115,7 @@ public class PlayersManager {
 
     private boolean addPlayer(Player player) {
         Logger.logFuncStart("connectedCount:" + connectedCount, "player:" + player);
-        if (!players.contains(player, false)) { // TODO or true?
+        if (!players.contains(player)) {
             players.add(player);
 //            this.connectedCount++;
             return true;
@@ -130,6 +145,7 @@ public class PlayersManager {
                     .setPosition(Proto.Position.newBuilder())
                     .setRotation(Proto.Rotation.newBuilder())
                     .build();
+            player.modelInstance = new ModelInstance(model);
             return player;
         }
         return null;
@@ -172,7 +188,7 @@ public class PlayersManager {
     }
 
     public Player getPlayerByConnection(ProtoTcpConnection connection) {
-        Logger.logFuncStart("connection:" + connection, "players:" + players);
+//        Logger.logFuncStart("connection:" + connection, "players:" + players);
         for (Player player : players) {
             if (player.protoTcpConnection != null && player.protoTcpConnection.equals(connection)) {
                 return player;
@@ -182,7 +198,7 @@ public class PlayersManager {
     }
 
     public Player getPlayerByConnection(TcpConnection connection) {
-        Logger.logFuncStart("connection:" + connection, "players:" + players);
+//        Logger.logFuncStart("connection:" + connection, "players:" + players);
         for (Player player : players) {
             if (player.connection != null && player.connection.equals(connection)) {
                 return player;
@@ -253,14 +269,14 @@ public class PlayersManager {
     }
 
     public Player getLocalServer() {
-        if (players.size > 0) {
+        if (players.size() > 0) {
             return players.get(0);
         }
         return null;
     }
 
     public Player getLocalPlayer() {
-        if (players.size > 1) {
+        if (players.size() > 1) {
             return players.get(1);
         }
         return null;
@@ -277,7 +293,7 @@ public class PlayersManager {
         sb.append("sessionType:" + sessionType);
 //        sb.append(",factionsManager:" + factionsManager);
         sb.append(",connectedCount:" + connectedCount);
-        sb.append(",players.size:" + players.size);
+        sb.append(",players.size():" + players.size());
         if (full) {
             for (Player player : players) {
                 sb.append("," + player);

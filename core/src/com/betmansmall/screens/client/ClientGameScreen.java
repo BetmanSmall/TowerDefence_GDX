@@ -19,12 +19,14 @@ import com.betmansmall.server.data.UnitsManagerData;
 import com.betmansmall.utils.logging.Logger;
 
 public class ClientGameScreen extends GameScreen {
+    public ClientSessionThread clientSessionThread;
+
     public ClientGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
         Logger.logFuncStart();
 
-        this.sessionThread = new ClientSessionThread(this);
-        this.sessionThread.start();
+        this.clientSessionThread = new ClientSessionThread(this);
+        this.clientSessionThread.start();
 
         Logger.logFuncEnd();
     }
@@ -33,7 +35,7 @@ public class ClientGameScreen extends GameScreen {
     public void dispose() {
         Logger.logFuncStart();
         super.dispose();
-        this.sessionThread.dispose();
+        this.clientSessionThread.dispose();
     }
 
     @Override
@@ -43,19 +45,19 @@ public class ClientGameScreen extends GameScreen {
 
     @Override
     public void render(float delta) {
-        if (sessionThread.sessionState == SessionState.RECEIVED_SERVER_INFO_DATA) {
+        if (clientSessionThread.sessionState == SessionState.RECEIVED_SERVER_INFO_DATA) {
             this.initGameField();
-            sessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_INITIALIZED));
-            sessionThread.sessionState = SessionState.INITIALIZED;
+            clientSessionThread.sendObject(new SendObject(SendObject.SendObjectEnum.GAME_FIELD_INITIALIZED));
+            clientSessionThread.sessionState = SessionState.INITIALIZED;
         }
-        if (sessionThread.sessionState == SessionState.INITIALIZED) {
+        if (clientSessionThread.sessionState == SessionState.INITIALIZED) {
             super.render(delta);
         }
     }
 
     @Override
     public void sendGameFieldVariables() {
-        sessionThread.sendObject(new SendObject(
+        clientSessionThread.sendObject(new SendObject(
                 SendObject.SendObjectEnum.GAME_FIELD_VARIABLES_AND_MANAGERS_DATA,
                 new GameFieldVariablesData(gameField),
                 new UnitsManagerData(gameField.unitsManager)));
@@ -66,7 +68,7 @@ public class ClientGameScreen extends GameScreen {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY, "templateForTower:" + templateForTower);
         Tower tower = gameField.createTowerWithGoldCheck(buildX, buildY, templateForTower);
         if (tower != null) {
-            sessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+            clientSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
             return tower;
         }
         return null;
@@ -77,7 +79,7 @@ public class ClientGameScreen extends GameScreen {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         Tower tower = super.createTower(buildX, buildY);
         if (tower != null) {
-            sessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
+            clientSessionThread.sendObject(new SendObject(new BuildTowerData(tower)));
         }
         return null;
     }
@@ -86,7 +88,7 @@ public class ClientGameScreen extends GameScreen {
     public boolean removeTower(int buildX, int buildY) {
         Logger.logFuncStart("buildX:" + buildX, "buildY:" + buildY);
         if (super.removeTower(buildX, buildY)) {
-            sessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
+            clientSessionThread.sendObject(new SendObject(new RemoveTowerData(buildX, buildY, playersManager.getLocalPlayer())));
         }
         return false;
     }
@@ -94,7 +96,7 @@ public class ClientGameScreen extends GameScreen {
     public Unit createUnit(Cell spawnCell, Cell destCell, TemplateForUnit templateForUnit, Cell exitCell, Player player) {
         Unit unit = super.createUnit(spawnCell, destCell, templateForUnit, exitCell, player);
         if (unit != null) {
-            sessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
+            clientSessionThread.sendObject(new SendObject(new CreateUnitData(spawnCell, destCell, templateForUnit, exitCell, player)));
         }
         return unit;
     }

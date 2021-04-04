@@ -16,8 +16,8 @@ public class TcpConnection {
     private final Socket socket;
     private final Thread thread;
 
-    private final ObjectInputStream objectInputStream;
     private final ObjectOutputStream objectOutputStream;
+    private final ObjectInputStream objectInputStream;
 
     public TcpConnection(TcpSocketListener tcpSocketListener, String host, int port) throws IOException {
         this(tcpSocketListener, new Socket(host, port));
@@ -29,8 +29,8 @@ public class TcpConnection {
         this.tcpSocketListener = tcpSocketListener;
         this.socket = socket;
 
-        objectInputStream = new ObjectInputStream(socket.getInputStream());
         objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
 
         thread = new Thread(new Runnable() {
             @Override

@@ -11,6 +11,7 @@ import com.betmansmall.utils.logging.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import protobuf.Proto;
@@ -87,10 +88,10 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         sendObject = sendObject.toBuilder().setActionEnum(Proto.ActionEnum.NEW_PLAYER).build();
         sendObject(sendObject, tcpConnection);
 
-        Array<Player> players = serverGameScreen.playersManager.getPlayers();
-        Logger.logDebug("players.size:" + players.size);
-        for (Player player : serverGameScreen.playersManager.getPlayers()) {
-            Logger.logDebug("player:" + player);
+        ArrayList<Player> players = serverGameScreen.playersManager.getPlayers();
+//        Logger.logDebug("players.size:" + players.size());
+        for (Player player : players) {
+//            Logger.logDebug("player:" + player);
             if (!player.type.equals(PlayerType.SERVER) && player.protoTcpConnection != tcpConnection) {
                 sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.transform).build();
                 tcpConnection.sendObject(sendObject);
@@ -100,9 +101,9 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
 
     @Override
     public void onReceiveObject(ProtoTcpConnection tcpConnection, Proto.SendObject sendObject) { // need create stackArray receive SendObjects and in other thread work with it;
-        Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
+//        Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
         Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
-        player.transform = sendObject.getTransform();
+        player.updateData(sendObject);
         sendObject(sendObject, tcpConnection);
     }
 
