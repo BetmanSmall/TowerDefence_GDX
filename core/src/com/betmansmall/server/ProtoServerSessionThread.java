@@ -20,14 +20,14 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
     private ProtoServerGameScreen serverGameScreen;
     private SessionSettings sessionSettings;
     private ServerSocket serverSocket;
-    private Array<ProtoTcpConnection> connections;
+    private ArrayList<ProtoTcpConnection> connections;
 
     public ProtoServerSessionThread(ProtoServerGameScreen serverGameScreen) {
         Logger.logFuncStart();
         this.serverGameScreen = serverGameScreen;
         this.sessionSettings = serverGameScreen.gameMaster.sessionSettings;
         this.serverSocket = null;
-        this.connections = new Array<>();
+        this.connections = new ArrayList<>();
         this.sessionState = SessionState.INITIALIZATION;
         Logger.logFuncEnd();
     }
@@ -110,7 +110,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
     @Override
     public void onDisconnect(ProtoTcpConnection tcpConnection) {
         Logger.logInfo("tcpConnection:" + tcpConnection);
-        connections.removeValue(tcpConnection, true);
+        connections.remove(tcpConnection);
         Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
 //        for (TcpConnection connection : connections) {
 //            connection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_DISCONNECTED_DATA, new PlayerInfoData(player)));
@@ -124,17 +124,23 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         exception.printStackTrace();
     }
 
-    public synchronized void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection) {
+    public void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection) {
         for (ProtoTcpConnection connection : connections) {
             if (!connection.equals(tcpConnection) || connection != tcpConnection) {
-                connection.sendObject(sendObject);
+                Thread thread1 = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        connection.sendObject(sendObject);
+                    }
+                });
+                thread1.start();
             }
         }
     }
 
-    public synchronized void sendObject(final Proto.SendObject sendObject) {
-        for (ProtoTcpConnection connection : connections) {
-            connection.sendObject(sendObject);
-        }
-    }
+//    public synchronized void sendObject(final Proto.SendObject sendObject) {
+//        for (ProtoTcpConnection connection : connections) {
+//            connection.sendObject(sendObject);
+//        }
+//    }
 }

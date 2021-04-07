@@ -57,7 +57,7 @@ public class ProtoTcpConnection {
         Logger.logFuncEnd();
     }
 
-    public synchronized void sendObject(final Proto.SendObject sendObject) {
+    public void sendObject(final Proto.SendObject sendObject) {
 //        Logger.logFuncStart("sendObject:" + sendObject);
         try {
             sendObject.writeDelimitedTo(outputStream);

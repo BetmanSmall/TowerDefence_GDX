@@ -13,5 +13,5 @@ public abstract class ProtoSessionThread extends Thread implements ProtoTcpSocke
 
     public abstract void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection);
 
-    public abstract void sendObject(final Proto.SendObject sendObject);
+//    public abstract void sendObject(final Proto.SendObject sendObject);
 }
