@@ -21,7 +21,7 @@ public class PlayerInfoData implements NetworkPackage {
         this.accountID = player.accountID;
         this.playerID = player.playerID;
         this.name = player.name;
-        this.factionName = player.faction.getName();
+        this.factionName = (player.faction != null) ? player.faction.getName() : "null";
         this.gold = player.gold;
     }
 

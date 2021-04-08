@@ -37,7 +37,7 @@ public class TcpConnection {
             public void run() {
                 try {
                     tcpSocketListener.onConnectionReady(TcpConnection.this);
-                    while (!thread.isInterrupted() && !socket.isClosed()) {
+                    while (!thread.isInterrupted() && !socket.isClosed() && socket.isConnected()) {
                         SendObject sendObject = (SendObject)objectInputStream.readObject();
                         tcpSocketListener.onReceiveObject(TcpConnection.this, sendObject);
                     }

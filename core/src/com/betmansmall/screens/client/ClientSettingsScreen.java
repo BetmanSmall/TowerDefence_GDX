@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.enums.GameType;
 import com.betmansmall.enums.SessionType;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.server.ServerInformation;
@@ -174,7 +175,13 @@ public class ClientSettingsScreen extends AbstractScreen {
 
                 gameMaster.userAccount.loginName = nameField.getText();
                 gameMaster.userAccount.factionName = factionSelectBox.getSelected();
-                gameMaster.addScreen(new ClientGameScreen(gameMaster, gameMaster.userAccount));
+                if (serverInformation.gameType.equals(GameType.ProtoServer)) {
+                    gameMaster.sessionSettings.gameSettings.mapPath = serverInformation.mapPath;
+                    gameMaster.sessionSettings.gameSettings.gameType = serverInformation.gameType;
+                    gameMaster.addScreen(new ProtoClientGameScreen(gameMaster, gameMaster.userAccount));
+                } else {
+                    gameMaster.addScreen(new ClientGameScreen(gameMaster, gameMaster.userAccount));
+                }
             }
         });
         serverInfoRowTable.add(joinBtn).row();

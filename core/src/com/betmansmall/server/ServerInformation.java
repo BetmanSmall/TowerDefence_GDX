@@ -1,6 +1,7 @@
 package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.StringBuilder;
+import com.betmansmall.enums.GameType;
 import com.betmansmall.server.data.GameServerNetworkData;
 import com.betmansmall.server.data.GameSettingsData;
 import com.betmansmall.server.data.NetworkPackage;
@@ -15,7 +16,7 @@ public class ServerInformation {
 
     public String versionAndGitHash;
     public String mapPath;
-    public String gameType;
+    public GameType gameType;
     public String playersSize;
 
     public ServerInformation(String host, List<NetworkPackage> networkPackages) {
@@ -26,7 +27,7 @@ public class ServerInformation {
             } else if (networkPackage instanceof GameSettingsData) {
                 GameSettingsData gameSettingsData = (GameSettingsData)networkPackage;
                 this.mapPath = gameSettingsData.mapPath;
-                this.gameType = gameSettingsData.gameType.name();
+                this.gameType = gameSettingsData.gameType;
             } else if (networkPackage instanceof PlayersManagerData) {
                 PlayersManagerData playersManagerData = (PlayersManagerData)networkPackage;
                 this.playersSize = String.valueOf(playersManagerData.players.size());

@@ -70,7 +70,7 @@ public class GameScreen extends AbstractScreen {
         gameFieldRenderer = new GameFieldRenderer(gameField, cameraController);
         gameInterface.setCameraController(cameraController);
 
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(Gdx.input.getInputProcessor());
         inputMultiplexer.addProcessor(new GestureDetector(gameInterface));
         inputMultiplexer.addProcessor(gameInterface);
         inputMultiplexer.addProcessor(cameraController);

@@ -2,7 +2,7 @@ package com.betmansmall.server;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.betmansmall.screens.server.ServerGameScreen;
+import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.server.data.GameServerNetworkData;
 import com.betmansmall.server.data.GameSettingsData;
 import com.betmansmall.server.data.NetworkPackage;
@@ -17,15 +17,15 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class AuthServerThread extends Thread implements TcpSocketListener, Disposable {
-    private ServerGameScreen serverGameScreen;
+    private GameScreen gameScreen;
     private SessionSettings sessionSettings;
     private ServerSocket serverSocket;
     private Array<TcpConnection> connections;
 
-    public AuthServerThread(ServerGameScreen serverGameScreen) {
+    public AuthServerThread(GameScreen gameScreen) {
         Logger.logFuncStart();
-        this.serverGameScreen = serverGameScreen;
-        this.sessionSettings = serverGameScreen.gameMaster.sessionSettings;
+        this.gameScreen = gameScreen;
+        this.sessionSettings = gameScreen.gameMaster.sessionSettings;
         this.serverSocket = null;
         this.connections = new Array<TcpConnection>();
         Logger.logFuncEnd();
@@ -68,9 +68,9 @@ public class AuthServerThread extends Thread implements TcpSocketListener, Dispo
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
 
-        NetworkPackage versionData = new VersionData(serverGameScreen.gameMaster.version);
+        NetworkPackage versionData = new VersionData(gameScreen.gameMaster.version);
         NetworkPackage gameSettingsData = new GameSettingsData(sessionSettings.gameSettings);
-        NetworkPackage playersManagerData = new PlayersManagerData(serverGameScreen.playersManager);
+        NetworkPackage playersManagerData = new PlayersManagerData(gameScreen.playersManager);
         NetworkPackage gameServerNetworkData = new GameServerNetworkData(serverSocket.getInetAddress().getHostAddress(), sessionSettings.gameServerPort);
 
         tcpConnection.sendObject(new SendObject(SendObject.SendObjectEnum.SERVER_VERSION_AND_BASE_INFO_DATA, versionData, gameSettingsData, playersManagerData, gameServerNetworkData));
