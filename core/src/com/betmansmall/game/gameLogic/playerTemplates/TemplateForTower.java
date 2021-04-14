@@ -50,7 +50,7 @@ public class TemplateForTower extends Template {
             validate();
 //            this.size = 1;
         } catch (Exception exp) {
-            Gdx.app.log("TemplateForTower::TemplateForTower()", "-- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
+            Gdx.app.error("TemplateForTower::TemplateForTower()", "-- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
             throw new Exception("TemplateForTower::TemplateForTower() -- Could not load TemplateForTower from " + templateFile.path() + " Exp:" + exp);
         }
     }
@@ -142,92 +142,92 @@ public class TemplateForTower extends Template {
         basicValidate();
         // Need check range values
         if (!properties.containsKey("factionName")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: factionName");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: factionName");
         } else {
             factionName = properties.get("factionName");
         }
         if (!properties.containsKey("name")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: name");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: name");
         } else {
             name = properties.get("name");
         }
         if (!properties.containsKey("healthPoints")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: healthPoints");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: healthPoints");
         } else {
             healthPoints = Float.parseFloat(properties.get("healthPoints"));
         }
         if (!properties.containsKey("radiusDetection")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusDetection");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusDetection");
         } else {
             radiusDetection = Float.parseFloat(properties.get("radiusDetection"));
         }
         if (!properties.containsKey("radiusFlyShell")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusFlyShell");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusFlyShell");
         } else {
             radiusFlyShell = Float.parseFloat(properties.get("radiusFlyShell"));
         }
         if (!properties.containsKey("damage")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: damage");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: damage");
         } else {
             damage = Integer.parseInt(properties.get("damage"));
         }
         if (!properties.containsKey("size")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: size");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: size");
         } else {
             size = Integer.parseInt(properties.get("size"));
         }
         if (!properties.containsKey("cost")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: cost");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: cost");
         } else {
             cost = Integer.parseInt(properties.get("cost"));
         }
         if (!properties.containsKey("ammoSize")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: ammoSize");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: ammoSize");
         } else {
             ammoSize = Float.parseFloat(properties.get("ammoSize"));
         }
         if (!properties.containsKey("ammoSpeed")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: ammoSpeed");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: ammoSpeed");
         } else {
             ammoSpeed = Float.parseFloat(properties.get("ammoSpeed"));
         }
         if (!properties.containsKey("reloadTime")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: reloadTime");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: reloadTime");
         } else {
             reloadTime = Float.parseFloat(properties.get("reloadTime"));
         }
         if (!properties.containsKey("destroyTime")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: destroyTime");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: destroyTime");
             destroyTime = 1.5f;
         } else {
             destroyTime = Float.parseFloat(properties.get("destroyTime"));
         }
         if (!properties.containsKey("towerAttackType")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerAttackType");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerAttackType");
         } else {
             towerAttackType = TowerAttackType.getType(properties.get("towerAttackType"));
         }
         if (!properties.containsKey("towerShellType") && towerAttackType != TowerAttackType.Pit) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellType");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellType");
         } else {
             towerShellType = TowerShellType.getType(properties.get("towerShellType"));
         }
         if (!properties.containsKey("towerShellEffect")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellEffect");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: towerShellEffect");
         } else {
             towerShellEffect = new TowerShellEffect(TowerShellEffect.ShellEffectEnum.getType(properties.get("towerShellEffect")));
             if (!properties.containsKey("shellEffectType_time")) {
-                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_time");
+//                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_time");
             } else {
                 towerShellEffect.time = Float.parseFloat(properties.get("shellEffectType_time"));
             }
             if (!properties.containsKey("shellEffectType_damage")) {
-                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_damage");
+//                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_damage");
             } else {
                 towerShellEffect.damage = Float.parseFloat(properties.get("shellEffectType_damage"));
             }
             if (!properties.containsKey("shellEffectType_speed")) {
-                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_speed");
+//                Gdx.app.log("TemplateForTower::validate()", "-- NotFound: shellEffectType_speed");
             } else {
                 towerShellEffect.speed = Float.parseFloat(properties.get("shellEffectType_speed"));
             }
@@ -235,25 +235,25 @@ public class TemplateForTower extends Template {
         if (towerAttackType == TowerAttackType.Pit && properties.containsKey("capacity")) {
             capacity = Integer.parseInt(properties.get("capacity"));
         } else if (towerAttackType == TowerAttackType.Pit) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: capacity! When towerAttackType==Pit");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: capacity! When towerAttackType==Pit");
         }
         if(this.radiusDetection == null && this.towerAttackType != TowerAttackType.Pit) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusDetection");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusDetection");
         }
         if(this.radiusFlyShell == null && this.towerShellType != towerShellType.FirstTarget) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusFlyShell");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: radiusFlyShell");
 //            this.radiusFlyShell = 0f;
         }
         if (!properties.containsKey("nextTemplate")) {
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: nextTemplate");
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: nextTemplate");
         } else {
             nextTemplate = properties.get("nextTemplate");
         }
 
-        if(idleTile == null)
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: idleTile");
-        else if(animations.size == 0)
-            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: animations");
+//        if(idleTile == null)
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: idleTile");
+//        else if(animations.size == 0)
+//            Gdx.app.log("TemplateForTower::validate()", "-- NotFound: animations");
 
 //        for (String key : animations.keys()) {
 //            Gdx.app.log("TemplateForTower::validate()", "-- Dir:" + key + " length:" + animations.get(key).getFrameTiles().length);

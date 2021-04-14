@@ -75,6 +75,8 @@ public class PlayersManager {
             player.playerStatus = PlayerStatus.LOCAL_SERVER;
             player.gold = 9999;
             this.setLocalPlayer(player);
+        } else if (sessionType.equals(SessionType.PROTO_CLIENT)) {
+            this.players.add(null);
         }
     }
 
@@ -126,7 +128,7 @@ public class PlayersManager {
     private Player disconnectedPlayer(String accountID) {
         for (Player player : players) {
             Logger.logDebug("player:" + player);
-            if (player.accountID.equals(accountID)) {
+            if (player != null && player.accountID.equals(accountID)) {
                 if (player.playerStatus == PlayerStatus.DISCONNECTED) {
                     return player;
                 }
@@ -138,14 +140,30 @@ public class PlayersManager {
     public Player addPlayerByServer(ProtoTcpConnection tcpConnection) {
         Player player = new Player(tcpConnection);
         if (addPlayer(player)) {
-            player.playerStatus = PlayerStatus.CONNECTED;
             player.playerID = ++connectedCount;
             player.accountID = UUID.randomUUID().toString();
-            player.transform = Proto.Transform.newBuilder()
-                    .setPosition(Proto.Position.newBuilder())
-                    .setRotation(Proto.Rotation.newBuilder())
-                    .build();
-            player.modelInstance = new ModelInstance(model);
+            player.playerStatus = PlayerStatus.CONNECTED;
+            player.gameObject = new ProtoGameObject(model);
+            return player;
+        }
+        return null;
+    }
+
+    public Player addPlayerByClient(ProtoTcpConnection protoTcpConnection, Proto.SendObject sendObject) {
+        Player player = disconnectedPlayer(sendObject.getUuid());
+        if (player == null) {
+            player = new Player(protoTcpConnection);
+            if (addPlayer(player)) {
+                player.sendObject = sendObject;
+                player.playerID = sendObject.getIndex();
+                player.accountID = sendObject.getUuid();
+                player.playerStatus = PlayerStatus.CONNECTED;
+                player.gameObject = new ProtoGameObject(model);
+                player.updateData(sendObject);
+                return player;
+            }
+        } else {
+            player.playerStatus = PlayerStatus.CONNECTED;
             return player;
         }
         return null;
@@ -254,6 +272,28 @@ public class PlayersManager {
         }
         Logger.logError("not found playerID:" + playerID + " | we have players:" + players);
         return getDisconnectedPlayer(playerID);
+    }
+
+    public Player getPlayer(String accountID) {
+        for (Player player : players) {
+            if (player != null && player.accountID.equals(accountID)) {
+                return player;
+            }
+        }
+        Logger.logError("not found accountID:" + accountID + " | we have players:" + players);
+        return getDisconnectedPlayer(accountID);
+    }
+
+    public Player getDisconnectedPlayer(String accountID) {
+        for (Player player : players) {
+            if (player != null && player.playerStatus == PlayerStatus.DISCONNECTED) {
+                if (player.accountID.equals(accountID)) {
+                    return player;
+                }
+            }
+        }
+        Logger.logError("not found accountID:" + accountID + " | we have players:" + players);
+        return null;
     }
 
     public Player getDisconnectedPlayer(Integer playerID) {

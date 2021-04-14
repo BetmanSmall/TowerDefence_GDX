@@ -2,6 +2,7 @@ package com.betmansmall.server.networking;
 
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.utils.logging.Logger;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -40,8 +41,12 @@ public class ProtoTcpConnection {
                     tcpSocketListener.onConnectionReady(ProtoTcpConnection.this);
                     while (!thread.isInterrupted() && !socket.isClosed() && socket.isConnected()) {
                         Proto.SendObject sendObject = Proto.SendObject.parseDelimitedFrom(inputStream);
-                        tcpSocketListener.onReceiveObject(ProtoTcpConnection.this, sendObject);
+                        if (sendObject != null) {
+                            tcpSocketListener.onReceiveObject(ProtoTcpConnection.this, sendObject);
+                        }
                     }
+                } catch (InvalidProtocolBufferException.InvalidWireTypeException e) {
+                    tcpSocketListener.onException(ProtoTcpConnection.this, e);
                 } catch (EOFException e) { // AuthServerThread Client Disconnect
                     tcpSocketListener.onException(ProtoTcpConnection.this, e);
                 } catch (SocketException e) { // ServerSessionThread Player Disconnect

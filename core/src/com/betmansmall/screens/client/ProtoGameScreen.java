@@ -69,11 +69,15 @@ public class ProtoGameScreen extends GameScreen {
                 new Material(ColorAttribute.createDiffuse(Color.BROWN)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         modelInstance = new ModelInstance(model);
-        modelInstance.transform.set(new Vector3(0f, -0.5f, 0f), new Quaternion(0f, 0f, 0f, 0f));
+        modelInstance.transform.set(new Vector3(0f, -1f, 0f), new Quaternion(0f, 0f, 0f, 0f));
 
         font = new BitmapFont();
         fontCache = new BitmapFontCache(font, false);
         spriteBatch = new SpriteBatch();
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(cameraInputController);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -82,16 +86,6 @@ public class ProtoGameScreen extends GameScreen {
         super.dispose();
         this.modelBatch.dispose();
         this.model.dispose();
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        super.initGameField();
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(Gdx.input.getInputProcessor());
-        cameraInputController = new CameraInputController(perspectiveCamera);
-        inputMultiplexer.addProcessor(cameraInputController);
-        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -105,8 +99,8 @@ public class ProtoGameScreen extends GameScreen {
         modelBatch.begin(perspectiveCamera);
         modelBatch.render(modelInstance, environment);
         for (Player player : playersManager.getPlayers()) {
-            if (player != null && player.modelInstance != null) {
-                modelBatch.render(player.modelInstance, environment);
+            if (player != null && player.gameObject != null) {
+                modelBatch.render(player.gameObject, environment);
             }
         }
         modelBatch.end();
@@ -116,13 +110,13 @@ public class ProtoGameScreen extends GameScreen {
 
     public void renderText(float delta) {
         for (Player player : playersManager.getPlayers()) {
-            if (player != null && player.modelInstance != null) {
-                final Vector3 clipSpacePos = new Vector3(player.position);
+            if (player != null && player.gameObject != null) {
+                final Vector3 clipSpacePos = new Vector3(player.gameObject.position);
                 final float w = multiplyProjective(perspectiveCamera.combined, clipSpacePos, 1f);
                 final float textPosX = clipSpacePos.x * Gdx.graphics.getWidth() * 0.5f;
                 final float textPosY = clipSpacePos.y * Gdx.graphics.getHeight() * 0.5f;
-                fontCache.setText(player.playerID.toString() + "\n" + player.position, 0f, 20f, 0f, Align.center, false);
-                final float fontSize = 50f;
+                fontCache.setText(player.playerID.toString() + "\n" + player.gameObject.position, 0f, 20f, 0f, Align.center, false);
+                final float fontSize = 30f;
                 final float fontScale = fontSize / w;
                 final int regionCount = font.getRegions().size;
                 for (int page = 0; page < regionCount; page++) {

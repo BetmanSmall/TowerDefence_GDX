@@ -63,7 +63,7 @@ public class TemplateForUnit extends Template {
                 }
             }
             properties.putAll(weapon.properties);
-            Gdx.app.log("TemplateForUnit::loadWeapon();", "-- properties:" + properties);
+//            Gdx.app.log("TemplateForUnit::loadWeapon();", "-- properties:" + properties);
             if (!properties.containsKey("ammoSize")) {
                 Gdx.app.log("TemplateForUnit::loadWeapon()", "-- NotFound: ammoSize");
             } else {
@@ -79,7 +79,7 @@ public class TemplateForUnit extends Template {
             } else {
                 unitAttack.animationTime = Float.parseFloat(properties.get("animationTime"));
             }
-            Gdx.app.log("TemplateForUnit::loadWeapon();", "-- " + toString());
+//            Gdx.app.log("TemplateForUnit::loadWeapon();", "-- " + toString());
         }
     }
 

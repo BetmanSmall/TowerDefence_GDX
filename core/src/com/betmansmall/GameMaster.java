@@ -62,7 +62,7 @@ public class GameMaster extends Game {
 
     @Override
     public void create() {
-        Logger.logFuncStart();
+//        Logger.logFuncStart();
         VisUI.load();
 //        if (Gdx.app.getType() == Application.ApplicationType.Android) {
 //            VisUI.getSkin().getFont("default-font").getData().setScale(Gdx.graphics.getHeight() * 0.0025f, Gdx.graphics.getHeight() * 0.0025f);
@@ -75,17 +75,17 @@ public class GameMaster extends Game {
         backgroundImages = new Array<>();
         FileHandle imagesDir = Gdx.files.internal("backgrounds");
         FileHandle[] fileHandles = imagesDir.list();
-        Logger.logDebug("fileHandles.length:" + fileHandles.length);
+//        Logger.logDebug("fileHandles.length:" + fileHandles.length);
         if (fileHandles.length == 0) {
             int index = 1;
             FileHandle fileHandle = null;
             while (true) {
-                Logger.logDebug("try load:" + imagesDir + "/background" + index + ".png");
+//                Logger.logDebug("try load:" + imagesDir + "/background" + index + ".png");
                 try {
                     fileHandle = Gdx.files.internal(imagesDir + "/background" + index + ".png");
-                    Logger.logDebug("-- fileHandle:" + fileHandle);
-                    Logger.logDebug("-- fileHandle.exists():" + fileHandle.exists());
-                    Logger.logDebug("-- fileHandle.isDirectory():" + fileHandle.isDirectory());
+//                    Logger.logDebug("-- fileHandle:" + fileHandle);
+//                    Logger.logDebug("-- fileHandle.exists():" + fileHandle.exists());
+//                    Logger.logDebug("-- fileHandle.isDirectory():" + fileHandle.isDirectory());
                     if (fileHandle.exists() && !fileHandle.isDirectory()) {
                         Image image = new Image(new Texture(fileHandle));
                         image.setFillParent(true);
@@ -108,7 +108,7 @@ public class GameMaster extends Game {
                 }
             }
         }
-        Logger.logDebug("backgroundImages.size:" + backgroundImages.size);
+//        Logger.logDebug("backgroundImages.size:" + backgroundImages.size);
 
         gameLevelMaps = new Array<>();
         gameLevelMaps.add("maps/3dArena0.tmx");
@@ -152,11 +152,11 @@ public class GameMaster extends Game {
             for (FileHandle fileHandle : handles) {
                 String fileHandleExtension = fileHandle.extension();
                 if (fileHandleExtension.equals("tmx")) {
-                    Logger.logDebug("allMaps.add():" + fileHandle.path());
+//                    Logger.logDebug("allMaps.add():" + fileHandle.path());
                     allMaps.add(fileHandle.path());
                 } else if (fileHandleExtension.equals("tsx")) {
                     if (fileHandle.parent().name().equals("other")) {
-                        Logger.logDebug("tileSetsFileHandles.add():" + fileHandle.path());
+//                        Logger.logDebug("tileSetsFileHandles.add():" + fileHandle.path());
                         tileSetsFileHandles.add(fileHandle);
                     }
                 }
@@ -165,11 +165,11 @@ public class GameMaster extends Game {
             allMaps.addAll(gameLevelMaps);
         }
 
-        Logger.logDebug("gameLevelMaps:" + gameLevelMaps);
-        Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
-        Logger.logDebug("allMaps:" + allMaps);
-        Logger.logDebug("allMaps.size:" + allMaps.size);
-        Logger.logDebug("tileSetsFileHandles:" + tileSetsFileHandles);
+//        Logger.logDebug("gameLevelMaps:" + gameLevelMaps);
+//        Logger.logDebug("gameLevelMaps.size:" + gameLevelMaps.size);
+//        Logger.logDebug("allMaps:" + allMaps);
+//        Logger.logDebug("allMaps.size:" + allMaps.size);
+//        Logger.logDebug("tileSetsFileHandles:" + tileSetsFileHandles);
 
         this.userAccount = new UserAccount("root", null, "accID_" + System.currentTimeMillis());
         this.assetManager = new AssetManager();
@@ -189,6 +189,8 @@ public class GameMaster extends Game {
             addScreen(new ClientSettingsScreen(this));
         } else if (cmd != null && cmd.hasOption("mapeditor")) {
             addScreen(new MapEditorScreen(this)); // gameLevelMaps.random()
+        } else if (cmd != null && cmd.hasOption("proto")) {
+            addScreen(new ClientSettingsScreen(this));
         } else {
             addScreen(mainMenuScreen);
         }

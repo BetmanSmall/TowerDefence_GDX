@@ -12,7 +12,7 @@ import com.betmansmall.utils.logging.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Arrays;
 
 import protobuf.Proto;
 
@@ -81,7 +81,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                 .setActionEnum(Proto.ActionEnum.START)
                 .setUuid(newPlayer.accountID).setIndex(newPlayer.playerID)
-                .setTransform(newPlayer.transform).build();
+                .setTransform(newPlayer.gameObject.protoTransform).build();
         Logger.logDebug("sendObject:" + sendObject);
         tcpConnection.sendObject(sendObject);
 
@@ -92,8 +92,8 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
 //        Logger.logDebug("players.size:" + players.size());
         for (Player player : players) {
 //            Logger.logDebug("player:" + player);
-            if (!player.type.equals(PlayerType.SERVER) && player.protoTcpConnection != tcpConnection) {
-                sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.transform).build();
+            if (player != null && !player.type.equals(PlayerType.SERVER) && player.protoTcpConnection != tcpConnection) {
+                sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.gameObject.protoTransform).build();
                 tcpConnection.sendObject(sendObject);
             }
         }
@@ -105,6 +105,9 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
         player.updateData(sendObject);
         sendObject(sendObject, tcpConnection);
+        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
+        System.out.println("sendObject.toByteArray():" + Arrays.toString(sendObject.toByteArray()));
+        System.out.println("sendObject.toByteString():" + sendObject.toByteString() + " size:" + sendObject.getSerializedSize());
     }
 
     @Override
@@ -127,20 +130,20 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
     public void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection) {
         for (ProtoTcpConnection connection : connections) {
             if (!connection.equals(tcpConnection) || connection != tcpConnection) {
-                Thread thread1 = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+//                Thread thread1 = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
                         connection.sendObject(sendObject);
-                    }
-                });
-                thread1.start();
+//                    }
+//                });
+//                thread1.start();
             }
         }
     }
 
-//    public synchronized void sendObject(final Proto.SendObject sendObject) {
-//        for (ProtoTcpConnection connection : connections) {
-//            connection.sendObject(sendObject);
-//        }
-//    }
+    public synchronized void sendObject(final Proto.SendObject sendObject) {
+        for (ProtoTcpConnection connection : connections) {
+            connection.sendObject(sendObject);
+        }
+    }
 }

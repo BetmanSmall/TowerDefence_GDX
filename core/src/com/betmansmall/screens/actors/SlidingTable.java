@@ -49,7 +49,7 @@ public class SlidingTable extends Table implements GestureDetector.GestureListen
     private int LINE_MENU_ITEM_COUNT = 6;
 
     public SlidingTable() {
-        Gdx.app.log("SlidingTable::SlidingTable()", "-- ");
+//        Gdx.app.log("SlidingTable::SlidingTable()", "-- ");
 
         helpImages = new Array<Image>();
         FileHandle imagesDir = Gdx.files.internal("helpImages");

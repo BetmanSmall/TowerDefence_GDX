@@ -5,4 +5,5 @@ public enum SessionType {
     SERVER_AND_CLIENT,
     CLIENT_ONLY,
     CLIENT_STANDALONE,
+    PROTO_CLIENT
 }

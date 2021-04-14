@@ -17,14 +17,14 @@ public class UnitsManager {
     public Array<Unit> units;
 
     public UnitsManager() {
-        Gdx.app.log("UnitsManager::UnitsManager()", "-- ");
+//        Gdx.app.log("UnitsManager::UnitsManager()", "-- ");
         this.unitsCount = 0;
         this.hero = new Array<>();
         this.units = new Array<>();
     }
 
     public void dispose() {
-        Gdx.app.log("UnitsManager::dispose()", "-- ");
+//        Gdx.app.log("UnitsManager::dispose()", "-- ");
 //        hero.clear(); // because hero include in units array
         units.clear();
     }

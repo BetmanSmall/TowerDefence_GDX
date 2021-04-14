@@ -13,12 +13,12 @@ public class TowersManager {
     public Array<Tower> towers;
 
     public TowersManager() {
-        Gdx.app.log("TowersManager::TowersManager()", "-- ");
+//        Gdx.app.log("TowersManager::TowersManager()", "-- ");
         towers = new Array<Tower>();
     }
 
     public void dispose() {
-        Gdx.app.log("TowersManager::dispose()", "-- ");
+//        Gdx.app.log("TowersManager::dispose()", "-- ");
         towers.clear();
     }
 

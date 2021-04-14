@@ -69,7 +69,7 @@ public class OptionMenuScreen implements Screen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
+//                Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
                 super.clicked(event, x, y);
                 gameSettings.setGameTypeByMap("maps/randomMap.tmx");
                 gameMaster.setScreen(new GameScreen(gameMaster));
@@ -84,7 +84,7 @@ public class OptionMenuScreen implements Screen {
         topBottomLeftRightSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::topBottomLeftRightSelector::changed()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
+//                Gdx.app.log("OptionMenuScreen::topBottomLeftRightSelector::changed()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
                 gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
             }
         });
@@ -96,7 +96,7 @@ public class OptionMenuScreen implements Screen {
         verticalSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::verticalSelector::changed()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
+//                Gdx.app.log("OptionMenuScreen::verticalSelector::changed()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
                 gameSettings.verticalSelector = verticalSelector.isChecked();
             }
         });
@@ -108,7 +108,7 @@ public class OptionMenuScreen implements Screen {
         smoothFlingSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::smoothFlingSelector::changed()", "-- smoothFlingSelector.isChecked():" + smoothFlingSelector.isChecked());
+//                Gdx.app.log("OptionMenuScreen::smoothFlingSelector::changed()", "-- smoothFlingSelector.isChecked():" + smoothFlingSelector.isChecked());
                 gameSettings.smoothFlingSelector = smoothFlingSelector.isChecked();
             }
         });
@@ -123,7 +123,7 @@ public class OptionMenuScreen implements Screen {
         panLeftMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::panLeftMouseButton::changed()", "-- panLeftMouseButton.isChecked():" + panLeftMouseButton.isChecked());
+//                Gdx.app.log("OptionMenuScreen::panLeftMouseButton::changed()", "-- panLeftMouseButton.isChecked():" + panLeftMouseButton.isChecked());
             }
         });
         panLeftMouseButton.setChecked(gameSettings.panLeftMouseButton);
@@ -134,7 +134,7 @@ public class OptionMenuScreen implements Screen {
         panMidMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::panMidMouseButton::changed()", "-- panMidMouseButton.isChecked():" + panMidMouseButton.isChecked());
+//                Gdx.app.log("OptionMenuScreen::panMidMouseButton::changed()", "-- panMidMouseButton.isChecked():" + panMidMouseButton.isChecked());
             }
         });
         panMidMouseButton.setChecked(gameSettings.panMidMouseButton);
@@ -145,7 +145,7 @@ public class OptionMenuScreen implements Screen {
         panRightMouseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::panRightMouseButton::changed()", "-- panRightMouseButton.isChecked():" + panRightMouseButton.isChecked());
+//                Gdx.app.log("OptionMenuScreen::panRightMouseButton::changed()", "-- panRightMouseButton.isChecked():" + panRightMouseButton.isChecked());
             }
         });
         panRightMouseButton.setChecked(gameSettings.panRightMouseButton);
@@ -156,7 +156,7 @@ public class OptionMenuScreen implements Screen {
         towerMoveAlgorithm.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::towerMoveAlgorithm::changed()", "-- towerMoveAlgorithm.isChecked():" + towerMoveAlgorithm.isChecked());
+//                Gdx.app.log("OptionMenuScreen::towerMoveAlgorithm::changed()", "-- towerMoveAlgorithm.isChecked():" + towerMoveAlgorithm.isChecked());
                 gameSettings.towerMoveAlgorithm = towerMoveAlgorithm.isChecked();
             }
         });
@@ -171,7 +171,7 @@ public class OptionMenuScreen implements Screen {
         checkBoxSound.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- checkBoxSound.isChecked():" + checkBoxSound.isChecked());
+//                Gdx.app.log("OptionMenuScreen::checkBoxSound::changed()", "-- checkBoxSound.isChecked():" + checkBoxSound.isChecked());
             }
         });
         checkBoxSound.setChecked(gameSettings.panLeftMouseButton);
@@ -181,7 +181,7 @@ public class OptionMenuScreen implements Screen {
         sliderSound.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- sliderSound.getValue():" + sliderSound.getValue());
+//                Gdx.app.log("OptionMenuScreen::sliderSound::changed()", "-- sliderSound.getValue():" + sliderSound.getValue());
             }
         });
         table3.add(sliderSound).row();
@@ -194,7 +194,7 @@ public class OptionMenuScreen implements Screen {
         sliderEnemyCount.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::sliderEnemyCount::changed()", "-- sliderEnemyCount.getValue():" + sliderEnemyCount.getValue());
+//                Gdx.app.log("OptionMenuScreen::sliderEnemyCount::changed()", "-- sliderEnemyCount.getValue():" + sliderEnemyCount.getValue());
                 enemyCountLabel.setText("enemyCount:" + sliderEnemyCount.getValue());
                 gameSettings.enemyCount = (int)sliderEnemyCount.getValue();
             }
@@ -210,7 +210,7 @@ public class OptionMenuScreen implements Screen {
         sliderTowerCount.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::sliderTowerCount::changed()", "-- sliderTowerCount.getValue():" + sliderTowerCount.getValue());
+//                Gdx.app.log("OptionMenuScreen::sliderTowerCount::changed()", "-- sliderTowerCount.getValue():" + sliderTowerCount.getValue());
                 towerCountLabel.setText("towerCount:" + sliderTowerCount.getValue());
                 gameSettings.towersCount = (int)sliderTowerCount.getValue();
             }
@@ -226,7 +226,7 @@ public class OptionMenuScreen implements Screen {
         sliderDifficultyLevel.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
+//                Gdx.app.log("OptionMenuScreen::sliderDifficultyLevel::changed()", "-- sliderDifficultyLevel.getValue():" + sliderDifficultyLevel.getValue());
                 difficultyLevelLabel.setText("difficultyLevel:" + sliderDifficultyLevel.getValue());
                 gameSettings.difficultyLevel = (int)sliderDifficultyLevel.getValue();
             }
@@ -242,7 +242,7 @@ public class OptionMenuScreen implements Screen {
         sliderLandscapePercent.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Logger.logDebug("-- sliderLandscapePercent.getValue():" + sliderLandscapePercent.getValue());
+//                Logger.logDebug("-- sliderLandscapePercent.getValue():" + sliderLandscapePercent.getValue());
                 landscapePercentLabel.setText("landscapePercent:" + sliderLandscapePercent.getValue());
                 gameSettings.landscapePercent = (int)sliderLandscapePercent.getValue();
             }
@@ -256,7 +256,7 @@ public class OptionMenuScreen implements Screen {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("OptionMenuScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
+//                Gdx.app.log("OptionMenuScreen::backButton::changed()", "-- backButton.isChecked():" + backButton.isChecked());
                 gameMaster.removeTopScreen();
             }
         });
@@ -265,7 +265,7 @@ public class OptionMenuScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.app.log("OptionMenuScreen::show()", "-- Called!");
+//        Gdx.app.log("OptionMenuScreen::show()", "-- Called!");
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -284,7 +284,7 @@ public class OptionMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("OptionMenuScreen::resize(" + width + ", " + height + ")", "--");
+//        Gdx.app.log("OptionMenuScreen::resize(" + width + ", " + height + ")", "--");
         stage.getViewport().update(width, height, true);
     }
 
@@ -305,7 +305,7 @@ public class OptionMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        Gdx.app.log("OptionMenuScreen::dispose()", "--");
+//        Gdx.app.log("OptionMenuScreen::dispose()", "--");
         if (stage != null) {
             stage.dispose();
             stage = null;

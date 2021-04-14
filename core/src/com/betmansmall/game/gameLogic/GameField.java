@@ -62,7 +62,7 @@ public class GameField {
         this.unitsManager = new UnitsManager();
 
         tmxMap = (TmxMap)new MapLoader().load(gameSettings.mapPath);
-        Gdx.app.log("GameField::GameField()", "-- tmxMap:" + tmxMap);
+//        Gdx.app.log("GameField::GameField()", "-- tmxMap:" + tmxMap);
         random = new Random();
 
         createField();
@@ -72,7 +72,7 @@ public class GameField {
         landscapeGenerator(tmxMap.mapPath);
         pathFinder = new PathFinder(this);
         pathFinder.loadCharMatrix(getCharMatrix(false));
-        Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
+//        Gdx.app.log("GameField::GameField()", "-- pathFinder:" + pathFinder);
 
         underConstruction = null;
 
@@ -81,16 +81,16 @@ public class GameField {
         gamePaused = false;
         unitsSpawn = false;
 
-        Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
+//        Gdx.app.log("GameField::GameField()", "-- gameSettings.gameType:" + gameSettings.gameType);
         if (gameSettings.gameType == GameType.LittleGame) {
             int randomEnemyCount = gameSettings.enemyCount;
-            Gdx.app.log("GameField::GameField()", "-- randomEnemyCount:" + randomEnemyCount);
+//            Gdx.app.log("GameField::GameField()", "-- randomEnemyCount:" + randomEnemyCount);
             for (int k = 0; k < randomEnemyCount; k++) {
                 int randomX = random.nextInt(tmxMap.width);
                 int randomY = random.nextInt(tmxMap.height);
-                Gdx.app.log("GameField::GameField()", "-- k:" + k);
-                Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
-                Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
+//                Gdx.app.log("GameField::GameField()", "-- k:" + k);
+//                Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
+//                Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
                 if (getCell(randomX, randomY).isEmpty()) {
                     if (spawnServerUnitToRandomExit(randomX, randomY) == null) {
                         k--;
@@ -100,13 +100,13 @@ public class GameField {
                 }
             }
             int randomTowerCount = gameSettings.towersCount;
-            Gdx.app.log("GameField::GameField()", "-- randomTowerCount:" + randomTowerCount);
+//            Gdx.app.log("GameField::GameField()", "-- randomTowerCount:" + randomTowerCount);
             for (int k = 0; k < randomTowerCount; k++) {
                 int randomX = random.nextInt(tmxMap.width);
                 int randomY = random.nextInt(tmxMap.height);
-                Gdx.app.log("GameField::GameField()", "-- k:" + k);
-                Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
-                Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
+//                Gdx.app.log("GameField::GameField()", "-- k:" + k);
+//                Gdx.app.log("GameField::GameField()", "-- randomX:" + randomX);
+//                Gdx.app.log("GameField::GameField()", "-- randomY:" + randomY);
                 if (getCell(randomX, randomY).isEmpty()) {
                     if (createTower(randomX, randomY, factionsManager.getRandomTemplateForTowerFromAllFaction(), null) == null) {
                         k--;
@@ -118,14 +118,14 @@ public class GameField {
             spawnHeroInSpawnPoint();
         } else if (gameSettings.gameType == GameType.TowerDefence) {
             waveManager.generateWave(this, field, tmxMap, random, pathFinder);
-        } else {
-            Logger.logDebug("gameSettings.gameType:" + gameSettings.gameType);
+//        } else {
+//            Logger.logDebug("gameSettings.gameType:" + gameSettings.gameType);
         }
         Logger.logFuncEnd();
     }
 
     public void dispose() {
-        Gdx.app.log("GameField::dispose()", "-- Called!");
+//        Gdx.app.log("GameField::dispose()", "-- Called!");
 //        gameSettings.dispose();
 //        factionsManager.dispose();
         waveManager.dispose();
@@ -147,7 +147,7 @@ public class GameField {
     }
 
     private void createField() {
-        Gdx.app.log("GameField::createField()", "-START- field:" + field);
+//        Gdx.app.log("GameField::createField()", "-START- field:" + field);
         if (field == null) {
             field = new Cell[tmxMap.width][tmxMap.height];
             for (int y = 0; y < tmxMap.height; y++) {
@@ -177,11 +177,11 @@ public class GameField {
                                     if (tiledMapTile.getProperties().containsKey("spawnPoint")) {
                                         gameSettings.cellSpawnHero = cell;
                                         gameSettings.cellSpawnHero.spawn = true;
-                                        Gdx.app.log("GameField::createField()", "-- Set gameSettings.cellSpawnHero:" + gameSettings.cellSpawnHero);
+//                                        Gdx.app.log("GameField::createField()", "-- Set gameSettings.cellSpawnHero:" + gameSettings.cellSpawnHero);
                                     } else if (tiledMapTile.getProperties().containsKey("exitPoint")) {
                                         gameSettings.cellExitHero = cell;
                                         gameSettings.cellExitHero.exit = true;
-                                        Gdx.app.log("GameField::createField()", "-- Set gameSettings.cellExitHero:" + gameSettings.cellExitHero);
+//                                        Gdx.app.log("GameField::createField()", "-- Set gameSettings.cellExitHero:" + gameSettings.cellExitHero);
                                     }
 //                                    // task 6. отрисовка деревьев полностью
 //                                    if(tiledMapTile.getProperties().get("treeName") != null) {
@@ -207,7 +207,7 @@ public class GameField {
                 }
             }
         }
-        Gdx.app.log("GameField::createField()", "-END- field:" + (field != null) );
+//        Gdx.app.log("GameField::createField()", "-END- field:" + (field != null) );
     }
 
     public boolean landscapeGenerator(String mapPath) {
@@ -228,7 +228,7 @@ public class GameField {
                 }
             }
         }
-        Logger.logFuncEnd("GameField::landscapeGenerator()", "-- mapPath:" + mapPath);
+//        Logger.logFuncEnd("GameField::landscapeGenerator()", "-- mapPath:" + mapPath);
         return true;
     }
 
@@ -268,7 +268,7 @@ public class GameField {
     }
 
     public Unit spawnUnitFromUser(TemplateForUnit templateForUnit) {
-        Gdx.app.log("GameField::spawnUnitFromUser()", "-- templateForUnit:" + templateForUnit);
+//        Gdx.app.log("GameField::spawnUnitFromUser()", "-- templateForUnit:" + templateForUnit);
         if (gameScreen.playersManager.getLocalPlayer().gold >= templateForUnit.cost) {
             gameScreen.playersManager.getLocalPlayer().gold -= templateForUnit.cost;
             for (Wave wave : waveManager.wavesForUser) {
@@ -321,7 +321,7 @@ public class GameField {
     }
 
     private Unit spawnHeroInSpawnPoint() {
-        Gdx.app.log("GameField::spawnHeroInSpawnPoint()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero + " gameSettings.cellSpawnHero:" + gameSettings.cellSpawnHero);
+//        Gdx.app.log("GameField::spawnHeroInSpawnPoint()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero + " gameSettings.cellSpawnHero:" + gameSettings.cellSpawnHero);
         if (gameSettings.cellSpawnHero != null && gameSettings.cellExitHero != null) {
             gameSettings.cellSpawnHero.removeTerrain(true);
             gameSettings.cellExitHero.removeTerrain(true);
@@ -334,8 +334,8 @@ public class GameField {
     }
 
     public Unit spawnLocalHero(int cellX, int cellY) {
-        Gdx.app.log("GameField::spawnLocalHero()", "-- cellX:" + cellX + " cellY:" + cellY);
-        Gdx.app.log("GameField::spawnLocalHero()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero);
+//        Gdx.app.log("GameField::spawnLocalHero()", "-- cellX:" + cellX + " cellY:" + cellY);
+//        Gdx.app.log("GameField::spawnLocalHero()", "-- gameSettings.cellExitHero:" + gameSettings.cellExitHero);
         if (gameSettings.cellExitHero != null) {
             Cell cell = getCell(cellX, cellY);
             if (cell != null) {
@@ -356,10 +356,10 @@ public class GameField {
     }
 
     public Unit spawnServerUnitToRandomExit(int x, int y) {
-        Gdx.app.log("GameField::spawnServerUnitToRandomExit()", "-- x:" + x + " y:" + y);
+//        Gdx.app.log("GameField::spawnServerUnitToRandomExit()", "-- x:" + x + " y:" + y);
         int randomX = random.nextInt(tmxMap.width);
         int randomY = random.nextInt(tmxMap.height);
-        Gdx.app.log("GameField::spawnServerUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
+//        Gdx.app.log("GameField::spawnServerUnitToRandomExit()", "-- randomX:" + randomX + " randomY:" + randomY);
 //        return gameScreen.createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), null, gameScreen.playersManager.getLocalServer());
         return createUnit(getCell(x, y), getCell(randomX, randomY), factionsManager.getRandomTemplateForUnitFromSecondFaction(), null, gameScreen.playersManager.getLocalServer());
     }
@@ -388,7 +388,7 @@ public class GameField {
             if (route != null) {
                 unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
-                Logger.logDebug("-- unit:" + unit);
+//                Logger.logDebug("-- unit:" + unit);
             } else {
                 Logger.logError("-- Not found route for createUnit!");
 //                if(towersManager.towers.size > 0) {
@@ -424,7 +424,7 @@ public class GameField {
                 Unit unit = unitsManager.createUnit(route, templateForUnit, player, exitCell);
                 spawnCell.setUnit(unit);
                 unit.updateData(unitInstanceData, this);
-                Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
+//                Gdx.app.log("GameField::createUnit()", "-- unit:" + unit);
                 return unit;
             } else {
                 Gdx.app.log("GameField::createUnit()", "-- Not found route for createUnit!");

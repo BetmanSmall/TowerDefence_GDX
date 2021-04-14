@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -178,6 +180,7 @@ public class ClientSettingsScreen extends AbstractScreen {
                 if (serverInformation.gameType.equals(GameType.ProtoServer)) {
                     gameMaster.sessionSettings.gameSettings.mapPath = serverInformation.mapPath;
                     gameMaster.sessionSettings.gameSettings.gameType = serverInformation.gameType;
+                    gameMaster.sessionSettings.sessionType = SessionType.PROTO_CLIENT;
                     gameMaster.addScreen(new ProtoClientGameScreen(gameMaster, gameMaster.userAccount));
                 } else {
                     gameMaster.addScreen(new ClientGameScreen(gameMaster, gameMaster.userAccount));
@@ -227,7 +230,20 @@ public class ClientSettingsScreen extends AbstractScreen {
             gameMaster.removeTopScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Logger.logDebug("isKeyJustPressed(Input.Keys.ENTER || Input.Keys.SPACE);");
-            connectToServer.toggle();
+            if (!serverBrowserTable.hasChildren()) {
+                connectToServer.toggle();
+            } else {
+                for (Actor actor : serverBrowserTable.getChildren()) {
+                    if (actor instanceof Table) {
+                        Table table = (Table) actor;
+                        for (Actor actor1 : table.getChildren()) {
+                            if (actor1 instanceof Button) {
+                                ((Button) actor1).toggle();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

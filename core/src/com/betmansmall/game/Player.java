@@ -17,10 +17,8 @@ import protobuf.Proto;
 
 public class Player {
     public ProtoTcpConnection protoTcpConnection;
-    public Proto.Transform transform;
-    public Vector3 position;
-    public Quaternion rotation;
-    public ModelInstance modelInstance;
+    public ProtoGameObject gameObject;
+    public Proto.SendObject sendObject;
 
     public TcpConnection connection; // only for ServerSessionThread class
     public PlayerType type;
@@ -76,17 +74,24 @@ public class Player {
     }
 
     public Player(ProtoTcpConnection tcpConnection) { // only for ProtoServerSessionThread class
-        this.protoTcpConnection = tcpConnection;
-        this.type = PlayerType.CLIENT;
-        this.position = new Vector3();
-        this.rotation = new Quaternion();
+        init(tcpConnection);
     }
+
+//    public Player(ProtoTcpConnection protoTcpConnection, Proto.SendObject sendObject) { // only for ProtoClientSessionThread class
+//        init(protoTcpConnection);
+//        updateData(sendObject);
+//    }
 
     public Player(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) { // only for ServerSessionThread class
         init(tcpConnection, playerInfoData, faction);
     }
 
-    public void init(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) {
+    private void init(ProtoTcpConnection protoTcpConnection) {
+        this.protoTcpConnection = protoTcpConnection;
+        this.type = PlayerType.CLIENT;
+    }
+
+    private void init(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) {
         this.connection = tcpConnection;
         this.updateData(playerInfoData);
         this.faction = faction;
@@ -103,12 +108,7 @@ public class Player {
     }
 
     public void updateData(Proto.SendObject sendObject) {
-        this.transform = sendObject.getTransform();
-        Proto.Position position = transform.getPosition();
-        Proto.Rotation rotation = transform.getRotation();
-        this.position.set(position.getX(), position.getY(), position.getZ());
-        this.rotation.set(rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW());
-        this.modelInstance.transform.set(this.position, this.rotation);
+        gameObject.updateData(sendObject);
     }
 
     @Override
@@ -120,7 +120,6 @@ public class Player {
         StringBuilder sb = new StringBuilder();
         sb.append("Player[");
         sb.append("type:" + type);
-        sb.append(",transform:" + transform);
         sb.append(",playerStatus:" + playerStatus);
         sb.append(",accountID:" + accountID);
         sb.append(",playerID:" + playerID);

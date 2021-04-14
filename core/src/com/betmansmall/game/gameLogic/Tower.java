@@ -293,9 +293,9 @@ public class Tower {
             if (action.equals("explosion_")) {
                 animation = new Animation(templateForTower.destroyTime / staticTiledMapTiles.length, textureRegions);
             }
-            Gdx.app.log("Tower::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
+//            Gdx.app.log("Tower::setAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
         } else {
-            Gdx.app.log("Tower::setAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
+            Gdx.app.error("Tower::setAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
         }
     }
 
@@ -316,7 +316,7 @@ public class Tower {
                 }
 //                Gdx.app.log("Tower::setBurningAnimation()", "-- animation:" + animation + " textureRegions:" + textureRegions[0]);
             } else {
-                Gdx.app.log("Tower::setBurningAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
+                Gdx.app.error("Tower::setBurningAnimation(" + action + ")", "-- TowerName: " + templateForTower.name + " animatedTiledMapTile: " + animatedTiledMapTile);
             }
             currBurningIndex = index;
         }
@@ -352,7 +352,7 @@ public class Tower {
                 return circles.get(map - 1);
             }
         }
-        Gdx.app.log("Tower::getCircle(" + map + ")", "-- Bad map | return null!");
+//        Gdx.app.error("Tower::getCircle(" + map + ")", "-- Bad map | return null!");
         return null;
     }
 

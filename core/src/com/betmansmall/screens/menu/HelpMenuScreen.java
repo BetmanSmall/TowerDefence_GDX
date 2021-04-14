@@ -104,7 +104,7 @@ public class HelpMenuScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public void dispose() {
-        Gdx.app.log("HelpMenuScreen::dispose()", "--");
+//        Gdx.app.log("HelpMenuScreen::dispose()", "--");
     }
 
     private void inputHandler(float delta) {

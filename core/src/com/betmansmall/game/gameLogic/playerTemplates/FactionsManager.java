@@ -38,35 +38,35 @@ public class FactionsManager {
     public static Float defSpeed = 1f;
 
     public FactionsManager() throws Exception {
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- :");
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- :");
         this.bigFire = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/big_fire.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- bigFire:" + bigFire.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- bigFire:" + bigFire.toString());
         this.smallFire = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/small_fire.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- smallFire:" + smallFire.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- smallFire:" + smallFire.toString());
         this.burningsTemplates = new Array<SimpleTemplate>();
         this.burningsTemplates.add(smallFire);
         this.burningsTemplates.add(bigFire);
 
         this.fireball_0 = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/fireball_0.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- fireball_0:" + fireball_0.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- fireball_0:" + fireball_0.toString());
         this.explosion = new SimpleTemplate(Gdx.files.internal("maps/other/animations/towers/explosion.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- explosion:" + explosion.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- explosion:" + explosion.toString());
         this.axe = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/axe.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- axe:" + axe.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- axe:" + axe.toString());
         this.catapultRock = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/catapult_rock.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- catapultRock:" + catapultRock.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- catapultRock:" + catapultRock.toString());
         this.touchOfDeath = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/touch_of_death.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- touchOfDeath:" + touchOfDeath.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- touchOfDeath:" + touchOfDeath.toString());
         this.dragonBreath = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/dragon_breath.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- dragonBreath:" + dragonBreath.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- dragonBreath:" + dragonBreath.toString());
         this.ballistaBolt = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/ballista_bolt.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- ballistaBolt:" + ballistaBolt.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- ballistaBolt:" + ballistaBolt.toString());
         this.arrow = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/arrow.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- arrow:" + arrow.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- arrow:" + arrow.toString());
         this.gryphonHammer = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/gryphon_hammer.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- gryphonHammer:" + gryphonHammer.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- gryphonHammer:" + gryphonHammer.toString());
         this.lightning = new SimpleTemplate(Gdx.files.internal("maps/other/animations/units/lightning.tsx"));
-        Gdx.app.log("FactionsManager::FactionsManager()", "-- lightning:" + lightning.toString());
+//        Gdx.app.log("FactionsManager::FactionsManager()", "-- lightning:" + lightning.toString());
         this.factions = new Array<Faction>();
         loadFactions();
 
@@ -218,7 +218,7 @@ public class FactionsManager {
                 factions.addAll(factionsDir.list());
             }
         }
-        Gdx.app.log("FactionsManager::loadFactions()", "-- factions.size:" + factions.size);
+//        Gdx.app.log("FactionsManager::loadFactions()", "-- factions.size:" + factions.size);
         for (FileHandle factionFile : factions) {
             if (factionFile.extension().equals("fac")) {
                 loadFaction(factionFile);
@@ -228,7 +228,7 @@ public class FactionsManager {
 
     private void loadFaction(FileHandle factionFile) {
         if(factionFile != null && !factionFile.isDirectory()) {
-            Gdx.app.log("FactionsManager::loadFaction(" + factionFile + ")", "-- absolutePath:" + factionFile.file().getAbsolutePath());
+//            Gdx.app.log("FactionsManager::loadFaction(" + factionFile + ")", "-- absolutePath:" + factionFile.file().getAbsolutePath());
             try {
                 XmlReader xmlReader = new XmlReader();
                 Element root = xmlReader.parse(factionFile);
@@ -236,7 +236,7 @@ public class FactionsManager {
                 if (factionName != null) {
                     Faction faction = new Faction(factionName);
                     Array<Element> templateForUnitElements = root.getChildrenByName("templateForUnit");
-                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForUnitElements.size:" + templateForUnitElements.size);
+//                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForUnitElements.size:" + templateForUnitElements.size);
                     for (Element templateForUnitElement : templateForUnitElements) {
                         String source = templateForUnitElement.getAttribute("source", null);
                         if (source != null) {
@@ -269,11 +269,11 @@ public class FactionsManager {
                             if (templateForUnit.templateName.equals("unit14_mage")) {
                                 templateForUnit.loadWeapon(lightning);
                             }
-                            Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForUnit.toString(true));
+//                            Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForUnit.toString(true));
                         }
                     }
                     Array<Element> templateForTowerElements = root.getChildrenByName("templateForTower");
-                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForTowerElements.size:" + templateForTowerElements.size);
+//                    Gdx.app.log("FactionsManager::loadFaction()", "-- templateForTowerElements.size:" + templateForTowerElements.size);
                     for (Element templateForTowerElement : templateForTowerElements) {
                         String source = templateForTowerElement.getAttribute("source", null);
                         if (source != null) {
@@ -287,7 +287,7 @@ public class FactionsManager {
                             templateForTower.loadExplosion(explosion);
                             templateForTower.loadBurnings(burningsTemplates);
                             faction.getTemplateForTowers().add(templateForTower);
-                            Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForTower.toString(true));
+//                            Gdx.app.log("FactionsManager::loadFaction()", "-- " + templateForTower.toString(true));
                         }
                     }
                     factions.add(faction);

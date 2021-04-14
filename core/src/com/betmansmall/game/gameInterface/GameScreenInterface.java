@@ -203,7 +203,7 @@ public class GameScreenInterface extends GameInterface {
         disconnectButtons.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- disconnectButtons.isChecked():" + disconnectButtons.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- disconnectButtons.isChecked():" + disconnectButtons.isChecked());
 //                gameScreen.dispose();
                 gameScreen.gameMaster.removeTopScreen();
             }
@@ -211,28 +211,28 @@ public class GameScreenInterface extends GameInterface {
         playersViewButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- playersViewButton.isChecked():" + playersViewButton.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- playersViewButton.isChecked():" + playersViewButton.isChecked());
                 playersViewTable.setVisible(!playersViewTable.isVisible());
             }
         });
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- resumeButton.isChecked():" + resumeButton.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- resumeButton.isChecked():" + resumeButton.isChecked());
                 pauseMenuButton.toggle();
             }
         });
         nextLevelButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- nextLevelButton.isChecked():" + nextLevelButton.isChecked());
                 gameScreen.gameMaster.nextGameLevel();
             }
         });
         optionButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- optionButton.isChecked():" + optionButton.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- optionButton.isChecked():" + optionButton.isChecked());
                 optionTable.setVisible(optionButton.isChecked());
                 firstOptionTable.setVisible(optionButton.isChecked());
             }
@@ -240,14 +240,14 @@ public class GameScreenInterface extends GameInterface {
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- exitButton.isChecked():" + exitButton.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- exitButton.isChecked():" + exitButton.isChecked());
                 gameScreen.gameMaster.removeTopScreen();
             }
         });
         gridNav1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav1.isChecked():" + gridNav1.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav1.isChecked():" + gridNav1.isChecked());
                 cameraController.isDrawableGrid++;
                 cameraController.isDrawableGridNav++;
                 cameraController.isDrawableRoutes++;
@@ -264,7 +264,7 @@ public class GameScreenInterface extends GameInterface {
         gridNav2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav2.isChecked():" + gridNav2.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav2.isChecked():" + gridNav2.isChecked());
                 cameraController.isDrawableGridNav = 0;
                 cameraController.isDrawableRoutes = 0;
                 gridNav2.setVisible(false);
@@ -273,7 +273,7 @@ public class GameScreenInterface extends GameInterface {
         gridNav3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav3.isChecked():" + gridNav3.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- gridNav3.isChecked():" + gridNav3.isChecked());
                 cameraController.isDrawableGridNav = 5;
                 cameraController.isDrawableRoutes = 5;
                 gridNav3.setVisible(false);
@@ -282,7 +282,7 @@ public class GameScreenInterface extends GameInterface {
         pauseMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- pauseMenuButton.isChecked():" + pauseMenuButton.isChecked());
                 boolean gamePaused = pauseMenuButton.isChecked();
                 gameScreen.gameField.gamePaused = gamePaused;
                 pauseMenuTable.setVisible(gamePaused);
@@ -298,7 +298,7 @@ public class GameScreenInterface extends GameInterface {
         gameSpeedMinus.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedMinus.isChecked():" + gameSpeedMinus.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedMinus.isChecked():" + gameSpeedMinus.isChecked());
                 if (gameScreen.gameField.gameSpeed > 0.1f) {
                     gameScreen.gameField.gameSpeed -= 0.1f;
                     gameScreen.sendGameFieldVariables();
@@ -308,7 +308,7 @@ public class GameScreenInterface extends GameInterface {
         startAndPauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- startAndPauseButton.isChecked():" + startAndPauseButton.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- startAndPauseButton.isChecked():" + startAndPauseButton.isChecked());
 //                if (!gameScreen.gameField.gamePaused) {
 //                    if (gameScreen.gameField.gameSpeed < 1f) {
 //                        gameScreen.gameField.gameSpeed = 1f;
@@ -338,7 +338,7 @@ public class GameScreenInterface extends GameInterface {
         gameSpeedPlus.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedPlus.isChecked():" + gameSpeedPlus.isChecked());
+//                Gdx.app.log("GameInterface:changed:addListeners()", "-- gameSpeedPlus.isChecked():" + gameSpeedPlus.isChecked());
                 gameScreen.gameField.gameSpeed += 0.1f;
                 gameScreen.sendGameFieldVariables();
             }
@@ -352,7 +352,7 @@ public class GameScreenInterface extends GameInterface {
         infoTabloHideButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- infoTabloHideButton.isChecked():" + infoTabloHideButton.isChecked());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- infoTabloHideButton.isChecked():" + infoTabloHideButton.isChecked());
                 infoTabloTable.setVisible(infoTabloHideButton.isChecked());
                 tableWithButtons.setVisible(infoTabloHideButton.isChecked());
                 tableWithSelectors.setVisible(infoTabloHideButton.isChecked());
@@ -374,7 +374,7 @@ public class GameScreenInterface extends GameInterface {
         drawGrid.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawGrid.getValue():" + drawGrid.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawGrid.getValue():" + drawGrid.getValue());
                 cameraController.isDrawableGrid = (int)drawGrid.getValue();
                 drawGridLabel.setText("drawGrid:" + cameraController.isDrawableGrid);
             }
@@ -392,7 +392,7 @@ public class GameScreenInterface extends GameInterface {
         drawUnits.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawUnits.getValue():" + drawUnits.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawUnits.getValue():" + drawUnits.getValue());
                 cameraController.isDrawableUnits = (int)drawUnits.getValue();
                 drawUnitsLabel.setText("drawUnits:" + cameraController.isDrawableUnits);
             }
@@ -408,7 +408,7 @@ public class GameScreenInterface extends GameInterface {
         drawTowers.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawTowers.getValue():" + drawTowers.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawTowers.getValue():" + drawTowers.getValue());
                 cameraController.isDrawableTowers = (int)drawTowers.getValue();
                 drawTowersLabel.setText("drawTowers:" + cameraController.isDrawableTowers);
             }
@@ -424,7 +424,7 @@ public class GameScreenInterface extends GameInterface {
         drawBackground.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawBackground.getValue():" + drawBackground.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawBackground.getValue():" + drawBackground.getValue());
                 cameraController.isDrawableBackground = (int)drawBackground.getValue();
                 drawBackgroundLabel.setText("drawBackground:" + cameraController.isDrawableBackground);
             }
@@ -440,7 +440,7 @@ public class GameScreenInterface extends GameInterface {
         drawGround.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawGround.getValue():" + drawGround.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawGround.getValue():" + drawGround.getValue());
                 cameraController.isDrawableGround = (int)drawGround.getValue();
                 drawGroundLabel.setText("drawGround:" + cameraController.isDrawableGround);
             }
@@ -456,7 +456,7 @@ public class GameScreenInterface extends GameInterface {
         drawForeground.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawForeground.getValue():" + drawForeground.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawForeground.getValue():" + drawForeground.getValue());
                 cameraController.isDrawableForeground = (int)drawForeground.getValue();
                 drawForegroundLabel.setText("drawForeground:" + cameraController.isDrawableForeground);
             }
@@ -472,7 +472,7 @@ public class GameScreenInterface extends GameInterface {
         drawGridNav.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawGridNav.getValue():" + drawGridNav.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawGridNav.getValue():" + drawGridNav.getValue());
                 cameraController.isDrawableGridNav = (int)drawGridNav.getValue();
                 drawGridNavLabel.setText("drawGridNav:" + cameraController.isDrawableGridNav);
             }
@@ -488,7 +488,7 @@ public class GameScreenInterface extends GameInterface {
         drawRoutes.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawRoutes.getValue():" + drawRoutes.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawRoutes.getValue():" + drawRoutes.getValue());
                 cameraController.isDrawableRoutes = (int)drawRoutes.getValue();
                 drawRoutesLabel.setText("drawRoutes:" + cameraController.isDrawableRoutes);
             }
@@ -504,7 +504,7 @@ public class GameScreenInterface extends GameInterface {
         drawOrder.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawOrder.getValue():" + drawOrder.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawOrder.getValue():" + drawOrder.getValue());
                 cameraController.drawOrder = (int)drawOrder.getValue();
                 drawOrderLabel.setText("drawOrder:" + cameraController.drawOrder);
             }
@@ -515,7 +515,7 @@ public class GameScreenInterface extends GameInterface {
         resetDrawSettingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- resetDrawSettingsButton.isChecked():" + resetDrawSettingsButton.isChecked());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- resetDrawSettingsButton.isChecked():" + resetDrawSettingsButton.isChecked());
                 if (resetDrawSettingsButton.isChecked()) {
                     cameraController.camera.position.set(0.0f, 0.0f, 0.0f);
                 } else {
@@ -535,7 +535,7 @@ public class GameScreenInterface extends GameInterface {
         drawAll.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawAll.getValue():" + drawAll.getValue());
+//                Gdx.app.log("GameInterface::setCameraController()", "-changed- drawAll.getValue():" + drawAll.getValue());
                 drawGrid.setValue(drawAll.getValue());
                 drawUnits.setValue(drawAll.getValue());
                 drawTowers.setValue(drawAll.getValue());
@@ -558,7 +558,7 @@ public class GameScreenInterface extends GameInterface {
         topBottomLeftRightSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
+//                Gdx.app.log("GameInterface::setCameraController()", "-- topBottomLeftRightSelector.isChecked():" + topBottomLeftRightSelector.isChecked());
                 gameScreen.gameField.gameSettings.topBottomLeftRightSelector = topBottomLeftRightSelector.isChecked();
                 if (unitsSelector != null) {
                     unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
@@ -582,7 +582,7 @@ public class GameScreenInterface extends GameInterface {
         towerMoveAlgorithm.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-- towerMoveAlgorithm.isChecked():" + towerMoveAlgorithm.isChecked());
+//                Gdx.app.log("GameInterface::setCameraController()", "-- towerMoveAlgorithm.isChecked():" + towerMoveAlgorithm.isChecked());
                 gameScreen.gameField.gameSettings.towerMoveAlgorithm = towerMoveAlgorithm.isChecked();
                 UnderConstruction underConstruction = gameScreen.gameField.getUnderConstruction();
                 if (underConstruction != null) {
@@ -600,7 +600,7 @@ public class GameScreenInterface extends GameInterface {
         verticalSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
+//                Gdx.app.log("GameInterface::setCameraController()", "-- verticalSelector.isChecked():" + verticalSelector.isChecked());
                 gameScreen.gameField.gameSettings.verticalSelector = verticalSelector.isChecked();
                 if (unitsSelector != null) {
                     unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,
@@ -624,7 +624,7 @@ public class GameScreenInterface extends GameInterface {
         smoothFlingSelector.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("GameInterface::setCameraController()", "-- smoothFlingSelector.isChecked():" + smoothFlingSelector.isChecked());
+//                Gdx.app.log("GameInterface::setCameraController()", "-- smoothFlingSelector.isChecked():" + smoothFlingSelector.isChecked());
                 gameScreen.gameField.gameSettings.smoothFlingSelector = smoothFlingSelector.isChecked();
                 if (unitsSelector != null) {
                     unitsSelector.updateBorders(gameScreen.gameField.gameSettings.verticalSelector,

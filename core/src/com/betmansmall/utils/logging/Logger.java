@@ -125,6 +125,8 @@ public class Logger implements Closeable {
                     }
                 }
             }
+            useStdOut = false;
+            bufferedWriter = null;
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -142,7 +142,7 @@ public class MainMenuScreen extends AbstractScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 sizeFont2 = slider2.getValue();
-                Gdx.app.log("MainMenuScreen::slider2::changed()", "-- sizeFont2:" + sizeFont2);
+//                Gdx.app.log("MainMenuScreen::slider2::changed()", "-- sizeFont2:" + sizeFont2);
 //                sizeLabel2.setFontScale( (Gdx.graphics.getHeight() * sizeFont2 == 0) ? 0.001f : Gdx.graphics.getHeight() * sizeFont2);
                 if (sizeFont2 != 0) {
                     sizeLabel2.setFontScale(sizeFont2);
@@ -158,7 +158,7 @@ public class MainMenuScreen extends AbstractScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 cellsSize = slider1.getValue();
-                Gdx.app.log("MainMenuScreen::slider1::changed()", "-- cellsSize:" + cellsSize);
+//                Gdx.app.log("MainMenuScreen::slider1::changed()", "-- cellsSize:" + cellsSize);
                 if (cellsSize != 0) {
                     sizeLabel1.setText("cellsSize:" + cellsSize);
                 }
@@ -172,7 +172,7 @@ public class MainMenuScreen extends AbstractScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 sizeFont3 = slider3.getValue();
-                Gdx.app.log("MainMenuScreen::slider3::changed()", "-- sizeFont3:" + sizeFont3);
+//                Gdx.app.log("MainMenuScreen::slider3::changed()", "-- sizeFont3:" + sizeFont3);
                 sizeLabel3.setFontScale( (Gdx.graphics.getHeight() * sizeFont3 == 0) ? 0.001f : Gdx.graphics.getHeight() * sizeFont3);
                 if (sizeFont3 != 0) {
                     sizeLabel3.setFontScale(sizeFont3);
@@ -190,7 +190,7 @@ public class MainMenuScreen extends AbstractScreen {
             playButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
+//                    Gdx.app.log("MainMenuScreen::playButton::clicked()", "-- event:" + event);
                     super.clicked(event, x, y);
                     clickAnalyzer((short) 1);
                 }
@@ -202,7 +202,7 @@ public class MainMenuScreen extends AbstractScreen {
             secondButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.log("MainMenuScreen::secondButton::clicked()", "-- event:" + event);
+//                    Gdx.app.log("MainMenuScreen::secondButton::clicked()", "-- event:" + event);
                     super.clicked(event, x, y);
                     clickAnalyzer((short) 2);
                 }
@@ -214,7 +214,7 @@ public class MainMenuScreen extends AbstractScreen {
             exitButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.log("MainMenuScreen::exitButton::clicked()", "-- event:" + event);
+//                    Gdx.app.log("MainMenuScreen::exitButton::clicked()", "-- event:" + event);
                     super.clicked(event, x, y);
                     clickAnalyzer((short) 3);
                 }
@@ -226,7 +226,7 @@ public class MainMenuScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        Gdx.app.log("MainMenuScreen::show()", "-- Called!");
+//        Gdx.app.log("MainMenuScreen::show()", "-- Called!");
         Gdx.input.setInputProcessor(stage);
 //        resize();
 //        menuLvl = 0;
@@ -255,7 +255,7 @@ public class MainMenuScreen extends AbstractScreen {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("MainMenuScreen::resize(" + width + ", " + height + ")", "--");
+//        Gdx.app.log("MainMenuScreen::resize(" + width + ", " + height + ")", "--");
         stage.getViewport().update(width, height, true);
         sizeLabel1.setText(width + "x" + height);
 
@@ -288,7 +288,7 @@ public class MainMenuScreen extends AbstractScreen {
 
     @Override
     public void dispose() {
-        Gdx.app.log("MainMenuScreen::dispose()", "--");
+//        Gdx.app.log("MainMenuScreen::dispose()", "--");
         if (stage != null) {
             stage.dispose();
             stage = null;
