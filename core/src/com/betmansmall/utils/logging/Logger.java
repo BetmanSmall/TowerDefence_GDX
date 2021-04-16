@@ -125,8 +125,7 @@ public class Logger implements Closeable {
                     }
                 }
             }
-            useStdOut = false;
-            bufferedWriter = null;
+//            setUseStdOut(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,6 +133,9 @@ public class Logger implements Closeable {
 
     public void setUseStdOut(boolean useStdOut) {
         this.useStdOut = useStdOut;
+        if (!useStdOut) {
+            bufferedWriter = null;
+        }
         log("[" + simpleDateFormat.format(System.currentTimeMillis()) + "] -- useStdOut:" + useStdOut, ANSI_PURPLE);
     }
 

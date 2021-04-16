@@ -67,9 +67,9 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
                 player.updateData(sendObject);
             }
         }
-        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
-        System.out.println("sendObject.toByteArray():" + Arrays.toString(sendObject.toByteArray()));
-        System.out.println("sendObject.toByteString():" + sendObject.toByteString() + " size:" + sendObject.getSerializedSize());
+//        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
+//        System.out.println("sendObject.toByteArray():" + Arrays.toString(sendObject.toByteArray()));
+//        System.out.println("sendObject.toByteString():" + sendObject.toByteString() + " size:" + sendObject.getSerializedSize());
     }
 
     @Override

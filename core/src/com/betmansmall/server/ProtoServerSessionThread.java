@@ -73,7 +73,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
     }
 
     @Override
-    public void onConnectionReady(ProtoTcpConnection tcpConnection) {
+    public synchronized void onConnectionReady(ProtoTcpConnection tcpConnection) {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
 
@@ -105,13 +105,13 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
         player.updateData(sendObject);
         sendObject(sendObject, tcpConnection);
-        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
-        System.out.println("sendObject.toByteArray():" + Arrays.toString(sendObject.toByteArray()));
-        System.out.println("sendObject.toByteString():" + sendObject.toByteString() + " size:" + sendObject.getSerializedSize());
+//        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
+//        System.out.println("sendObject.toByteArray():" + Arrays.toString(sendObject.toByteArray()));
+//        System.out.println("sendObject.toByteString():" + sendObject.toByteString() + " size:" + sendObject.getSerializedSize());
     }
 
     @Override
-    public void onDisconnect(ProtoTcpConnection tcpConnection) {
+    public synchronized void onDisconnect(ProtoTcpConnection tcpConnection) {
         Logger.logInfo("tcpConnection:" + tcpConnection);
         connections.remove(tcpConnection);
         Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
@@ -127,7 +127,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         exception.printStackTrace();
     }
 
-    public void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection) {
+    public synchronized void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection) {
         for (ProtoTcpConnection connection : connections) {
             if (!connection.equals(tcpConnection) || connection != tcpConnection) {
 //                Thread thread1 = new Thread(new Runnable() {

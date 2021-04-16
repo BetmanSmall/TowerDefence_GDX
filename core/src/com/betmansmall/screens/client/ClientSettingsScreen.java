@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.enums.GameType;
 import com.betmansmall.enums.SessionType;
+import com.betmansmall.screens.server.ServerSettingsScreen;
 import com.betmansmall.utils.AbstractScreen;
 import com.betmansmall.server.ServerInformation;
 import com.betmansmall.server.ServersSearchThread;
@@ -40,9 +41,26 @@ public class ClientSettingsScreen extends AbstractScreen {
         super(gameMaster);
         createUI();
         this.serversSearchThreads = new Array<>();
-        for (int k = 0; k <= 10; k++) {
-            this.serversSearchThreads.add(new ServersSearchThread((25*k)+1, (25*k)+25, this));
-            this.serversSearchThreads.peek().start();
+        this.serversSearchThreads.add(new ServersSearchThread(0, 0, 0, 0, this));
+        this.serversSearchThreads.peek().start();
+        Array<String> addresses = ServerSettingsScreen.getAddresses();
+        for (String string : addresses) {
+            String[] strings = string.split("\\.");
+            if (strings.length == 4) {
+                int k2 = Integer.parseInt(strings[2]);
+                for (int k1 = 0; k1 <= 10; k1++) {
+                    this.serversSearchThreads.add(new ServersSearchThread(k2, k2, (25 * k1) + 1, (25 * k1) + 25, this));
+                    this.serversSearchThreads.peek().start();
+                }
+            }
+        }
+        if (addresses.size == 0) {
+            for (int k2 = 0; k2 <= 10; k2++) {
+                for (int k1 = 0; k1 <= 10; k1++) {
+                    this.serversSearchThreads.add(new ServersSearchThread((25 * k2) + 1, (25 * k2) + 25, (25 * k1) + 1, (25 * k1) + 25, this));
+                    this.serversSearchThreads.peek().start();
+                }
+            }
         }
     }
 

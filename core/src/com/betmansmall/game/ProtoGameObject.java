@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.betmansmall.game.gameInterface.AndroidController;
 import com.betmansmall.utils.logging.Logger;
 
 import protobuf.Proto;
@@ -30,19 +31,27 @@ public class ProtoGameObject extends ModelInstance {
         this.rotation = new Quaternion();
     }
 
-    public void update() {
-        update(Gdx.graphics.getDeltaTime());
+    public void update(AndroidController androidController) {
+        update(Gdx.graphics.getDeltaTime(), androidController);
     }
 
-    public void update(float deltaTime) {
+    public void update(float deltaTime, AndroidController androidController) {
 //        float speed = movementSpeed;
-        boolean forward = Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean back = Gdx.input.isKeyPressed(Input.Keys.DOWN);
-        boolean strafeLeft = Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean strafeRight = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-        boolean rightControl = Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
-        boolean up = (rightControl && forward);
-        boolean down = (rightControl && back);
+        boolean forward, back, strafeLeft, strafeRight, rightControl, up, down;
+        if (androidController != null) {
+            forward = androidController.isUpPressed();
+            back = androidController.isDownPressed();
+            strafeLeft = androidController.isLeftPressed();
+            strafeRight = androidController.isRightPressed();
+        } else {
+            forward = Gdx.input.isKeyPressed(Input.Keys.UP);
+            back = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+            strafeLeft = Gdx.input.isKeyPressed(Input.Keys.LEFT);
+            strafeRight = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+        }
+        rightControl = Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
+        up = (rightControl && forward);
+        down = (rightControl && back);
 //        boolean rotateLeft = (rightControl && strafeLeft);
 //        boolean rotateRight = (rightControl && strafeRight);
 //        if ((forward | back) & (strafeRight | strafeLeft)) {

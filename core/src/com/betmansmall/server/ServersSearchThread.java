@@ -11,7 +11,6 @@ import com.betmansmall.utils.logging.Logger;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
-
 public class ServersSearchThread extends Thread implements TcpSocketListener, Disposable {
     private ClientSettingsScreen clientSettingsScreen;
     private Array<TcpConnection> connections;
@@ -19,15 +18,17 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
     private int authPort = 48999;
     private int timeout = 1000;
 
-    private int from, to;
+    private int from1, to1, from2, to2;
 
-    public ServersSearchThread(int from, int to, ClientSettingsScreen clientSettingsScreen) {
+    public ServersSearchThread(int from1, int to1, int from2, int to2, ClientSettingsScreen clientSettingsScreen) {
         Logger.logFuncStart();
         this.clientSettingsScreen = clientSettingsScreen;
         this.connections = new Array<>();
 
-        this.from = from;
-        this.to = to;
+        this.from1 = from1;
+        this.to1 = to1;
+        this.from2 = from2;
+        this.to2 = to2;
         Logger.logFuncEnd();
     }
 
@@ -44,16 +45,15 @@ public class ServersSearchThread extends Thread implements TcpSocketListener, Di
     @Override
     public void run() {
         Logger.logFuncStart();
-        if (from == 1) {
+        if (from1 == 0) {
             tryConnectToHost("127.0.0.1");
-        }
-        if (to <= 255) {
+        } else if (to1 <= 255 && to2 <= 255) {
             String subnet = "192.168";
-            for (int i2 = from; i2 <= to; i2++) {
-                for (int i = from; i <= to; i++) {
+            for (int i1 = from1; i1 <= to1; i1++) {
+                for (int i2 = from2; i2 <= to2; i2++) {
                     boolean interrupted = interrupted();
                     if (!interrupted) {
-                        String host = subnet + "." + i2 + "." + i;
+                        String host = subnet + "." + i1 + "." + i2;
                         tryConnectToHost(host);
                     } else {
                         Logger.logDebug("this:" + this);

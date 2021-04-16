@@ -1,5 +1,6 @@
 package com.betmansmall.screens.client;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.gameInterface.AndroidController;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
 import com.betmansmall.game.gameLogic.Unit;
@@ -46,6 +48,8 @@ public class ProtoGameScreen extends GameScreen {
     public BitmapFontCache fontCache;
     public SpriteBatch spriteBatch;
     public final ScreenViewport uiViewport = new ScreenViewport();
+
+    public AndroidController androidController;
 
     public ProtoGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
@@ -76,6 +80,12 @@ public class ProtoGameScreen extends GameScreen {
         spriteBatch = new SpriteBatch();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            androidController = new AndroidController();
+            inputMultiplexer.addProcessor(androidController);
+        }
+
         inputMultiplexer.addProcessor(cameraInputController);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -105,6 +115,11 @@ public class ProtoGameScreen extends GameScreen {
         }
         modelBatch.end();
         renderText(delta);
+
+        if (androidController != null) {
+            androidController.act();
+            androidController.draw();
+        }
     }
 
 

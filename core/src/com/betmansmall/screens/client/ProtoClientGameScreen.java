@@ -36,7 +36,7 @@ public class ProtoClientGameScreen extends ProtoGameScreen {
     public void render(float delta) {
         Player player = playersManager.getLocalPlayer();
         if (player != null && player.gameObject != null) {
-            player.gameObject.update();
+            player.gameObject.update(androidController);
             Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                     .setIndex(player.playerID).setUuid(player.accountID)
                     .setActionEnum(Proto.ActionEnum.MOVE)

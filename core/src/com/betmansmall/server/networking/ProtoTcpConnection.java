@@ -40,13 +40,15 @@ public class ProtoTcpConnection {
                 try {
                     tcpSocketListener.onConnectionReady(ProtoTcpConnection.this);
                     while (!thread.isInterrupted() && !socket.isClosed() && socket.isConnected()) {
-                        Proto.SendObject sendObject = Proto.SendObject.parseDelimitedFrom(inputStream);
-                        if (sendObject != null) {
-                            tcpSocketListener.onReceiveObject(ProtoTcpConnection.this, sendObject);
+                        try {
+                            Proto.SendObject sendObject = Proto.SendObject.parseDelimitedFrom(inputStream);
+                            if (sendObject != null) {
+                                tcpSocketListener.onReceiveObject(ProtoTcpConnection.this, sendObject);
+                            }
+                        } catch (InvalidProtocolBufferException e) {
+                            tcpSocketListener.onException(ProtoTcpConnection.this, e);
                         }
                     }
-                } catch (InvalidProtocolBufferException.InvalidWireTypeException e) {
-                    tcpSocketListener.onException(ProtoTcpConnection.this, e);
                 } catch (EOFException e) { // AuthServerThread Client Disconnect
                     tcpSocketListener.onException(ProtoTcpConnection.this, e);
                 } catch (SocketException e) { // ServerSessionThread Player Disconnect
