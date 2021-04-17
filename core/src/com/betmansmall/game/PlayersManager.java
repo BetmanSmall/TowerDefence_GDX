@@ -266,7 +266,7 @@ public class PlayersManager {
 
     public Player getPlayer(Integer playerID) {
         for (Player player : players) {
-            if (player.playerID.equals(playerID)) {
+            if (player != null && player.playerID.equals(playerID)) {
                 return player;
             }
         }

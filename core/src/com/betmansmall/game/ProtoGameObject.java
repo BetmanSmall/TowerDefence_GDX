@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.betmansmall.game.gameInterface.AndroidController;
-import com.betmansmall.utils.logging.Logger;
+import com.betmansmall.game.gameInterface.ProtoController;
 
 import protobuf.Proto;
 
@@ -24,25 +23,25 @@ public class ProtoGameObject extends ModelInstance {
     public ProtoGameObject(Model model) {
         super(model);
         this.protoTransform = Proto.Transform.newBuilder()
-                .setPosition(Proto.Position.newBuilder())
+                .setPosition(Proto.Position.newBuilder().setY(0.5f))
                 .setRotation(Proto.Rotation.newBuilder())
                 .build();
         this.position = new Vector3();
         this.rotation = new Quaternion();
     }
 
-    public void update(AndroidController androidController) {
-        update(Gdx.graphics.getDeltaTime(), androidController);
+    public void update(ProtoController protoController) {
+        update(Gdx.graphics.getDeltaTime(), protoController);
     }
 
-    public void update(float deltaTime, AndroidController androidController) {
+    public void update(float deltaTime, ProtoController protoController) {
 //        float speed = movementSpeed;
         boolean forward, back, strafeLeft, strafeRight, rightControl, up, down;
-        if (androidController != null) {
-            forward = androidController.isUpPressed();
-            back = androidController.isDownPressed();
-            strafeLeft = androidController.isLeftPressed();
-            strafeRight = androidController.isRightPressed();
+        if (protoController != null) {
+            forward = protoController.isUpPressed();
+            back = protoController.isDownPressed();
+            strafeLeft = protoController.isLeftPressed();
+            strafeRight = protoController.isRightPressed();
         } else {
             forward = Gdx.input.isKeyPressed(Input.Keys.UP);
             back = Gdx.input.isKeyPressed(Input.Keys.DOWN);

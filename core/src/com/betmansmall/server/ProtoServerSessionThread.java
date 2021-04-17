@@ -119,6 +119,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
 //            connection.sendObject(new SendObject(SendObject.SendObjectEnum.PLAYER_DISCONNECTED_DATA, new PlayerInfoData(player)));
 //        }
         serverGameScreen.playersManager.playerDisconnect(player);
+        serverGameScreen.protoController.setPlayer(player);
     }
 
     @Override

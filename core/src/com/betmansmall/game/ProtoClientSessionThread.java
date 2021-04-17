@@ -58,8 +58,15 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
         if (actionEnum.equals(Proto.ActionEnum.START) || actionEnum.equals(Proto.ActionEnum.NEW_PLAYER)) {
             Player player = protoGameScreen.playersManager.addPlayerByClient(tcpConnection, sendObject);
             if (actionEnum.equals(Proto.ActionEnum.START)) {
-                protoGameScreen.playersManager.getPlayers().remove(player);
-                protoGameScreen.playersManager.setLocalPlayer(player);
+                protoGameScreen.protoController.setPlayer(player);
+                if (protoGameScreen.playersManager.getLocalPlayer() == null) {
+                    protoGameScreen.playersManager.getPlayers().remove(player);
+                    protoGameScreen.playersManager.setLocalPlayer(player);
+                } else {
+                    Logger.logDebug("get START again!");
+                    Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
+                    Logger.logDebug("sendObject.getActionEnum():" + sendObject.getActionEnum());
+                }
             }
         } else if (actionEnum.equals(Proto.ActionEnum.MOVE)) {
             Player player = protoGameScreen.playersManager.getPlayer(sendObject.getUuid());

@@ -2,19 +2,29 @@ package com.betmansmall.game.gameInterface;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.betmansmall.game.Player;
+import com.betmansmall.game.PlayersManager;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
-public class AndroidController extends Stage {
-    boolean upPressed, downPressed, leftPressed, rightPressed;
+public class ProtoController extends Stage {
+    private boolean upPressed, downPressed, leftPressed, rightPressed;
 
-    public AndroidController() {
+    private PlayersManager playersManager;
+    private VisLabel playerIndexLabel;
+    public Player player;
+
+    public ProtoController(PlayersManager playersManager) {
         super(new ScreenViewport());
+        this.playersManager = playersManager;
 
         this.addListener(new InputListener() {
             @Override
@@ -117,17 +127,50 @@ public class AndroidController extends Stage {
             }
         });
 
+        playerIndexLabel = new VisLabel("-");
+        playerIndexLabel.setFontScale(btnSize/15f);
+        playerIndexLabel.setSize(btnSize, btnSize);
+
+        VisTextButton prevPlayerBtn = new VisTextButton("<");
+        prevPlayerBtn.setSize(btnSize, btnSize);
+        prevPlayerBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (player != null) {
+                    if (player.playerID <= 1) {
+                        setPlayer(playersManager.getPlayer(playersManager.getPlayers().size() - 1));
+                    } else {
+                        setPlayer(playersManager.getPlayer(player.playerID - 1));
+                    }
+                }
+            }
+        });
+        VisTextButton nextPlayerBtn = new VisTextButton(">");
+        nextPlayerBtn.setSize(btnSize, btnSize);
+        nextPlayerBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (player != null) {
+                    if (player.playerID >= playersManager.getPlayers().size()-1) {
+                        setPlayer(playersManager.getPlayer(1));
+                    } else {
+                        setPlayer(playersManager.getPlayer(player.playerID + 1));
+                    }
+                }
+            }
+        });
+
         table.add();
         table.add(buttonUp).size(buttonUp.getWidth(), buttonUp.getHeight());
         table.add();
         table.row().pad(5, 5, 5, 5);
         table.add(buttonLeft).size(buttonLeft.getWidth(), buttonLeft.getHeight());
-        table.add();
+        table.add(playerIndexLabel);
         table.add(buttonRight).size(buttonRight.getWidth(), buttonRight.getHeight());
         table.row().padBottom(5);
-        table.add();
+        table.add(prevPlayerBtn).size(btnSize/2f, btnSize/2f);
         table.add(buttonDown).size(buttonDown.getWidth(), buttonDown.getHeight());
-        table.add();
+        table.add(nextPlayerBtn).size(btnSize/2f, btnSize/2f);
 
         this.addActor(table);
 //        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -151,5 +194,10 @@ public class AndroidController extends Stage {
 
     public void resize(int width, int height) {
         getViewport().update(width, height);
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+        playerIndexLabel.setText(player.playerID);
     }
 }
