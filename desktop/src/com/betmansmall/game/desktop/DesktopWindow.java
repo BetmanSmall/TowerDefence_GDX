@@ -1,10 +1,6 @@
 package com.betmansmall.game.desktop;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.betmansmall.GameMaster;
-import com.betmansmall.utils.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -20,9 +16,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 
-public class DesktopLauncher {
-    public static void main(String[] args) {
-        Logger.logFuncStart(args);
+public class DesktopWindow {
+    public static LwjglApplicationConfiguration getConfiguration(String[] args) {
         Options options = new Options()
                 .addOption("help", false, "prints this message")
                 .addOption("me", "mapeditor", false, "Start MapEditorScreen")
@@ -47,60 +42,25 @@ public class DesktopLauncher {
             }
         }
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
-
         LwjglApplicationConfiguration.disableAudio = true;
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-//        config. = true;
-        config.title = "Tower Defence";
-        config.x = -3;
-        config.y = 0;
-        config.width = 1000;
-        config.height = 500;
-//        config.foregroundFPS = 90;
-        config.addIcon("icons8-batman-emoji-32.png", Files.FileType.Internal);
-        if (cmd.hasOption("server")) {
-            config.width = (int)width/2;
-            config.height = (int)height/2;
-        } else if (cmd.hasOption("client")) {
-            String value = cmd.getOptionValue("client");
-            if (value.equals("1")) {
-                config.x += (int) width / 2;
-                config.width = (int) width / 2;
-                config.height = (int) height / 2;
-            } else if (value.equals("2")) {
-                config.x += (int) width / 2;
-                config.y = (int) height / 2;
-                config.width = (int) width / 2;
-                config.height = (int) height / 2;
-            } else if (value.equals("3")) {
-                config.y = (int) height / 2;
-                config.width = (int) width / 2;
-                config.height = (int) height / 2;
-            }
-//        } else if (cmd.hasOption("mapeditor")) {
-        }
+        final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         if (cmd.hasOption("proto")) {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            double width = screenSize.getWidth();
+            double height = screenSize.getHeight();
+
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] graphicsDevices = ge.getScreenDevices();
-            GraphicsDevice graphicsDevice = graphicsDevices[graphicsDevices.length-1];
-            Dimension dimension = new Dimension((int)width/4, (int)height/4);
+            GraphicsDevice graphicsDevice = graphicsDevices[graphicsDevices.length - 1];
+            Dimension dimension = new Dimension((int) width / 4, (int) height / 4);
             config.width = dimension.width;
             config.height = dimension.height;
             int c = Integer.parseInt(cmd.getOptionValue("proto").replaceAll(" ", ""));
             Rectangle rectangle = getRectangle(c, dimension, graphicsDevice);
             config.x = rectangle.x;
             config.y = rectangle.y;
-            new LwjglApplication(new GameMaster(cmd), config);
-        } else {
-            new LwjglApplication(new GameMaster(cmd), config);
         }
-//        config.useGL30 = true;
-//        config.fullscreen = true;
-//        config.vSyncEnabled = true;
-//        new LwjglApplication(new OrthographicCameraController(), config);
+        return config;
     }
 
     private static Rectangle getRectangle(int c, Dimension dimension, GraphicsDevice graphicsDevice) {

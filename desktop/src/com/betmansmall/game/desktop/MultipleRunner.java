@@ -1,26 +1,38 @@
 package com.betmansmall.game.desktop;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MultipleRunner {
     public static void main(String[] args) {
         try {
-            int count = args.length != 0 ? Integer.parseInt(args[0]) : 4;
-            for (int k = 0; k <= count; k++) {
-                int finalK = k;
+            Object[] objects = {BulletTest1.class, BulletTest2.class, BulletTest3.class, BulletTest4.class, BulletTest5.class, BulletTest6.class, BulletTest7.class, BulletTest8.class};
+//            Object[] objects = {DynamicBulletTest1.class, DynamicBulletTest2.class, DynamicBulletTest3.class, DynamicBulletTest4.class, DynamicBulletTest5.class, DynamicBulletTest6.class};
+            for (int o = 0; o < objects.length; o++) {
+                Object object = objects[o];
+                int finalO = o;
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        int res = JavaProcess.exec(DesktopLauncher.class, "-p " + finalK);
+                        int res = JavaProcess.exec((Class) object, "-p " + finalO);
                         System.out.println("res:" + res);
                     }
                 };
                 new Thread(r).start();
             }
+//            int count = args.length != 0 ? Integer.parseInt(args[0]) : 4;
+//            for (int k = 0; k <= count; k++) {
+//                int finalK = k;
+//                Runnable r = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        int res = JavaProcess.exec(DesktopLauncher.class, "-p " + finalK);
+//                        System.out.println("res:" + res);
+//                    }
+//                };
+//                new Thread(r).start();
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
