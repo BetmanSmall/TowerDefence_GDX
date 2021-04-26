@@ -6,11 +6,45 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.game.gameInterface.ProtoController;
+import com.betmansmall.physics.BtMotionState;
 
 import protobuf.Proto;
 
-public class ProtoGameObject extends ModelInstance {
+public class ProtoGameObject extends ModelInstance implements Disposable {
+    public static class Constructor implements Disposable {
+        public final Model model;
+        public final String node;
+        public final btCollisionShape shape;
+        public final btRigidBody.btRigidBodyConstructionInfo constructionInfo;
+        private static Vector3 localInertia = new Vector3();
+
+        public Constructor(Model model, String node, btCollisionShape shape, float mass) {
+            this.model = model;
+            this.node = node;
+            this.shape = shape;
+            if (mass > 0f) {
+                shape.calculateLocalInertia(mass, localInertia);
+            } else {
+                localInertia.set(0, 0, 0);
+            }
+            this.constructionInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
+        }
+
+        public ProtoGameObject construct() {
+            return new ProtoGameObject(model, node, constructionInfo);
+        }
+
+        @Override
+        public void dispose() {
+            shape.dispose();
+            constructionInfo.dispose();
+        }
+    }
+
     private float velocity = 5f;
     private final Vector3 forwardDirection = new Vector3(0, 0, -1);
     private final Vector3 upDirection = new Vector3(0, 1, 0);
@@ -20,14 +54,28 @@ public class ProtoGameObject extends ModelInstance {
     public Vector3 position;
     public Quaternion rotation;
 
-    public ProtoGameObject(Model model) {
-        super(model);
+    public final BtMotionState motionState;
+    public final btRigidBody body;
+
+    public ProtoGameObject(Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
+        super(model, node);
         this.protoTransform = Proto.Transform.newBuilder()
                 .setPosition(Proto.Position.newBuilder().setY(0.5f))
                 .setRotation(Proto.Rotation.newBuilder())
                 .build();
         this.position = new Vector3();
         this.rotation = new Quaternion();
+
+        motionState = new BtMotionState();
+        motionState.transform = transform;
+        body = new btRigidBody(constructionInfo);
+        body.setMotionState(motionState);
+    }
+
+    @Override
+    public void dispose() {
+        body.dispose();
+        motionState.dispose();
     }
 
     public void update(ProtoController protoController) {

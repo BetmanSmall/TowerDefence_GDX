@@ -62,8 +62,8 @@ public class DesktopLauncher {
 //        config.foregroundFPS = 90;
         config.addIcon("icons8-batman-emoji-32.png", Files.FileType.Internal);
         if (cmd.hasOption("server")) {
-            config.width = (int)width/2;
-            config.height = (int)height/2;
+            config.width = (int) width / 2;
+            config.height = (int) height / 2;
         } else if (cmd.hasOption("client")) {
             String value = cmd.getOptionValue("client");
             if (value.equals("1")) {
@@ -85,8 +85,8 @@ public class DesktopLauncher {
         if (cmd.hasOption("proto")) {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] graphicsDevices = ge.getScreenDevices();
-            GraphicsDevice graphicsDevice = graphicsDevices[graphicsDevices.length-1];
-            Dimension dimension = new Dimension((int)width/4, (int)height/4);
+            GraphicsDevice graphicsDevice = graphicsDevices[graphicsDevices.length - 1];
+            Dimension dimension = new Dimension((int) width / 4, (int) height / 4);
             config.width = dimension.width;
             config.height = dimension.height;
             int c = Integer.parseInt(cmd.getOptionValue("proto").replaceAll(" ", ""));

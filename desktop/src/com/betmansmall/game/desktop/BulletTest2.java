@@ -38,6 +38,7 @@ public class BulletTest2 implements ApplicationListener {
     public static void main(String[] args) {
         new LwjglApplication(new BulletTest2(), DesktopWindow.getConfiguration(args));
     }
+
     PerspectiveCamera cam;
     CameraInputController camController;
     ModelBatch modelBatch;
@@ -58,7 +59,7 @@ public class BulletTest2 implements ApplicationListener {
     btDispatcher dispatcher;
 
     @Override
-    public void create () {
+    public void create() {
         Bullet.init();
 
         modelBatch = new ModelBatch();
@@ -108,7 +109,7 @@ public class BulletTest2 implements ApplicationListener {
     }
 
     @Override
-    public void render () {
+    public void render() {
         final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
 
         if (!collision) {
@@ -128,7 +129,7 @@ public class BulletTest2 implements ApplicationListener {
         modelBatch.end();
     }
 
-    boolean checkCollision () {
+    boolean checkCollision() {
         CollisionObjectWrapper co0 = new CollisionObjectWrapper(ballObject);
         CollisionObjectWrapper co1 = new CollisionObjectWrapper(groundObject);
 
@@ -154,7 +155,7 @@ public class BulletTest2 implements ApplicationListener {
     }
 
     @Override
-    public void dispose () {
+    public void dispose() {
         groundObject.dispose();
         groundShape.dispose();
 
@@ -169,14 +170,14 @@ public class BulletTest2 implements ApplicationListener {
     }
 
     @Override
-    public void pause () {
+    public void pause() {
     }
 
     @Override
-    public void resume () {
+    public void resume() {
     }
 
     @Override
-    public void resize (int width, int height) {
+    public void resize(int width, int height) {
     }
 }

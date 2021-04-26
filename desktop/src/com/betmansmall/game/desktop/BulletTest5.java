@@ -45,10 +45,10 @@ public class BulletTest5 implements ApplicationListener {
     public static void main(String[] args) {
         new LwjglApplication(new BulletTest5(), DesktopWindow.getConfiguration(args));
     }
+
     class MyContactListener extends ContactListener {
         @Override
-        public boolean onContactAdded (btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0,
-                                       btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
+        public boolean onContactAdded(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
             instances.get(colObj0Wrap.getCollisionObject().getUserValue()).moving = false;
             instances.get(colObj1Wrap.getCollisionObject().getUserValue()).moving = false;
             return true;
@@ -59,14 +59,14 @@ public class BulletTest5 implements ApplicationListener {
         public final btCollisionObject body;
         public boolean moving;
 
-        public GameObject (Model model, String node, btCollisionShape shape) {
+        public GameObject(Model model, String node, btCollisionShape shape) {
             super(model, node);
             body = new btCollisionObject();
             body.setCollisionShape(shape);
         }
 
         @Override
-        public void dispose () {
+        public void dispose() {
             body.dispose();
         }
 
@@ -75,18 +75,18 @@ public class BulletTest5 implements ApplicationListener {
             public final String node;
             public final btCollisionShape shape;
 
-            public Constructor (Model model, String node, btCollisionShape shape) {
+            public Constructor(Model model, String node, btCollisionShape shape) {
                 this.model = model;
                 this.node = node;
                 this.shape = shape;
             }
 
-            public GameObject construct () {
+            public GameObject construct() {
                 return new GameObject(model, node, shape);
             }
 
             @Override
-            public void dispose () {
+            public void dispose() {
                 shape.dispose();
             }
         }
@@ -106,7 +106,7 @@ public class BulletTest5 implements ApplicationListener {
     MyContactListener contactListener;
 
     @Override
-    public void create () {
+    public void create() {
         Bullet.init();
 
         modelBatch = new ModelBatch();
@@ -163,7 +163,7 @@ public class BulletTest5 implements ApplicationListener {
         contactListener = new MyContactListener();
     }
 
-    public void spawn () {
+    public void spawn() {
         GameObject obj = constructors.values[1 + MathUtils.random(constructors.size - 2)].construct();
         obj.moving = true;
         obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
@@ -175,7 +175,7 @@ public class BulletTest5 implements ApplicationListener {
     }
 
     @Override
-    public void render () {
+    public void render() {
         final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
 
         for (GameObject obj : instances) {
@@ -201,7 +201,7 @@ public class BulletTest5 implements ApplicationListener {
         modelBatch.end();
     }
 
-    boolean checkCollision (btCollisionObject obj0, btCollisionObject obj1) {
+    boolean checkCollision(btCollisionObject obj0, btCollisionObject obj1) {
         CollisionObjectWrapper co0 = new CollisionObjectWrapper(obj0);
         CollisionObjectWrapper co1 = new CollisionObjectWrapper(obj1);
 
@@ -224,7 +224,7 @@ public class BulletTest5 implements ApplicationListener {
     }
 
     @Override
-    public void dispose () {
+    public void dispose() {
         for (GameObject obj : instances)
             obj.dispose();
         instances.clear();
@@ -243,14 +243,14 @@ public class BulletTest5 implements ApplicationListener {
     }
 
     @Override
-    public void pause () {
+    public void pause() {
     }
 
     @Override
-    public void resume () {
+    public void resume() {
     }
 
     @Override
-    public void resize (int width, int height) {
+    public void resize(int width, int height) {
     }
 }

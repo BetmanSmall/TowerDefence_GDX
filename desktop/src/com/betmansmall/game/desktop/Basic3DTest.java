@@ -1,7 +1,6 @@
 package com.betmansmall.game.desktop;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
@@ -49,6 +48,7 @@ public class Basic3DTest implements ApplicationListener, InputProcessor {
         }
 
         private static final float friction = -1.0f;
+
         public void update(float delta) {
             velocity.add(tmpV.set(velocity).limit(1f).scl(delta*friction)); //simulate some friction
 
@@ -77,7 +77,7 @@ public class Basic3DTest implements ApplicationListener, InputProcessor {
     Ball ball;
 
     @Override
-    public void create () {
+    public void create() {
         modelBatch = new ModelBatch();
 
         environment = new Environment();
@@ -119,7 +119,7 @@ public class Basic3DTest implements ApplicationListener, InputProcessor {
     }
 
     @Override
-    public void render () {
+    public void render() {
         final float delta = Math.min(1f/10f, Gdx.graphics.getDeltaTime());
         ball.update(delta);
 
@@ -140,9 +140,10 @@ public class Basic3DTest implements ApplicationListener, InputProcessor {
     }
 
     boolean up, down, left, right;
+
     @Override
-    public boolean keyDown (int keycode) {
-        switch(keycode) {
+    public boolean keyDown(int keycode) {
+        switch (keycode) {
             case Keys.UP: up = true; break;
             case Keys.DOWN: down = true; break;
             case Keys.LEFT: left = true; break;
@@ -154,8 +155,8 @@ public class Basic3DTest implements ApplicationListener, InputProcessor {
     }
 
     @Override
-    public boolean keyUp (int keycode) {
-        switch(keycode) {
+    public boolean keyUp(int keycode) {
+        switch (keycode) {
             case Keys.UP: up = false; break;
             case Keys.DOWN: down = false; break;
             case Keys.LEFT: left = false; break;
@@ -197,21 +198,21 @@ public class Basic3DTest implements ApplicationListener, InputProcessor {
     }
 
     @Override
-    public void dispose () {
+    public void dispose() {
         modelBatch.dispose();
         model.dispose();
     }
 
-    public void resume () {
+    public void resume() {
     }
 
-    public void resize (int width, int height) {
+    public void resize(int width, int height) {
         cam.viewportWidth = width;
         cam.viewportHeight = height;
         cam.update();
     }
 
-    public void pause () {
+    public void pause() {
     }
 
     public static void main(String[] args) {

@@ -42,13 +42,14 @@ public class BulletTest8 implements ApplicationListener {
     public static void main(String[] args) {
         new LwjglApplication(new BulletTest8(), DesktopWindow.getConfiguration(args));
     }
+
     final static short GROUND_FLAG = 1 << 8;
     final static short OBJECT_FLAG = 1 << 9;
     final static short ALL_FLAG = -1;
 
     class MyContactListener extends ContactListener {
         @Override
-        public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
+        public boolean onContactAdded(int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
             instances.get(userValue0).moving = false;
             instances.get(userValue1).moving = false;
             return true;
@@ -59,14 +60,14 @@ public class BulletTest8 implements ApplicationListener {
         public final btCollisionObject body;
         public boolean moving;
 
-        public GameObject (Model model, String node, btCollisionShape shape) {
+        public GameObject(Model model, String node, btCollisionShape shape) {
             super(model, node);
             body = new btCollisionObject();
             body.setCollisionShape(shape);
         }
 
         @Override
-        public void dispose () {
+        public void dispose() {
             body.dispose();
         }
 
@@ -75,18 +76,18 @@ public class BulletTest8 implements ApplicationListener {
             public final String node;
             public final btCollisionShape shape;
 
-            public Constructor (Model model, String node, btCollisionShape shape) {
+            public Constructor(Model model, String node, btCollisionShape shape) {
                 this.model = model;
                 this.node = node;
                 this.shape = shape;
             }
 
-            public GameObject construct () {
+            public GameObject construct() {
                 return new GameObject(model, node, shape);
             }
 
             @Override
-            public void dispose () {
+            public void dispose() {
                 shape.dispose();
             }
         }
@@ -108,7 +109,7 @@ public class BulletTest8 implements ApplicationListener {
     btCollisionWorld collisionWorld;
 
     @Override
-    public void create () {
+    public void create() {
         Bullet.init();
 
         modelBatch = new ModelBatch();
@@ -168,7 +169,7 @@ public class BulletTest8 implements ApplicationListener {
         collisionWorld.addCollisionObject(object.body, GROUND_FLAG, ALL_FLAG);
     }
 
-    public void spawn () {
+    public void spawn() {
         GameObject obj = constructors.values[1 + MathUtils.random(constructors.size - 2)].construct();
         obj.moving = true;
         obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
@@ -181,7 +182,7 @@ public class BulletTest8 implements ApplicationListener {
     }
 
     @Override
-    public void render () {
+    public void render() {
         final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
 
         for (GameObject obj : instances) {
@@ -209,7 +210,7 @@ public class BulletTest8 implements ApplicationListener {
     }
 
     @Override
-    public void dispose () {
+    public void dispose() {
         for (GameObject obj : instances)
             obj.dispose();
         instances.clear();
@@ -230,14 +231,14 @@ public class BulletTest8 implements ApplicationListener {
     }
 
     @Override
-    public void pause () {
+    public void pause() {
     }
 
     @Override
-    public void resume () {
+    public void resume() {
     }
 
     @Override
-    public void resize (int width, int height) {
+    public void resize(int width, int height) {
     }
 }

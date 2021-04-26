@@ -23,7 +23,7 @@ public class TestMain {
 
     private static String getMonitorSizes() {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[]    gs = ge.getScreenDevices();
+        GraphicsDevice[] gs = ge.getScreenDevices();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < gs.length; i++) {
             DisplayMode dm = gs[i].getDisplayMode();

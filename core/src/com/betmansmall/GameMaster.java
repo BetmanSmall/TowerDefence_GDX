@@ -8,11 +8,10 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.betmansmall.game.gameLogic.playerTemplates.FactionsManager;
-import com.betmansmall.maps.TsxLoader;
 import com.betmansmall.screens.client.ClientSettingsScreen;
 import com.betmansmall.screens.client.GameScreen;
 import com.betmansmall.screens.menu.HelpMenuScreen;
@@ -65,6 +64,7 @@ public class GameMaster extends Game {
     public void create() {
 //        Logger.logFuncStart();
         VisUI.load();
+        Bullet.init();
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Logger.instance().setUseStdOut(false);
 //            VisUI.getSkin().getFont("default-font").getData().setScale(Gdx.graphics.getHeight() * 0.0025f, Gdx.graphics.getHeight() * 0.0025f);
