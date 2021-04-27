@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
 import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayersManager;
@@ -47,6 +46,8 @@ public class PlayersViewTable extends Table {
                     playerStatus.setColor(Color.YELLOW);
                 } else if (player.playerStatus == PlayerStatus.NOT_CONNECTED) {
                     playerStatus.setColor(Color.GRAY);
+                } else if (player.playerStatus == PlayerStatus.LOADING) {
+                    playerStatus.setColor(Color.BLUE);
                 } else if (player.playerStatus == PlayerStatus.CONNECTED) {
                     playerStatus.setColor(Color.GREEN);
                 } else if (player.playerStatus == PlayerStatus.DISCONNECTED) {

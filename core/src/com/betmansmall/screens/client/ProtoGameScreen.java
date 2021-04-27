@@ -93,8 +93,6 @@ public class ProtoGameScreen extends GameScreen {
         perspectiveCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         perspectiveCamera.position.set(10f, 10f, 10f);
         perspectiveCamera.lookAt(0,0,0);
-//        perspectiveCamera.position.set(3f, 7f, 10f);
-//        perspectiveCamera.lookAt(0,4f,0);
         perspectiveCamera.near = 1f;
         perspectiveCamera.far = 300f;
         perspectiveCamera.update();
@@ -118,7 +116,7 @@ public class ProtoGameScreen extends GameScreen {
         mb.node().id = "player";
         mb.part("player", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.WHITE))).box(1f, 1f, 1f);
         mb.node().id = "ground";
-        mb.part("ground", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.RED))).box(10f, 1f, 10f);
+        mb.part("ground", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.RED))).box(5f, 1f, 5f);
         {
             mb.node().id = "sphere";
             mb.part("sphere", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.GREEN))).sphere(1f, 1f, 1f, 10, 10);
@@ -159,12 +157,10 @@ public class ProtoGameScreen extends GameScreen {
         object.body.setActivationState(Collision.DISABLE_DEACTIVATION);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
-
 //        if (Gdx.app.getType() == Application.ApplicationType.Android) {
             protoController = new ProtoController(playersManager);
             inputMultiplexer.addProcessor(protoController);
 //        }
-
         inputMultiplexer.addProcessor(cameraInputController);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -176,10 +172,10 @@ public class ProtoGameScreen extends GameScreen {
         obj.body.proceedToTransform(obj.transform);
         obj.body.setUserValue(instances.size);
         obj.body.setCollisionFlags(obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-        instances.add(obj);
-        dynamicsWorld.addRigidBody(obj.body);
         obj.body.setContactCallbackFlag(OBJECT_FLAG);
         obj.body.setContactCallbackFilter(GROUND_FLAG);
+        instances.add(obj);
+        dynamicsWorld.addRigidBody(obj.body);
     }
 
     @Override
@@ -224,7 +220,6 @@ public class ProtoGameScreen extends GameScreen {
                 modelBatch.render(player.gameObject, environment);
             }
         }
-        modelBatch.end();
         renderText(delta);
 
         angle = (angle + delta * speed) % 360f;
@@ -237,7 +232,6 @@ public class ProtoGameScreen extends GameScreen {
             spawnTimer = 1.5f;
         }
 
-        modelBatch.begin(perspectiveCamera);
         modelBatch.render(instances, environment);
         modelBatch.end();
 

@@ -147,7 +147,7 @@ public class PlayersManager {
             player.playerID = ++connectedCount;
             player.accountID = UUID.randomUUID().toString();
             player.playerStatus = PlayerStatus.CONNECTED;
-            player.gameObject = new ProtoGameObject.Constructor(model, "player", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
+            player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
             return player;
         }
         return null;
@@ -162,7 +162,7 @@ public class PlayersManager {
                 player.playerID = sendObject.getIndex();
                 player.accountID = sendObject.getUuid();
                 player.playerStatus = PlayerStatus.CONNECTED;
-                player.gameObject = new ProtoGameObject.Constructor(model, "player", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
+                player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
                 player.updateData(sendObject);
                 return player;
             }

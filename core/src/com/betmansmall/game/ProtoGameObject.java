@@ -16,13 +16,21 @@ import protobuf.Proto;
 
 public class ProtoGameObject extends ModelInstance implements Disposable {
     public static class Constructor implements Disposable {
-        public final Model model;
-        public final String node;
-        public final btCollisionShape shape;
-        public final btRigidBody.btRigidBodyConstructionInfo constructionInfo;
-        private static Vector3 localInertia = new Vector3();
+        public Model model;
+        public String node;
+        public btCollisionShape shape;
+        public btRigidBody.btRigidBodyConstructionInfo constructionInfo;
+        private static final Vector3 localInertia = new Vector3();
+
+        public Constructor(Model model, btCollisionShape shape, float mass) {
+            init(model, null, shape, mass);
+        }
 
         public Constructor(Model model, String node, btCollisionShape shape, float mass) {
+            init(model, node, shape, mass);
+        }
+
+        private void init(Model model, String node, btCollisionShape shape, float mass) {
             this.model = model;
             this.node = node;
             this.shape = shape;
@@ -35,7 +43,11 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
         }
 
         public ProtoGameObject construct() {
-            return new ProtoGameObject(model, node, constructionInfo);
+            if (node != null) {
+                return new ProtoGameObject(model, node, constructionInfo);
+            } else {
+                return new ProtoGameObject(model, constructionInfo);
+            }
         }
 
         @Override
@@ -54,11 +66,19 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
     public Vector3 position;
     public Quaternion rotation;
 
-    public final BtMotionState motionState;
-    public final btRigidBody body;
+    public BtMotionState motionState;
+    public btRigidBody body;
+
+    public ProtoGameObject(Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
+        super(model);
+        init(constructionInfo);
+    }
 
     public ProtoGameObject(Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
         super(model, node);
+        init(constructionInfo);
+    }
+    private void init(btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
         this.protoTransform = Proto.Transform.newBuilder()
                 .setPosition(Proto.Position.newBuilder().setY(0.5f))
                 .setRotation(Proto.Rotation.newBuilder())
@@ -74,8 +94,8 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
 
     @Override
     public void dispose() {
-        body.dispose();
-        motionState.dispose();
+        this.body.dispose();
+        this.motionState.dispose();
     }
 
     public void update(ProtoController protoController) {

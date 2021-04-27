@@ -86,6 +86,7 @@ public class Player {
     private void init(ProtoTcpConnection protoTcpConnection) {
         this.protoTcpConnection = protoTcpConnection;
         this.type = PlayerType.CLIENT;
+        this.playerStatus = PlayerStatus.LOADING;
     }
 
     private void init(TcpConnection tcpConnection, PlayerInfoData playerInfoData, Faction faction) {
