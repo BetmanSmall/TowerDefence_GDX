@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.game.gameInterface.ProtoController;
-import com.betmansmall.physics.BtMotionState;
 
 import protobuf.Proto;
 
@@ -21,15 +20,12 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
         public btCollisionShape shape;
         public btRigidBody.btRigidBodyConstructionInfo constructionInfo;
         private static final Vector3 localInertia = new Vector3();
-
         public Constructor(Model model, btCollisionShape shape, float mass) {
             init(model, null, shape, mass);
         }
-
         public Constructor(Model model, String node, btCollisionShape shape, float mass) {
             init(model, node, shape, mass);
         }
-
         private void init(Model model, String node, btCollisionShape shape, float mass) {
             this.model = model;
             this.node = node;
@@ -41,7 +37,6 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
             }
             this.constructionInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
         }
-
         public ProtoGameObject construct() {
             if (node != null) {
                 return new ProtoGameObject(model, node, constructionInfo);
@@ -49,7 +44,6 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
                 return new ProtoGameObject(model, constructionInfo);
             }
         }
-
         @Override
         public void dispose() {
             shape.dispose();
@@ -66,8 +60,9 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
     public Vector3 position;
     public Quaternion rotation;
 
-    public BtMotionState motionState;
-    public btRigidBody body;
+//    public BtMotionState motionState;
+//    public btRigidBody body;
+    public PhysicsObject physicsObject;
 
     public ProtoGameObject(Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
         super(model);
@@ -78,6 +73,7 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
         super(model, node);
         init(constructionInfo);
     }
+
     private void init(btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
         this.protoTransform = Proto.Transform.newBuilder()
                 .setPosition(Proto.Position.newBuilder().setY(0.5f))
@@ -85,17 +81,21 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
                 .build();
         this.position = new Vector3();
         this.rotation = new Quaternion();
+//        this.size =
 
-        motionState = new BtMotionState();
-        motionState.transform = transform;
-        body = new btRigidBody(constructionInfo);
-        body.setMotionState(motionState);
+        this.physicsObject = new PhysicsObject(this, constructionInfo);
+
+//        motionState = new BtMotionState();
+//        motionState.transform = transform;
+//        body = new btRigidBody(constructionInfo);
+//        body.setMotionState(motionState);
     }
 
     @Override
     public void dispose() {
-        this.body.dispose();
-        this.motionState.dispose();
+        this.physicsObject.dispose();
+//        this.body.dispose();
+//        this.motionState.dispose();
     }
 
     public void update(ProtoController protoController) {
@@ -163,8 +163,10 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
         if (down) {
             tmp.add(upDirection).nor().scl(-deltaTime * velocity);
         }
-        position.add(tmp);
-        transform.set(position, rotation);
+        if (!tmp.isZero()) {
+            position.add(tmp);
+            transform.set(position, rotation);
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0)) {
             position.setZero();
             rotation.set(0f, 0f, 0f, 0f);
@@ -187,5 +189,6 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
         this.position.set(position.getX(), position.getY(), position.getZ());
         this.rotation.set(rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW());
         this.transform.set(this.position, this.rotation);
+        physicsObject.body.setWorldTransform(transform);
     }
 }

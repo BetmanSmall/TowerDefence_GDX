@@ -1,5 +1,7 @@
 package com.betmansmall.screens.server;
 
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameLogic.Cell;
@@ -45,19 +47,36 @@ public class ProtoServerGameScreen extends ProtoGameScreen {
 
     @Override
     public void render(float delta) {
+        playersManager.physicsObjectManager.update(delta);
         super.render(delta);
-        Player player = protoController.player;
-        if (player != null && player.gameObject != null) {
-            player.gameObject.update(protoController);
+        Player currPlayer = protoController.player;
+        if (currPlayer != null && currPlayer.gameObject != null) {
+            currPlayer.gameObject.update(protoController);
             Proto.SendObject sendObject = Proto.SendObject.newBuilder()
-                    .setIndex(player.playerID).setUuid(player.accountID)
+                    .setIndex(currPlayer.playerID).setUuid(currPlayer.accountID)
                     .setActionEnum(Proto.ActionEnum.MOVE)
                     .setTransform(Proto.Transform.newBuilder().setPosition(
-                            Proto.Position.newBuilder().setX(player.gameObject.position.x).setY(player.gameObject.position.y).setZ(player.gameObject.position.z).build()).setRotation(
-                            Proto.Rotation.newBuilder().setX(player.gameObject.rotation.x).setY(player.gameObject.rotation.y).setZ(player.gameObject.rotation.z).setW(player.gameObject.rotation.w).build()).build()).build();
+                            Proto.Position.newBuilder().setX(currPlayer.gameObject.position.x).setY(currPlayer.gameObject.position.y).setZ(currPlayer.gameObject.position.z).build()).setRotation(
+                            Proto.Rotation.newBuilder().setX(currPlayer.gameObject.rotation.x).setY(currPlayer.gameObject.rotation.y).setZ(currPlayer.gameObject.rotation.z).setW(currPlayer.gameObject.rotation.w).build()).build()).build();
             if (!lastSendObject.equals(sendObject)) {
                 protoServerSessionThread.sendObject(sendObject);
                 lastSendObject = sendObject;
+            }
+        }
+        for (Player player : playersManager.getPlayers()) {
+            if (player != null && player.gameObject != null) {
+                Vector3 position = player.gameObject.physicsObject.body.getWorldTransform().getTranslation(player.gameObject.position);
+                Quaternion rotation = player.gameObject.physicsObject.body.getOrientation();
+                Proto.SendObject sendObject = Proto.SendObject.newBuilder()
+                        .setIndex(player.playerID).setUuid(player.accountID)
+                        .setActionEnum(Proto.ActionEnum.MOVE)
+                        .setTransform(Proto.Transform.newBuilder().setPosition(
+                                Proto.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
+                                Proto.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
+                if (!player.lastSendObject.equals(sendObject)) {
+                    protoServerSessionThread.sendObject(sendObject);
+                    player.lastSendObject = sendObject;
+                }
             }
         }
     }

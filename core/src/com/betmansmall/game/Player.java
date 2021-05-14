@@ -15,7 +15,8 @@ import protobuf.Proto;
 public class Player {
     public ProtoTcpConnection protoTcpConnection;
     public ProtoGameObject gameObject;
-    public Proto.SendObject sendObject;
+//    public Proto.SendObject sendObject;
+    public Proto.SendObject lastSendObject = Proto.SendObject.getDefaultInstance();
 
     public TcpConnection connection; // only for ServerSessionThread class
     public PlayerType type;

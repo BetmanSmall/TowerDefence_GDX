@@ -1,13 +1,5 @@
 package com.betmansmall.game;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.betmansmall.enums.PlayerStatus;
 import com.betmansmall.enums.SessionType;
@@ -31,7 +23,7 @@ public class PlayersManager {
     private int connectedCount;
     private ArrayList<Player> players;
 
-    public Model model;
+    public PhysicsObjectManager physicsObjectManager;
 
     public PlayersManager(SessionType sessionType, FactionsManager factionsManager, UserAccount userAccount) {
         Logger.logFuncStart("sessionType:" + sessionType, "userAccount:" + userAccount);
@@ -39,11 +31,6 @@ public class PlayersManager {
         this.factionsManager = factionsManager;
         this.connectedCount = 0;
         this.players = new ArrayList<>();
-
-        ModelBuilder modelBuilder = new ModelBuilder();
-        model = modelBuilder.createBox(1f, 1f, 1f,
-                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
         if (sessionType == SessionType.SERVER_STANDALONE) {
             Player server = new Player("ServerStandalone", factionsManager.getServerFaction());
@@ -79,6 +66,7 @@ public class PlayersManager {
         } else if (sessionType.equals(SessionType.PROTO_CLIENT)) {
             this.players.add(null);
         }
+        this.physicsObjectManager = new PhysicsObjectManager();
     }
 
     public void dispose() {
@@ -86,7 +74,6 @@ public class PlayersManager {
             player.gameObject.dispose();
         }
         this.players.clear();
-        this.model.dispose();
     }
 
     public ArrayList<Player> getPlayers() {
@@ -147,7 +134,8 @@ public class PlayersManager {
             player.playerID = ++connectedCount;
             player.accountID = UUID.randomUUID().toString();
             player.playerStatus = PlayerStatus.CONNECTED;
-            player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
+//            player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
+            player.gameObject = physicsObjectManager.spawnPlayer(player);
             return player;
         }
         return null;
@@ -158,11 +146,12 @@ public class PlayersManager {
         if (player == null) {
             player = new Player(protoTcpConnection);
             if (addPlayer(player)) {
-                player.sendObject = sendObject;
+//                player.sendObject = sendObject;
                 player.playerID = sendObject.getIndex();
                 player.accountID = sendObject.getUuid();
                 player.playerStatus = PlayerStatus.CONNECTED;
-                player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
+//                player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
+                player.gameObject = physicsObjectManager.spawnPlayer(player);
                 player.updateData(sendObject);
                 return player;
             }
