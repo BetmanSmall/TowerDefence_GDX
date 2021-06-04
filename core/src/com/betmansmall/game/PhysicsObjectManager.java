@@ -107,6 +107,7 @@ public class PhysicsObjectManager implements Disposable {
         object.physicsObject.body.setContactCallbackFlag(GROUND_FLAG);
         object.physicsObject.body.setContactCallbackFilter(0);
         object.physicsObject.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+        object.transform.set(new Vector3(0f, -1f, 0f), new Quaternion(0f, 0f, 0f, 0f));
         object.index = 1;
         object.uuid = UUID.randomUUID().toString();
         instances.add(object);

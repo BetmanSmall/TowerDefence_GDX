@@ -171,12 +171,15 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
         if (!tmp.isZero()) {
             position.add(tmp);
             transform.set(position, rotation);
+            physicsObject.body.setWorldTransform(transform);
+//            Logger.logDebug("1transform:" + transform);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_0)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_0)) {
             position.setZero();
             rotation.set(0f, 0f, 0f, 0f);
             transform.set(position, rotation);
-//            Logger.logDebug("transform:" + transform);
+            physicsObject.body.setWorldTransform(transform);
+//            Logger.logDebug("2transform:" + transform);
         }
 
 //        rotation.add()
