@@ -1,9 +1,11 @@
 package com.betmansmall.server;
 
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.betmansmall.enums.SessionState;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.PlayerType;
+import com.betmansmall.game.ProtoGameObject;
 import com.betmansmall.game.ProtoSessionThread;
 import com.betmansmall.screens.server.ProtoServerGameScreen;
 import com.betmansmall.server.networking.ProtoTcpConnection;
@@ -12,7 +14,6 @@ import com.betmansmall.utils.logging.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import protobuf.Proto;
 
@@ -77,7 +78,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         Logger.logWithTime("tcpConnection:" + tcpConnection);
         connections.add(tcpConnection);
 
-        Player newPlayer = serverGameScreen.playersManager.addPlayerByServer(tcpConnection);
+        Player newPlayer = serverGameScreen.playersManager.addPlayerByServer(tcpConnection, serverGameScreen.physicsObjectManager);
         Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                 .setActionEnum(Proto.ActionEnum.START)
                 .setUuid(newPlayer.accountID).setIndex(newPlayer.playerID)
@@ -94,6 +95,22 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
 //            Logger.logDebug("player:" + player);
             if (player != null && !player.type.equals(PlayerType.SERVER) && player.protoTcpConnection != tcpConnection) {
                 sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.gameObject.protoTransform).build();
+                tcpConnection.sendObject(sendObject);
+            }
+        }
+
+        for (int p = 0; p < serverGameScreen.physicsObjectManager.instances.size; p++) {
+            ProtoGameObject protoGameObject = serverGameScreen.physicsObjectManager.instances.get(p);
+//        for (ProtoGameObject protoGameObject : serverGameScreen.physicsObjectManager.instances) {
+            if (protoGameObject.index != null && protoGameObject.uuid != null) {
+                Vector3 position = protoGameObject.physicsObject.body.getWorldTransform().getTranslation(protoGameObject.position);
+                Quaternion rotation = protoGameObject.physicsObject.body.getOrientation();
+                sendObject = Proto.SendObject.newBuilder()
+                        .setIndex(protoGameObject.index).setUuid(protoGameObject.uuid)
+                        .setActionEnum(Proto.ActionEnum.NEW_OBJECT)
+                        .setTransform(Proto.Transform.newBuilder().setPosition(
+                                Proto.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
+                                Proto.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
                 tcpConnection.sendObject(sendObject);
             }
         }

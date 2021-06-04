@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
+import com.betmansmall.game.PhysicsObjectManager;
 import com.betmansmall.game.Player;
 import com.betmansmall.game.gameInterface.ProtoController;
 import com.betmansmall.game.gameLogic.Cell;
@@ -40,6 +41,8 @@ public class ProtoGameScreen extends GameScreen {
     public final ScreenViewport uiViewport = new ScreenViewport();
 
     public ProtoController protoController;
+
+    public PhysicsObjectManager physicsObjectManager;
 
     public ProtoGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
@@ -65,6 +68,8 @@ public class ProtoGameScreen extends GameScreen {
 //        }
         inputMultiplexer.addProcessor(cameraInputController);
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        this.physicsObjectManager = new PhysicsObjectManager();
     }
 
     @Override
@@ -95,7 +100,7 @@ public class ProtoGameScreen extends GameScreen {
 //            }
 //        }
 
-        modelBatch.render(playersManager.physicsObjectManager.instances, environment);
+        modelBatch.render(physicsObjectManager.instances, environment);
         modelBatch.end();
         renderText(delta);
 

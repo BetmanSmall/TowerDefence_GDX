@@ -35,6 +35,10 @@ public final class Proto {
      * <code>END = 3;</code>
      */
     END(3),
+    /**
+     * <code>NEW_OBJECT = 5;</code>
+     */
+    NEW_OBJECT(5),
     UNRECOGNIZED(-1),
     ;
 
@@ -54,6 +58,10 @@ public final class Proto {
      * <code>END = 3;</code>
      */
     public static final int END_VALUE = 3;
+    /**
+     * <code>NEW_OBJECT = 5;</code>
+     */
+    public static final int NEW_OBJECT_VALUE = 5;
 
 
     public final int getNumber() {
@@ -84,6 +92,7 @@ public final class Proto {
         case 1: return NEW_PLAYER;
         case 2: return MOVE;
         case 3: return END;
+        case 5: return NEW_OBJECT;
         default: return null;
       }
     }
@@ -3289,9 +3298,9 @@ public final class Proto {
       "Position\022$\n\010rotation\030\002 \001(\0132\022.protobuf.Ro" +
       "tation\"+\n\010Position\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002" +
       "\022\t\n\001z\030\003 \001(\002\"6\n\010Rotation\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030" +
-      "\002 \001(\002\022\t\n\001z\030\003 \001(\002\022\t\n\001w\030\004 \001(\002*:\n\nActionEnu" +
+      "\002 \001(\002\022\t\n\001z\030\003 \001(\002\022\t\n\001w\030\004 \001(\002*J\n\nActionEnu" +
       "m\022\t\n\005START\020\000\022\016\n\nNEW_PLAYER\020\001\022\010\n\004MOVE\020\002\022\007" +
-      "\n\003END\020\003b\006proto3"
+      "\n\003END\020\003\022\016\n\nNEW_OBJECT\020\005b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

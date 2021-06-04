@@ -23,8 +23,6 @@ public class PlayersManager {
     private int connectedCount;
     private ArrayList<Player> players;
 
-    public PhysicsObjectManager physicsObjectManager;
-
     public PlayersManager(SessionType sessionType, FactionsManager factionsManager, UserAccount userAccount) {
         Logger.logFuncStart("sessionType:" + sessionType, "userAccount:" + userAccount);
         this.sessionType = sessionType;
@@ -66,7 +64,6 @@ public class PlayersManager {
         } else if (sessionType.equals(SessionType.PROTO_CLIENT)) {
             this.players.add(null);
         }
-        this.physicsObjectManager = new PhysicsObjectManager();
     }
 
     public void dispose() {
@@ -128,7 +125,7 @@ public class PlayersManager {
         return null;
     }
 
-    public Player addPlayerByServer(ProtoTcpConnection tcpConnection) {
+    public Player addPlayerByServer(ProtoTcpConnection tcpConnection, PhysicsObjectManager physicsObjectManager) {
         Player player = new Player(tcpConnection);
         if (addPlayer(player)) {
             player.playerID = ++connectedCount;
@@ -141,7 +138,7 @@ public class PlayersManager {
         return null;
     }
 
-    public Player addPlayerByClient(ProtoTcpConnection protoTcpConnection, Proto.SendObject sendObject) {
+    public Player addPlayerByClient(ProtoTcpConnection protoTcpConnection, Proto.SendObject sendObject, PhysicsObjectManager physicsObjectManager) {
         Player player = disconnectedPlayer(sendObject.getUuid());
         if (player == null) {
             player = new Player(protoTcpConnection);

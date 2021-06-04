@@ -7,7 +7,6 @@ import com.betmansmall.server.networking.ProtoTcpConnection;
 import com.betmansmall.utils.logging.Logger;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import protobuf.Proto;
 
@@ -56,7 +55,7 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
 //        Logger.logDebug("sendObject.getActionEnum():" + sendObject.getActionEnum());
         Proto.ActionEnum actionEnum = sendObject.getActionEnum();
         if (actionEnum.equals(Proto.ActionEnum.START) || actionEnum.equals(Proto.ActionEnum.NEW_PLAYER)) {
-            Player player = protoGameScreen.playersManager.addPlayerByClient(tcpConnection, sendObject);
+            Player player = protoGameScreen.playersManager.addPlayerByClient(tcpConnection, sendObject, protoGameScreen.physicsObjectManager);
             if (actionEnum.equals(Proto.ActionEnum.START)) {
                 protoGameScreen.protoController.setPlayer(player);
                 if (protoGameScreen.playersManager.getLocalPlayer() == null) {
@@ -69,10 +68,17 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
                 }
             }
         } else if (actionEnum.equals(Proto.ActionEnum.MOVE)) {
-            Player player = protoGameScreen.playersManager.getPlayer(sendObject.getUuid());
-            if (player != null) {
-                player.updateData(sendObject);
+            ProtoGameObject protoGameObject = protoGameScreen.physicsObjectManager.instances2.get(sendObject.getUuid());
+            if (protoGameObject != null) {
+                protoGameObject.updateData(sendObject);
+            } else {
+                Player player = protoGameScreen.playersManager.getPlayer(sendObject.getUuid());
+                if (player != null) {
+                    player.updateData(sendObject);
+                }
             }
+        } else if (actionEnum.equals(Proto.ActionEnum.NEW_OBJECT)) {
+            protoGameScreen.physicsObjectManager.addByClient(sendObject);
         }
 //        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
 //        System.out.println("sendObject.toByteArray():" + Arrays.toString(sendObject.toByteArray()));

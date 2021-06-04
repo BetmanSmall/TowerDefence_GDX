@@ -33,6 +33,12 @@ import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.physics.BtContactListener;
 import com.betmansmall.utils.logging.Logger;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.UUID;
+
+import protobuf.Proto;
+
 public class PhysicsObjectManager implements Disposable {
     private final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal;
     private final static short GROUND_FLAG = 1 << 8;
@@ -52,6 +58,7 @@ public class PhysicsObjectManager implements Disposable {
     public Model modelGround;
     public Model modelPlayer;
     public Array<ProtoGameObject> instances;
+    public HashMap<String, ProtoGameObject> instances2 = new LinkedHashMap<>();
 
     public PhysicsObjectManager() {
         ModelBuilder mb = new ModelBuilder();
@@ -100,6 +107,8 @@ public class PhysicsObjectManager implements Disposable {
         object.physicsObject.body.setContactCallbackFlag(GROUND_FLAG);
         object.physicsObject.body.setContactCallbackFilter(0);
         object.physicsObject.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+        object.index = 1;
+        object.uuid = UUID.randomUUID().toString();
         instances.add(object);
         dynamicsWorld.addRigidBody(object.physicsObject.body);
 
@@ -145,13 +154,24 @@ public class PhysicsObjectManager implements Disposable {
         return protoGameObject;
     }
 
-    public void addToPhysic() {
-        ProtoGameObject obj = constructors.values[2 + MathUtils.random(constructors.size - 3)].construct();
+    public void addByServer() {
+        int index = 2 + MathUtils.random(constructors.size - 3);
+        ProtoGameObject obj = constructors.values[index].construct();
         obj.position = new Vector3(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
         obj.rotation = new Quaternion().setEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
+        obj.uuid = UUID.randomUUID().toString();
+        obj.index = index;
         addToPhysic(obj);
 //        obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
 //        obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
+    }
+
+    public ProtoGameObject addByClient(Proto.SendObject sendObject) {
+        ProtoGameObject protoGameObject = constructors.values[sendObject.getIndex()].construct();
+        protoGameObject.uuid = sendObject.getUuid();
+        protoGameObject.updateData(sendObject);
+        addToPhysic(protoGameObject);
+        return protoGameObject;
     }
 
     private void addToPhysic(ProtoGameObject obj) {
@@ -164,6 +184,7 @@ public class PhysicsObjectManager implements Disposable {
         obj.physicsObject.body.setContactCallbackFlag(OBJECT_FLAG);
         obj.physicsObject.body.setContactCallbackFilter(GROUND_FLAG);
         instances.add(obj);
+        instances2.put(obj.uuid, obj);
         dynamicsWorld.addRigidBody(obj.physicsObject.body);
     }
 
@@ -174,7 +195,7 @@ public class PhysicsObjectManager implements Disposable {
         dynamicsWorld.stepSimulation(delta, 5, 1f / 60f);
 
         if ((spawnTimer -= delta) < 0) {
-            addToPhysic();
+            addByServer();
             spawnTimer = 1.5f;
         }
     }
