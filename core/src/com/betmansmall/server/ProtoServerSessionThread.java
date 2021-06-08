@@ -99,15 +99,16 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
             }
         }
 
-        for (int p = 0; p < serverGameScreen.physicsObjectManager.instances.size; p++) {
-            ProtoGameObject protoGameObject = serverGameScreen.physicsObjectManager.instances.get(p);
-//        for (ProtoGameObject protoGameObject : serverGameScreen.physicsObjectManager.instances) {
+//        for (int p = 0; p < serverGameScreen.physicsObjectManager.instances.size(); p++) {
+//            ProtoGameObject protoGameObject = serverGameScreen.physicsObjectManager.instances.get(p);
+        for (ProtoGameObject protoGameObject : serverGameScreen.physicsObjectManager.instances.values()) {
             if (protoGameObject.index != null && protoGameObject.uuid != null) {
                 Vector3 position = protoGameObject.physicsObject.body.getWorldTransform().getTranslation(protoGameObject.position);
                 Quaternion rotation = protoGameObject.physicsObject.body.getOrientation();
                 sendObject = Proto.SendObject.newBuilder()
                         .setIndex(protoGameObject.index).setUuid(protoGameObject.uuid)
                         .setActionEnum(Proto.ActionEnum.NEW_OBJECT)
+                        .setPrefabName(protoGameObject.prefabName)
                         .setTransform(Proto.Transform.newBuilder().setPosition(
                                 Proto.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
                                 Proto.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();

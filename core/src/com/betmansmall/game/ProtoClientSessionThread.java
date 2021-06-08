@@ -68,7 +68,7 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
                 }
             }
         } else if (actionEnum.equals(Proto.ActionEnum.MOVE)) {
-            ProtoGameObject protoGameObject = protoGameScreen.physicsObjectManager.instances2.get(sendObject.getUuid());
+            ProtoGameObject protoGameObject = protoGameScreen.physicsObjectManager.instances.get(sendObject.getUuid());
             if (protoGameObject != null) {
                 protoGameObject.updateData(sendObject);
             } else {
@@ -79,6 +79,8 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
             }
         } else if (actionEnum.equals(Proto.ActionEnum.NEW_OBJECT)) {
             protoGameScreen.physicsObjectManager.addByClient(sendObject);
+        } else if (actionEnum.equals(Proto.ActionEnum.REMOVE_OBJECT)) {
+            protoGameScreen.physicsObjectManager.removeObject(sendObject.getUuid());
         }
 //        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
 //        System.out.println("sendObject.toByteArray():" + Arrays.toString(sendObject.toByteArray()));

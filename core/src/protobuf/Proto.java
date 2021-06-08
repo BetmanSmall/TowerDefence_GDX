@@ -39,6 +39,10 @@ public final class Proto {
      * <code>NEW_OBJECT = 5;</code>
      */
     NEW_OBJECT(5),
+    /**
+     * <code>REMOVE_OBJECT = 6;</code>
+     */
+    REMOVE_OBJECT(6),
     UNRECOGNIZED(-1),
     ;
 
@@ -62,6 +66,10 @@ public final class Proto {
      * <code>NEW_OBJECT = 5;</code>
      */
     public static final int NEW_OBJECT_VALUE = 5;
+    /**
+     * <code>REMOVE_OBJECT = 6;</code>
+     */
+    public static final int REMOVE_OBJECT_VALUE = 6;
 
 
     public final int getNumber() {
@@ -93,6 +101,7 @@ public final class Proto {
         case 2: return MOVE;
         case 3: return END;
         case 5: return NEW_OBJECT;
+        case 6: return REMOVE_OBJECT;
         default: return null;
       }
     }
@@ -196,6 +205,18 @@ public final class Proto {
      * <code>.protobuf.Transform transform = 4;</code>
      */
     protobuf.Proto.TransformOrBuilder getTransformOrBuilder();
+
+    /**
+     * <code>string prefabName = 5;</code>
+     * @return The prefabName.
+     */
+    java.lang.String getPrefabName();
+    /**
+     * <code>string prefabName = 5;</code>
+     * @return The bytes for prefabName.
+     */
+    com.google.protobuf.ByteString
+        getPrefabNameBytes();
   }
   /**
    * Protobuf type {@code protobuf.SendObject}
@@ -212,6 +233,7 @@ public final class Proto {
     private SendObject() {
       actionEnum_ = 0;
       uuid_ = "";
+      prefabName_ = "";
     }
 
     @java.lang.Override
@@ -272,6 +294,12 @@ public final class Proto {
                 transform_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              prefabName_ = s;
               break;
             }
             default: {
@@ -400,6 +428,44 @@ public final class Proto {
       return getTransform();
     }
 
+    public static final int PREFABNAME_FIELD_NUMBER = 5;
+    private volatile java.lang.Object prefabName_;
+    /**
+     * <code>string prefabName = 5;</code>
+     * @return The prefabName.
+     */
+    @java.lang.Override
+    public java.lang.String getPrefabName() {
+      java.lang.Object ref = prefabName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        prefabName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string prefabName = 5;</code>
+     * @return The bytes for prefabName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPrefabNameBytes() {
+      java.lang.Object ref = prefabName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        prefabName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -426,6 +492,9 @@ public final class Proto {
       if (transform_ != null) {
         output.writeMessage(4, getTransform());
       }
+      if (!getPrefabNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, prefabName_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -449,6 +518,9 @@ public final class Proto {
       if (transform_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, getTransform());
+      }
+      if (!getPrefabNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, prefabName_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -475,6 +547,8 @@ public final class Proto {
         if (!getTransform()
             .equals(other.getTransform())) return false;
       }
+      if (!getPrefabName()
+          .equals(other.getPrefabName())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -496,6 +570,8 @@ public final class Proto {
         hash = (37 * hash) + TRANSFORM_FIELD_NUMBER;
         hash = (53 * hash) + getTransform().hashCode();
       }
+      hash = (37 * hash) + PREFABNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getPrefabName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -641,6 +717,8 @@ public final class Proto {
           transform_ = null;
           transformBuilder_ = null;
         }
+        prefabName_ = "";
+
         return this;
       }
 
@@ -675,6 +753,7 @@ public final class Proto {
         } else {
           result.transform_ = transformBuilder_.build();
         }
+        result.prefabName_ = prefabName_;
         onBuilt();
         return result;
       }
@@ -735,6 +814,10 @@ public final class Proto {
         }
         if (other.hasTransform()) {
           mergeTransform(other.getTransform());
+        }
+        if (!other.getPrefabName().isEmpty()) {
+          prefabName_ = other.prefabName_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1043,6 +1126,82 @@ public final class Proto {
           transform_ = null;
         }
         return transformBuilder_;
+      }
+
+      private java.lang.Object prefabName_ = "";
+      /**
+       * <code>string prefabName = 5;</code>
+       * @return The prefabName.
+       */
+      public java.lang.String getPrefabName() {
+        java.lang.Object ref = prefabName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          prefabName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string prefabName = 5;</code>
+       * @return The bytes for prefabName.
+       */
+      public com.google.protobuf.ByteString
+          getPrefabNameBytes() {
+        java.lang.Object ref = prefabName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          prefabName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string prefabName = 5;</code>
+       * @param value The prefabName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPrefabName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        prefabName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string prefabName = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPrefabName() {
+        
+        prefabName_ = getDefaultInstance().getPrefabName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string prefabName = 5;</code>
+       * @param value The bytes for prefabName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPrefabNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        prefabName_ = value;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3290,17 +3449,18 @@ public final class Proto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024protobuf/Proto.proto\022\010protobuf\"{\n\nSend" +
-      "Object\022(\n\nactionEnum\030\001 \001(\0162\024.protobuf.Ac" +
-      "tionEnum\022\014\n\004uuid\030\002 \001(\t\022\r\n\005index\030\003 \001(\005\022&\n" +
-      "\ttransform\030\004 \001(\0132\023.protobuf.Transform\"W\n" +
-      "\tTransform\022$\n\010position\030\001 \001(\0132\022.protobuf." +
-      "Position\022$\n\010rotation\030\002 \001(\0132\022.protobuf.Ro" +
-      "tation\"+\n\010Position\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002" +
-      "\022\t\n\001z\030\003 \001(\002\"6\n\010Rotation\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030" +
-      "\002 \001(\002\022\t\n\001z\030\003 \001(\002\022\t\n\001w\030\004 \001(\002*J\n\nActionEnu" +
-      "m\022\t\n\005START\020\000\022\016\n\nNEW_PLAYER\020\001\022\010\n\004MOVE\020\002\022\007" +
-      "\n\003END\020\003\022\016\n\nNEW_OBJECT\020\005b\006proto3"
+      "\n\024protobuf/Proto.proto\022\010protobuf\"\217\001\n\nSen" +
+      "dObject\022(\n\nactionEnum\030\001 \001(\0162\024.protobuf.A" +
+      "ctionEnum\022\014\n\004uuid\030\002 \001(\t\022\r\n\005index\030\003 \001(\005\022&" +
+      "\n\ttransform\030\004 \001(\0132\023.protobuf.Transform\022\022" +
+      "\n\nprefabName\030\005 \001(\t\"W\n\tTransform\022$\n\010posit" +
+      "ion\030\001 \001(\0132\022.protobuf.Position\022$\n\010rotatio" +
+      "n\030\002 \001(\0132\022.protobuf.Rotation\"+\n\010Position\022" +
+      "\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"6\n\010Rota" +
+      "tion\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\022\t\n" +
+      "\001w\030\004 \001(\002*]\n\nActionEnum\022\t\n\005START\020\000\022\016\n\nNEW" +
+      "_PLAYER\020\001\022\010\n\004MOVE\020\002\022\007\n\003END\020\003\022\016\n\nNEW_OBJE" +
+      "CT\020\005\022\021\n\rREMOVE_OBJECT\020\006b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3311,7 +3471,7 @@ public final class Proto {
     internal_static_protobuf_SendObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protobuf_SendObject_descriptor,
-        new java.lang.String[] { "ActionEnum", "Uuid", "Index", "Transform", });
+        new java.lang.String[] { "ActionEnum", "Uuid", "Index", "Transform", "PrefabName", });
     internal_static_protobuf_Transform_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_protobuf_Transform_fieldAccessorTable = new

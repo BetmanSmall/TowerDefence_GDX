@@ -48,7 +48,20 @@ public class ProtoServerGameScreen extends ProtoGameScreen {
 
     @Override
     public void render(float delta) {
-        this.physicsObjectManager.update(delta);
+        if (gameField != null && !gameField.gamePaused) {
+            if (physicsObjectManager.instances.values().size() > 5) {
+                String uuid = physicsObjectManager.instances.keySet().toArray()[2].toString();
+                ProtoGameObject protoGameObject = physicsObjectManager.instances.get(uuid);
+                physicsObjectManager.dynamicsWorld.removeRigidBody(protoGameObject.physicsObject.body);
+                Proto.SendObject sendObject = Proto.SendObject.newBuilder()
+                        .setUuid(protoGameObject.uuid)
+                        .setActionEnum(Proto.ActionEnum.REMOVE_OBJECT).build();
+                protoServerSessionThread.sendObject(sendObject);
+                protoGameObject.dispose();
+                physicsObjectManager.instances.remove(uuid);
+            }
+            this.physicsObjectManager.update(delta);
+        }
         super.render(delta);
         Player currPlayer = protoController.player;
         if (currPlayer != null && currPlayer.gameObject != null) {
@@ -80,13 +93,14 @@ public class ProtoServerGameScreen extends ProtoGameScreen {
                 }
             }
         }
-        for (ProtoGameObject protoGameObject : physicsObjectManager.instances) {
+        for (ProtoGameObject protoGameObject : physicsObjectManager.instances.values()) {
             if (protoGameObject.index != null && protoGameObject.uuid != null) {
                 Vector3 position = protoGameObject.physicsObject.body.getWorldTransform().getTranslation(protoGameObject.position);
                 Quaternion rotation = protoGameObject.physicsObject.body.getOrientation();
                 Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                         .setIndex(protoGameObject.index).setUuid(protoGameObject.uuid)
                         .setActionEnum(Proto.ActionEnum.MOVE)
+                        .setPrefabName(protoGameObject.prefabName)
                         .setTransform(Proto.Transform.newBuilder().setPosition(
                                 Proto.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
                                 Proto.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();

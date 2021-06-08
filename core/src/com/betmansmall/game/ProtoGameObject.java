@@ -61,6 +61,7 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
     public Quaternion rotation;
     public String uuid;
     public Integer index;
+    public String prefabName;
     public Proto.SendObject lastSendObject = null;//Proto.SendObject.getDefaultInstance();
 
 //    public BtMotionState motionState;
@@ -87,6 +88,7 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
 //        this.size =
         this.uuid = null;
         this.index = null;
+        this.prefabName = "";
 
         this.physicsObject = new PhysicsObject(this, constructionInfo);
 

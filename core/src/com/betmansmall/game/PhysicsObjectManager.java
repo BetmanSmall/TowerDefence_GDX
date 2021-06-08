@@ -27,7 +27,6 @@ import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.physics.BtContactListener;
@@ -57,16 +56,21 @@ public class PhysicsObjectManager implements Disposable {
     public btConstraintSolver constraintSolver;
     public Model modelGround;
     public Model modelPlayer;
-    public Array<ProtoGameObject> instances;
-    public HashMap<String, ProtoGameObject> instances2 = new LinkedHashMap<>();
+    public HashMap<String, ProtoGameObject> instances = new LinkedHashMap<>();
+    public HashMap<String, ProtoGameObject> playersInstances = new LinkedHashMap<>();
+    public int count;
 
     public PhysicsObjectManager() {
+        ModelBuilder modelBuilder = new ModelBuilder();
+        modelGround = modelBuilder.createBox(25f, 0.5f, 25f, new Material(ColorAttribute.createDiffuse(Color.BROWN)), attributes);
+        modelPlayer = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), attributes);
+
         ModelBuilder mb = new ModelBuilder();
         mb.begin();
-        mb.node().id = "player";
-        mb.part("player", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.WHITE))).box(1f, 1f, 1f);
-        mb.node().id = "ground";
-        mb.part("ground", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.RED))).box(5f, 1f, 5f);
+        mb.node().id = "enemy";
+        mb.part("enemy", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.WHITE))).box(1f, 1f, 1f);
+        mb.node().id = "groundRed";
+        mb.part("groundRed", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.RED))).box(5f, 1f, 5f);
 
         mb.node().id = "sphere";
         mb.part("sphere", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.GREEN))).sphere(1f, 1f, 1f, 10, 10);
@@ -81,8 +85,10 @@ public class PhysicsObjectManager implements Disposable {
         simpleModel = mb.end();
 
         constructors = new ArrayMap<>(String.class, ProtoGameObject.Constructor.class);
-        constructors.put("player",      new ProtoGameObject.Constructor(simpleModel, "player", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
-        constructors.put("ground",      new ProtoGameObject.Constructor(simpleModel, "ground", new btBoxShape(new Vector3(5f, 0.5f, 5f)), 0f));
+        constructors.put("ground",      new ProtoGameObject.Constructor(modelGround, new btBoxShape(new Vector3(12.5f, 0.25f, 12.5f)), 0f));
+        constructors.put("player",      new ProtoGameObject.Constructor(modelPlayer, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 0f));
+        constructors.put("enemy",       new ProtoGameObject.Constructor(simpleModel, "enemy", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+        constructors.put("groundRed",   new ProtoGameObject.Constructor(simpleModel, "groundRed", new btBoxShape(new Vector3(5f, 0.5f, 5f)), 0f));
         constructors.put("sphere",      new ProtoGameObject.Constructor(simpleModel, "sphere", new btSphereShape(0.5f), 1f));
         constructors.put("box",         new ProtoGameObject.Constructor(simpleModel, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
         constructors.put("cone",        new ProtoGameObject.Constructor(simpleModel, "cone", new btConeShape(0.5f, 2f), 1f));
@@ -97,29 +103,28 @@ public class PhysicsObjectManager implements Disposable {
         dynamicsWorld.setGravity(new Vector3(0, -10f, 0));
         contactListener = new BtContactListener();
 
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelGround = modelBuilder.createBox(25f, 0.5f, 25f, new Material(ColorAttribute.createDiffuse(Color.BROWN)), attributes);
-        modelPlayer = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), attributes);
-
-        instances = new Array<>();
-        ProtoGameObject object = constructors.get("ground").construct();
+        ProtoGameObject object = constructors.get("groundRed").construct();
         object.physicsObject.body.setCollisionFlags(object.physicsObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
         object.physicsObject.body.setContactCallbackFlag(GROUND_FLAG);
         object.physicsObject.body.setContactCallbackFilter(0);
         object.physicsObject.body.setActivationState(Collision.DISABLE_DEACTIVATION);
         object.transform.set(new Vector3(0f, -1f, 0f), new Quaternion(0f, 0f, 0f, 0f));
-        object.index = 1;
-        object.uuid = UUID.randomUUID().toString();
-        instances.add(object);
+        object.index = count++;
+        object.prefabName = "groundRed";
+        object.uuid = "groundRed";
+        instances.put(object.prefabName, object);
         dynamicsWorld.addRigidBody(object.physicsObject.body);
 
-        ProtoGameObject object2 = new ProtoGameObject.Constructor(modelGround, new btBoxShape(new Vector3(12.5f, 0.25f, 12.5f)), 0f).construct();
+        ProtoGameObject object2 = constructors.get("ground").construct();
         object2.physicsObject.body.setCollisionFlags(object.physicsObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
         object2.physicsObject.body.setContactCallbackFlag(GROUND_FLAG);
         object2.physicsObject.body.setContactCallbackFilter(0);
         object2.physicsObject.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+        object2.index = count++;
+        object2.prefabName = "ground";
+        object2.uuid = "ground"; // UUID.randomUUID().toString();
         object2.transform.set(new Vector3(0f, -0.5f, 0f), new Quaternion(0f, 0f, 0f, 0f));
-        instances.add(object2);
+        instances.put(object2.prefabName, object2);
         dynamicsWorld.addRigidBody(object2.physicsObject.body);
     }
 
@@ -142,37 +147,47 @@ public class PhysicsObjectManager implements Disposable {
         this.modelGround.dispose();
         this.modelPlayer.dispose();
 
-        for (ProtoGameObject obj : this.instances) {
+        for (ProtoGameObject obj : this.instances.values()) {
             obj.dispose();
         }
         this.instances.clear();
     }
 
     public ProtoGameObject spawnPlayer(Player player) {
-        ProtoGameObject protoGameObject = new ProtoGameObject.Constructor(modelPlayer, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
-//        protoGameObject.position = player.
-        addToPhysic(protoGameObject);
-        return protoGameObject;
+        ProtoGameObject obj = constructors.get("player").construct();
+        obj.index = player.playerID;
+        obj.uuid = player.accountID;
+        addToPhysic(obj);
+        playersInstances.put(obj.uuid, obj);
+        dynamicsWorld.addRigidBody(obj.physicsObject.body);
+        return obj;
     }
 
     public void addByServer() {
-        int index = 2 + MathUtils.random(constructors.size - 3);
-        ProtoGameObject obj = constructors.values[index].construct();
-        obj.position = new Vector3(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
+        int prefabIndex = 4 + MathUtils.random(constructors.size - 5);
+        ProtoGameObject obj = constructors.values[prefabIndex].construct();
+        obj.position = new Vector3(MathUtils.random(-2.5f, 2.5f), 6f, MathUtils.random(-2.5f, 2.5f));
         obj.rotation = new Quaternion().setEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
         obj.uuid = UUID.randomUUID().toString();
-        obj.index = index;
+        obj.index = count++;
+        obj.prefabName = constructors.keys[prefabIndex];
         addToPhysic(obj);
+        instances.put(obj.uuid, obj);
+        dynamicsWorld.addRigidBody(obj.physicsObject.body);
 //        obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
 //        obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
     }
 
     public ProtoGameObject addByClient(Proto.SendObject sendObject) {
-        ProtoGameObject protoGameObject = constructors.values[sendObject.getIndex()].construct();
-        protoGameObject.uuid = sendObject.getUuid();
-        protoGameObject.updateData(sendObject);
-        addToPhysic(protoGameObject);
-        return protoGameObject;
+        ProtoGameObject obj = constructors.get(sendObject.getPrefabName()).construct();
+        obj.uuid = sendObject.getUuid();
+        obj.index = sendObject.getIndex();
+        obj.prefabName = sendObject.getPrefabName();
+        obj.updateData(sendObject);
+        addToPhysic(obj);
+        instances.put(obj.uuid, obj);
+        dynamicsWorld.addRigidBody(obj.physicsObject.body);
+        return obj;
     }
 
     private void addToPhysic(ProtoGameObject obj) {
@@ -180,24 +195,29 @@ public class PhysicsObjectManager implements Disposable {
 //        obj.transform.trn(obj.position);
         obj.transform.set(obj.position, obj.rotation);
         obj.physicsObject.body.proceedToTransform(obj.transform);
-        obj.physicsObject.body.setUserValue(instances.size);
+        obj.physicsObject.body.setUserValue(instances.size());
         obj.physicsObject.body.setCollisionFlags(obj.physicsObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
         obj.physicsObject.body.setContactCallbackFlag(OBJECT_FLAG);
         obj.physicsObject.body.setContactCallbackFilter(GROUND_FLAG);
-        instances.add(obj);
-        instances2.put(obj.uuid, obj);
-        dynamicsWorld.addRigidBody(obj.physicsObject.body);
     }
 
     public void update(float delta) {
         angle = (angle + delta * speed) % 360f;
-        instances.get(0).transform.setTranslation(0, MathUtils.sinDeg(angle) * 2.5f, 0f);
+        instances.get("groundRed").transform.setTranslation(0, MathUtils.sinDeg(angle) * 2.5f, 0f);
 
         dynamicsWorld.stepSimulation(delta, 5, 1f / 60f);
 
         if ((spawnTimer -= delta) < 0) {
             addByServer();
-            spawnTimer = 1.5f;
+            spawnTimer = 3f;
+        }
+    }
+
+    public void removeObject(String uuid) {
+        if (instances.containsKey(uuid)) {
+            instances.remove(uuid);
+        } else if (playersInstances.containsKey(uuid)) {
+            playersInstances.remove(uuid);
         }
     }
 }

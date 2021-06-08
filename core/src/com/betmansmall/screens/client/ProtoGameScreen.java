@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.betmansmall.GameMaster;
 import com.betmansmall.game.PhysicsObjectManager;
 import com.betmansmall.game.Player;
+import com.betmansmall.game.ProtoGameObject;
 import com.betmansmall.game.gameInterface.ProtoController;
 import com.betmansmall.game.gameLogic.Cell;
 import com.betmansmall.game.gameLogic.Tower;
@@ -100,7 +101,14 @@ public class ProtoGameScreen extends GameScreen {
 //            }
 //        }
 
-        modelBatch.render(physicsObjectManager.instances, environment);
+//        for (ProtoGameObject protoGameObject : physicsObjectManager.instances.values()) {
+//            modelBatch.render(protoGameObject, environment);
+//        }
+        modelBatch.render(physicsObjectManager.instances.values(), environment);
+//        for (ProtoGameObject protoGameObject : physicsObjectManager.playersInstances.values()) {
+//            modelBatch.render(protoGameObject, environment);
+//        }
+        modelBatch.render(physicsObjectManager.playersInstances.values(), environment);
         modelBatch.end();
         renderText(delta);
 
@@ -113,29 +121,38 @@ public class ProtoGameScreen extends GameScreen {
     public void renderText(float delta) {
         for (Player player : playersManager.getPlayers()) {
             if (player != null && player.gameObject != null) {
-                final Vector3 clipSpacePos = new Vector3(player.gameObject.position);
-                final float w = multiplyProjective(perspectiveCamera.combined, clipSpacePos, 1f);
-                final float textPosX = clipSpacePos.x * Gdx.graphics.getWidth() * 0.5f;
-                final float textPosY = clipSpacePos.y * Gdx.graphics.getHeight() * 0.5f;
-                fontCache.setText(player.playerID.toString() + "\n" + player.gameObject.position, 0f, 20f, 0f, Align.center, false);
-                final float fontSize = 30f;
-                final float fontScale = fontSize / w;
-                final int regionCount = font.getRegions().size;
-                for (int page = 0; page < regionCount; page++) {
-                    final int vertexCount = fontCache.getVertexCount(page);
-                    final float[] vertices = fontCache.getVertices(page);
-                    for (int v = 0; v < vertexCount; v += 5) {
-                        vertices[v] = vertices[v] * fontScale + textPosX;
-                        vertices[v + 1] = vertices[v + 1] * fontScale + textPosY;
-                    }
-                }
-                uiViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-                spriteBatch.setProjectionMatrix(uiViewport.getCamera().projection);
-                spriteBatch.begin();
-                fontCache.draw(spriteBatch);
-                spriteBatch.end();
+                renderText(player.gameObject.position, player.playerID.toString());
             }
         }
+        for (ProtoGameObject gameObject : physicsObjectManager.instances.values()) {
+            if (gameObject != null && gameObject.index != null) {
+                renderText(gameObject.position, gameObject.index.toString());
+            }
+        }
+    }
+
+    public void renderText(Vector3 position, String text) {
+        final Vector3 clipSpacePos = new Vector3(position);
+        final float w = multiplyProjective(perspectiveCamera.combined, clipSpacePos, 1f);
+        final float textPosX = clipSpacePos.x * Gdx.graphics.getWidth() * 0.5f;
+        final float textPosY = clipSpacePos.y * Gdx.graphics.getHeight() * 0.5f;
+        fontCache.setText(text + "\n" + position, 0f, 20f, 0f, Align.center, false);
+        final float fontSize = 10f;
+        final float fontScale = fontSize / w;
+        final int regionCount = font.getRegions().size;
+        for (int page = 0; page < regionCount; page++) {
+            final int vertexCount = fontCache.getVertexCount(page);
+            final float[] vertices = fontCache.getVertices(page);
+            for (int v = 0; v < vertexCount; v += 5) {
+                vertices[v] = vertices[v] * fontScale + textPosX;
+                vertices[v + 1] = vertices[v + 1] * fontScale + textPosY;
+            }
+        }
+        uiViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        spriteBatch.setProjectionMatrix(uiViewport.getCamera().projection);
+        spriteBatch.begin();
+        fontCache.draw(spriteBatch);
+        spriteBatch.end();
     }
 
     private static float multiplyProjective(Matrix4 m, Vector3 v, float vW) {
