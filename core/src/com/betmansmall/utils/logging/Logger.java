@@ -1,5 +1,9 @@
 package com.betmansmall.utils.logging;
 
+import com.badlogic.gdx.utils.StringBuilder;
+
+import org.apache.commons.cli.CommandLine;
+
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
@@ -8,10 +12,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.badlogic.gdx.utils.StringBuilder;
-
-import org.apache.commons.cli.CommandLine;
 
 public class Logger implements Closeable {
     private static final String ANSI_RESET = "\u001B[0m";
@@ -125,7 +125,8 @@ public class Logger implements Closeable {
                     }
                 }
             }
-//            setUseStdOut(false);
+            closeBufferedWriter();
+            setUseStdOut(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
