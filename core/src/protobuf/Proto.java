@@ -217,6 +217,30 @@ public final class Proto {
      */
     com.google.protobuf.ByteString
         getPrefabNameBytes();
+
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    java.util.List<protobuf.Proto.SendObject> 
+        getOtherObjectsList();
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    protobuf.Proto.SendObject getOtherObjects(int index);
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    int getOtherObjectsCount();
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    java.util.List<? extends protobuf.Proto.SendObjectOrBuilder> 
+        getOtherObjectsOrBuilderList();
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    protobuf.Proto.SendObjectOrBuilder getOtherObjectsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code protobuf.SendObject}
@@ -234,6 +258,7 @@ public final class Proto {
       actionEnum_ = 0;
       uuid_ = "";
       prefabName_ = "";
+      otherObjects_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -256,6 +281,7 @@ public final class Proto {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -302,6 +328,15 @@ public final class Proto {
               prefabName_ = s;
               break;
             }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                otherObjects_ = new java.util.ArrayList<protobuf.Proto.SendObject>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              otherObjects_.add(
+                  input.readMessage(protobuf.Proto.SendObject.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -317,6 +352,9 @@ public final class Proto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          otherObjects_ = java.util.Collections.unmodifiableList(otherObjects_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -466,6 +504,46 @@ public final class Proto {
       }
     }
 
+    public static final int OTHEROBJECTS_FIELD_NUMBER = 6;
+    private java.util.List<protobuf.Proto.SendObject> otherObjects_;
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    @java.lang.Override
+    public java.util.List<protobuf.Proto.SendObject> getOtherObjectsList() {
+      return otherObjects_;
+    }
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends protobuf.Proto.SendObjectOrBuilder> 
+        getOtherObjectsOrBuilderList() {
+      return otherObjects_;
+    }
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    @java.lang.Override
+    public int getOtherObjectsCount() {
+      return otherObjects_.size();
+    }
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    @java.lang.Override
+    public protobuf.Proto.SendObject getOtherObjects(int index) {
+      return otherObjects_.get(index);
+    }
+    /**
+     * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+     */
+    @java.lang.Override
+    public protobuf.Proto.SendObjectOrBuilder getOtherObjectsOrBuilder(
+        int index) {
+      return otherObjects_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -495,6 +573,9 @@ public final class Proto {
       if (!getPrefabNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, prefabName_);
       }
+      for (int i = 0; i < otherObjects_.size(); i++) {
+        output.writeMessage(6, otherObjects_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -521,6 +602,10 @@ public final class Proto {
       }
       if (!getPrefabNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, prefabName_);
+      }
+      for (int i = 0; i < otherObjects_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, otherObjects_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -549,6 +634,8 @@ public final class Proto {
       }
       if (!getPrefabName()
           .equals(other.getPrefabName())) return false;
+      if (!getOtherObjectsList()
+          .equals(other.getOtherObjectsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -572,6 +659,10 @@ public final class Proto {
       }
       hash = (37 * hash) + PREFABNAME_FIELD_NUMBER;
       hash = (53 * hash) + getPrefabName().hashCode();
+      if (getOtherObjectsCount() > 0) {
+        hash = (37 * hash) + OTHEROBJECTS_FIELD_NUMBER;
+        hash = (53 * hash) + getOtherObjectsList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -700,6 +791,7 @@ public final class Proto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getOtherObjectsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -719,6 +811,12 @@ public final class Proto {
         }
         prefabName_ = "";
 
+        if (otherObjectsBuilder_ == null) {
+          otherObjects_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          otherObjectsBuilder_.clear();
+        }
         return this;
       }
 
@@ -745,6 +843,7 @@ public final class Proto {
       @java.lang.Override
       public protobuf.Proto.SendObject buildPartial() {
         protobuf.Proto.SendObject result = new protobuf.Proto.SendObject(this);
+        int from_bitField0_ = bitField0_;
         result.actionEnum_ = actionEnum_;
         result.uuid_ = uuid_;
         result.index_ = index_;
@@ -754,6 +853,15 @@ public final class Proto {
           result.transform_ = transformBuilder_.build();
         }
         result.prefabName_ = prefabName_;
+        if (otherObjectsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            otherObjects_ = java.util.Collections.unmodifiableList(otherObjects_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.otherObjects_ = otherObjects_;
+        } else {
+          result.otherObjects_ = otherObjectsBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -819,6 +927,32 @@ public final class Proto {
           prefabName_ = other.prefabName_;
           onChanged();
         }
+        if (otherObjectsBuilder_ == null) {
+          if (!other.otherObjects_.isEmpty()) {
+            if (otherObjects_.isEmpty()) {
+              otherObjects_ = other.otherObjects_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureOtherObjectsIsMutable();
+              otherObjects_.addAll(other.otherObjects_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.otherObjects_.isEmpty()) {
+            if (otherObjectsBuilder_.isEmpty()) {
+              otherObjectsBuilder_.dispose();
+              otherObjectsBuilder_ = null;
+              otherObjects_ = other.otherObjects_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              otherObjectsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getOtherObjectsFieldBuilder() : null;
+            } else {
+              otherObjectsBuilder_.addAllMessages(other.otherObjects_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -847,6 +981,7 @@ public final class Proto {
         }
         return this;
       }
+      private int bitField0_;
 
       private int actionEnum_ = 0;
       /**
@@ -1202,6 +1337,246 @@ public final class Proto {
         prefabName_ = value;
         onChanged();
         return this;
+      }
+
+      private java.util.List<protobuf.Proto.SendObject> otherObjects_ =
+        java.util.Collections.emptyList();
+      private void ensureOtherObjectsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          otherObjects_ = new java.util.ArrayList<protobuf.Proto.SendObject>(otherObjects_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          protobuf.Proto.SendObject, protobuf.Proto.SendObject.Builder, protobuf.Proto.SendObjectOrBuilder> otherObjectsBuilder_;
+
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public java.util.List<protobuf.Proto.SendObject> getOtherObjectsList() {
+        if (otherObjectsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(otherObjects_);
+        } else {
+          return otherObjectsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public int getOtherObjectsCount() {
+        if (otherObjectsBuilder_ == null) {
+          return otherObjects_.size();
+        } else {
+          return otherObjectsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public protobuf.Proto.SendObject getOtherObjects(int index) {
+        if (otherObjectsBuilder_ == null) {
+          return otherObjects_.get(index);
+        } else {
+          return otherObjectsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder setOtherObjects(
+          int index, protobuf.Proto.SendObject value) {
+        if (otherObjectsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOtherObjectsIsMutable();
+          otherObjects_.set(index, value);
+          onChanged();
+        } else {
+          otherObjectsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder setOtherObjects(
+          int index, protobuf.Proto.SendObject.Builder builderForValue) {
+        if (otherObjectsBuilder_ == null) {
+          ensureOtherObjectsIsMutable();
+          otherObjects_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          otherObjectsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder addOtherObjects(protobuf.Proto.SendObject value) {
+        if (otherObjectsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOtherObjectsIsMutable();
+          otherObjects_.add(value);
+          onChanged();
+        } else {
+          otherObjectsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder addOtherObjects(
+          int index, protobuf.Proto.SendObject value) {
+        if (otherObjectsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOtherObjectsIsMutable();
+          otherObjects_.add(index, value);
+          onChanged();
+        } else {
+          otherObjectsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder addOtherObjects(
+          protobuf.Proto.SendObject.Builder builderForValue) {
+        if (otherObjectsBuilder_ == null) {
+          ensureOtherObjectsIsMutable();
+          otherObjects_.add(builderForValue.build());
+          onChanged();
+        } else {
+          otherObjectsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder addOtherObjects(
+          int index, protobuf.Proto.SendObject.Builder builderForValue) {
+        if (otherObjectsBuilder_ == null) {
+          ensureOtherObjectsIsMutable();
+          otherObjects_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          otherObjectsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder addAllOtherObjects(
+          java.lang.Iterable<? extends protobuf.Proto.SendObject> values) {
+        if (otherObjectsBuilder_ == null) {
+          ensureOtherObjectsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, otherObjects_);
+          onChanged();
+        } else {
+          otherObjectsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder clearOtherObjects() {
+        if (otherObjectsBuilder_ == null) {
+          otherObjects_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          otherObjectsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public Builder removeOtherObjects(int index) {
+        if (otherObjectsBuilder_ == null) {
+          ensureOtherObjectsIsMutable();
+          otherObjects_.remove(index);
+          onChanged();
+        } else {
+          otherObjectsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public protobuf.Proto.SendObject.Builder getOtherObjectsBuilder(
+          int index) {
+        return getOtherObjectsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public protobuf.Proto.SendObjectOrBuilder getOtherObjectsOrBuilder(
+          int index) {
+        if (otherObjectsBuilder_ == null) {
+          return otherObjects_.get(index);  } else {
+          return otherObjectsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public java.util.List<? extends protobuf.Proto.SendObjectOrBuilder> 
+           getOtherObjectsOrBuilderList() {
+        if (otherObjectsBuilder_ != null) {
+          return otherObjectsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(otherObjects_);
+        }
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public protobuf.Proto.SendObject.Builder addOtherObjectsBuilder() {
+        return getOtherObjectsFieldBuilder().addBuilder(
+            protobuf.Proto.SendObject.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public protobuf.Proto.SendObject.Builder addOtherObjectsBuilder(
+          int index) {
+        return getOtherObjectsFieldBuilder().addBuilder(
+            index, protobuf.Proto.SendObject.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .protobuf.SendObject otherObjects = 6;</code>
+       */
+      public java.util.List<protobuf.Proto.SendObject.Builder> 
+           getOtherObjectsBuilderList() {
+        return getOtherObjectsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          protobuf.Proto.SendObject, protobuf.Proto.SendObject.Builder, protobuf.Proto.SendObjectOrBuilder> 
+          getOtherObjectsFieldBuilder() {
+        if (otherObjectsBuilder_ == null) {
+          otherObjectsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              protobuf.Proto.SendObject, protobuf.Proto.SendObject.Builder, protobuf.Proto.SendObjectOrBuilder>(
+                  otherObjects_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          otherObjects_ = null;
+        }
+        return otherObjectsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3449,18 +3824,19 @@ public final class Proto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024protobuf/Proto.proto\022\010protobuf\"\217\001\n\nSen" +
+      "\n\024protobuf/Proto.proto\022\010protobuf\"\273\001\n\nSen" +
       "dObject\022(\n\nactionEnum\030\001 \001(\0162\024.protobuf.A" +
       "ctionEnum\022\014\n\004uuid\030\002 \001(\t\022\r\n\005index\030\003 \001(\005\022&" +
       "\n\ttransform\030\004 \001(\0132\023.protobuf.Transform\022\022" +
-      "\n\nprefabName\030\005 \001(\t\"W\n\tTransform\022$\n\010posit" +
-      "ion\030\001 \001(\0132\022.protobuf.Position\022$\n\010rotatio" +
-      "n\030\002 \001(\0132\022.protobuf.Rotation\"+\n\010Position\022" +
-      "\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"6\n\010Rota" +
-      "tion\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\022\t\n" +
-      "\001w\030\004 \001(\002*]\n\nActionEnum\022\t\n\005START\020\000\022\016\n\nNEW" +
-      "_PLAYER\020\001\022\010\n\004MOVE\020\002\022\007\n\003END\020\003\022\016\n\nNEW_OBJE" +
-      "CT\020\005\022\021\n\rREMOVE_OBJECT\020\006b\006proto3"
+      "\n\nprefabName\030\005 \001(\t\022*\n\014otherObjects\030\006 \003(\013" +
+      "2\024.protobuf.SendObject\"W\n\tTransform\022$\n\010p" +
+      "osition\030\001 \001(\0132\022.protobuf.Position\022$\n\010rot" +
+      "ation\030\002 \001(\0132\022.protobuf.Rotation\"+\n\010Posit" +
+      "ion\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"6\n\010" +
+      "Rotation\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(" +
+      "\002\022\t\n\001w\030\004 \001(\002*]\n\nActionEnum\022\t\n\005START\020\000\022\016\n" +
+      "\nNEW_PLAYER\020\001\022\010\n\004MOVE\020\002\022\007\n\003END\020\003\022\016\n\nNEW_" +
+      "OBJECT\020\005\022\021\n\rREMOVE_OBJECT\020\006b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3471,7 +3847,7 @@ public final class Proto {
     internal_static_protobuf_SendObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protobuf_SendObject_descriptor,
-        new java.lang.String[] { "ActionEnum", "Uuid", "Index", "Transform", "PrefabName", });
+        new java.lang.String[] { "ActionEnum", "Uuid", "Index", "Transform", "PrefabName", "OtherObjects", });
     internal_static_protobuf_Transform_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_protobuf_Transform_fieldAccessorTable = new

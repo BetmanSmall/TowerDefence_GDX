@@ -137,7 +137,7 @@ public class ProtoGameScreen extends GameScreen {
         final float textPosX = clipSpacePos.x * Gdx.graphics.getWidth() * 0.5f;
         final float textPosY = clipSpacePos.y * Gdx.graphics.getHeight() * 0.5f;
         fontCache.setText(text + "\n" + position, 0f, 20f, 0f, Align.center, false);
-        final float fontSize = 10f;
+        final float fontSize = 2f;
         final float fontScale = fontSize / w;
         final int regionCount = font.getRegions().size;
         for (int page = 0; page < regionCount; page++) {

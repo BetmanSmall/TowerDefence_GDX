@@ -15,6 +15,8 @@ import protobuf.Proto;
 public class Player {
     public ProtoTcpConnection protoTcpConnection;
     public ProtoGameObject gameObject;
+    public ProtoGameObject vrLeftHand;
+    public ProtoGameObject vrRightHand;
 //    public Proto.SendObject sendObject;
     public Proto.SendObject lastSendObject = Proto.SendObject.getDefaultInstance();
 
@@ -108,6 +110,10 @@ public class Player {
 
     public void updateData(Proto.SendObject sendObject) {
         gameObject.updateData(sendObject);
+        if (sendObject.getOtherObjectsCount() == 2) {
+            vrLeftHand.updateData(sendObject.getOtherObjects(0));
+            vrRightHand.updateData(sendObject.getOtherObjects(1));
+        }
     }
 
     @Override

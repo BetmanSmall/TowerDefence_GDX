@@ -83,6 +83,15 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
                 .setActionEnum(Proto.ActionEnum.START)
                 .setUuid(newPlayer.accountID).setIndex(newPlayer.playerID)
                 .setTransform(newPlayer.gameObject.protoTransform).build();
+        sendObject = sendObject.toBuilder().addOtherObjects(
+                Proto.SendObject.newBuilder()
+                        .setIndex(newPlayer.vrLeftHand.index)
+                        .setUuid(newPlayer.vrLeftHand.uuid)
+                        .setPrefabName(newPlayer.vrLeftHand.prefabName).build()).addOtherObjects(
+                Proto.SendObject.newBuilder()
+                        .setIndex(newPlayer.vrRightHand.index)
+                        .setUuid(newPlayer.vrRightHand.uuid)
+                        .setPrefabName(newPlayer.vrRightHand.prefabName).build()).build();
         Logger.logDebug("sendObject:" + sendObject);
         tcpConnection.sendObject(sendObject);
 
@@ -95,6 +104,15 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
 //            Logger.logDebug("player:" + player);
             if (player != null && !player.type.equals(PlayerType.SERVER) && player.protoTcpConnection != tcpConnection) {
                 sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.gameObject.protoTransform).build();
+                sendObject = sendObject.toBuilder().clearOtherObjects().addOtherObjects(
+                        Proto.SendObject.newBuilder()
+                                .setIndex(player.vrLeftHand.index)
+                                .setUuid(player.vrLeftHand.uuid)
+                                .setPrefabName(player.vrLeftHand.prefabName).build()).addOtherObjects(
+                        Proto.SendObject.newBuilder()
+                                .setIndex(player.vrRightHand.index)
+                                .setUuid(player.vrRightHand.uuid)
+                                .setPrefabName(player.vrRightHand.prefabName).build()).build();
                 tcpConnection.sendObject(sendObject);
             }
         }

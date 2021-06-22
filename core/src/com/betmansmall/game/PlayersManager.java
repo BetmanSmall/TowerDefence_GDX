@@ -133,6 +133,8 @@ public class PlayersManager {
             player.playerStatus = PlayerStatus.CONNECTED;
 //            player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
             player.gameObject = physicsObjectManager.spawnPlayer(player);
+            player.vrLeftHand = physicsObjectManager.spawnPlayerHand(UUID.randomUUID().toString(), 0);
+            player.vrRightHand = physicsObjectManager.spawnPlayerHand(UUID.randomUUID().toString(), 1);
             return player;
         }
         return null;
@@ -149,6 +151,10 @@ public class PlayersManager {
                 player.playerStatus = PlayerStatus.CONNECTED;
 //                player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
                 player.gameObject = physicsObjectManager.spawnPlayer(player);
+                if (sendObject.getOtherObjectsCount() > 0) {
+                    player.vrLeftHand = physicsObjectManager.spawnPlayerHand(sendObject.getOtherObjects(0).getUuid(), 0);
+                    player.vrRightHand = physicsObjectManager.spawnPlayerHand(sendObject.getOtherObjects(1).getUuid(), 1);
+                }
                 player.updateData(sendObject);
                 return player;
             }

@@ -56,19 +56,21 @@ public class PhysicsObjectManager implements Disposable {
     public btConstraintSolver constraintSolver;
     public Model modelGround;
     public Model modelPlayer;
+    public Model modelPlayerHand;
     public HashMap<String, ProtoGameObject> instances = new LinkedHashMap<>();
     public HashMap<String, ProtoGameObject> playersInstances = new LinkedHashMap<>();
     public int count;
 
     public PhysicsObjectManager() {
         ModelBuilder modelBuilder = new ModelBuilder();
-        modelGround = modelBuilder.createBox(25f, 0.5f, 25f, new Material(ColorAttribute.createDiffuse(Color.BROWN)), attributes);
-        modelPlayer = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), attributes);
+        modelGround = modelBuilder.createBox(10f, 0.1f, 10f, new Material(ColorAttribute.createDiffuse(Color.BROWN)), attributes);
+        modelPlayer = modelBuilder.createBox(0.4f, 0.2f, 0.1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), attributes);
+        modelPlayerHand = modelBuilder.createBox(0.05f, 0.05f, 0.2f, new Material(ColorAttribute.createDiffuse(Color.BROWN)), attributes);
 
         ModelBuilder mb = new ModelBuilder();
         mb.begin();
         mb.node().id = "enemy";
-        mb.part("enemy", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.WHITE))).box(1f, 1f, 1f);
+        mb.part("enemy", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.WHITE))).box(0.4f, 0.2f, 0.1f);
         mb.node().id = "groundRed";
         mb.part("groundRed", GL20.GL_TRIANGLES, attributes, new Material(ColorAttribute.createDiffuse(Color.RED))).box(5f, 1f, 5f);
 
@@ -85,9 +87,10 @@ public class PhysicsObjectManager implements Disposable {
         simpleModel = mb.end();
 
         constructors = new ArrayMap<>(String.class, ProtoGameObject.Constructor.class);
-        constructors.put("ground",      new ProtoGameObject.Constructor(modelGround, new btBoxShape(new Vector3(12.5f, 0.25f, 12.5f)), 0f));
-        constructors.put("player",      new ProtoGameObject.Constructor(modelPlayer, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 0f));
-        constructors.put("enemy",       new ProtoGameObject.Constructor(simpleModel, "enemy", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+        constructors.put("ground",      new ProtoGameObject.Constructor(modelGround, new btBoxShape(new Vector3(5f, 0.05f, 5f)), 0f));
+        constructors.put("player",      new ProtoGameObject.Constructor(modelPlayer, new btBoxShape(new Vector3(0.2f, 0.1f, 0.2f)), 0f));
+        constructors.put("playerHand",  new ProtoGameObject.Constructor(modelPlayerHand, new btBoxShape(new Vector3(0.025f, 0.025f, 0.1f)), 0f));
+        constructors.put("enemy",       new ProtoGameObject.Constructor(simpleModel, "enemy", new btBoxShape(new Vector3(0.2f, 0.1f, 0.2f)), 0.1f));
         constructors.put("groundRed",   new ProtoGameObject.Constructor(simpleModel, "groundRed", new btBoxShape(new Vector3(5f, 0.5f, 5f)), 0f));
         constructors.put("sphere",      new ProtoGameObject.Constructor(simpleModel, "sphere", new btSphereShape(0.5f), 1f));
         constructors.put("box",         new ProtoGameObject.Constructor(simpleModel, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
@@ -154,17 +157,28 @@ public class PhysicsObjectManager implements Disposable {
     }
 
     public ProtoGameObject spawnPlayer(Player player) {
-        ProtoGameObject obj = constructors.get("player").construct();
-        obj.index = player.playerID;
-        obj.uuid = player.accountID;
-        addToPhysic(obj);
-        playersInstances.put(obj.uuid, obj);
-        dynamicsWorld.addRigidBody(obj.physicsObject.body);
-        return obj;
+        ProtoGameObject object = constructors.get("player").construct();
+        object.index = player.playerID;
+        object.uuid = player.accountID;
+        addToPhysic(object);
+        playersInstances.put(object.uuid, object);
+        dynamicsWorld.addRigidBody(object.physicsObject.body);
+        return object;
+    }
+
+    public ProtoGameObject spawnPlayerHand(String uuid, int index) {
+        ProtoGameObject object = constructors.get("playerHand").construct();
+        object.index = index;
+        object.uuid = uuid;
+        object.prefabName = "playerHand";
+        addToPhysic(object);
+        playersInstances.put(object.uuid, object);
+        dynamicsWorld.addRigidBody(object.physicsObject.body);
+        return object;
     }
 
     public void addByServer() {
-        int prefabIndex = 4 + MathUtils.random(constructors.size - 5);
+        int prefabIndex = 5 + MathUtils.random(constructors.size - 6);
         ProtoGameObject obj = constructors.values[prefabIndex].construct();
         obj.position = new Vector3(MathUtils.random(-2.5f, 2.5f), 6f, MathUtils.random(-2.5f, 2.5f));
         obj.rotation = new Quaternion().setEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
