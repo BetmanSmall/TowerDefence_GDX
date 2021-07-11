@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.game.gameInterface.ProtoController;
 
@@ -67,6 +68,8 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
 //    public BtMotionState motionState;
 //    public btRigidBody body;
     public PhysicsObject physicsObject;
+
+    public Array<Player> players = new Array<>();
 
     public ProtoGameObject(Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
         super(model);

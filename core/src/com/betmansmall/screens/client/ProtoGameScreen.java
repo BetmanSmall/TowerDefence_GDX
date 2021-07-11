@@ -120,8 +120,8 @@ public class ProtoGameScreen extends GameScreen {
 
     public void renderText(float delta) {
         for (Player player : playersManager.getPlayers()) {
-            if (player != null && player.gameObject != null) {
-                renderText(player.gameObject.position, player.playerID.toString());
+            if (player != null && player.hmdGameObject != null) {
+                renderText(player.hmdGameObject.position, player.playerID.toString());
             }
         }
         for (ProtoGameObject gameObject : physicsObjectManager.instances.values()) {

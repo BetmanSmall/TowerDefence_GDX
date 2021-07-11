@@ -82,7 +82,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                 .setActionEnum(Proto.ActionEnum.START)
                 .setUuid(newPlayer.accountID).setIndex(newPlayer.playerID)
-                .setTransform(newPlayer.gameObject.protoTransform).build();
+                .setTransform(newPlayer.hmdGameObject.protoTransform).build();
         sendObject = sendObject.toBuilder().addOtherObjects(
                 Proto.SendObject.newBuilder()
                         .setIndex(newPlayer.vrLeftHand.index)
@@ -103,17 +103,29 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         for (Player player : players) {
 //            Logger.logDebug("player:" + player);
             if (player != null && !player.type.equals(PlayerType.SERVER) && player.protoTcpConnection != tcpConnection) {
-                sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.gameObject.protoTransform).build();
+                sendObject = sendObject.toBuilder().setUuid(player.accountID).setIndex(player.playerID).setTransform(player.hmdGameObject.protoTransform).build();
+                Vector3 position1 = player.vrLeftHand.physicsObject.body.getWorldTransform().getTranslation(player.vrLeftHand.position);
+                Quaternion rotation1 = player.vrLeftHand.physicsObject.body.getOrientation();
+                Vector3 position2 = player.vrRightHand.physicsObject.body.getWorldTransform().getTranslation(player.vrRightHand.position);
+                Quaternion rotation2 = player.vrRightHand.physicsObject.body.getOrientation();
                 sendObject = sendObject.toBuilder().clearOtherObjects().addOtherObjects(
                         Proto.SendObject.newBuilder()
                                 .setIndex(player.vrLeftHand.index)
                                 .setUuid(player.vrLeftHand.uuid)
-                                .setPrefabName(player.vrLeftHand.prefabName).build()).addOtherObjects(
+                                .setPrefabName(player.vrLeftHand.prefabName)
+                                .setTransform(Proto.Transform.newBuilder().setPosition(
+                                        Proto.Position.newBuilder().setX(position1.x).setY(position1.y).setZ(position1.z).build()).setRotation(
+                                        Proto.Rotation.newBuilder().setX(rotation1.x).setY(rotation1.y).setZ(rotation1.z).setW(rotation1.w).build()).build()).build())
+                        .addOtherObjects(
                         Proto.SendObject.newBuilder()
                                 .setIndex(player.vrRightHand.index)
                                 .setUuid(player.vrRightHand.uuid)
-                                .setPrefabName(player.vrRightHand.prefabName).build()).build();
+                                .setPrefabName(player.vrRightHand.prefabName)
+                                .setTransform(Proto.Transform.newBuilder().setPosition(
+                                        Proto.Position.newBuilder().setX(position2.x).setY(position2.y).setZ(position2.z).build()).setRotation(
+                                        Proto.Rotation.newBuilder().setX(rotation2.x).setY(rotation2.y).setZ(rotation2.z).setW(rotation2.w).build()).build()).build()).build();
                 tcpConnection.sendObject(sendObject);
+                Logger.logDebug("sendObject:" + sendObject);
             }
         }
 

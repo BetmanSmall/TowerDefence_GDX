@@ -98,6 +98,10 @@ public class PhysicsObjectManager implements Disposable {
         constructors.put("capsule",     new ProtoGameObject.Constructor(simpleModel, "capsule", new btCapsuleShape(.5f, 1f), 1f));
         constructors.put("cylinder",    new ProtoGameObject.Constructor(simpleModel, "cylinder", new btCylinderShape(new Vector3(.5f, 1f, .5f)), 1f));
 
+        constructors.put("InstantCube1",new ProtoGameObject.Constructor(simpleModel, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+        constructors.put("KinematicCube1",new ProtoGameObject.Constructor(simpleModel, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+        constructors.put("VelocityTrackedCube1",new ProtoGameObject.Constructor(simpleModel, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+
         collisionConfig = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfig);
         broadphase = new btDbvtBroadphase();

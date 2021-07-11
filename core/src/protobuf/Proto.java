@@ -43,6 +43,18 @@ public final class Proto {
      * <code>REMOVE_OBJECT = 6;</code>
      */
     REMOVE_OBJECT(6),
+    /**
+     * <code>MOVE_OBJECT = 7;</code>
+     */
+    MOVE_OBJECT(7),
+    /**
+     * <code>START_MOVE_OBJECT = 8;</code>
+     */
+    START_MOVE_OBJECT(8),
+    /**
+     * <code>END_MOVE_OBJECT = 9;</code>
+     */
+    END_MOVE_OBJECT(9),
     UNRECOGNIZED(-1),
     ;
 
@@ -70,6 +82,18 @@ public final class Proto {
      * <code>REMOVE_OBJECT = 6;</code>
      */
     public static final int REMOVE_OBJECT_VALUE = 6;
+    /**
+     * <code>MOVE_OBJECT = 7;</code>
+     */
+    public static final int MOVE_OBJECT_VALUE = 7;
+    /**
+     * <code>START_MOVE_OBJECT = 8;</code>
+     */
+    public static final int START_MOVE_OBJECT_VALUE = 8;
+    /**
+     * <code>END_MOVE_OBJECT = 9;</code>
+     */
+    public static final int END_MOVE_OBJECT_VALUE = 9;
 
 
     public final int getNumber() {
@@ -102,6 +126,9 @@ public final class Proto {
         case 3: return END;
         case 5: return NEW_OBJECT;
         case 6: return REMOVE_OBJECT;
+        case 7: return MOVE_OBJECT;
+        case 8: return START_MOVE_OBJECT;
+        case 9: return END_MOVE_OBJECT;
         default: return null;
       }
     }
@@ -3834,9 +3861,11 @@ public final class Proto {
       "ation\030\002 \001(\0132\022.protobuf.Rotation\"+\n\010Posit" +
       "ion\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"6\n\010" +
       "Rotation\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(" +
-      "\002\022\t\n\001w\030\004 \001(\002*]\n\nActionEnum\022\t\n\005START\020\000\022\016\n" +
-      "\nNEW_PLAYER\020\001\022\010\n\004MOVE\020\002\022\007\n\003END\020\003\022\016\n\nNEW_" +
-      "OBJECT\020\005\022\021\n\rREMOVE_OBJECT\020\006b\006proto3"
+      "\002\022\t\n\001w\030\004 \001(\002*\232\001\n\nActionEnum\022\t\n\005START\020\000\022\016" +
+      "\n\nNEW_PLAYER\020\001\022\010\n\004MOVE\020\002\022\007\n\003END\020\003\022\016\n\nNEW" +
+      "_OBJECT\020\005\022\021\n\rREMOVE_OBJECT\020\006\022\017\n\013MOVE_OBJ" +
+      "ECT\020\007\022\025\n\021START_MOVE_OBJECT\020\010\022\023\n\017END_MOVE" +
+      "_OBJECT\020\tb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

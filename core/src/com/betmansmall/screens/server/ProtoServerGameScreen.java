@@ -64,23 +64,23 @@ public class ProtoServerGameScreen extends ProtoGameScreen {
         }
         super.render(delta);
         Player currPlayer = protoController.player;
-        if (currPlayer != null && currPlayer.gameObject != null) {
-            currPlayer.gameObject.update(protoController);
+        if (currPlayer != null && currPlayer.hmdGameObject != null) {
+            currPlayer.hmdGameObject.update(protoController);
             Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                     .setIndex(currPlayer.playerID).setUuid(currPlayer.accountID)
                     .setActionEnum(Proto.ActionEnum.MOVE)
                     .setTransform(Proto.Transform.newBuilder().setPosition(
-                            Proto.Position.newBuilder().setX(currPlayer.gameObject.position.x).setY(currPlayer.gameObject.position.y).setZ(currPlayer.gameObject.position.z).build()).setRotation(
-                            Proto.Rotation.newBuilder().setX(currPlayer.gameObject.rotation.x).setY(currPlayer.gameObject.rotation.y).setZ(currPlayer.gameObject.rotation.z).setW(currPlayer.gameObject.rotation.w).build()).build()).build();
+                            Proto.Position.newBuilder().setX(currPlayer.hmdGameObject.position.x).setY(currPlayer.hmdGameObject.position.y).setZ(currPlayer.hmdGameObject.position.z).build()).setRotation(
+                            Proto.Rotation.newBuilder().setX(currPlayer.hmdGameObject.rotation.x).setY(currPlayer.hmdGameObject.rotation.y).setZ(currPlayer.hmdGameObject.rotation.z).setW(currPlayer.hmdGameObject.rotation.w).build()).build()).build();
             if (!lastSendObject.equals(sendObject)) {
                 protoServerSessionThread.sendObject(sendObject);
                 lastSendObject = sendObject;
             }
         }
         for (Player player : playersManager.getPlayers()) {
-            if (player != null && player.gameObject != null) {
-                Vector3 position = player.gameObject.physicsObject.body.getWorldTransform().getTranslation(player.gameObject.position);
-                Quaternion rotation = player.gameObject.physicsObject.body.getOrientation();
+            if (player != null && player.hmdGameObject != null) {
+                Vector3 position = player.hmdGameObject.physicsObject.body.getWorldTransform().getTranslation(player.hmdGameObject.position);
+                Quaternion rotation = player.hmdGameObject.physicsObject.body.getOrientation();
                 Proto.SendObject sendObject = Proto.SendObject.newBuilder()
                         .setIndex(player.playerID).setUuid(player.accountID)
                         .setActionEnum(Proto.ActionEnum.MOVE)

@@ -68,7 +68,7 @@ public class PlayersManager {
 
     public void dispose() {
         for (Player player : players) {
-            player.gameObject.dispose();
+            player.hmdGameObject.dispose();
         }
         this.players.clear();
     }
@@ -132,7 +132,7 @@ public class PlayersManager {
             player.accountID = UUID.randomUUID().toString();
             player.playerStatus = PlayerStatus.CONNECTED;
 //            player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
-            player.gameObject = physicsObjectManager.spawnPlayer(player);
+            player.hmdGameObject = physicsObjectManager.spawnPlayer(player);
             player.vrLeftHand = physicsObjectManager.spawnPlayerHand(UUID.randomUUID().toString(), 0);
             player.vrRightHand = physicsObjectManager.spawnPlayerHand(UUID.randomUUID().toString(), 1);
             return player;
@@ -150,7 +150,7 @@ public class PlayersManager {
                 player.accountID = sendObject.getUuid();
                 player.playerStatus = PlayerStatus.CONNECTED;
 //                player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
-                player.gameObject = physicsObjectManager.spawnPlayer(player);
+                player.hmdGameObject = physicsObjectManager.spawnPlayer(player);
                 if (sendObject.getOtherObjectsCount() > 0) {
                     player.vrLeftHand = physicsObjectManager.spawnPlayerHand(sendObject.getOtherObjects(0).getUuid(), 0);
                     player.vrRightHand = physicsObjectManager.spawnPlayerHand(sendObject.getOtherObjects(1).getUuid(), 1);
