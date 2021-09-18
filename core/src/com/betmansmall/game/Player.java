@@ -11,7 +11,7 @@ import com.betmansmall.server.data.PlayerInfoData;
 import com.betmansmall.server.networking.ProtoTcpConnection;
 import com.betmansmall.server.networking.TcpConnection;
 
-import protobuf.Proto;
+import protobuf.ProtoObject;
 
 public class Player {
     public ProtoTcpConnection protoTcpConnection;
@@ -20,7 +20,7 @@ public class Player {
     public ProtoGameObject vrRightHand;
     public Array<ProtoGameObject> gameObjects = new Array<>();
 //    public Proto.SendObject sendObject;
-    public Proto.SendObject lastSendObject = Proto.SendObject.getDefaultInstance();
+    public ProtoObject lastSendObject = ProtoObject.getDefaultInstance();
 
     public TcpConnection connection; // only for ServerSessionThread class
     public PlayerType type;
@@ -110,11 +110,11 @@ public class Player {
         this.gold = playerInfoData.gold;
     }
 
-    public void updateData(Proto.SendObject sendObject) {
+    public void updateData(ProtoObject sendObject) {
         hmdGameObject.updateData(sendObject);
-        if (sendObject.getOtherObjectsCount() == 2) {
-            vrLeftHand.updateData(sendObject.getOtherObjects(0));
-            vrRightHand.updateData(sendObject.getOtherObjects(1));
+        if (sendObject.getProtoObjectsCount() == 2) {
+            vrLeftHand.updateData(sendObject.getProtoObjects(0));
+            vrRightHand.updateData(sendObject.getProtoObjects(1));
         }
     }
 

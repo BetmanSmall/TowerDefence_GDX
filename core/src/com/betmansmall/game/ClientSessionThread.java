@@ -48,7 +48,7 @@ public class ClientSessionThread extends SessionThread {
             new TcpConnection(this, sessionSettings.host, sessionSettings.gameServerPort);
         } catch (IOException exception) {
             Logger.logError("exception:" + exception);
-            clientGameScreen.gameMaster.removeTopScreen(); // TODO mb not good!
+ //           clientGameScreen.gameMaster.removeTopScreen(); // TODO mb not good!
             throw new RuntimeException(exception);
         }
         Logger.logFuncEnd();

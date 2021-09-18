@@ -16,13 +16,15 @@ import com.betmansmall.server.ProtoServerSessionThread;
 import com.betmansmall.server.accouting.UserAccount;
 import com.betmansmall.utils.logging.Logger;
 
-import protobuf.Proto;
+import protobuf.Action;
+import protobuf.ProtoObject;
+
 
 public class ProtoServerGameScreen extends ProtoGameScreen {
     public AuthServerThread authServerThread;
     public ProtoServerSessionThread protoServerSessionThread;
 
-    private Proto.SendObject lastSendObject = Proto.SendObject.getDefaultInstance();
+    private ProtoObject lastSendObject = ProtoObject.getDefaultInstance();
 
     public ProtoServerGameScreen(GameMaster gameMaster, UserAccount userAccount) {
         super(gameMaster, userAccount);
@@ -48,30 +50,30 @@ public class ProtoServerGameScreen extends ProtoGameScreen {
 
     @Override
     public void render(float delta) {
-        if (gameField != null && !gameField.gamePaused) {
-            if (physicsObjectManager.instances.values().size() > 5) {
-                String uuid = physicsObjectManager.instances.keySet().toArray()[2].toString();
-                ProtoGameObject protoGameObject = physicsObjectManager.instances.get(uuid);
-                physicsObjectManager.dynamicsWorld.removeRigidBody(protoGameObject.physicsObject.body);
-                Proto.SendObject sendObject = Proto.SendObject.newBuilder()
-                        .setUuid(protoGameObject.uuid)
-                        .setActionEnum(Proto.ActionEnum.REMOVE_OBJECT).build();
-                protoServerSessionThread.sendObject(sendObject);
-                protoGameObject.dispose();
-                physicsObjectManager.instances.remove(uuid);
-            }
-            this.physicsObjectManager.update(delta);
-        }
+//        if (gameField != null && !gameField.gamePaused) {
+//            if (physicsObjectManager.instances.values().size() > 5) {
+//                String uuid = physicsObjectManager.instances.keySet().toArray()[2].toString();
+//                ProtoGameObject protoGameObject = physicsObjectManager.instances.get(uuid);
+//                physicsObjectManager.dynamicsWorld.removeRigidBody(protoGameObject.physicsObject.body);
+//                Proto.SendObject sendObject = Proto.SendObject.newBuilder()
+//                        .setUuid(protoGameObject.uuid)
+//                        .setActionEnum(Proto.ActionEnum.REMOVE_OBJECT).build();
+//                protoServerSessionThread.sendObject(sendObject);
+//                protoGameObject.dispose();
+//                physicsObjectManager.instances.remove(uuid);
+//            }
+//            this.physicsObjectManager.update(delta);
+//        }
         super.render(delta);
         Player currPlayer = protoController.player;
         if (currPlayer != null && currPlayer.hmdGameObject != null) {
             currPlayer.hmdGameObject.update(protoController);
-            Proto.SendObject sendObject = Proto.SendObject.newBuilder()
+            ProtoObject sendObject = ProtoObject.newBuilder()
                     .setIndex(currPlayer.playerID).setUuid(currPlayer.accountID)
-                    .setActionEnum(Proto.ActionEnum.MOVE)
-                    .setTransform(Proto.Transform.newBuilder().setPosition(
-                            Proto.Position.newBuilder().setX(currPlayer.hmdGameObject.position.x).setY(currPlayer.hmdGameObject.position.y).setZ(currPlayer.hmdGameObject.position.z).build()).setRotation(
-                            Proto.Rotation.newBuilder().setX(currPlayer.hmdGameObject.rotation.x).setY(currPlayer.hmdGameObject.rotation.y).setZ(currPlayer.hmdGameObject.rotation.z).setW(currPlayer.hmdGameObject.rotation.w).build()).build()).build();
+                    .setAction(Action.PLAYER_MOVE)
+                    .setTransform(ProtoObject.Transform.newBuilder().setPosition(
+                            ProtoObject.Position.newBuilder().setX(currPlayer.hmdGameObject.position.x).setY(currPlayer.hmdGameObject.position.y).setZ(currPlayer.hmdGameObject.position.z).build()).setRotation(
+                            ProtoObject.Rotation.newBuilder().setX(currPlayer.hmdGameObject.rotation.x).setY(currPlayer.hmdGameObject.rotation.y).setZ(currPlayer.hmdGameObject.rotation.z).setW(currPlayer.hmdGameObject.rotation.w).build()).build()).build();
             if (!lastSendObject.equals(sendObject)) {
                 protoServerSessionThread.sendObject(sendObject);
                 lastSendObject = sendObject;
@@ -81,12 +83,12 @@ public class ProtoServerGameScreen extends ProtoGameScreen {
             if (player != null && player.hmdGameObject != null) {
                 Vector3 position = player.hmdGameObject.physicsObject.body.getWorldTransform().getTranslation(player.hmdGameObject.position);
                 Quaternion rotation = player.hmdGameObject.physicsObject.body.getOrientation();
-                Proto.SendObject sendObject = Proto.SendObject.newBuilder()
+                ProtoObject sendObject = ProtoObject.newBuilder()
                         .setIndex(player.playerID).setUuid(player.accountID)
-                        .setActionEnum(Proto.ActionEnum.MOVE)
-                        .setTransform(Proto.Transform.newBuilder().setPosition(
-                                Proto.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
-                                Proto.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
+                        .setAction(Action.PLAYER_MOVE)
+                        .setTransform(ProtoObject.Transform.newBuilder().setPosition(
+                                ProtoObject.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
+                                ProtoObject.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
                 if (!player.lastSendObject.equals(sendObject)) {
                     protoServerSessionThread.sendObject(sendObject);
                     player.lastSendObject = sendObject;
@@ -97,15 +99,15 @@ public class ProtoServerGameScreen extends ProtoGameScreen {
             if (protoGameObject.index != null && protoGameObject.uuid != null) {
                 Vector3 position = protoGameObject.physicsObject.body.getWorldTransform().getTranslation(protoGameObject.position);
                 Quaternion rotation = protoGameObject.physicsObject.body.getOrientation();
-                Proto.SendObject sendObject = Proto.SendObject.newBuilder()
+                ProtoObject sendObject = ProtoObject.newBuilder()
                         .setIndex(protoGameObject.index).setUuid(protoGameObject.uuid)
-                        .setActionEnum(Proto.ActionEnum.MOVE)
+                        .setAction(Action.OBJECT_MOOVE)
                         .setPrefabName(protoGameObject.prefabName)
-                        .setTransform(Proto.Transform.newBuilder().setPosition(
-                                Proto.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
-                                Proto.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
+                        .setTransform(ProtoObject.Transform.newBuilder().setPosition(
+                                ProtoObject.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
+                                ProtoObject.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
                 if (protoGameObject.lastSendObject == null) {
-                    sendObject = sendObject.toBuilder().setActionEnum(Proto.ActionEnum.NEW_OBJECT).build();
+                    sendObject = sendObject.toBuilder().setAction(Action.OBJECT_CREATE).build();
                     protoServerSessionThread.sendObject(sendObject);
                     protoGameObject.lastSendObject = sendObject;
                 } else if (!protoGameObject.lastSendObject.equals(sendObject)) {

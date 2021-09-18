@@ -15,7 +15,7 @@ import com.betmansmall.utils.logging.Logger;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import protobuf.Proto;
+import protobuf.ProtoObject;
 
 public class PlayersManager {
     private SessionType sessionType;
@@ -140,7 +140,7 @@ public class PlayersManager {
         return null;
     }
 
-    public Player addPlayerByClient(ProtoTcpConnection protoTcpConnection, Proto.SendObject sendObject, PhysicsObjectManager physicsObjectManager) {
+    public Player addPlayerByClient(ProtoTcpConnection protoTcpConnection, ProtoObject sendObject, PhysicsObjectManager physicsObjectManager) {
         Player player = disconnectedPlayer(sendObject.getUuid());
         if (player == null) {
             player = new Player(protoTcpConnection);
@@ -151,9 +151,9 @@ public class PlayersManager {
                 player.playerStatus = PlayerStatus.CONNECTED;
 //                player.gameObject = new ProtoGameObject.Constructor(model, new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f).construct();
                 player.hmdGameObject = physicsObjectManager.spawnPlayer(player);
-                if (sendObject.getOtherObjectsCount() > 0) {
-                    player.vrLeftHand = physicsObjectManager.spawnPlayerHand(sendObject.getOtherObjects(0).getUuid(), 0);
-                    player.vrRightHand = physicsObjectManager.spawnPlayerHand(sendObject.getOtherObjects(1).getUuid(), 1);
+                if (sendObject.getProtoObjectsCount() > 0) {
+                    player.vrLeftHand = physicsObjectManager.spawnPlayerHand(sendObject.getProtoObjects(0).getUuid(), 0);
+                    player.vrRightHand = physicsObjectManager.spawnPlayerHand(sendObject.getProtoObjects(1).getUuid(), 1);
                 }
                 player.updateData(sendObject);
                 return player;

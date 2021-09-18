@@ -8,7 +8,8 @@ import com.betmansmall.utils.logging.Logger;
 
 import java.io.IOException;
 
-import protobuf.Proto;
+import protobuf.Action;
+import protobuf.ProtoObject;
 
 public class ProtoClientSessionThread extends ProtoSessionThread {
     private ProtoGameScreen protoGameScreen;
@@ -50,24 +51,22 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
     }
 
     @Override
-    public void onReceiveObject(ProtoTcpConnection tcpConnection, Proto.SendObject sendObject) {
+    public void onReceiveObject(ProtoTcpConnection tcpConnection, ProtoObject sendObject) {
 //        Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
 //        Logger.logDebug("sendObject.getActionEnum():" + sendObject.getActionEnum());
-        Proto.ActionEnum actionEnum = sendObject.getActionEnum();
-        if (actionEnum.equals(Proto.ActionEnum.START) || actionEnum.equals(Proto.ActionEnum.NEW_PLAYER)) {
+        Action actionEnum = sendObject.getAction();
+        if (actionEnum.equals(Action.PLAYER_CREATE)) {
             Player player = protoGameScreen.playersManager.addPlayerByClient(tcpConnection, sendObject, protoGameScreen.physicsObjectManager);
-            if (actionEnum.equals(Proto.ActionEnum.START)) {
-                protoGameScreen.protoController.setPlayer(player);
-                if (protoGameScreen.playersManager.getLocalPlayer() == null) {
-                    protoGameScreen.playersManager.getPlayers().remove(player);
-                    protoGameScreen.playersManager.setLocalPlayer(player);
-                } else {
-                    Logger.logDebug("get START again!");
-                    Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
-                    Logger.logDebug("sendObject.getActionEnum():" + sendObject.getActionEnum());
-                }
+            protoGameScreen.protoController.setPlayer(player);
+            if (protoGameScreen.playersManager.getLocalPlayer() == null) {
+                protoGameScreen.playersManager.getPlayers().remove(player);
+                protoGameScreen.playersManager.setLocalPlayer(player);
+            } else {
+                Logger.logDebug("get START again!");
+                Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
+                Logger.logDebug("sendObject.getActionEnum():" + sendObject.getAction());
             }
-        } else if (actionEnum.equals(Proto.ActionEnum.MOVE)) {
+        } else if (actionEnum.equals(Action.PLAYER_MOVE) || actionEnum.equals(Action.OBJECT_MOOVE))  {
             ProtoGameObject protoGameObject = protoGameScreen.physicsObjectManager.instances.get(sendObject.getUuid());
             if (protoGameObject != null) {
                 protoGameObject.updateData(sendObject);
@@ -77,9 +76,9 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
                     player.updateData(sendObject);
                 }
             }
-        } else if (actionEnum.equals(Proto.ActionEnum.NEW_OBJECT)) {
+        } else if (actionEnum.equals(Action.OBJECT_CREATE)) {
             protoGameScreen.physicsObjectManager.addByClient(sendObject);
-        } else if (actionEnum.equals(Proto.ActionEnum.REMOVE_OBJECT)) {
+        } else if (actionEnum.equals(Action.OBJECT_REMOVE)) {
             protoGameScreen.physicsObjectManager.removeObject(sendObject.getUuid());
         }
 //        System.out.println("sendObject.toString():" + sendObject.toString().replaceAll("\n", " "));
@@ -99,11 +98,11 @@ public class ProtoClientSessionThread extends ProtoSessionThread {
         exception.printStackTrace();
     }
 
-    public void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection) {
+    public void sendObject(final ProtoObject sendObject, ProtoTcpConnection tcpConnection) {
         Logger.logError("sendObject:" + sendObject + ", tcpConnection:" + tcpConnection);
     }
 
-    public synchronized void sendObject(final Proto.SendObject sendObject) {
+    public synchronized void sendObject(final ProtoObject sendObject) {
         this.connection.sendObject(sendObject);
     }
 }

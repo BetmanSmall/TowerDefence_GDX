@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.betmansmall.game.gameInterface.ProtoController;
 
-import protobuf.Proto;
+import protobuf.ProtoObject;
 
 public class ProtoGameObject extends ModelInstance implements Disposable {
     public static class Constructor implements Disposable {
@@ -21,6 +21,7 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
         public btCollisionShape shape;
         public btRigidBody.btRigidBodyConstructionInfo constructionInfo;
         private static final Vector3 localInertia = new Vector3();
+
         public Constructor(Model model, btCollisionShape shape, float mass) {
             init(model, null, shape, mass);
         }
@@ -57,13 +58,13 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
     private final Vector3 upDirection = new Vector3(0, 1, 0);
     private final Vector3 tmp = new Vector3();
 
-    public Proto.Transform protoTransform;
+    public ProtoObject.Transform protoTransform;
     public Vector3 position;
     public Quaternion rotation;
     public String uuid;
     public Integer index;
     public String prefabName;
-    public Proto.SendObject lastSendObject = null;//Proto.SendObject.getDefaultInstance();
+    public ProtoObject lastSendObject = null;//Proto.SendObject.getDefaultInstance();
 
 //    public BtMotionState motionState;
 //    public btRigidBody body;
@@ -82,9 +83,9 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
     }
 
     private void init(btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
-        this.protoTransform = Proto.Transform.newBuilder()
-                .setPosition(Proto.Position.newBuilder().setY(0.5f))
-                .setRotation(Proto.Rotation.newBuilder())
+        this.protoTransform = ProtoObject.Transform.newBuilder()
+                .setPosition(ProtoObject.Position.newBuilder().setY(0.5f))
+                .setRotation(ProtoObject.Rotation.newBuilder())
                 .build();
         this.position = new Vector3();
         this.rotation = new Quaternion();
@@ -195,10 +196,10 @@ public class ProtoGameObject extends ModelInstance implements Disposable {
 //        Logger.logDebug("player.modelInstance.transform:" + player.modelInstance.transform);
     }
 
-    public void updateData(Proto.SendObject sendObject) {
+    public void updateData(ProtoObject sendObject) {
         this.protoTransform = sendObject.getTransform();
-        Proto.Position position = protoTransform.getPosition();
-        Proto.Rotation rotation = protoTransform.getRotation();
+        ProtoObject.Position position = protoTransform.getPosition();
+        ProtoObject.Rotation rotation = protoTransform.getRotation();
         this.position.set(position.getX(), position.getY(), position.getZ());
         this.rotation.set(rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW());
         this.transform.set(this.position, this.rotation);

@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-import protobuf.Proto;
+import protobuf.Action;
+import protobuf.ProtoObject;
 
 public class ProtoServerSessionThread extends ProtoSessionThread {
     private ProtoServerGameScreen serverGameScreen;
@@ -79,23 +80,23 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         connections.add(tcpConnection);
 
         Player newPlayer = serverGameScreen.playersManager.addPlayerByServer(tcpConnection, serverGameScreen.physicsObjectManager);
-        Proto.SendObject sendObject = Proto.SendObject.newBuilder()
-                .setActionEnum(Proto.ActionEnum.START)
+        ProtoObject sendObject = ProtoObject.newBuilder()
+                .setAction(Action.PLAYER_CREATE)
                 .setUuid(newPlayer.accountID).setIndex(newPlayer.playerID)
                 .setTransform(newPlayer.hmdGameObject.protoTransform).build();
-        sendObject = sendObject.toBuilder().addOtherObjects(
-                Proto.SendObject.newBuilder()
+        sendObject = sendObject.toBuilder().addProtoObjects(
+                ProtoObject.newBuilder()
                         .setIndex(newPlayer.vrLeftHand.index)
                         .setUuid(newPlayer.vrLeftHand.uuid)
-                        .setPrefabName(newPlayer.vrLeftHand.prefabName).build()).addOtherObjects(
-                Proto.SendObject.newBuilder()
+                        .setPrefabName(newPlayer.vrLeftHand.prefabName).build()).addProtoObjects(
+                ProtoObject.newBuilder()
                         .setIndex(newPlayer.vrRightHand.index)
                         .setUuid(newPlayer.vrRightHand.uuid)
                         .setPrefabName(newPlayer.vrRightHand.prefabName).build()).build();
         Logger.logDebug("sendObject:" + sendObject);
         tcpConnection.sendObject(sendObject);
 
-        sendObject = sendObject.toBuilder().setActionEnum(Proto.ActionEnum.NEW_PLAYER).build();
+        sendObject = sendObject.toBuilder().setAction(Action.PLAYER_CREATE).build();
         sendObject(sendObject, tcpConnection);
 
         ArrayList<Player> players = serverGameScreen.playersManager.getPlayers();
@@ -108,22 +109,22 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
                 Quaternion rotation1 = player.vrLeftHand.physicsObject.body.getOrientation();
                 Vector3 position2 = player.vrRightHand.physicsObject.body.getWorldTransform().getTranslation(player.vrRightHand.position);
                 Quaternion rotation2 = player.vrRightHand.physicsObject.body.getOrientation();
-                sendObject = sendObject.toBuilder().clearOtherObjects().addOtherObjects(
-                        Proto.SendObject.newBuilder()
+                sendObject = sendObject.toBuilder().clearProtoObjects().addProtoObjects(
+                        ProtoObject.newBuilder()
                                 .setIndex(player.vrLeftHand.index)
                                 .setUuid(player.vrLeftHand.uuid)
                                 .setPrefabName(player.vrLeftHand.prefabName)
-                                .setTransform(Proto.Transform.newBuilder().setPosition(
-                                        Proto.Position.newBuilder().setX(position1.x).setY(position1.y).setZ(position1.z).build()).setRotation(
-                                        Proto.Rotation.newBuilder().setX(rotation1.x).setY(rotation1.y).setZ(rotation1.z).setW(rotation1.w).build()).build()).build())
-                        .addOtherObjects(
-                        Proto.SendObject.newBuilder()
+                                .setTransform(ProtoObject.Transform.newBuilder().setPosition(
+                                        ProtoObject.Position.newBuilder().setX(position1.x).setY(position1.y).setZ(position1.z).build()).setRotation(
+                                        ProtoObject.Rotation.newBuilder().setX(rotation1.x).setY(rotation1.y).setZ(rotation1.z).setW(rotation1.w).build()).build()).build())
+                        .addProtoObjects(
+                                ProtoObject.newBuilder()
                                 .setIndex(player.vrRightHand.index)
                                 .setUuid(player.vrRightHand.uuid)
                                 .setPrefabName(player.vrRightHand.prefabName)
-                                .setTransform(Proto.Transform.newBuilder().setPosition(
-                                        Proto.Position.newBuilder().setX(position2.x).setY(position2.y).setZ(position2.z).build()).setRotation(
-                                        Proto.Rotation.newBuilder().setX(rotation2.x).setY(rotation2.y).setZ(rotation2.z).setW(rotation2.w).build()).build()).build()).build();
+                                .setTransform(ProtoObject.Transform.newBuilder().setPosition(
+                                        ProtoObject.Position.newBuilder().setX(position2.x).setY(position2.y).setZ(position2.z).build()).setRotation(
+                                        ProtoObject.Rotation.newBuilder().setX(rotation2.x).setY(rotation2.y).setZ(rotation2.z).setW(rotation2.w).build()).build()).build()).build();
                 tcpConnection.sendObject(sendObject);
                 Logger.logDebug("sendObject:" + sendObject);
             }
@@ -135,20 +136,20 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
             if (protoGameObject.index != null && protoGameObject.uuid != null) {
                 Vector3 position = protoGameObject.physicsObject.body.getWorldTransform().getTranslation(protoGameObject.position);
                 Quaternion rotation = protoGameObject.physicsObject.body.getOrientation();
-                sendObject = Proto.SendObject.newBuilder()
+                sendObject = ProtoObject.newBuilder()
                         .setIndex(protoGameObject.index).setUuid(protoGameObject.uuid)
-                        .setActionEnum(Proto.ActionEnum.NEW_OBJECT)
+                        .setAction(Action.OBJECT_CREATE)
                         .setPrefabName(protoGameObject.prefabName)
-                        .setTransform(Proto.Transform.newBuilder().setPosition(
-                                Proto.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
-                                Proto.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
+                        .setTransform(ProtoObject.Transform.newBuilder().setPosition(
+                                ProtoObject.Position.newBuilder().setX(position.x).setY(position.y).setZ(position.z).build()).setRotation(
+                                ProtoObject.Rotation.newBuilder().setX(rotation.x).setY(rotation.y).setZ(rotation.z).setW(rotation.w).build()).build()).build();
                 tcpConnection.sendObject(sendObject);
             }
         }
     }
 
     @Override
-    public void onReceiveObject(ProtoTcpConnection tcpConnection, Proto.SendObject sendObject) { // need create stackArray receive SendObjects and in other thread work with it;
+    public void onReceiveObject(ProtoTcpConnection tcpConnection, ProtoObject sendObject) { // need create stackArray receive SendObjects and in other thread work with it;
 //        Logger.logInfo("tcpConnection:" + tcpConnection + ", sendObject:" + sendObject);
         Player player = serverGameScreen.playersManager.getPlayerByConnection(tcpConnection);
         player.updateData(sendObject);
@@ -176,7 +177,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         exception.printStackTrace();
     }
 
-    public synchronized void sendObject(final Proto.SendObject sendObject, ProtoTcpConnection tcpConnection) {
+    public synchronized void sendObject(final ProtoObject sendObject, ProtoTcpConnection tcpConnection) {
         for (ProtoTcpConnection connection : connections) {
             if (!connection.equals(tcpConnection) || connection != tcpConnection) {
 //                Thread thread1 = new Thread(new Runnable() {
@@ -190,7 +191,7 @@ public class ProtoServerSessionThread extends ProtoSessionThread {
         }
     }
 
-    public synchronized void sendObject(final Proto.SendObject sendObject) {
+    public synchronized void sendObject(final ProtoObject sendObject) {
         for (ProtoTcpConnection connection : connections) {
             connection.sendObject(sendObject);
         }

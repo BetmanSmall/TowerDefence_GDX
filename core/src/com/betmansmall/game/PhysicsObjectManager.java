@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-import protobuf.Proto;
+import protobuf.ProtoObject;
 
 public class PhysicsObjectManager implements Disposable {
     private final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal;
@@ -87,14 +87,14 @@ public class PhysicsObjectManager implements Disposable {
         simpleModel = mb.end();
 
         constructors = new ArrayMap<>(String.class, ProtoGameObject.Constructor.class);
-        constructors.put("ground",      new ProtoGameObject.Constructor(modelGround, new btBoxShape(new Vector3(5f, 0.05f, 5f)), 0f));
-        constructors.put("player",      new ProtoGameObject.Constructor(modelPlayer, new btBoxShape(new Vector3(0.2f, 0.1f, 0.2f)), 0f));
-        constructors.put("playerHand",  new ProtoGameObject.Constructor(modelPlayerHand, new btBoxShape(new Vector3(0.025f, 0.025f, 0.1f)), 0f));
-        constructors.put("enemy",       new ProtoGameObject.Constructor(simpleModel, "enemy", new btBoxShape(new Vector3(0.2f, 0.1f, 0.2f)), 0.1f));
-        constructors.put("groundRed",   new ProtoGameObject.Constructor(simpleModel, "groundRed", new btBoxShape(new Vector3(5f, 0.5f, 5f)), 0f));
-        constructors.put("sphere",      new ProtoGameObject.Constructor(simpleModel, "sphere", new btSphereShape(0.5f), 1f));
-        constructors.put("box",         new ProtoGameObject.Constructor(simpleModel, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
-        constructors.put("cone",        new ProtoGameObject.Constructor(simpleModel, "cone", new btConeShape(0.5f, 2f), 1f));
+        constructors.put("ground", new ProtoGameObject.Constructor(modelGround, new btBoxShape(new Vector3(5f, 0.05f, 5f)), 0f));
+        constructors.put("player", new ProtoGameObject.Constructor(modelPlayer, new btBoxShape(new Vector3(0.2f, 0.1f, 0.2f)), 0f));
+        constructors.put("playerHand", new ProtoGameObject.Constructor(modelPlayerHand, new btBoxShape(new Vector3(0.025f, 0.025f, 0.1f)), 0f));
+        constructors.put("enemy", new ProtoGameObject.Constructor(simpleModel, "enemy", new btBoxShape(new Vector3(0.2f, 0.1f, 0.2f)), 0.1f));
+        constructors.put("groundRed", new ProtoGameObject.Constructor(simpleModel, "groundRed", new btBoxShape(new Vector3(5f, 0.5f, 5f)), 0f));
+        constructors.put("sphere", new ProtoGameObject.Constructor(simpleModel, "sphere", new btSphereShape(0.5f), 1f));
+        constructors.put("box", new ProtoGameObject.Constructor(simpleModel, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+        constructors.put("cone", new ProtoGameObject.Constructor(simpleModel, "cone", new btConeShape(0.5f, 2f), 1f));
         constructors.put("capsule",     new ProtoGameObject.Constructor(simpleModel, "capsule", new btCapsuleShape(.5f, 1f), 1f));
         constructors.put("cylinder",    new ProtoGameObject.Constructor(simpleModel, "cylinder", new btCylinderShape(new Vector3(.5f, 1f, .5f)), 1f));
 
@@ -196,7 +196,7 @@ public class PhysicsObjectManager implements Disposable {
 //        obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
     }
 
-    public ProtoGameObject addByClient(Proto.SendObject sendObject) {
+    public ProtoGameObject addByClient(ProtoObject sendObject) {
         ProtoGameObject obj = constructors.get(sendObject.getPrefabName()).construct();
         obj.uuid = sendObject.getUuid();
         obj.index = sendObject.getIndex();

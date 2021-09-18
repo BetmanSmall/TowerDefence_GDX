@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import protobuf.Proto;
+import protobuf.ProtoObject;
 
 public class ProtoTcpConnection {
     private final ProtoTcpSocketListener tcpSocketListener;
@@ -41,7 +41,7 @@ public class ProtoTcpConnection {
                     tcpSocketListener.onConnectionReady(ProtoTcpConnection.this);
                     while (!thread.isInterrupted() && !socket.isClosed() && socket.isConnected()) {
                         try {
-                            Proto.SendObject sendObject = Proto.SendObject.parseDelimitedFrom(inputStream);
+                            ProtoObject sendObject = ProtoObject.parseDelimitedFrom(inputStream);
                             if (sendObject != null) {
                                 tcpSocketListener.onReceiveObject(ProtoTcpConnection.this, sendObject);
                             }
@@ -64,7 +64,7 @@ public class ProtoTcpConnection {
         Logger.logFuncEnd();
     }
 
-    public void sendObject(final Proto.SendObject sendObject) {
+    public void sendObject(final ProtoObject sendObject) {
 //        Logger.logFuncStart("sendObject:" + sendObject);
         try {
             sendObject.writeDelimitedTo(outputStream);
