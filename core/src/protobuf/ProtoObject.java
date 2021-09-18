@@ -4,32 +4,29 @@
 package protobuf;
 
 /**
- * Protobuf type {@code protobuf.Object}
+ * Protobuf type {@code protobuf.ProtoObject}
  */
-public final class Object extends
+public final class ProtoObject extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:protobuf.Object)
-    ObjectOrBuilder {
+    // @@protoc_insertion_point(message_implements:protobuf.ProtoObject)
+    ProtoObjectOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use Object.newBuilder() to construct.
-  private Object(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ProtoObject.newBuilder() to construct.
+  private ProtoObject(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private Object() {
+  private ProtoObject() {
     uuid_ = "";
     action_ = 0;
     prefabName_ = "";
-    object_ = java.util.Collections.emptyList();
-    position_ = java.util.Collections.emptyList();
-    rotation_ = java.util.Collections.emptyList();
-    scale_ = java.util.Collections.emptyList();
+    protoObjects_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new Object();
+    return new ProtoObject();
   }
 
   @java.lang.Override
@@ -37,7 +34,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private Object(
+  private ProtoObject(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -80,11 +77,11 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 42: {
-            protobuf.Object.Color.Builder subBuilder = null;
+            protobuf.ProtoObject.Color.Builder subBuilder = null;
             if (color_ != null) {
               subBuilder = color_.toBuilder();
             }
-            color_ = input.readMessage(protobuf.Object.Color.parser(), extensionRegistry);
+            color_ = input.readMessage(protobuf.ProtoObject.Color.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(color_);
               color_ = subBuilder.buildPartial();
@@ -93,20 +90,11 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 50: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              object_ = new java.util.ArrayList<protobuf.Object>();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            object_.add(
-                input.readMessage(protobuf.Object.parser(), extensionRegistry));
-            break;
-          }
-          case 58: {
-            protobuf.Object.Transform.Builder subBuilder = null;
+            protobuf.ProtoObject.Transform.Builder subBuilder = null;
             if (transform_ != null) {
               subBuilder = transform_.toBuilder();
             }
-            transform_ = input.readMessage(protobuf.Object.Transform.parser(), extensionRegistry);
+            transform_ = input.readMessage(protobuf.ProtoObject.Transform.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(transform_);
               transform_ = subBuilder.buildPartial();
@@ -114,31 +102,52 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 66: {
-            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-              position_ = new java.util.ArrayList<protobuf.Object.Position>();
-              mutable_bitField0_ |= 0x00000002;
+          case 58: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              protoObjects_ = new java.util.ArrayList<protobuf.ProtoObject>();
+              mutable_bitField0_ |= 0x00000001;
             }
-            position_.add(
-                input.readMessage(protobuf.Object.Position.parser(), extensionRegistry));
+            protoObjects_.add(
+                input.readMessage(protobuf.ProtoObject.parser(), extensionRegistry));
+            break;
+          }
+          case 66: {
+            protobuf.ProtoObject.Position.Builder subBuilder = null;
+            if (position_ != null) {
+              subBuilder = position_.toBuilder();
+            }
+            position_ = input.readMessage(protobuf.ProtoObject.Position.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(position_);
+              position_ = subBuilder.buildPartial();
+            }
+
             break;
           }
           case 74: {
-            if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-              rotation_ = new java.util.ArrayList<protobuf.Object.Rotation>();
-              mutable_bitField0_ |= 0x00000004;
+            protobuf.ProtoObject.Rotation.Builder subBuilder = null;
+            if (rotation_ != null) {
+              subBuilder = rotation_.toBuilder();
             }
-            rotation_.add(
-                input.readMessage(protobuf.Object.Rotation.parser(), extensionRegistry));
+            rotation_ = input.readMessage(protobuf.ProtoObject.Rotation.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(rotation_);
+              rotation_ = subBuilder.buildPartial();
+            }
+
             break;
           }
           case 82: {
-            if (!((mutable_bitField0_ & 0x00000008) != 0)) {
-              scale_ = new java.util.ArrayList<protobuf.Object.Scale>();
-              mutable_bitField0_ |= 0x00000008;
+            protobuf.ProtoObject.Scale.Builder subBuilder = null;
+            if (scale_ != null) {
+              subBuilder = scale_.toBuilder();
             }
-            scale_.add(
-                input.readMessage(protobuf.Object.Scale.parser(), extensionRegistry));
+            scale_ = input.readMessage(protobuf.ProtoObject.Scale.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(scale_);
+              scale_ = subBuilder.buildPartial();
+            }
+
             break;
           }
           default: {
@@ -157,16 +166,7 @@ private static final long serialVersionUID = 0L;
           e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        object_ = java.util.Collections.unmodifiableList(object_);
-      }
-      if (((mutable_bitField0_ & 0x00000002) != 0)) {
-        position_ = java.util.Collections.unmodifiableList(position_);
-      }
-      if (((mutable_bitField0_ & 0x00000004) != 0)) {
-        rotation_ = java.util.Collections.unmodifiableList(rotation_);
-      }
-      if (((mutable_bitField0_ & 0x00000008) != 0)) {
-        scale_ = java.util.Collections.unmodifiableList(scale_);
+        protoObjects_ = java.util.Collections.unmodifiableList(protoObjects_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -174,72 +174,72 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return protobuf.Protobuf.internal_static_protobuf_Object_descriptor;
+    return protobuf.Protobuf.internal_static_protobuf_ProtoObject_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return protobuf.Protobuf.internal_static_protobuf_Object_fieldAccessorTable
+    return protobuf.Protobuf.internal_static_protobuf_ProtoObject_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            protobuf.Object.class, protobuf.Object.Builder.class);
+            protobuf.ProtoObject.class, protobuf.ProtoObject.Builder.class);
   }
 
   public interface TransformOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.Object.Transform)
+      // @@protoc_insertion_point(interface_extends:protobuf.ProtoObject.Transform)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.protobuf.Object.Position position = 1;</code>
+     * <code>.protobuf.ProtoObject.Position position = 1;</code>
      * @return Whether the position field is set.
      */
     boolean hasPosition();
     /**
-     * <code>.protobuf.Object.Position position = 1;</code>
+     * <code>.protobuf.ProtoObject.Position position = 1;</code>
      * @return The position.
      */
-    protobuf.Object.Position getPosition();
+    protobuf.ProtoObject.Position getPosition();
     /**
-     * <code>.protobuf.Object.Position position = 1;</code>
+     * <code>.protobuf.ProtoObject.Position position = 1;</code>
      */
-    protobuf.Object.PositionOrBuilder getPositionOrBuilder();
+    protobuf.ProtoObject.PositionOrBuilder getPositionOrBuilder();
 
     /**
-     * <code>.protobuf.Object.Rotation rotation = 2;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
      * @return Whether the rotation field is set.
      */
     boolean hasRotation();
     /**
-     * <code>.protobuf.Object.Rotation rotation = 2;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
      * @return The rotation.
      */
-    protobuf.Object.Rotation getRotation();
+    protobuf.ProtoObject.Rotation getRotation();
     /**
-     * <code>.protobuf.Object.Rotation rotation = 2;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
      */
-    protobuf.Object.RotationOrBuilder getRotationOrBuilder();
+    protobuf.ProtoObject.RotationOrBuilder getRotationOrBuilder();
 
     /**
-     * <code>.protobuf.Object.Scale scale = 3;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
      * @return Whether the scale field is set.
      */
     boolean hasScale();
     /**
-     * <code>.protobuf.Object.Scale scale = 3;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
      * @return The scale.
      */
-    protobuf.Object.Scale getScale();
+    protobuf.ProtoObject.Scale getScale();
     /**
-     * <code>.protobuf.Object.Scale scale = 3;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
      */
-    protobuf.Object.ScaleOrBuilder getScaleOrBuilder();
+    protobuf.ProtoObject.ScaleOrBuilder getScaleOrBuilder();
   }
   /**
-   * Protobuf type {@code protobuf.Object.Transform}
+   * Protobuf type {@code protobuf.ProtoObject.Transform}
    */
   public static final class Transform extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.Object.Transform)
+      // @@protoc_insertion_point(message_implements:protobuf.ProtoObject.Transform)
       TransformOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use Transform.newBuilder() to construct.
@@ -280,11 +280,11 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              protobuf.Object.Position.Builder subBuilder = null;
+              protobuf.ProtoObject.Position.Builder subBuilder = null;
               if (position_ != null) {
                 subBuilder = position_.toBuilder();
               }
-              position_ = input.readMessage(protobuf.Object.Position.parser(), extensionRegistry);
+              position_ = input.readMessage(protobuf.ProtoObject.Position.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(position_);
                 position_ = subBuilder.buildPartial();
@@ -293,11 +293,11 @@ private static final long serialVersionUID = 0L;
               break;
             }
             case 18: {
-              protobuf.Object.Rotation.Builder subBuilder = null;
+              protobuf.ProtoObject.Rotation.Builder subBuilder = null;
               if (rotation_ != null) {
                 subBuilder = rotation_.toBuilder();
               }
-              rotation_ = input.readMessage(protobuf.Object.Rotation.parser(), extensionRegistry);
+              rotation_ = input.readMessage(protobuf.ProtoObject.Rotation.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rotation_);
                 rotation_ = subBuilder.buildPartial();
@@ -306,11 +306,11 @@ private static final long serialVersionUID = 0L;
               break;
             }
             case 26: {
-              protobuf.Object.Scale.Builder subBuilder = null;
+              protobuf.ProtoObject.Scale.Builder subBuilder = null;
               if (scale_ != null) {
                 subBuilder = scale_.toBuilder();
               }
-              scale_ = input.readMessage(protobuf.Object.Scale.parser(), extensionRegistry);
+              scale_ = input.readMessage(protobuf.ProtoObject.Scale.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(scale_);
                 scale_ = subBuilder.buildPartial();
@@ -339,21 +339,21 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Transform_descriptor;
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Transform_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Transform_fieldAccessorTable
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Transform_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              protobuf.Object.Transform.class, protobuf.Object.Transform.Builder.class);
+              protobuf.ProtoObject.Transform.class, protobuf.ProtoObject.Transform.Builder.class);
     }
 
     public static final int POSITION_FIELD_NUMBER = 1;
-    private protobuf.Object.Position position_;
+    private protobuf.ProtoObject.Position position_;
     /**
-     * <code>.protobuf.Object.Position position = 1;</code>
+     * <code>.protobuf.ProtoObject.Position position = 1;</code>
      * @return Whether the position field is set.
      */
     @java.lang.Override
@@ -361,25 +361,25 @@ private static final long serialVersionUID = 0L;
       return position_ != null;
     }
     /**
-     * <code>.protobuf.Object.Position position = 1;</code>
+     * <code>.protobuf.ProtoObject.Position position = 1;</code>
      * @return The position.
      */
     @java.lang.Override
-    public protobuf.Object.Position getPosition() {
-      return position_ == null ? protobuf.Object.Position.getDefaultInstance() : position_;
+    public protobuf.ProtoObject.Position getPosition() {
+      return position_ == null ? protobuf.ProtoObject.Position.getDefaultInstance() : position_;
     }
     /**
-     * <code>.protobuf.Object.Position position = 1;</code>
+     * <code>.protobuf.ProtoObject.Position position = 1;</code>
      */
     @java.lang.Override
-    public protobuf.Object.PositionOrBuilder getPositionOrBuilder() {
+    public protobuf.ProtoObject.PositionOrBuilder getPositionOrBuilder() {
       return getPosition();
     }
 
     public static final int ROTATION_FIELD_NUMBER = 2;
-    private protobuf.Object.Rotation rotation_;
+    private protobuf.ProtoObject.Rotation rotation_;
     /**
-     * <code>.protobuf.Object.Rotation rotation = 2;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
      * @return Whether the rotation field is set.
      */
     @java.lang.Override
@@ -387,25 +387,25 @@ private static final long serialVersionUID = 0L;
       return rotation_ != null;
     }
     /**
-     * <code>.protobuf.Object.Rotation rotation = 2;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
      * @return The rotation.
      */
     @java.lang.Override
-    public protobuf.Object.Rotation getRotation() {
-      return rotation_ == null ? protobuf.Object.Rotation.getDefaultInstance() : rotation_;
+    public protobuf.ProtoObject.Rotation getRotation() {
+      return rotation_ == null ? protobuf.ProtoObject.Rotation.getDefaultInstance() : rotation_;
     }
     /**
-     * <code>.protobuf.Object.Rotation rotation = 2;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
      */
     @java.lang.Override
-    public protobuf.Object.RotationOrBuilder getRotationOrBuilder() {
+    public protobuf.ProtoObject.RotationOrBuilder getRotationOrBuilder() {
       return getRotation();
     }
 
     public static final int SCALE_FIELD_NUMBER = 3;
-    private protobuf.Object.Scale scale_;
+    private protobuf.ProtoObject.Scale scale_;
     /**
-     * <code>.protobuf.Object.Scale scale = 3;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
      * @return Whether the scale field is set.
      */
     @java.lang.Override
@@ -413,18 +413,18 @@ private static final long serialVersionUID = 0L;
       return scale_ != null;
     }
     /**
-     * <code>.protobuf.Object.Scale scale = 3;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
      * @return The scale.
      */
     @java.lang.Override
-    public protobuf.Object.Scale getScale() {
-      return scale_ == null ? protobuf.Object.Scale.getDefaultInstance() : scale_;
+    public protobuf.ProtoObject.Scale getScale() {
+      return scale_ == null ? protobuf.ProtoObject.Scale.getDefaultInstance() : scale_;
     }
     /**
-     * <code>.protobuf.Object.Scale scale = 3;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
      */
     @java.lang.Override
-    public protobuf.Object.ScaleOrBuilder getScaleOrBuilder() {
+    public protobuf.ProtoObject.ScaleOrBuilder getScaleOrBuilder() {
       return getScale();
     }
 
@@ -482,10 +482,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof protobuf.Object.Transform)) {
+      if (!(obj instanceof protobuf.ProtoObject.Transform)) {
         return super.equals(obj);
       }
-      protobuf.Object.Transform other = (protobuf.Object.Transform) obj;
+      protobuf.ProtoObject.Transform other = (protobuf.ProtoObject.Transform) obj;
 
       if (hasPosition() != other.hasPosition()) return false;
       if (hasPosition()) {
@@ -530,69 +530,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Transform parseFrom(byte[] data)
+    public static protobuf.ProtoObject.Transform parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Transform parseFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Transform parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Transform parseDelimitedFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Transform parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Transform parseDelimitedFrom(
+    public static protobuf.ProtoObject.Transform parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Transform parseFrom(
+    public static protobuf.ProtoObject.Transform parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -605,7 +605,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(protobuf.Object.Transform prototype) {
+    public static Builder newBuilder(protobuf.ProtoObject.Transform prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -621,26 +621,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code protobuf.Object.Transform}
+     * Protobuf type {@code protobuf.ProtoObject.Transform}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.Object.Transform)
-        protobuf.Object.TransformOrBuilder {
+        // @@protoc_insertion_point(builder_implements:protobuf.ProtoObject.Transform)
+        protobuf.ProtoObject.TransformOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Transform_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Transform_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Transform_fieldAccessorTable
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Transform_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                protobuf.Object.Transform.class, protobuf.Object.Transform.Builder.class);
+                protobuf.ProtoObject.Transform.class, protobuf.ProtoObject.Transform.Builder.class);
       }
 
-      // Construct using protobuf.Object.Transform.newBuilder()
+      // Construct using protobuf.ProtoObject.Transform.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -682,17 +682,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Transform_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Transform_descriptor;
       }
 
       @java.lang.Override
-      public protobuf.Object.Transform getDefaultInstanceForType() {
-        return protobuf.Object.Transform.getDefaultInstance();
+      public protobuf.ProtoObject.Transform getDefaultInstanceForType() {
+        return protobuf.ProtoObject.Transform.getDefaultInstance();
       }
 
       @java.lang.Override
-      public protobuf.Object.Transform build() {
-        protobuf.Object.Transform result = buildPartial();
+      public protobuf.ProtoObject.Transform build() {
+        protobuf.ProtoObject.Transform result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -700,8 +700,8 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public protobuf.Object.Transform buildPartial() {
-        protobuf.Object.Transform result = new protobuf.Object.Transform(this);
+      public protobuf.ProtoObject.Transform buildPartial() {
+        protobuf.ProtoObject.Transform result = new protobuf.ProtoObject.Transform(this);
         if (positionBuilder_ == null) {
           result.position_ = position_;
         } else {
@@ -755,16 +755,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof protobuf.Object.Transform) {
-          return mergeFrom((protobuf.Object.Transform)other);
+        if (other instanceof protobuf.ProtoObject.Transform) {
+          return mergeFrom((protobuf.ProtoObject.Transform)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(protobuf.Object.Transform other) {
-        if (other == protobuf.Object.Transform.getDefaultInstance()) return this;
+      public Builder mergeFrom(protobuf.ProtoObject.Transform other) {
+        if (other == protobuf.ProtoObject.Transform.getDefaultInstance()) return this;
         if (other.hasPosition()) {
           mergePosition(other.getPosition());
         }
@@ -789,11 +789,11 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        protobuf.Object.Transform parsedMessage = null;
+        protobuf.ProtoObject.Transform parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (protobuf.Object.Transform) e.getUnfinishedMessage();
+          parsedMessage = (protobuf.ProtoObject.Transform) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -803,31 +803,31 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private protobuf.Object.Position position_;
+      private protobuf.ProtoObject.Position position_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          protobuf.Object.Position, protobuf.Object.Position.Builder, protobuf.Object.PositionOrBuilder> positionBuilder_;
+          protobuf.ProtoObject.Position, protobuf.ProtoObject.Position.Builder, protobuf.ProtoObject.PositionOrBuilder> positionBuilder_;
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        * @return Whether the position field is set.
        */
       public boolean hasPosition() {
         return positionBuilder_ != null || position_ != null;
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        * @return The position.
        */
-      public protobuf.Object.Position getPosition() {
+      public protobuf.ProtoObject.Position getPosition() {
         if (positionBuilder_ == null) {
-          return position_ == null ? protobuf.Object.Position.getDefaultInstance() : position_;
+          return position_ == null ? protobuf.ProtoObject.Position.getDefaultInstance() : position_;
         } else {
           return positionBuilder_.getMessage();
         }
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        */
-      public Builder setPosition(protobuf.Object.Position value) {
+      public Builder setPosition(protobuf.ProtoObject.Position value) {
         if (positionBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -841,10 +841,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        */
       public Builder setPosition(
-          protobuf.Object.Position.Builder builderForValue) {
+          protobuf.ProtoObject.Position.Builder builderForValue) {
         if (positionBuilder_ == null) {
           position_ = builderForValue.build();
           onChanged();
@@ -855,13 +855,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        */
-      public Builder mergePosition(protobuf.Object.Position value) {
+      public Builder mergePosition(protobuf.ProtoObject.Position value) {
         if (positionBuilder_ == null) {
           if (position_ != null) {
             position_ =
-              protobuf.Object.Position.newBuilder(position_).mergeFrom(value).buildPartial();
+              protobuf.ProtoObject.Position.newBuilder(position_).mergeFrom(value).buildPartial();
           } else {
             position_ = value;
           }
@@ -873,7 +873,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        */
       public Builder clearPosition() {
         if (positionBuilder_ == null) {
@@ -887,33 +887,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        */
-      public protobuf.Object.Position.Builder getPositionBuilder() {
+      public protobuf.ProtoObject.Position.Builder getPositionBuilder() {
         
         onChanged();
         return getPositionFieldBuilder().getBuilder();
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        */
-      public protobuf.Object.PositionOrBuilder getPositionOrBuilder() {
+      public protobuf.ProtoObject.PositionOrBuilder getPositionOrBuilder() {
         if (positionBuilder_ != null) {
           return positionBuilder_.getMessageOrBuilder();
         } else {
           return position_ == null ?
-              protobuf.Object.Position.getDefaultInstance() : position_;
+              protobuf.ProtoObject.Position.getDefaultInstance() : position_;
         }
       }
       /**
-       * <code>.protobuf.Object.Position position = 1;</code>
+       * <code>.protobuf.ProtoObject.Position position = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          protobuf.Object.Position, protobuf.Object.Position.Builder, protobuf.Object.PositionOrBuilder> 
+          protobuf.ProtoObject.Position, protobuf.ProtoObject.Position.Builder, protobuf.ProtoObject.PositionOrBuilder> 
           getPositionFieldBuilder() {
         if (positionBuilder_ == null) {
           positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              protobuf.Object.Position, protobuf.Object.Position.Builder, protobuf.Object.PositionOrBuilder>(
+              protobuf.ProtoObject.Position, protobuf.ProtoObject.Position.Builder, protobuf.ProtoObject.PositionOrBuilder>(
                   getPosition(),
                   getParentForChildren(),
                   isClean());
@@ -922,31 +922,31 @@ private static final long serialVersionUID = 0L;
         return positionBuilder_;
       }
 
-      private protobuf.Object.Rotation rotation_;
+      private protobuf.ProtoObject.Rotation rotation_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          protobuf.Object.Rotation, protobuf.Object.Rotation.Builder, protobuf.Object.RotationOrBuilder> rotationBuilder_;
+          protobuf.ProtoObject.Rotation, protobuf.ProtoObject.Rotation.Builder, protobuf.ProtoObject.RotationOrBuilder> rotationBuilder_;
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        * @return Whether the rotation field is set.
        */
       public boolean hasRotation() {
         return rotationBuilder_ != null || rotation_ != null;
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        * @return The rotation.
        */
-      public protobuf.Object.Rotation getRotation() {
+      public protobuf.ProtoObject.Rotation getRotation() {
         if (rotationBuilder_ == null) {
-          return rotation_ == null ? protobuf.Object.Rotation.getDefaultInstance() : rotation_;
+          return rotation_ == null ? protobuf.ProtoObject.Rotation.getDefaultInstance() : rotation_;
         } else {
           return rotationBuilder_.getMessage();
         }
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        */
-      public Builder setRotation(protobuf.Object.Rotation value) {
+      public Builder setRotation(protobuf.ProtoObject.Rotation value) {
         if (rotationBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -960,10 +960,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        */
       public Builder setRotation(
-          protobuf.Object.Rotation.Builder builderForValue) {
+          protobuf.ProtoObject.Rotation.Builder builderForValue) {
         if (rotationBuilder_ == null) {
           rotation_ = builderForValue.build();
           onChanged();
@@ -974,13 +974,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        */
-      public Builder mergeRotation(protobuf.Object.Rotation value) {
+      public Builder mergeRotation(protobuf.ProtoObject.Rotation value) {
         if (rotationBuilder_ == null) {
           if (rotation_ != null) {
             rotation_ =
-              protobuf.Object.Rotation.newBuilder(rotation_).mergeFrom(value).buildPartial();
+              protobuf.ProtoObject.Rotation.newBuilder(rotation_).mergeFrom(value).buildPartial();
           } else {
             rotation_ = value;
           }
@@ -992,7 +992,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        */
       public Builder clearRotation() {
         if (rotationBuilder_ == null) {
@@ -1006,33 +1006,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        */
-      public protobuf.Object.Rotation.Builder getRotationBuilder() {
+      public protobuf.ProtoObject.Rotation.Builder getRotationBuilder() {
         
         onChanged();
         return getRotationFieldBuilder().getBuilder();
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        */
-      public protobuf.Object.RotationOrBuilder getRotationOrBuilder() {
+      public protobuf.ProtoObject.RotationOrBuilder getRotationOrBuilder() {
         if (rotationBuilder_ != null) {
           return rotationBuilder_.getMessageOrBuilder();
         } else {
           return rotation_ == null ?
-              protobuf.Object.Rotation.getDefaultInstance() : rotation_;
+              protobuf.ProtoObject.Rotation.getDefaultInstance() : rotation_;
         }
       }
       /**
-       * <code>.protobuf.Object.Rotation rotation = 2;</code>
+       * <code>.protobuf.ProtoObject.Rotation rotation = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          protobuf.Object.Rotation, protobuf.Object.Rotation.Builder, protobuf.Object.RotationOrBuilder> 
+          protobuf.ProtoObject.Rotation, protobuf.ProtoObject.Rotation.Builder, protobuf.ProtoObject.RotationOrBuilder> 
           getRotationFieldBuilder() {
         if (rotationBuilder_ == null) {
           rotationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              protobuf.Object.Rotation, protobuf.Object.Rotation.Builder, protobuf.Object.RotationOrBuilder>(
+              protobuf.ProtoObject.Rotation, protobuf.ProtoObject.Rotation.Builder, protobuf.ProtoObject.RotationOrBuilder>(
                   getRotation(),
                   getParentForChildren(),
                   isClean());
@@ -1041,31 +1041,31 @@ private static final long serialVersionUID = 0L;
         return rotationBuilder_;
       }
 
-      private protobuf.Object.Scale scale_;
+      private protobuf.ProtoObject.Scale scale_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          protobuf.Object.Scale, protobuf.Object.Scale.Builder, protobuf.Object.ScaleOrBuilder> scaleBuilder_;
+          protobuf.ProtoObject.Scale, protobuf.ProtoObject.Scale.Builder, protobuf.ProtoObject.ScaleOrBuilder> scaleBuilder_;
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        * @return Whether the scale field is set.
        */
       public boolean hasScale() {
         return scaleBuilder_ != null || scale_ != null;
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        * @return The scale.
        */
-      public protobuf.Object.Scale getScale() {
+      public protobuf.ProtoObject.Scale getScale() {
         if (scaleBuilder_ == null) {
-          return scale_ == null ? protobuf.Object.Scale.getDefaultInstance() : scale_;
+          return scale_ == null ? protobuf.ProtoObject.Scale.getDefaultInstance() : scale_;
         } else {
           return scaleBuilder_.getMessage();
         }
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        */
-      public Builder setScale(protobuf.Object.Scale value) {
+      public Builder setScale(protobuf.ProtoObject.Scale value) {
         if (scaleBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1079,10 +1079,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        */
       public Builder setScale(
-          protobuf.Object.Scale.Builder builderForValue) {
+          protobuf.ProtoObject.Scale.Builder builderForValue) {
         if (scaleBuilder_ == null) {
           scale_ = builderForValue.build();
           onChanged();
@@ -1093,13 +1093,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        */
-      public Builder mergeScale(protobuf.Object.Scale value) {
+      public Builder mergeScale(protobuf.ProtoObject.Scale value) {
         if (scaleBuilder_ == null) {
           if (scale_ != null) {
             scale_ =
-              protobuf.Object.Scale.newBuilder(scale_).mergeFrom(value).buildPartial();
+              protobuf.ProtoObject.Scale.newBuilder(scale_).mergeFrom(value).buildPartial();
           } else {
             scale_ = value;
           }
@@ -1111,7 +1111,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        */
       public Builder clearScale() {
         if (scaleBuilder_ == null) {
@@ -1125,33 +1125,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        */
-      public protobuf.Object.Scale.Builder getScaleBuilder() {
+      public protobuf.ProtoObject.Scale.Builder getScaleBuilder() {
         
         onChanged();
         return getScaleFieldBuilder().getBuilder();
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        */
-      public protobuf.Object.ScaleOrBuilder getScaleOrBuilder() {
+      public protobuf.ProtoObject.ScaleOrBuilder getScaleOrBuilder() {
         if (scaleBuilder_ != null) {
           return scaleBuilder_.getMessageOrBuilder();
         } else {
           return scale_ == null ?
-              protobuf.Object.Scale.getDefaultInstance() : scale_;
+              protobuf.ProtoObject.Scale.getDefaultInstance() : scale_;
         }
       }
       /**
-       * <code>.protobuf.Object.Scale scale = 3;</code>
+       * <code>.protobuf.ProtoObject.Scale scale = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          protobuf.Object.Scale, protobuf.Object.Scale.Builder, protobuf.Object.ScaleOrBuilder> 
+          protobuf.ProtoObject.Scale, protobuf.ProtoObject.Scale.Builder, protobuf.ProtoObject.ScaleOrBuilder> 
           getScaleFieldBuilder() {
         if (scaleBuilder_ == null) {
           scaleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              protobuf.Object.Scale, protobuf.Object.Scale.Builder, protobuf.Object.ScaleOrBuilder>(
+              protobuf.ProtoObject.Scale, protobuf.ProtoObject.Scale.Builder, protobuf.ProtoObject.ScaleOrBuilder>(
                   getScale(),
                   getParentForChildren(),
                   isClean());
@@ -1172,16 +1172,16 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:protobuf.Object.Transform)
+      // @@protoc_insertion_point(builder_scope:protobuf.ProtoObject.Transform)
     }
 
-    // @@protoc_insertion_point(class_scope:protobuf.Object.Transform)
-    private static final protobuf.Object.Transform DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:protobuf.ProtoObject.Transform)
+    private static final protobuf.ProtoObject.Transform DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new protobuf.Object.Transform();
+      DEFAULT_INSTANCE = new protobuf.ProtoObject.Transform();
     }
 
-    public static protobuf.Object.Transform getDefaultInstance() {
+    public static protobuf.ProtoObject.Transform getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1206,14 +1206,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public protobuf.Object.Transform getDefaultInstanceForType() {
+    public protobuf.ProtoObject.Transform getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface PositionOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.Object.Position)
+      // @@protoc_insertion_point(interface_extends:protobuf.ProtoObject.Position)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1235,11 +1235,11 @@ private static final long serialVersionUID = 0L;
     float getZ();
   }
   /**
-   * Protobuf type {@code protobuf.Object.Position}
+   * Protobuf type {@code protobuf.ProtoObject.Position}
    */
   public static final class Position extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.Object.Position)
+      // @@protoc_insertion_point(message_implements:protobuf.ProtoObject.Position)
       PositionOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use Position.newBuilder() to construct.
@@ -1315,15 +1315,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Position_descriptor;
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Position_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Position_fieldAccessorTable
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Position_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              protobuf.Object.Position.class, protobuf.Object.Position.Builder.class);
+              protobuf.ProtoObject.Position.class, protobuf.ProtoObject.Position.Builder.class);
     }
 
     public static final int X_FIELD_NUMBER = 1;
@@ -1413,10 +1413,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof protobuf.Object.Position)) {
+      if (!(obj instanceof protobuf.ProtoObject.Position)) {
         return super.equals(obj);
       }
-      protobuf.Object.Position other = (protobuf.Object.Position) obj;
+      protobuf.ProtoObject.Position other = (protobuf.ProtoObject.Position) obj;
 
       if (java.lang.Float.floatToIntBits(getX())
           != java.lang.Float.floatToIntBits(
@@ -1452,69 +1452,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Position parseFrom(byte[] data)
+    public static protobuf.ProtoObject.Position parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Position parseFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Position parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Position parseDelimitedFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Position parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Position parseDelimitedFrom(
+    public static protobuf.ProtoObject.Position parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Position parseFrom(
+    public static protobuf.ProtoObject.Position parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1527,7 +1527,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(protobuf.Object.Position prototype) {
+    public static Builder newBuilder(protobuf.ProtoObject.Position prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1543,26 +1543,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code protobuf.Object.Position}
+     * Protobuf type {@code protobuf.ProtoObject.Position}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.Object.Position)
-        protobuf.Object.PositionOrBuilder {
+        // @@protoc_insertion_point(builder_implements:protobuf.ProtoObject.Position)
+        protobuf.ProtoObject.PositionOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Position_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Position_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Position_fieldAccessorTable
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Position_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                protobuf.Object.Position.class, protobuf.Object.Position.Builder.class);
+                protobuf.ProtoObject.Position.class, protobuf.ProtoObject.Position.Builder.class);
       }
 
-      // Construct using protobuf.Object.Position.newBuilder()
+      // Construct using protobuf.ProtoObject.Position.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1592,17 +1592,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Position_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Position_descriptor;
       }
 
       @java.lang.Override
-      public protobuf.Object.Position getDefaultInstanceForType() {
-        return protobuf.Object.Position.getDefaultInstance();
+      public protobuf.ProtoObject.Position getDefaultInstanceForType() {
+        return protobuf.ProtoObject.Position.getDefaultInstance();
       }
 
       @java.lang.Override
-      public protobuf.Object.Position build() {
-        protobuf.Object.Position result = buildPartial();
+      public protobuf.ProtoObject.Position build() {
+        protobuf.ProtoObject.Position result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1610,8 +1610,8 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public protobuf.Object.Position buildPartial() {
-        protobuf.Object.Position result = new protobuf.Object.Position(this);
+      public protobuf.ProtoObject.Position buildPartial() {
+        protobuf.ProtoObject.Position result = new protobuf.ProtoObject.Position(this);
         result.x_ = x_;
         result.y_ = y_;
         result.z_ = z_;
@@ -1653,16 +1653,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof protobuf.Object.Position) {
-          return mergeFrom((protobuf.Object.Position)other);
+        if (other instanceof protobuf.ProtoObject.Position) {
+          return mergeFrom((protobuf.ProtoObject.Position)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(protobuf.Object.Position other) {
-        if (other == protobuf.Object.Position.getDefaultInstance()) return this;
+      public Builder mergeFrom(protobuf.ProtoObject.Position other) {
+        if (other == protobuf.ProtoObject.Position.getDefaultInstance()) return this;
         if (other.getX() != 0F) {
           setX(other.getX());
         }
@@ -1687,11 +1687,11 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        protobuf.Object.Position parsedMessage = null;
+        protobuf.ProtoObject.Position parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (protobuf.Object.Position) e.getUnfinishedMessage();
+          parsedMessage = (protobuf.ProtoObject.Position) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1806,16 +1806,16 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:protobuf.Object.Position)
+      // @@protoc_insertion_point(builder_scope:protobuf.ProtoObject.Position)
     }
 
-    // @@protoc_insertion_point(class_scope:protobuf.Object.Position)
-    private static final protobuf.Object.Position DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:protobuf.ProtoObject.Position)
+    private static final protobuf.ProtoObject.Position DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new protobuf.Object.Position();
+      DEFAULT_INSTANCE = new protobuf.ProtoObject.Position();
     }
 
-    public static protobuf.Object.Position getDefaultInstance() {
+    public static protobuf.ProtoObject.Position getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1840,14 +1840,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public protobuf.Object.Position getDefaultInstanceForType() {
+    public protobuf.ProtoObject.Position getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface RotationOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.Object.Rotation)
+      // @@protoc_insertion_point(interface_extends:protobuf.ProtoObject.Rotation)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1875,11 +1875,11 @@ private static final long serialVersionUID = 0L;
     float getW();
   }
   /**
-   * Protobuf type {@code protobuf.Object.Rotation}
+   * Protobuf type {@code protobuf.ProtoObject.Rotation}
    */
   public static final class Rotation extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.Object.Rotation)
+      // @@protoc_insertion_point(message_implements:protobuf.ProtoObject.Rotation)
       RotationOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use Rotation.newBuilder() to construct.
@@ -1960,15 +1960,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Rotation_descriptor;
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Rotation_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Rotation_fieldAccessorTable
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Rotation_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              protobuf.Object.Rotation.class, protobuf.Object.Rotation.Builder.class);
+              protobuf.ProtoObject.Rotation.class, protobuf.ProtoObject.Rotation.Builder.class);
     }
 
     public static final int X_FIELD_NUMBER = 1;
@@ -2076,10 +2076,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof protobuf.Object.Rotation)) {
+      if (!(obj instanceof protobuf.ProtoObject.Rotation)) {
         return super.equals(obj);
       }
-      protobuf.Object.Rotation other = (protobuf.Object.Rotation) obj;
+      protobuf.ProtoObject.Rotation other = (protobuf.ProtoObject.Rotation) obj;
 
       if (java.lang.Float.floatToIntBits(getX())
           != java.lang.Float.floatToIntBits(
@@ -2121,69 +2121,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Rotation parseFrom(byte[] data)
+    public static protobuf.ProtoObject.Rotation parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Rotation parseFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Rotation parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Rotation parseDelimitedFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Rotation parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Rotation parseDelimitedFrom(
+    public static protobuf.ProtoObject.Rotation parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Rotation parseFrom(
+    public static protobuf.ProtoObject.Rotation parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2196,7 +2196,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(protobuf.Object.Rotation prototype) {
+    public static Builder newBuilder(protobuf.ProtoObject.Rotation prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2212,26 +2212,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code protobuf.Object.Rotation}
+     * Protobuf type {@code protobuf.ProtoObject.Rotation}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.Object.Rotation)
-        protobuf.Object.RotationOrBuilder {
+        // @@protoc_insertion_point(builder_implements:protobuf.ProtoObject.Rotation)
+        protobuf.ProtoObject.RotationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Rotation_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Rotation_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Rotation_fieldAccessorTable
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Rotation_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                protobuf.Object.Rotation.class, protobuf.Object.Rotation.Builder.class);
+                protobuf.ProtoObject.Rotation.class, protobuf.ProtoObject.Rotation.Builder.class);
       }
 
-      // Construct using protobuf.Object.Rotation.newBuilder()
+      // Construct using protobuf.ProtoObject.Rotation.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2263,17 +2263,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Rotation_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Rotation_descriptor;
       }
 
       @java.lang.Override
-      public protobuf.Object.Rotation getDefaultInstanceForType() {
-        return protobuf.Object.Rotation.getDefaultInstance();
+      public protobuf.ProtoObject.Rotation getDefaultInstanceForType() {
+        return protobuf.ProtoObject.Rotation.getDefaultInstance();
       }
 
       @java.lang.Override
-      public protobuf.Object.Rotation build() {
-        protobuf.Object.Rotation result = buildPartial();
+      public protobuf.ProtoObject.Rotation build() {
+        protobuf.ProtoObject.Rotation result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2281,8 +2281,8 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public protobuf.Object.Rotation buildPartial() {
-        protobuf.Object.Rotation result = new protobuf.Object.Rotation(this);
+      public protobuf.ProtoObject.Rotation buildPartial() {
+        protobuf.ProtoObject.Rotation result = new protobuf.ProtoObject.Rotation(this);
         result.x_ = x_;
         result.y_ = y_;
         result.z_ = z_;
@@ -2325,16 +2325,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof protobuf.Object.Rotation) {
-          return mergeFrom((protobuf.Object.Rotation)other);
+        if (other instanceof protobuf.ProtoObject.Rotation) {
+          return mergeFrom((protobuf.ProtoObject.Rotation)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(protobuf.Object.Rotation other) {
-        if (other == protobuf.Object.Rotation.getDefaultInstance()) return this;
+      public Builder mergeFrom(protobuf.ProtoObject.Rotation other) {
+        if (other == protobuf.ProtoObject.Rotation.getDefaultInstance()) return this;
         if (other.getX() != 0F) {
           setX(other.getX());
         }
@@ -2362,11 +2362,11 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        protobuf.Object.Rotation parsedMessage = null;
+        protobuf.ProtoObject.Rotation parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (protobuf.Object.Rotation) e.getUnfinishedMessage();
+          parsedMessage = (protobuf.ProtoObject.Rotation) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2512,16 +2512,16 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:protobuf.Object.Rotation)
+      // @@protoc_insertion_point(builder_scope:protobuf.ProtoObject.Rotation)
     }
 
-    // @@protoc_insertion_point(class_scope:protobuf.Object.Rotation)
-    private static final protobuf.Object.Rotation DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:protobuf.ProtoObject.Rotation)
+    private static final protobuf.ProtoObject.Rotation DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new protobuf.Object.Rotation();
+      DEFAULT_INSTANCE = new protobuf.ProtoObject.Rotation();
     }
 
-    public static protobuf.Object.Rotation getDefaultInstance() {
+    public static protobuf.ProtoObject.Rotation getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2546,14 +2546,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public protobuf.Object.Rotation getDefaultInstanceForType() {
+    public protobuf.ProtoObject.Rotation getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface ScaleOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.Object.Scale)
+      // @@protoc_insertion_point(interface_extends:protobuf.ProtoObject.Scale)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -2575,11 +2575,11 @@ private static final long serialVersionUID = 0L;
     float getZ();
   }
   /**
-   * Protobuf type {@code protobuf.Object.Scale}
+   * Protobuf type {@code protobuf.ProtoObject.Scale}
    */
   public static final class Scale extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.Object.Scale)
+      // @@protoc_insertion_point(message_implements:protobuf.ProtoObject.Scale)
       ScaleOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use Scale.newBuilder() to construct.
@@ -2655,15 +2655,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Scale_descriptor;
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Scale_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Scale_fieldAccessorTable
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Scale_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              protobuf.Object.Scale.class, protobuf.Object.Scale.Builder.class);
+              protobuf.ProtoObject.Scale.class, protobuf.ProtoObject.Scale.Builder.class);
     }
 
     public static final int X_FIELD_NUMBER = 1;
@@ -2753,10 +2753,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof protobuf.Object.Scale)) {
+      if (!(obj instanceof protobuf.ProtoObject.Scale)) {
         return super.equals(obj);
       }
-      protobuf.Object.Scale other = (protobuf.Object.Scale) obj;
+      protobuf.ProtoObject.Scale other = (protobuf.ProtoObject.Scale) obj;
 
       if (java.lang.Float.floatToIntBits(getX())
           != java.lang.Float.floatToIntBits(
@@ -2792,69 +2792,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Scale parseFrom(byte[] data)
+    public static protobuf.ProtoObject.Scale parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Scale parseFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Scale parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Scale parseDelimitedFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Scale parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Scale parseDelimitedFrom(
+    public static protobuf.ProtoObject.Scale parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Scale parseFrom(
+    public static protobuf.ProtoObject.Scale parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2867,7 +2867,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(protobuf.Object.Scale prototype) {
+    public static Builder newBuilder(protobuf.ProtoObject.Scale prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2883,26 +2883,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code protobuf.Object.Scale}
+     * Protobuf type {@code protobuf.ProtoObject.Scale}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.Object.Scale)
-        protobuf.Object.ScaleOrBuilder {
+        // @@protoc_insertion_point(builder_implements:protobuf.ProtoObject.Scale)
+        protobuf.ProtoObject.ScaleOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Scale_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Scale_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Scale_fieldAccessorTable
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Scale_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                protobuf.Object.Scale.class, protobuf.Object.Scale.Builder.class);
+                protobuf.ProtoObject.Scale.class, protobuf.ProtoObject.Scale.Builder.class);
       }
 
-      // Construct using protobuf.Object.Scale.newBuilder()
+      // Construct using protobuf.ProtoObject.Scale.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2932,17 +2932,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Scale_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Scale_descriptor;
       }
 
       @java.lang.Override
-      public protobuf.Object.Scale getDefaultInstanceForType() {
-        return protobuf.Object.Scale.getDefaultInstance();
+      public protobuf.ProtoObject.Scale getDefaultInstanceForType() {
+        return protobuf.ProtoObject.Scale.getDefaultInstance();
       }
 
       @java.lang.Override
-      public protobuf.Object.Scale build() {
-        protobuf.Object.Scale result = buildPartial();
+      public protobuf.ProtoObject.Scale build() {
+        protobuf.ProtoObject.Scale result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2950,8 +2950,8 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public protobuf.Object.Scale buildPartial() {
-        protobuf.Object.Scale result = new protobuf.Object.Scale(this);
+      public protobuf.ProtoObject.Scale buildPartial() {
+        protobuf.ProtoObject.Scale result = new protobuf.ProtoObject.Scale(this);
         result.x_ = x_;
         result.y_ = y_;
         result.z_ = z_;
@@ -2993,16 +2993,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof protobuf.Object.Scale) {
-          return mergeFrom((protobuf.Object.Scale)other);
+        if (other instanceof protobuf.ProtoObject.Scale) {
+          return mergeFrom((protobuf.ProtoObject.Scale)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(protobuf.Object.Scale other) {
-        if (other == protobuf.Object.Scale.getDefaultInstance()) return this;
+      public Builder mergeFrom(protobuf.ProtoObject.Scale other) {
+        if (other == protobuf.ProtoObject.Scale.getDefaultInstance()) return this;
         if (other.getX() != 0F) {
           setX(other.getX());
         }
@@ -3027,11 +3027,11 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        protobuf.Object.Scale parsedMessage = null;
+        protobuf.ProtoObject.Scale parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (protobuf.Object.Scale) e.getUnfinishedMessage();
+          parsedMessage = (protobuf.ProtoObject.Scale) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3146,16 +3146,16 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:protobuf.Object.Scale)
+      // @@protoc_insertion_point(builder_scope:protobuf.ProtoObject.Scale)
     }
 
-    // @@protoc_insertion_point(class_scope:protobuf.Object.Scale)
-    private static final protobuf.Object.Scale DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:protobuf.ProtoObject.Scale)
+    private static final protobuf.ProtoObject.Scale DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new protobuf.Object.Scale();
+      DEFAULT_INSTANCE = new protobuf.ProtoObject.Scale();
     }
 
-    public static protobuf.Object.Scale getDefaultInstance() {
+    public static protobuf.ProtoObject.Scale getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3180,14 +3180,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public protobuf.Object.Scale getDefaultInstanceForType() {
+    public protobuf.ProtoObject.Scale getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface ColorOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:protobuf.Object.Color)
+      // @@protoc_insertion_point(interface_extends:protobuf.ProtoObject.Color)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -3215,11 +3215,11 @@ private static final long serialVersionUID = 0L;
     float getA();
   }
   /**
-   * Protobuf type {@code protobuf.Object.Color}
+   * Protobuf type {@code protobuf.ProtoObject.Color}
    */
   public static final class Color extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:protobuf.Object.Color)
+      // @@protoc_insertion_point(message_implements:protobuf.ProtoObject.Color)
       ColorOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use Color.newBuilder() to construct.
@@ -3300,15 +3300,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Color_descriptor;
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Color_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_Color_fieldAccessorTable
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Color_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              protobuf.Object.Color.class, protobuf.Object.Color.Builder.class);
+              protobuf.ProtoObject.Color.class, protobuf.ProtoObject.Color.Builder.class);
     }
 
     public static final int R_FIELD_NUMBER = 1;
@@ -3416,10 +3416,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof protobuf.Object.Color)) {
+      if (!(obj instanceof protobuf.ProtoObject.Color)) {
         return super.equals(obj);
       }
-      protobuf.Object.Color other = (protobuf.Object.Color) obj;
+      protobuf.ProtoObject.Color other = (protobuf.ProtoObject.Color) obj;
 
       if (java.lang.Float.floatToIntBits(getR())
           != java.lang.Float.floatToIntBits(
@@ -3461,69 +3461,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Color parseFrom(byte[] data)
+    public static protobuf.ProtoObject.Color parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static protobuf.Object.Color parseFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Color parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Color parseDelimitedFrom(java.io.InputStream input)
+    public static protobuf.ProtoObject.Color parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Color parseDelimitedFrom(
+    public static protobuf.ProtoObject.Color parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static protobuf.Object.Color parseFrom(
+    public static protobuf.ProtoObject.Color parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3536,7 +3536,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(protobuf.Object.Color prototype) {
+    public static Builder newBuilder(protobuf.ProtoObject.Color prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -3552,26 +3552,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code protobuf.Object.Color}
+     * Protobuf type {@code protobuf.ProtoObject.Color}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:protobuf.Object.Color)
-        protobuf.Object.ColorOrBuilder {
+        // @@protoc_insertion_point(builder_implements:protobuf.ProtoObject.Color)
+        protobuf.ProtoObject.ColorOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Color_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Color_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Color_fieldAccessorTable
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Color_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                protobuf.Object.Color.class, protobuf.Object.Color.Builder.class);
+                protobuf.ProtoObject.Color.class, protobuf.ProtoObject.Color.Builder.class);
       }
 
-      // Construct using protobuf.Object.Color.newBuilder()
+      // Construct using protobuf.ProtoObject.Color.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3603,17 +3603,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return protobuf.Protobuf.internal_static_protobuf_Object_Color_descriptor;
+        return protobuf.Protobuf.internal_static_protobuf_ProtoObject_Color_descriptor;
       }
 
       @java.lang.Override
-      public protobuf.Object.Color getDefaultInstanceForType() {
-        return protobuf.Object.Color.getDefaultInstance();
+      public protobuf.ProtoObject.Color getDefaultInstanceForType() {
+        return protobuf.ProtoObject.Color.getDefaultInstance();
       }
 
       @java.lang.Override
-      public protobuf.Object.Color build() {
-        protobuf.Object.Color result = buildPartial();
+      public protobuf.ProtoObject.Color build() {
+        protobuf.ProtoObject.Color result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3621,8 +3621,8 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public protobuf.Object.Color buildPartial() {
-        protobuf.Object.Color result = new protobuf.Object.Color(this);
+      public protobuf.ProtoObject.Color buildPartial() {
+        protobuf.ProtoObject.Color result = new protobuf.ProtoObject.Color(this);
         result.r_ = r_;
         result.g_ = g_;
         result.b_ = b_;
@@ -3665,16 +3665,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof protobuf.Object.Color) {
-          return mergeFrom((protobuf.Object.Color)other);
+        if (other instanceof protobuf.ProtoObject.Color) {
+          return mergeFrom((protobuf.ProtoObject.Color)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(protobuf.Object.Color other) {
-        if (other == protobuf.Object.Color.getDefaultInstance()) return this;
+      public Builder mergeFrom(protobuf.ProtoObject.Color other) {
+        if (other == protobuf.ProtoObject.Color.getDefaultInstance()) return this;
         if (other.getR() != 0F) {
           setR(other.getR());
         }
@@ -3702,11 +3702,11 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        protobuf.Object.Color parsedMessage = null;
+        protobuf.ProtoObject.Color parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (protobuf.Object.Color) e.getUnfinishedMessage();
+          parsedMessage = (protobuf.ProtoObject.Color) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3852,16 +3852,16 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:protobuf.Object.Color)
+      // @@protoc_insertion_point(builder_scope:protobuf.ProtoObject.Color)
     }
 
-    // @@protoc_insertion_point(class_scope:protobuf.Object.Color)
-    private static final protobuf.Object.Color DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:protobuf.ProtoObject.Color)
+    private static final protobuf.ProtoObject.Color DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new protobuf.Object.Color();
+      DEFAULT_INSTANCE = new protobuf.ProtoObject.Color();
     }
 
-    public static protobuf.Object.Color getDefaultInstance() {
+    public static protobuf.ProtoObject.Color getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3886,7 +3886,7 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public protobuf.Object.Color getDefaultInstanceForType() {
+    public protobuf.ProtoObject.Color getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3999,9 +3999,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int COLOR_FIELD_NUMBER = 5;
-  private protobuf.Object.Color color_;
+  private protobuf.ProtoObject.Color color_;
   /**
-   * <code>.protobuf.Object.Color color = 5;</code>
+   * <code>.protobuf.ProtoObject.Color color = 5;</code>
    * @return Whether the color field is set.
    */
   @java.lang.Override
@@ -4009,65 +4009,25 @@ private static final long serialVersionUID = 0L;
     return color_ != null;
   }
   /**
-   * <code>.protobuf.Object.Color color = 5;</code>
+   * <code>.protobuf.ProtoObject.Color color = 5;</code>
    * @return The color.
    */
   @java.lang.Override
-  public protobuf.Object.Color getColor() {
-    return color_ == null ? protobuf.Object.Color.getDefaultInstance() : color_;
+  public protobuf.ProtoObject.Color getColor() {
+    return color_ == null ? protobuf.ProtoObject.Color.getDefaultInstance() : color_;
   }
   /**
-   * <code>.protobuf.Object.Color color = 5;</code>
+   * <code>.protobuf.ProtoObject.Color color = 5;</code>
    */
   @java.lang.Override
-  public protobuf.Object.ColorOrBuilder getColorOrBuilder() {
+  public protobuf.ProtoObject.ColorOrBuilder getColorOrBuilder() {
     return getColor();
   }
 
-  public static final int OBJECT_FIELD_NUMBER = 6;
-  private java.util.List<protobuf.Object> object_;
+  public static final int TRANSFORM_FIELD_NUMBER = 6;
+  private protobuf.ProtoObject.Transform transform_;
   /**
-   * <code>repeated .protobuf.Object object = 6;</code>
-   */
-  @java.lang.Override
-  public java.util.List<protobuf.Object> getObjectList() {
-    return object_;
-  }
-  /**
-   * <code>repeated .protobuf.Object object = 6;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends protobuf.ObjectOrBuilder> 
-      getObjectOrBuilderList() {
-    return object_;
-  }
-  /**
-   * <code>repeated .protobuf.Object object = 6;</code>
-   */
-  @java.lang.Override
-  public int getObjectCount() {
-    return object_.size();
-  }
-  /**
-   * <code>repeated .protobuf.Object object = 6;</code>
-   */
-  @java.lang.Override
-  public protobuf.Object getObject(int index) {
-    return object_.get(index);
-  }
-  /**
-   * <code>repeated .protobuf.Object object = 6;</code>
-   */
-  @java.lang.Override
-  public protobuf.ObjectOrBuilder getObjectOrBuilder(
-      int index) {
-    return object_.get(index);
-  }
-
-  public static final int TRANSFORM_FIELD_NUMBER = 7;
-  private protobuf.Object.Transform transform_;
-  /**
-   * <code>.protobuf.Object.Transform transform = 7;</code>
+   * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
    * @return Whether the transform field is set.
    */
   @java.lang.Override
@@ -4075,139 +4035,137 @@ private static final long serialVersionUID = 0L;
     return transform_ != null;
   }
   /**
-   * <code>.protobuf.Object.Transform transform = 7;</code>
+   * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
    * @return The transform.
    */
   @java.lang.Override
-  public protobuf.Object.Transform getTransform() {
-    return transform_ == null ? protobuf.Object.Transform.getDefaultInstance() : transform_;
+  public protobuf.ProtoObject.Transform getTransform() {
+    return transform_ == null ? protobuf.ProtoObject.Transform.getDefaultInstance() : transform_;
   }
   /**
-   * <code>.protobuf.Object.Transform transform = 7;</code>
+   * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
    */
   @java.lang.Override
-  public protobuf.Object.TransformOrBuilder getTransformOrBuilder() {
+  public protobuf.ProtoObject.TransformOrBuilder getTransformOrBuilder() {
     return getTransform();
   }
 
-  public static final int POSITION_FIELD_NUMBER = 8;
-  private java.util.List<protobuf.Object.Position> position_;
+  public static final int PROTOOBJECTS_FIELD_NUMBER = 7;
+  private java.util.List<protobuf.ProtoObject> protoObjects_;
   /**
-   * <code>repeated .protobuf.Object.Position position = 8;</code>
+   * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
    */
   @java.lang.Override
-  public java.util.List<protobuf.Object.Position> getPositionList() {
-    return position_;
+  public java.util.List<protobuf.ProtoObject> getProtoObjectsList() {
+    return protoObjects_;
   }
   /**
-   * <code>repeated .protobuf.Object.Position position = 8;</code>
+   * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends protobuf.Object.PositionOrBuilder> 
-      getPositionOrBuilderList() {
-    return position_;
+  public java.util.List<? extends protobuf.ProtoObjectOrBuilder> 
+      getProtoObjectsOrBuilderList() {
+    return protoObjects_;
   }
   /**
-   * <code>repeated .protobuf.Object.Position position = 8;</code>
+   * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
    */
   @java.lang.Override
-  public int getPositionCount() {
-    return position_.size();
+  public int getProtoObjectsCount() {
+    return protoObjects_.size();
   }
   /**
-   * <code>repeated .protobuf.Object.Position position = 8;</code>
+   * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
    */
   @java.lang.Override
-  public protobuf.Object.Position getPosition(int index) {
-    return position_.get(index);
+  public protobuf.ProtoObject getProtoObjects(int index) {
+    return protoObjects_.get(index);
   }
   /**
-   * <code>repeated .protobuf.Object.Position position = 8;</code>
+   * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
    */
   @java.lang.Override
-  public protobuf.Object.PositionOrBuilder getPositionOrBuilder(
+  public protobuf.ProtoObjectOrBuilder getProtoObjectsOrBuilder(
       int index) {
-    return position_.get(index);
+    return protoObjects_.get(index);
+  }
+
+  public static final int POSITION_FIELD_NUMBER = 8;
+  private protobuf.ProtoObject.Position position_;
+  /**
+   * <code>.protobuf.ProtoObject.Position position = 8;</code>
+   * @return Whether the position field is set.
+   */
+  @java.lang.Override
+  public boolean hasPosition() {
+    return position_ != null;
+  }
+  /**
+   * <code>.protobuf.ProtoObject.Position position = 8;</code>
+   * @return The position.
+   */
+  @java.lang.Override
+  public protobuf.ProtoObject.Position getPosition() {
+    return position_ == null ? protobuf.ProtoObject.Position.getDefaultInstance() : position_;
+  }
+  /**
+   * <code>.protobuf.ProtoObject.Position position = 8;</code>
+   */
+  @java.lang.Override
+  public protobuf.ProtoObject.PositionOrBuilder getPositionOrBuilder() {
+    return getPosition();
   }
 
   public static final int ROTATION_FIELD_NUMBER = 9;
-  private java.util.List<protobuf.Object.Rotation> rotation_;
+  private protobuf.ProtoObject.Rotation rotation_;
   /**
-   * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+   * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
+   * @return Whether the rotation field is set.
    */
   @java.lang.Override
-  public java.util.List<protobuf.Object.Rotation> getRotationList() {
-    return rotation_;
+  public boolean hasRotation() {
+    return rotation_ != null;
   }
   /**
-   * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+   * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
+   * @return The rotation.
    */
   @java.lang.Override
-  public java.util.List<? extends protobuf.Object.RotationOrBuilder> 
-      getRotationOrBuilderList() {
-    return rotation_;
+  public protobuf.ProtoObject.Rotation getRotation() {
+    return rotation_ == null ? protobuf.ProtoObject.Rotation.getDefaultInstance() : rotation_;
   }
   /**
-   * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+   * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
    */
   @java.lang.Override
-  public int getRotationCount() {
-    return rotation_.size();
-  }
-  /**
-   * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-   */
-  @java.lang.Override
-  public protobuf.Object.Rotation getRotation(int index) {
-    return rotation_.get(index);
-  }
-  /**
-   * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-   */
-  @java.lang.Override
-  public protobuf.Object.RotationOrBuilder getRotationOrBuilder(
-      int index) {
-    return rotation_.get(index);
+  public protobuf.ProtoObject.RotationOrBuilder getRotationOrBuilder() {
+    return getRotation();
   }
 
   public static final int SCALE_FIELD_NUMBER = 10;
-  private java.util.List<protobuf.Object.Scale> scale_;
+  private protobuf.ProtoObject.Scale scale_;
   /**
-   * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+   * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
+   * @return Whether the scale field is set.
    */
   @java.lang.Override
-  public java.util.List<protobuf.Object.Scale> getScaleList() {
-    return scale_;
+  public boolean hasScale() {
+    return scale_ != null;
   }
   /**
-   * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+   * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
+   * @return The scale.
    */
   @java.lang.Override
-  public java.util.List<? extends protobuf.Object.ScaleOrBuilder> 
-      getScaleOrBuilderList() {
-    return scale_;
+  public protobuf.ProtoObject.Scale getScale() {
+    return scale_ == null ? protobuf.ProtoObject.Scale.getDefaultInstance() : scale_;
   }
   /**
-   * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+   * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
    */
   @java.lang.Override
-  public int getScaleCount() {
-    return scale_.size();
-  }
-  /**
-   * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-   */
-  @java.lang.Override
-  public protobuf.Object.Scale getScale(int index) {
-    return scale_.get(index);
-  }
-  /**
-   * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-   */
-  @java.lang.Override
-  public protobuf.Object.ScaleOrBuilder getScaleOrBuilder(
-      int index) {
-    return scale_.get(index);
+  public protobuf.ProtoObject.ScaleOrBuilder getScaleOrBuilder() {
+    return getScale();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -4239,20 +4197,20 @@ private static final long serialVersionUID = 0L;
     if (color_ != null) {
       output.writeMessage(5, getColor());
     }
-    for (int i = 0; i < object_.size(); i++) {
-      output.writeMessage(6, object_.get(i));
-    }
     if (transform_ != null) {
-      output.writeMessage(7, getTransform());
+      output.writeMessage(6, getTransform());
     }
-    for (int i = 0; i < position_.size(); i++) {
-      output.writeMessage(8, position_.get(i));
+    for (int i = 0; i < protoObjects_.size(); i++) {
+      output.writeMessage(7, protoObjects_.get(i));
     }
-    for (int i = 0; i < rotation_.size(); i++) {
-      output.writeMessage(9, rotation_.get(i));
+    if (position_ != null) {
+      output.writeMessage(8, getPosition());
     }
-    for (int i = 0; i < scale_.size(); i++) {
-      output.writeMessage(10, scale_.get(i));
+    if (rotation_ != null) {
+      output.writeMessage(9, getRotation());
+    }
+    if (scale_ != null) {
+      output.writeMessage(10, getScale());
     }
     unknownFields.writeTo(output);
   }
@@ -4281,25 +4239,25 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getColor());
     }
-    for (int i = 0; i < object_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, object_.get(i));
-    }
     if (transform_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, getTransform());
+        .computeMessageSize(6, getTransform());
     }
-    for (int i = 0; i < position_.size(); i++) {
+    for (int i = 0; i < protoObjects_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, position_.get(i));
+        .computeMessageSize(7, protoObjects_.get(i));
     }
-    for (int i = 0; i < rotation_.size(); i++) {
+    if (position_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, rotation_.get(i));
+        .computeMessageSize(8, getPosition());
     }
-    for (int i = 0; i < scale_.size(); i++) {
+    if (rotation_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(10, scale_.get(i));
+        .computeMessageSize(9, getRotation());
+    }
+    if (scale_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, getScale());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -4311,10 +4269,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof protobuf.Object)) {
+    if (!(obj instanceof protobuf.ProtoObject)) {
       return super.equals(obj);
     }
-    protobuf.Object other = (protobuf.Object) obj;
+    protobuf.ProtoObject other = (protobuf.ProtoObject) obj;
 
     if (!getUuid()
         .equals(other.getUuid())) return false;
@@ -4328,19 +4286,28 @@ private static final long serialVersionUID = 0L;
       if (!getColor()
           .equals(other.getColor())) return false;
     }
-    if (!getObjectList()
-        .equals(other.getObjectList())) return false;
     if (hasTransform() != other.hasTransform()) return false;
     if (hasTransform()) {
       if (!getTransform()
           .equals(other.getTransform())) return false;
     }
-    if (!getPositionList()
-        .equals(other.getPositionList())) return false;
-    if (!getRotationList()
-        .equals(other.getRotationList())) return false;
-    if (!getScaleList()
-        .equals(other.getScaleList())) return false;
+    if (!getProtoObjectsList()
+        .equals(other.getProtoObjectsList())) return false;
+    if (hasPosition() != other.hasPosition()) return false;
+    if (hasPosition()) {
+      if (!getPosition()
+          .equals(other.getPosition())) return false;
+    }
+    if (hasRotation() != other.hasRotation()) return false;
+    if (hasRotation()) {
+      if (!getRotation()
+          .equals(other.getRotation())) return false;
+    }
+    if (hasScale() != other.hasScale()) return false;
+    if (hasScale()) {
+      if (!getScale()
+          .equals(other.getScale())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -4364,94 +4331,94 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + COLOR_FIELD_NUMBER;
       hash = (53 * hash) + getColor().hashCode();
     }
-    if (getObjectCount() > 0) {
-      hash = (37 * hash) + OBJECT_FIELD_NUMBER;
-      hash = (53 * hash) + getObjectList().hashCode();
-    }
     if (hasTransform()) {
       hash = (37 * hash) + TRANSFORM_FIELD_NUMBER;
       hash = (53 * hash) + getTransform().hashCode();
     }
-    if (getPositionCount() > 0) {
+    if (getProtoObjectsCount() > 0) {
+      hash = (37 * hash) + PROTOOBJECTS_FIELD_NUMBER;
+      hash = (53 * hash) + getProtoObjectsList().hashCode();
+    }
+    if (hasPosition()) {
       hash = (37 * hash) + POSITION_FIELD_NUMBER;
-      hash = (53 * hash) + getPositionList().hashCode();
+      hash = (53 * hash) + getPosition().hashCode();
     }
-    if (getRotationCount() > 0) {
+    if (hasRotation()) {
       hash = (37 * hash) + ROTATION_FIELD_NUMBER;
-      hash = (53 * hash) + getRotationList().hashCode();
+      hash = (53 * hash) + getRotation().hashCode();
     }
-    if (getScaleCount() > 0) {
+    if (hasScale()) {
       hash = (37 * hash) + SCALE_FIELD_NUMBER;
-      hash = (53 * hash) + getScaleList().hashCode();
+      hash = (53 * hash) + getScale().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static protobuf.Object parseFrom(byte[] data)
+  public static protobuf.ProtoObject parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static protobuf.Object parseFrom(java.io.InputStream input)
+  public static protobuf.ProtoObject parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static protobuf.Object parseDelimitedFrom(java.io.InputStream input)
+  public static protobuf.ProtoObject parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static protobuf.Object parseDelimitedFrom(
+  public static protobuf.ProtoObject parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static protobuf.Object parseFrom(
+  public static protobuf.ProtoObject parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -4464,7 +4431,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(protobuf.Object prototype) {
+  public static Builder newBuilder(protobuf.ProtoObject prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -4480,26 +4447,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code protobuf.Object}
+   * Protobuf type {@code protobuf.ProtoObject}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:protobuf.Object)
-      protobuf.ObjectOrBuilder {
+      // @@protoc_insertion_point(builder_implements:protobuf.ProtoObject)
+      protobuf.ProtoObjectOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_descriptor;
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_fieldAccessorTable
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              protobuf.Object.class, protobuf.Object.Builder.class);
+              protobuf.ProtoObject.class, protobuf.ProtoObject.Builder.class);
     }
 
-    // Construct using protobuf.Object.newBuilder()
+    // Construct using protobuf.ProtoObject.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -4512,10 +4479,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getObjectFieldBuilder();
-        getPositionFieldBuilder();
-        getRotationFieldBuilder();
-        getScaleFieldBuilder();
+        getProtoObjectsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -4535,35 +4499,35 @@ private static final long serialVersionUID = 0L;
         color_ = null;
         colorBuilder_ = null;
       }
-      if (objectBuilder_ == null) {
-        object_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-      } else {
-        objectBuilder_.clear();
-      }
       if (transformBuilder_ == null) {
         transform_ = null;
       } else {
         transform_ = null;
         transformBuilder_ = null;
       }
-      if (positionBuilder_ == null) {
-        position_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+      if (protoObjectsBuilder_ == null) {
+        protoObjects_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
       } else {
-        positionBuilder_.clear();
+        protoObjectsBuilder_.clear();
+      }
+      if (positionBuilder_ == null) {
+        position_ = null;
+      } else {
+        position_ = null;
+        positionBuilder_ = null;
       }
       if (rotationBuilder_ == null) {
-        rotation_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        rotation_ = null;
       } else {
-        rotationBuilder_.clear();
+        rotation_ = null;
+        rotationBuilder_ = null;
       }
       if (scaleBuilder_ == null) {
-        scale_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000008);
+        scale_ = null;
       } else {
-        scaleBuilder_.clear();
+        scale_ = null;
+        scaleBuilder_ = null;
       }
       return this;
     }
@@ -4571,17 +4535,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return protobuf.Protobuf.internal_static_protobuf_Object_descriptor;
+      return protobuf.Protobuf.internal_static_protobuf_ProtoObject_descriptor;
     }
 
     @java.lang.Override
-    public protobuf.Object getDefaultInstanceForType() {
-      return protobuf.Object.getDefaultInstance();
+    public protobuf.ProtoObject getDefaultInstanceForType() {
+      return protobuf.ProtoObject.getDefaultInstance();
     }
 
     @java.lang.Override
-    public protobuf.Object build() {
-      protobuf.Object result = buildPartial();
+    public protobuf.ProtoObject build() {
+      protobuf.ProtoObject result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -4589,8 +4553,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public protobuf.Object buildPartial() {
-      protobuf.Object result = new protobuf.Object(this);
+    public protobuf.ProtoObject buildPartial() {
+      protobuf.ProtoObject result = new protobuf.ProtoObject(this);
       int from_bitField0_ = bitField0_;
       result.uuid_ = uuid_;
       result.index_ = index_;
@@ -4601,43 +4565,31 @@ private static final long serialVersionUID = 0L;
       } else {
         result.color_ = colorBuilder_.build();
       }
-      if (objectBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
-          object_ = java.util.Collections.unmodifiableList(object_);
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.object_ = object_;
-      } else {
-        result.object_ = objectBuilder_.build();
-      }
       if (transformBuilder_ == null) {
         result.transform_ = transform_;
       } else {
         result.transform_ = transformBuilder_.build();
       }
-      if (positionBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0)) {
-          position_ = java.util.Collections.unmodifiableList(position_);
-          bitField0_ = (bitField0_ & ~0x00000002);
+      if (protoObjectsBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          protoObjects_ = java.util.Collections.unmodifiableList(protoObjects_);
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
+        result.protoObjects_ = protoObjects_;
+      } else {
+        result.protoObjects_ = protoObjectsBuilder_.build();
+      }
+      if (positionBuilder_ == null) {
         result.position_ = position_;
       } else {
         result.position_ = positionBuilder_.build();
       }
       if (rotationBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0)) {
-          rotation_ = java.util.Collections.unmodifiableList(rotation_);
-          bitField0_ = (bitField0_ & ~0x00000004);
-        }
         result.rotation_ = rotation_;
       } else {
         result.rotation_ = rotationBuilder_.build();
       }
       if (scaleBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0)) {
-          scale_ = java.util.Collections.unmodifiableList(scale_);
-          bitField0_ = (bitField0_ & ~0x00000008);
-        }
         result.scale_ = scale_;
       } else {
         result.scale_ = scaleBuilder_.build();
@@ -4680,16 +4632,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof protobuf.Object) {
-        return mergeFrom((protobuf.Object)other);
+      if (other instanceof protobuf.ProtoObject) {
+        return mergeFrom((protobuf.ProtoObject)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(protobuf.Object other) {
-      if (other == protobuf.Object.getDefaultInstance()) return this;
+    public Builder mergeFrom(protobuf.ProtoObject other) {
+      if (other == protobuf.ProtoObject.getDefaultInstance()) return this;
       if (!other.getUuid().isEmpty()) {
         uuid_ = other.uuid_;
         onChanged();
@@ -4707,112 +4659,43 @@ private static final long serialVersionUID = 0L;
       if (other.hasColor()) {
         mergeColor(other.getColor());
       }
-      if (objectBuilder_ == null) {
-        if (!other.object_.isEmpty()) {
-          if (object_.isEmpty()) {
-            object_ = other.object_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureObjectIsMutable();
-            object_.addAll(other.object_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.object_.isEmpty()) {
-          if (objectBuilder_.isEmpty()) {
-            objectBuilder_.dispose();
-            objectBuilder_ = null;
-            object_ = other.object_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-            objectBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getObjectFieldBuilder() : null;
-          } else {
-            objectBuilder_.addAllMessages(other.object_);
-          }
-        }
-      }
       if (other.hasTransform()) {
         mergeTransform(other.getTransform());
       }
-      if (positionBuilder_ == null) {
-        if (!other.position_.isEmpty()) {
-          if (position_.isEmpty()) {
-            position_ = other.position_;
-            bitField0_ = (bitField0_ & ~0x00000002);
+      if (protoObjectsBuilder_ == null) {
+        if (!other.protoObjects_.isEmpty()) {
+          if (protoObjects_.isEmpty()) {
+            protoObjects_ = other.protoObjects_;
+            bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensurePositionIsMutable();
-            position_.addAll(other.position_);
+            ensureProtoObjectsIsMutable();
+            protoObjects_.addAll(other.protoObjects_);
           }
           onChanged();
         }
       } else {
-        if (!other.position_.isEmpty()) {
-          if (positionBuilder_.isEmpty()) {
-            positionBuilder_.dispose();
-            positionBuilder_ = null;
-            position_ = other.position_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-            positionBuilder_ = 
+        if (!other.protoObjects_.isEmpty()) {
+          if (protoObjectsBuilder_.isEmpty()) {
+            protoObjectsBuilder_.dispose();
+            protoObjectsBuilder_ = null;
+            protoObjects_ = other.protoObjects_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            protoObjectsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getPositionFieldBuilder() : null;
+                 getProtoObjectsFieldBuilder() : null;
           } else {
-            positionBuilder_.addAllMessages(other.position_);
+            protoObjectsBuilder_.addAllMessages(other.protoObjects_);
           }
         }
       }
-      if (rotationBuilder_ == null) {
-        if (!other.rotation_.isEmpty()) {
-          if (rotation_.isEmpty()) {
-            rotation_ = other.rotation_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            ensureRotationIsMutable();
-            rotation_.addAll(other.rotation_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.rotation_.isEmpty()) {
-          if (rotationBuilder_.isEmpty()) {
-            rotationBuilder_.dispose();
-            rotationBuilder_ = null;
-            rotation_ = other.rotation_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-            rotationBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getRotationFieldBuilder() : null;
-          } else {
-            rotationBuilder_.addAllMessages(other.rotation_);
-          }
-        }
+      if (other.hasPosition()) {
+        mergePosition(other.getPosition());
       }
-      if (scaleBuilder_ == null) {
-        if (!other.scale_.isEmpty()) {
-          if (scale_.isEmpty()) {
-            scale_ = other.scale_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-          } else {
-            ensureScaleIsMutable();
-            scale_.addAll(other.scale_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.scale_.isEmpty()) {
-          if (scaleBuilder_.isEmpty()) {
-            scaleBuilder_.dispose();
-            scaleBuilder_ = null;
-            scale_ = other.scale_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-            scaleBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getScaleFieldBuilder() : null;
-          } else {
-            scaleBuilder_.addAllMessages(other.scale_);
-          }
-        }
+      if (other.hasRotation()) {
+        mergeRotation(other.getRotation());
+      }
+      if (other.hasScale()) {
+        mergeScale(other.getScale());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -4829,11 +4712,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      protobuf.Object parsedMessage = null;
+      protobuf.ProtoObject parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (protobuf.Object) e.getUnfinishedMessage();
+        parsedMessage = (protobuf.ProtoObject) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -5081,31 +4964,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private protobuf.Object.Color color_;
+    private protobuf.ProtoObject.Color color_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        protobuf.Object.Color, protobuf.Object.Color.Builder, protobuf.Object.ColorOrBuilder> colorBuilder_;
+        protobuf.ProtoObject.Color, protobuf.ProtoObject.Color.Builder, protobuf.ProtoObject.ColorOrBuilder> colorBuilder_;
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      * @return Whether the color field is set.
      */
     public boolean hasColor() {
       return colorBuilder_ != null || color_ != null;
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      * @return The color.
      */
-    public protobuf.Object.Color getColor() {
+    public protobuf.ProtoObject.Color getColor() {
       if (colorBuilder_ == null) {
-        return color_ == null ? protobuf.Object.Color.getDefaultInstance() : color_;
+        return color_ == null ? protobuf.ProtoObject.Color.getDefaultInstance() : color_;
       } else {
         return colorBuilder_.getMessage();
       }
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      */
-    public Builder setColor(protobuf.Object.Color value) {
+    public Builder setColor(protobuf.ProtoObject.Color value) {
       if (colorBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -5119,10 +5002,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      */
     public Builder setColor(
-        protobuf.Object.Color.Builder builderForValue) {
+        protobuf.ProtoObject.Color.Builder builderForValue) {
       if (colorBuilder_ == null) {
         color_ = builderForValue.build();
         onChanged();
@@ -5133,13 +5016,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      */
-    public Builder mergeColor(protobuf.Object.Color value) {
+    public Builder mergeColor(protobuf.ProtoObject.Color value) {
       if (colorBuilder_ == null) {
         if (color_ != null) {
           color_ =
-            protobuf.Object.Color.newBuilder(color_).mergeFrom(value).buildPartial();
+            protobuf.ProtoObject.Color.newBuilder(color_).mergeFrom(value).buildPartial();
         } else {
           color_ = value;
         }
@@ -5151,7 +5034,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      */
     public Builder clearColor() {
       if (colorBuilder_ == null) {
@@ -5165,33 +5048,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      */
-    public protobuf.Object.Color.Builder getColorBuilder() {
+    public protobuf.ProtoObject.Color.Builder getColorBuilder() {
       
       onChanged();
       return getColorFieldBuilder().getBuilder();
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      */
-    public protobuf.Object.ColorOrBuilder getColorOrBuilder() {
+    public protobuf.ProtoObject.ColorOrBuilder getColorOrBuilder() {
       if (colorBuilder_ != null) {
         return colorBuilder_.getMessageOrBuilder();
       } else {
         return color_ == null ?
-            protobuf.Object.Color.getDefaultInstance() : color_;
+            protobuf.ProtoObject.Color.getDefaultInstance() : color_;
       }
     }
     /**
-     * <code>.protobuf.Object.Color color = 5;</code>
+     * <code>.protobuf.ProtoObject.Color color = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        protobuf.Object.Color, protobuf.Object.Color.Builder, protobuf.Object.ColorOrBuilder> 
+        protobuf.ProtoObject.Color, protobuf.ProtoObject.Color.Builder, protobuf.ProtoObject.ColorOrBuilder> 
         getColorFieldBuilder() {
       if (colorBuilder_ == null) {
         colorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            protobuf.Object.Color, protobuf.Object.Color.Builder, protobuf.Object.ColorOrBuilder>(
+            protobuf.ProtoObject.Color, protobuf.ProtoObject.Color.Builder, protobuf.ProtoObject.ColorOrBuilder>(
                 getColor(),
                 getParentForChildren(),
                 isClean());
@@ -5200,271 +5083,31 @@ private static final long serialVersionUID = 0L;
       return colorBuilder_;
     }
 
-    private java.util.List<protobuf.Object> object_ =
-      java.util.Collections.emptyList();
-    private void ensureObjectIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        object_ = new java.util.ArrayList<protobuf.Object>(object_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object, protobuf.Object.Builder, protobuf.ObjectOrBuilder> objectBuilder_;
-
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public java.util.List<protobuf.Object> getObjectList() {
-      if (objectBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(object_);
-      } else {
-        return objectBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public int getObjectCount() {
-      if (objectBuilder_ == null) {
-        return object_.size();
-      } else {
-        return objectBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public protobuf.Object getObject(int index) {
-      if (objectBuilder_ == null) {
-        return object_.get(index);
-      } else {
-        return objectBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder setObject(
-        int index, protobuf.Object value) {
-      if (objectBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureObjectIsMutable();
-        object_.set(index, value);
-        onChanged();
-      } else {
-        objectBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder setObject(
-        int index, protobuf.Object.Builder builderForValue) {
-      if (objectBuilder_ == null) {
-        ensureObjectIsMutable();
-        object_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        objectBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder addObject(protobuf.Object value) {
-      if (objectBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureObjectIsMutable();
-        object_.add(value);
-        onChanged();
-      } else {
-        objectBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder addObject(
-        int index, protobuf.Object value) {
-      if (objectBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureObjectIsMutable();
-        object_.add(index, value);
-        onChanged();
-      } else {
-        objectBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder addObject(
-        protobuf.Object.Builder builderForValue) {
-      if (objectBuilder_ == null) {
-        ensureObjectIsMutable();
-        object_.add(builderForValue.build());
-        onChanged();
-      } else {
-        objectBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder addObject(
-        int index, protobuf.Object.Builder builderForValue) {
-      if (objectBuilder_ == null) {
-        ensureObjectIsMutable();
-        object_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        objectBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder addAllObject(
-        java.lang.Iterable<? extends protobuf.Object> values) {
-      if (objectBuilder_ == null) {
-        ensureObjectIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, object_);
-        onChanged();
-      } else {
-        objectBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder clearObject() {
-      if (objectBuilder_ == null) {
-        object_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-      } else {
-        objectBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public Builder removeObject(int index) {
-      if (objectBuilder_ == null) {
-        ensureObjectIsMutable();
-        object_.remove(index);
-        onChanged();
-      } else {
-        objectBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public protobuf.Object.Builder getObjectBuilder(
-        int index) {
-      return getObjectFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public protobuf.ObjectOrBuilder getObjectOrBuilder(
-        int index) {
-      if (objectBuilder_ == null) {
-        return object_.get(index);  } else {
-        return objectBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public java.util.List<? extends protobuf.ObjectOrBuilder> 
-         getObjectOrBuilderList() {
-      if (objectBuilder_ != null) {
-        return objectBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(object_);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public protobuf.Object.Builder addObjectBuilder() {
-      return getObjectFieldBuilder().addBuilder(
-          protobuf.Object.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public protobuf.Object.Builder addObjectBuilder(
-        int index) {
-      return getObjectFieldBuilder().addBuilder(
-          index, protobuf.Object.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object object = 6;</code>
-     */
-    public java.util.List<protobuf.Object.Builder> 
-         getObjectBuilderList() {
-      return getObjectFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object, protobuf.Object.Builder, protobuf.ObjectOrBuilder> 
-        getObjectFieldBuilder() {
-      if (objectBuilder_ == null) {
-        objectBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            protobuf.Object, protobuf.Object.Builder, protobuf.ObjectOrBuilder>(
-                object_,
-                ((bitField0_ & 0x00000001) != 0),
-                getParentForChildren(),
-                isClean());
-        object_ = null;
-      }
-      return objectBuilder_;
-    }
-
-    private protobuf.Object.Transform transform_;
+    private protobuf.ProtoObject.Transform transform_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        protobuf.Object.Transform, protobuf.Object.Transform.Builder, protobuf.Object.TransformOrBuilder> transformBuilder_;
+        protobuf.ProtoObject.Transform, protobuf.ProtoObject.Transform.Builder, protobuf.ProtoObject.TransformOrBuilder> transformBuilder_;
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      * @return Whether the transform field is set.
      */
     public boolean hasTransform() {
       return transformBuilder_ != null || transform_ != null;
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      * @return The transform.
      */
-    public protobuf.Object.Transform getTransform() {
+    public protobuf.ProtoObject.Transform getTransform() {
       if (transformBuilder_ == null) {
-        return transform_ == null ? protobuf.Object.Transform.getDefaultInstance() : transform_;
+        return transform_ == null ? protobuf.ProtoObject.Transform.getDefaultInstance() : transform_;
       } else {
         return transformBuilder_.getMessage();
       }
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      */
-    public Builder setTransform(protobuf.Object.Transform value) {
+    public Builder setTransform(protobuf.ProtoObject.Transform value) {
       if (transformBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -5478,10 +5121,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      */
     public Builder setTransform(
-        protobuf.Object.Transform.Builder builderForValue) {
+        protobuf.ProtoObject.Transform.Builder builderForValue) {
       if (transformBuilder_ == null) {
         transform_ = builderForValue.build();
         onChanged();
@@ -5492,13 +5135,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      */
-    public Builder mergeTransform(protobuf.Object.Transform value) {
+    public Builder mergeTransform(protobuf.ProtoObject.Transform value) {
       if (transformBuilder_ == null) {
         if (transform_ != null) {
           transform_ =
-            protobuf.Object.Transform.newBuilder(transform_).mergeFrom(value).buildPartial();
+            protobuf.ProtoObject.Transform.newBuilder(transform_).mergeFrom(value).buildPartial();
         } else {
           transform_ = value;
         }
@@ -5510,7 +5153,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      */
     public Builder clearTransform() {
       if (transformBuilder_ == null) {
@@ -5524,33 +5167,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      */
-    public protobuf.Object.Transform.Builder getTransformBuilder() {
+    public protobuf.ProtoObject.Transform.Builder getTransformBuilder() {
       
       onChanged();
       return getTransformFieldBuilder().getBuilder();
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      */
-    public protobuf.Object.TransformOrBuilder getTransformOrBuilder() {
+    public protobuf.ProtoObject.TransformOrBuilder getTransformOrBuilder() {
       if (transformBuilder_ != null) {
         return transformBuilder_.getMessageOrBuilder();
       } else {
         return transform_ == null ?
-            protobuf.Object.Transform.getDefaultInstance() : transform_;
+            protobuf.ProtoObject.Transform.getDefaultInstance() : transform_;
       }
     }
     /**
-     * <code>.protobuf.Object.Transform transform = 7;</code>
+     * <code>.protobuf.ProtoObject.Transform transform = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        protobuf.Object.Transform, protobuf.Object.Transform.Builder, protobuf.Object.TransformOrBuilder> 
+        protobuf.ProtoObject.Transform, protobuf.ProtoObject.Transform.Builder, protobuf.ProtoObject.TransformOrBuilder> 
         getTransformFieldBuilder() {
       if (transformBuilder_ == null) {
         transformBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            protobuf.Object.Transform, protobuf.Object.Transform.Builder, protobuf.Object.TransformOrBuilder>(
+            protobuf.ProtoObject.Transform, protobuf.ProtoObject.Transform.Builder, protobuf.ProtoObject.TransformOrBuilder>(
                 getTransform(),
                 getParentForChildren(),
                 isClean());
@@ -5559,239 +5202,358 @@ private static final long serialVersionUID = 0L;
       return transformBuilder_;
     }
 
-    private java.util.List<protobuf.Object.Position> position_ =
+    private java.util.List<protobuf.ProtoObject> protoObjects_ =
       java.util.Collections.emptyList();
-    private void ensurePositionIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
-        position_ = new java.util.ArrayList<protobuf.Object.Position>(position_);
-        bitField0_ |= 0x00000002;
+    private void ensureProtoObjectsIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        protoObjects_ = new java.util.ArrayList<protobuf.ProtoObject>(protoObjects_);
+        bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object.Position, protobuf.Object.Position.Builder, protobuf.Object.PositionOrBuilder> positionBuilder_;
+        protobuf.ProtoObject, protobuf.ProtoObject.Builder, protobuf.ProtoObjectOrBuilder> protoObjectsBuilder_;
 
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public java.util.List<protobuf.Object.Position> getPositionList() {
-      if (positionBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(position_);
+    public java.util.List<protobuf.ProtoObject> getProtoObjectsList() {
+      if (protoObjectsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(protoObjects_);
       } else {
-        return positionBuilder_.getMessageList();
+        return protoObjectsBuilder_.getMessageList();
       }
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public int getPositionCount() {
-      if (positionBuilder_ == null) {
-        return position_.size();
+    public int getProtoObjectsCount() {
+      if (protoObjectsBuilder_ == null) {
+        return protoObjects_.size();
       } else {
-        return positionBuilder_.getCount();
+        return protoObjectsBuilder_.getCount();
       }
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public protobuf.Object.Position getPosition(int index) {
-      if (positionBuilder_ == null) {
-        return position_.get(index);
+    public protobuf.ProtoObject getProtoObjects(int index) {
+      if (protoObjectsBuilder_ == null) {
+        return protoObjects_.get(index);
       } else {
-        return positionBuilder_.getMessage(index);
+        return protoObjectsBuilder_.getMessage(index);
       }
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public Builder setPosition(
-        int index, protobuf.Object.Position value) {
-      if (positionBuilder_ == null) {
+    public Builder setProtoObjects(
+        int index, protobuf.ProtoObject value) {
+      if (protoObjectsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensurePositionIsMutable();
-        position_.set(index, value);
+        ensureProtoObjectsIsMutable();
+        protoObjects_.set(index, value);
         onChanged();
       } else {
-        positionBuilder_.setMessage(index, value);
+        protoObjectsBuilder_.setMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public Builder setPosition(
-        int index, protobuf.Object.Position.Builder builderForValue) {
-      if (positionBuilder_ == null) {
-        ensurePositionIsMutable();
-        position_.set(index, builderForValue.build());
+    public Builder setProtoObjects(
+        int index, protobuf.ProtoObject.Builder builderForValue) {
+      if (protoObjectsBuilder_ == null) {
+        ensureProtoObjectsIsMutable();
+        protoObjects_.set(index, builderForValue.build());
         onChanged();
       } else {
-        positionBuilder_.setMessage(index, builderForValue.build());
+        protoObjectsBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public Builder addPosition(protobuf.Object.Position value) {
-      if (positionBuilder_ == null) {
+    public Builder addProtoObjects(protobuf.ProtoObject value) {
+      if (protoObjectsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensurePositionIsMutable();
-        position_.add(value);
+        ensureProtoObjectsIsMutable();
+        protoObjects_.add(value);
         onChanged();
       } else {
-        positionBuilder_.addMessage(value);
+        protoObjectsBuilder_.addMessage(value);
       }
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public Builder addPosition(
-        int index, protobuf.Object.Position value) {
-      if (positionBuilder_ == null) {
+    public Builder addProtoObjects(
+        int index, protobuf.ProtoObject value) {
+      if (protoObjectsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensurePositionIsMutable();
-        position_.add(index, value);
+        ensureProtoObjectsIsMutable();
+        protoObjects_.add(index, value);
         onChanged();
       } else {
-        positionBuilder_.addMessage(index, value);
+        protoObjectsBuilder_.addMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public Builder addPosition(
-        protobuf.Object.Position.Builder builderForValue) {
-      if (positionBuilder_ == null) {
-        ensurePositionIsMutable();
-        position_.add(builderForValue.build());
+    public Builder addProtoObjects(
+        protobuf.ProtoObject.Builder builderForValue) {
+      if (protoObjectsBuilder_ == null) {
+        ensureProtoObjectsIsMutable();
+        protoObjects_.add(builderForValue.build());
         onChanged();
       } else {
-        positionBuilder_.addMessage(builderForValue.build());
+        protoObjectsBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public Builder addPosition(
-        int index, protobuf.Object.Position.Builder builderForValue) {
-      if (positionBuilder_ == null) {
-        ensurePositionIsMutable();
-        position_.add(index, builderForValue.build());
+    public Builder addProtoObjects(
+        int index, protobuf.ProtoObject.Builder builderForValue) {
+      if (protoObjectsBuilder_ == null) {
+        ensureProtoObjectsIsMutable();
+        protoObjects_.add(index, builderForValue.build());
         onChanged();
       } else {
-        positionBuilder_.addMessage(index, builderForValue.build());
+        protoObjectsBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
      */
-    public Builder addAllPosition(
-        java.lang.Iterable<? extends protobuf.Object.Position> values) {
-      if (positionBuilder_ == null) {
-        ensurePositionIsMutable();
+    public Builder addAllProtoObjects(
+        java.lang.Iterable<? extends protobuf.ProtoObject> values) {
+      if (protoObjectsBuilder_ == null) {
+        ensureProtoObjectsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, position_);
+            values, protoObjects_);
         onChanged();
       } else {
-        positionBuilder_.addAllMessages(values);
+        protoObjectsBuilder_.addAllMessages(values);
       }
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public Builder clearProtoObjects() {
+      if (protoObjectsBuilder_ == null) {
+        protoObjects_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        protoObjectsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public Builder removeProtoObjects(int index) {
+      if (protoObjectsBuilder_ == null) {
+        ensureProtoObjectsIsMutable();
+        protoObjects_.remove(index);
+        onChanged();
+      } else {
+        protoObjectsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public protobuf.ProtoObject.Builder getProtoObjectsBuilder(
+        int index) {
+      return getProtoObjectsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public protobuf.ProtoObjectOrBuilder getProtoObjectsOrBuilder(
+        int index) {
+      if (protoObjectsBuilder_ == null) {
+        return protoObjects_.get(index);  } else {
+        return protoObjectsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public java.util.List<? extends protobuf.ProtoObjectOrBuilder> 
+         getProtoObjectsOrBuilderList() {
+      if (protoObjectsBuilder_ != null) {
+        return protoObjectsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(protoObjects_);
+      }
+    }
+    /**
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public protobuf.ProtoObject.Builder addProtoObjectsBuilder() {
+      return getProtoObjectsFieldBuilder().addBuilder(
+          protobuf.ProtoObject.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public protobuf.ProtoObject.Builder addProtoObjectsBuilder(
+        int index) {
+      return getProtoObjectsFieldBuilder().addBuilder(
+          index, protobuf.ProtoObject.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .protobuf.ProtoObject protoObjects = 7;</code>
+     */
+    public java.util.List<protobuf.ProtoObject.Builder> 
+         getProtoObjectsBuilderList() {
+      return getProtoObjectsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        protobuf.ProtoObject, protobuf.ProtoObject.Builder, protobuf.ProtoObjectOrBuilder> 
+        getProtoObjectsFieldBuilder() {
+      if (protoObjectsBuilder_ == null) {
+        protoObjectsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            protobuf.ProtoObject, protobuf.ProtoObject.Builder, protobuf.ProtoObjectOrBuilder>(
+                protoObjects_,
+                ((bitField0_ & 0x00000001) != 0),
+                getParentForChildren(),
+                isClean());
+        protoObjects_ = null;
+      }
+      return protoObjectsBuilder_;
+    }
+
+    private protobuf.ProtoObject.Position position_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        protobuf.ProtoObject.Position, protobuf.ProtoObject.Position.Builder, protobuf.ProtoObject.PositionOrBuilder> positionBuilder_;
+    /**
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
+     * @return Whether the position field is set.
+     */
+    public boolean hasPosition() {
+      return positionBuilder_ != null || position_ != null;
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
+     * @return The position.
+     */
+    public protobuf.ProtoObject.Position getPosition() {
+      if (positionBuilder_ == null) {
+        return position_ == null ? protobuf.ProtoObject.Position.getDefaultInstance() : position_;
+      } else {
+        return positionBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
+     */
+    public Builder setPosition(protobuf.ProtoObject.Position value) {
+      if (positionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        position_ = value;
+        onChanged();
+      } else {
+        positionBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
+     */
+    public Builder setPosition(
+        protobuf.ProtoObject.Position.Builder builderForValue) {
+      if (positionBuilder_ == null) {
+        position_ = builderForValue.build();
+        onChanged();
+      } else {
+        positionBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
+     */
+    public Builder mergePosition(protobuf.ProtoObject.Position value) {
+      if (positionBuilder_ == null) {
+        if (position_ != null) {
+          position_ =
+            protobuf.ProtoObject.Position.newBuilder(position_).mergeFrom(value).buildPartial();
+        } else {
+          position_ = value;
+        }
+        onChanged();
+      } else {
+        positionBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
      */
     public Builder clearPosition() {
       if (positionBuilder_ == null) {
-        position_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        position_ = null;
         onChanged();
       } else {
-        positionBuilder_.clear();
+        position_ = null;
+        positionBuilder_ = null;
       }
+
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
      */
-    public Builder removePosition(int index) {
-      if (positionBuilder_ == null) {
-        ensurePositionIsMutable();
-        position_.remove(index);
-        onChanged();
-      } else {
-        positionBuilder_.remove(index);
-      }
-      return this;
+    public protobuf.ProtoObject.Position.Builder getPositionBuilder() {
+      
+      onChanged();
+      return getPositionFieldBuilder().getBuilder();
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
      */
-    public protobuf.Object.Position.Builder getPositionBuilder(
-        int index) {
-      return getPositionFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
-     */
-    public protobuf.Object.PositionOrBuilder getPositionOrBuilder(
-        int index) {
-      if (positionBuilder_ == null) {
-        return position_.get(index);  } else {
-        return positionBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
-     */
-    public java.util.List<? extends protobuf.Object.PositionOrBuilder> 
-         getPositionOrBuilderList() {
+    public protobuf.ProtoObject.PositionOrBuilder getPositionOrBuilder() {
       if (positionBuilder_ != null) {
-        return positionBuilder_.getMessageOrBuilderList();
+        return positionBuilder_.getMessageOrBuilder();
       } else {
-        return java.util.Collections.unmodifiableList(position_);
+        return position_ == null ?
+            protobuf.ProtoObject.Position.getDefaultInstance() : position_;
       }
     }
     /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
+     * <code>.protobuf.ProtoObject.Position position = 8;</code>
      */
-    public protobuf.Object.Position.Builder addPositionBuilder() {
-      return getPositionFieldBuilder().addBuilder(
-          protobuf.Object.Position.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
-     */
-    public protobuf.Object.Position.Builder addPositionBuilder(
-        int index) {
-      return getPositionFieldBuilder().addBuilder(
-          index, protobuf.Object.Position.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object.Position position = 8;</code>
-     */
-    public java.util.List<protobuf.Object.Position.Builder> 
-         getPositionBuilderList() {
-      return getPositionFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object.Position, protobuf.Object.Position.Builder, protobuf.Object.PositionOrBuilder> 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        protobuf.ProtoObject.Position, protobuf.ProtoObject.Position.Builder, protobuf.ProtoObject.PositionOrBuilder> 
         getPositionFieldBuilder() {
       if (positionBuilder_ == null) {
-        positionBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            protobuf.Object.Position, protobuf.Object.Position.Builder, protobuf.Object.PositionOrBuilder>(
-                position_,
-                ((bitField0_ & 0x00000002) != 0),
+        positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            protobuf.ProtoObject.Position, protobuf.ProtoObject.Position.Builder, protobuf.ProtoObject.PositionOrBuilder>(
+                getPosition(),
                 getParentForChildren(),
                 isClean());
         position_ = null;
@@ -5799,239 +5561,118 @@ private static final long serialVersionUID = 0L;
       return positionBuilder_;
     }
 
-    private java.util.List<protobuf.Object.Rotation> rotation_ =
-      java.util.Collections.emptyList();
-    private void ensureRotationIsMutable() {
-      if (!((bitField0_ & 0x00000004) != 0)) {
-        rotation_ = new java.util.ArrayList<protobuf.Object.Rotation>(rotation_);
-        bitField0_ |= 0x00000004;
-       }
+    private protobuf.ProtoObject.Rotation rotation_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        protobuf.ProtoObject.Rotation, protobuf.ProtoObject.Rotation.Builder, protobuf.ProtoObject.RotationOrBuilder> rotationBuilder_;
+    /**
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
+     * @return Whether the rotation field is set.
+     */
+    public boolean hasRotation() {
+      return rotationBuilder_ != null || rotation_ != null;
     }
+    /**
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
+     * @return The rotation.
+     */
+    public protobuf.ProtoObject.Rotation getRotation() {
+      if (rotationBuilder_ == null) {
+        return rotation_ == null ? protobuf.ProtoObject.Rotation.getDefaultInstance() : rotation_;
+      } else {
+        return rotationBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
+     */
+    public Builder setRotation(protobuf.ProtoObject.Rotation value) {
+      if (rotationBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        rotation_ = value;
+        onChanged();
+      } else {
+        rotationBuilder_.setMessage(value);
+      }
 
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object.Rotation, protobuf.Object.Rotation.Builder, protobuf.Object.RotationOrBuilder> rotationBuilder_;
-
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public java.util.List<protobuf.Object.Rotation> getRotationList() {
-      if (rotationBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(rotation_);
-      } else {
-        return rotationBuilder_.getMessageList();
-      }
+      return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public int getRotationCount() {
-      if (rotationBuilder_ == null) {
-        return rotation_.size();
-      } else {
-        return rotationBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public protobuf.Object.Rotation getRotation(int index) {
-      if (rotationBuilder_ == null) {
-        return rotation_.get(index);
-      } else {
-        return rotationBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
      */
     public Builder setRotation(
-        int index, protobuf.Object.Rotation value) {
+        protobuf.ProtoObject.Rotation.Builder builderForValue) {
       if (rotationBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
+        rotation_ = builderForValue.build();
+        onChanged();
+      } else {
+        rotationBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
+     */
+    public Builder mergeRotation(protobuf.ProtoObject.Rotation value) {
+      if (rotationBuilder_ == null) {
+        if (rotation_ != null) {
+          rotation_ =
+            protobuf.ProtoObject.Rotation.newBuilder(rotation_).mergeFrom(value).buildPartial();
+        } else {
+          rotation_ = value;
         }
-        ensureRotationIsMutable();
-        rotation_.set(index, value);
         onChanged();
       } else {
-        rotationBuilder_.setMessage(index, value);
+        rotationBuilder_.mergeFrom(value);
       }
+
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public Builder setRotation(
-        int index, protobuf.Object.Rotation.Builder builderForValue) {
-      if (rotationBuilder_ == null) {
-        ensureRotationIsMutable();
-        rotation_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        rotationBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public Builder addRotation(protobuf.Object.Rotation value) {
-      if (rotationBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureRotationIsMutable();
-        rotation_.add(value);
-        onChanged();
-      } else {
-        rotationBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public Builder addRotation(
-        int index, protobuf.Object.Rotation value) {
-      if (rotationBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureRotationIsMutable();
-        rotation_.add(index, value);
-        onChanged();
-      } else {
-        rotationBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public Builder addRotation(
-        protobuf.Object.Rotation.Builder builderForValue) {
-      if (rotationBuilder_ == null) {
-        ensureRotationIsMutable();
-        rotation_.add(builderForValue.build());
-        onChanged();
-      } else {
-        rotationBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public Builder addRotation(
-        int index, protobuf.Object.Rotation.Builder builderForValue) {
-      if (rotationBuilder_ == null) {
-        ensureRotationIsMutable();
-        rotation_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        rotationBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public Builder addAllRotation(
-        java.lang.Iterable<? extends protobuf.Object.Rotation> values) {
-      if (rotationBuilder_ == null) {
-        ensureRotationIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, rotation_);
-        onChanged();
-      } else {
-        rotationBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
      */
     public Builder clearRotation() {
       if (rotationBuilder_ == null) {
-        rotation_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        rotation_ = null;
         onChanged();
       } else {
-        rotationBuilder_.clear();
+        rotation_ = null;
+        rotationBuilder_ = null;
       }
+
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
      */
-    public Builder removeRotation(int index) {
-      if (rotationBuilder_ == null) {
-        ensureRotationIsMutable();
-        rotation_.remove(index);
-        onChanged();
-      } else {
-        rotationBuilder_.remove(index);
-      }
-      return this;
+    public protobuf.ProtoObject.Rotation.Builder getRotationBuilder() {
+      
+      onChanged();
+      return getRotationFieldBuilder().getBuilder();
     }
     /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
      */
-    public protobuf.Object.Rotation.Builder getRotationBuilder(
-        int index) {
-      return getRotationFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public protobuf.Object.RotationOrBuilder getRotationOrBuilder(
-        int index) {
-      if (rotationBuilder_ == null) {
-        return rotation_.get(index);  } else {
-        return rotationBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public java.util.List<? extends protobuf.Object.RotationOrBuilder> 
-         getRotationOrBuilderList() {
+    public protobuf.ProtoObject.RotationOrBuilder getRotationOrBuilder() {
       if (rotationBuilder_ != null) {
-        return rotationBuilder_.getMessageOrBuilderList();
+        return rotationBuilder_.getMessageOrBuilder();
       } else {
-        return java.util.Collections.unmodifiableList(rotation_);
+        return rotation_ == null ?
+            protobuf.ProtoObject.Rotation.getDefaultInstance() : rotation_;
       }
     }
     /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
+     * <code>.protobuf.ProtoObject.Rotation rotation = 9;</code>
      */
-    public protobuf.Object.Rotation.Builder addRotationBuilder() {
-      return getRotationFieldBuilder().addBuilder(
-          protobuf.Object.Rotation.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public protobuf.Object.Rotation.Builder addRotationBuilder(
-        int index) {
-      return getRotationFieldBuilder().addBuilder(
-          index, protobuf.Object.Rotation.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object.Rotation rotation = 9;</code>
-     */
-    public java.util.List<protobuf.Object.Rotation.Builder> 
-         getRotationBuilderList() {
-      return getRotationFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object.Rotation, protobuf.Object.Rotation.Builder, protobuf.Object.RotationOrBuilder> 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        protobuf.ProtoObject.Rotation, protobuf.ProtoObject.Rotation.Builder, protobuf.ProtoObject.RotationOrBuilder> 
         getRotationFieldBuilder() {
       if (rotationBuilder_ == null) {
-        rotationBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            protobuf.Object.Rotation, protobuf.Object.Rotation.Builder, protobuf.Object.RotationOrBuilder>(
-                rotation_,
-                ((bitField0_ & 0x00000004) != 0),
+        rotationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            protobuf.ProtoObject.Rotation, protobuf.ProtoObject.Rotation.Builder, protobuf.ProtoObject.RotationOrBuilder>(
+                getRotation(),
                 getParentForChildren(),
                 isClean());
         rotation_ = null;
@@ -6039,239 +5680,118 @@ private static final long serialVersionUID = 0L;
       return rotationBuilder_;
     }
 
-    private java.util.List<protobuf.Object.Scale> scale_ =
-      java.util.Collections.emptyList();
-    private void ensureScaleIsMutable() {
-      if (!((bitField0_ & 0x00000008) != 0)) {
-        scale_ = new java.util.ArrayList<protobuf.Object.Scale>(scale_);
-        bitField0_ |= 0x00000008;
-       }
+    private protobuf.ProtoObject.Scale scale_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        protobuf.ProtoObject.Scale, protobuf.ProtoObject.Scale.Builder, protobuf.ProtoObject.ScaleOrBuilder> scaleBuilder_;
+    /**
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
+     * @return Whether the scale field is set.
+     */
+    public boolean hasScale() {
+      return scaleBuilder_ != null || scale_ != null;
     }
+    /**
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
+     * @return The scale.
+     */
+    public protobuf.ProtoObject.Scale getScale() {
+      if (scaleBuilder_ == null) {
+        return scale_ == null ? protobuf.ProtoObject.Scale.getDefaultInstance() : scale_;
+      } else {
+        return scaleBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
+     */
+    public Builder setScale(protobuf.ProtoObject.Scale value) {
+      if (scaleBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        scale_ = value;
+        onChanged();
+      } else {
+        scaleBuilder_.setMessage(value);
+      }
 
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object.Scale, protobuf.Object.Scale.Builder, protobuf.Object.ScaleOrBuilder> scaleBuilder_;
-
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public java.util.List<protobuf.Object.Scale> getScaleList() {
-      if (scaleBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(scale_);
-      } else {
-        return scaleBuilder_.getMessageList();
-      }
+      return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public int getScaleCount() {
-      if (scaleBuilder_ == null) {
-        return scale_.size();
-      } else {
-        return scaleBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public protobuf.Object.Scale getScale(int index) {
-      if (scaleBuilder_ == null) {
-        return scale_.get(index);
-      } else {
-        return scaleBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
      */
     public Builder setScale(
-        int index, protobuf.Object.Scale value) {
+        protobuf.ProtoObject.Scale.Builder builderForValue) {
       if (scaleBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
+        scale_ = builderForValue.build();
+        onChanged();
+      } else {
+        scaleBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
+     */
+    public Builder mergeScale(protobuf.ProtoObject.Scale value) {
+      if (scaleBuilder_ == null) {
+        if (scale_ != null) {
+          scale_ =
+            protobuf.ProtoObject.Scale.newBuilder(scale_).mergeFrom(value).buildPartial();
+        } else {
+          scale_ = value;
         }
-        ensureScaleIsMutable();
-        scale_.set(index, value);
         onChanged();
       } else {
-        scaleBuilder_.setMessage(index, value);
+        scaleBuilder_.mergeFrom(value);
       }
+
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public Builder setScale(
-        int index, protobuf.Object.Scale.Builder builderForValue) {
-      if (scaleBuilder_ == null) {
-        ensureScaleIsMutable();
-        scale_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        scaleBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public Builder addScale(protobuf.Object.Scale value) {
-      if (scaleBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureScaleIsMutable();
-        scale_.add(value);
-        onChanged();
-      } else {
-        scaleBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public Builder addScale(
-        int index, protobuf.Object.Scale value) {
-      if (scaleBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureScaleIsMutable();
-        scale_.add(index, value);
-        onChanged();
-      } else {
-        scaleBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public Builder addScale(
-        protobuf.Object.Scale.Builder builderForValue) {
-      if (scaleBuilder_ == null) {
-        ensureScaleIsMutable();
-        scale_.add(builderForValue.build());
-        onChanged();
-      } else {
-        scaleBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public Builder addScale(
-        int index, protobuf.Object.Scale.Builder builderForValue) {
-      if (scaleBuilder_ == null) {
-        ensureScaleIsMutable();
-        scale_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        scaleBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public Builder addAllScale(
-        java.lang.Iterable<? extends protobuf.Object.Scale> values) {
-      if (scaleBuilder_ == null) {
-        ensureScaleIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, scale_);
-        onChanged();
-      } else {
-        scaleBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
      */
     public Builder clearScale() {
       if (scaleBuilder_ == null) {
-        scale_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000008);
+        scale_ = null;
         onChanged();
       } else {
-        scaleBuilder_.clear();
+        scale_ = null;
+        scaleBuilder_ = null;
       }
+
       return this;
     }
     /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
      */
-    public Builder removeScale(int index) {
-      if (scaleBuilder_ == null) {
-        ensureScaleIsMutable();
-        scale_.remove(index);
-        onChanged();
-      } else {
-        scaleBuilder_.remove(index);
-      }
-      return this;
+    public protobuf.ProtoObject.Scale.Builder getScaleBuilder() {
+      
+      onChanged();
+      return getScaleFieldBuilder().getBuilder();
     }
     /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
      */
-    public protobuf.Object.Scale.Builder getScaleBuilder(
-        int index) {
-      return getScaleFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public protobuf.Object.ScaleOrBuilder getScaleOrBuilder(
-        int index) {
-      if (scaleBuilder_ == null) {
-        return scale_.get(index);  } else {
-        return scaleBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public java.util.List<? extends protobuf.Object.ScaleOrBuilder> 
-         getScaleOrBuilderList() {
+    public protobuf.ProtoObject.ScaleOrBuilder getScaleOrBuilder() {
       if (scaleBuilder_ != null) {
-        return scaleBuilder_.getMessageOrBuilderList();
+        return scaleBuilder_.getMessageOrBuilder();
       } else {
-        return java.util.Collections.unmodifiableList(scale_);
+        return scale_ == null ?
+            protobuf.ProtoObject.Scale.getDefaultInstance() : scale_;
       }
     }
     /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
+     * <code>.protobuf.ProtoObject.Scale scale = 10;</code>
      */
-    public protobuf.Object.Scale.Builder addScaleBuilder() {
-      return getScaleFieldBuilder().addBuilder(
-          protobuf.Object.Scale.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public protobuf.Object.Scale.Builder addScaleBuilder(
-        int index) {
-      return getScaleFieldBuilder().addBuilder(
-          index, protobuf.Object.Scale.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .protobuf.Object.Scale scale = 10;</code>
-     */
-    public java.util.List<protobuf.Object.Scale.Builder> 
-         getScaleBuilderList() {
-      return getScaleFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        protobuf.Object.Scale, protobuf.Object.Scale.Builder, protobuf.Object.ScaleOrBuilder> 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        protobuf.ProtoObject.Scale, protobuf.ProtoObject.Scale.Builder, protobuf.ProtoObject.ScaleOrBuilder> 
         getScaleFieldBuilder() {
       if (scaleBuilder_ == null) {
-        scaleBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            protobuf.Object.Scale, protobuf.Object.Scale.Builder, protobuf.Object.ScaleOrBuilder>(
-                scale_,
-                ((bitField0_ & 0x00000008) != 0),
+        scaleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            protobuf.ProtoObject.Scale, protobuf.ProtoObject.Scale.Builder, protobuf.ProtoObject.ScaleOrBuilder>(
+                getScale(),
                 getParentForChildren(),
                 isClean());
         scale_ = null;
@@ -6291,41 +5811,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:protobuf.Object)
+    // @@protoc_insertion_point(builder_scope:protobuf.ProtoObject)
   }
 
-  // @@protoc_insertion_point(class_scope:protobuf.Object)
-  private static final protobuf.Object DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:protobuf.ProtoObject)
+  private static final protobuf.ProtoObject DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new protobuf.Object();
+    DEFAULT_INSTANCE = new protobuf.ProtoObject();
   }
 
-  public static protobuf.Object getDefaultInstance() {
+  public static protobuf.ProtoObject getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<Object>
-      PARSER = new com.google.protobuf.AbstractParser<Object>() {
+  private static final com.google.protobuf.Parser<ProtoObject>
+      PARSER = new com.google.protobuf.AbstractParser<ProtoObject>() {
     @java.lang.Override
-    public Object parsePartialFrom(
+    public ProtoObject parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Object(input, extensionRegistry);
+      return new ProtoObject(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<Object> parser() {
+  public static com.google.protobuf.Parser<ProtoObject> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<Object> getParserForType() {
+  public com.google.protobuf.Parser<ProtoObject> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public protobuf.Object getDefaultInstanceForType() {
+  public protobuf.ProtoObject getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

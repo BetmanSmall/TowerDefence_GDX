@@ -15,35 +15,35 @@ public final class Protobuf {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_Object_descriptor;
+    internal_static_protobuf_ProtoObject_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_Object_fieldAccessorTable;
+      internal_static_protobuf_ProtoObject_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_Object_Transform_descriptor;
+    internal_static_protobuf_ProtoObject_Transform_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_Object_Transform_fieldAccessorTable;
+      internal_static_protobuf_ProtoObject_Transform_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_Object_Position_descriptor;
+    internal_static_protobuf_ProtoObject_Position_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_Object_Position_fieldAccessorTable;
+      internal_static_protobuf_ProtoObject_Position_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_Object_Rotation_descriptor;
+    internal_static_protobuf_ProtoObject_Rotation_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_Object_Rotation_fieldAccessorTable;
+      internal_static_protobuf_ProtoObject_Rotation_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_Object_Scale_descriptor;
+    internal_static_protobuf_ProtoObject_Scale_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_Object_Scale_fieldAccessorTable;
+      internal_static_protobuf_ProtoObject_Scale_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_protobuf_Object_Color_descriptor;
+    internal_static_protobuf_ProtoObject_Color_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_protobuf_Object_Color_fieldAccessorTable;
+      internal_static_protobuf_ProtoObject_Color_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -53,69 +53,70 @@ public final class Protobuf {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024protobuf/Proto.proto\022\010protobuf\"\247\005\n\006Obj" +
-      "ect\022\014\n\004uuid\030\001 \001(\t\022\r\n\005index\030\002 \001(\005\022 \n\006acti" +
-      "on\030\003 \001(\0162\020.protobuf.Action\022\022\n\nprefabName" +
-      "\030\004 \001(\t\022%\n\005color\030\005 \001(\0132\026.protobuf.Object." +
-      "Color\022 \n\006object\030\006 \003(\0132\020.protobuf.Object\022" +
-      "-\n\ttransform\030\007 \001(\0132\032.protobuf.Object.Tra" +
-      "nsform\022+\n\010position\030\010 \003(\0132\031.protobuf.Obje" +
-      "ct.Position\022+\n\010rotation\030\t \003(\0132\031.protobuf" +
-      ".Object.Rotation\022%\n\005scale\030\n \003(\0132\026.protob" +
-      "uf.Object.Scale\032\214\001\n\tTransform\022+\n\010positio" +
-      "n\030\001 \001(\0132\031.protobuf.Object.Position\022+\n\010ro" +
-      "tation\030\002 \001(\0132\031.protobuf.Object.Rotation\022" +
-      "%\n\005scale\030\003 \001(\0132\026.protobuf.Object.Scale\032+" +
-      "\n\010Position\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 " +
-      "\001(\002\0326\n\010Rotation\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n" +
-      "\001z\030\003 \001(\002\022\t\n\001w\030\004 \001(\002\032(\n\005Scale\022\t\n\001x\030\001 \001(\002\022" +
-      "\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\0323\n\005Color\022\t\n\001r\030\001 \001(" +
-      "\002\022\t\n\001g\030\002 \001(\002\022\t\n\001b\030\003 \001(\002\022\t\n\001a\030\004 \001(\002*\205\001\n\006A" +
-      "ction\022\021\n\rPLAYER_CREATE\020\000\022\017\n\013PLAYER_MOVE\020" +
-      "\001\022\021\n\rPLAYER_REMOVE\020\002\022\021\n\rOBJECT_CREATE\020\003\022" +
-      "\020\n\014OBJECT_MOOVE\020\004\022\021\n\rOBJECT_REMOVE\020\005\022\014\n\010" +
-      "MAP_INIT\020\006B\026\n\010protobufB\010ProtobufP\001b\006prot" +
-      "o3"
+      "\n\024protobuf/Proto.proto\022\010protobuf\"\337\005\n\013Pro" +
+      "toObject\022\014\n\004uuid\030\001 \001(\t\022\r\n\005index\030\002 \001(\005\022 \n" +
+      "\006action\030\003 \001(\0162\020.protobuf.Action\022\022\n\nprefa" +
+      "bName\030\004 \001(\t\022*\n\005color\030\005 \001(\0132\033.protobuf.Pr" +
+      "otoObject.Color\0222\n\ttransform\030\006 \001(\0132\037.pro" +
+      "tobuf.ProtoObject.Transform\022+\n\014protoObje" +
+      "cts\030\007 \003(\0132\025.protobuf.ProtoObject\0220\n\010posi" +
+      "tion\030\010 \001(\0132\036.protobuf.ProtoObject.Positi" +
+      "on\0220\n\010rotation\030\t \001(\0132\036.protobuf.ProtoObj" +
+      "ect.Rotation\022*\n\005scale\030\n \001(\0132\033.protobuf.P" +
+      "rotoObject.Scale\032\233\001\n\tTransform\0220\n\010positi" +
+      "on\030\001 \001(\0132\036.protobuf.ProtoObject.Position" +
+      "\0220\n\010rotation\030\002 \001(\0132\036.protobuf.ProtoObjec" +
+      "t.Rotation\022*\n\005scale\030\003 \001(\0132\033.protobuf.Pro" +
+      "toObject.Scale\032+\n\010Position\022\t\n\001x\030\001 \001(\002\022\t\n" +
+      "\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\0326\n\010Rotation\022\t\n\001x\030\001 \001" +
+      "(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\022\t\n\001w\030\004 \001(\002\032(\n\005S" +
+      "cale\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\0323\n" +
+      "\005Color\022\t\n\001r\030\001 \001(\002\022\t\n\001g\030\002 \001(\002\022\t\n\001b\030\003 \001(\002\022" +
+      "\t\n\001a\030\004 \001(\002*\205\001\n\006Action\022\021\n\rPLAYER_CREATE\020\000" +
+      "\022\017\n\013PLAYER_MOVE\020\001\022\021\n\rPLAYER_REMOVE\020\002\022\021\n\r" +
+      "OBJECT_CREATE\020\003\022\020\n\014OBJECT_MOOVE\020\004\022\021\n\rOBJ" +
+      "ECT_REMOVE\020\005\022\014\n\010MAP_INIT\020\006B\026\n\010protobufB\010" +
+      "ProtobufP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_protobuf_Object_descriptor =
+    internal_static_protobuf_ProtoObject_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_protobuf_Object_fieldAccessorTable = new
+    internal_static_protobuf_ProtoObject_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_Object_descriptor,
-        new java.lang.String[] { "Uuid", "Index", "Action", "PrefabName", "Color", "Object", "Transform", "Position", "Rotation", "Scale", });
-    internal_static_protobuf_Object_Transform_descriptor =
-      internal_static_protobuf_Object_descriptor.getNestedTypes().get(0);
-    internal_static_protobuf_Object_Transform_fieldAccessorTable = new
+        internal_static_protobuf_ProtoObject_descriptor,
+        new java.lang.String[] { "Uuid", "Index", "Action", "PrefabName", "Color", "Transform", "ProtoObjects", "Position", "Rotation", "Scale", });
+    internal_static_protobuf_ProtoObject_Transform_descriptor =
+      internal_static_protobuf_ProtoObject_descriptor.getNestedTypes().get(0);
+    internal_static_protobuf_ProtoObject_Transform_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_Object_Transform_descriptor,
+        internal_static_protobuf_ProtoObject_Transform_descriptor,
         new java.lang.String[] { "Position", "Rotation", "Scale", });
-    internal_static_protobuf_Object_Position_descriptor =
-      internal_static_protobuf_Object_descriptor.getNestedTypes().get(1);
-    internal_static_protobuf_Object_Position_fieldAccessorTable = new
+    internal_static_protobuf_ProtoObject_Position_descriptor =
+      internal_static_protobuf_ProtoObject_descriptor.getNestedTypes().get(1);
+    internal_static_protobuf_ProtoObject_Position_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_Object_Position_descriptor,
+        internal_static_protobuf_ProtoObject_Position_descriptor,
         new java.lang.String[] { "X", "Y", "Z", });
-    internal_static_protobuf_Object_Rotation_descriptor =
-      internal_static_protobuf_Object_descriptor.getNestedTypes().get(2);
-    internal_static_protobuf_Object_Rotation_fieldAccessorTable = new
+    internal_static_protobuf_ProtoObject_Rotation_descriptor =
+      internal_static_protobuf_ProtoObject_descriptor.getNestedTypes().get(2);
+    internal_static_protobuf_ProtoObject_Rotation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_Object_Rotation_descriptor,
+        internal_static_protobuf_ProtoObject_Rotation_descriptor,
         new java.lang.String[] { "X", "Y", "Z", "W", });
-    internal_static_protobuf_Object_Scale_descriptor =
-      internal_static_protobuf_Object_descriptor.getNestedTypes().get(3);
-    internal_static_protobuf_Object_Scale_fieldAccessorTable = new
+    internal_static_protobuf_ProtoObject_Scale_descriptor =
+      internal_static_protobuf_ProtoObject_descriptor.getNestedTypes().get(3);
+    internal_static_protobuf_ProtoObject_Scale_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_Object_Scale_descriptor,
+        internal_static_protobuf_ProtoObject_Scale_descriptor,
         new java.lang.String[] { "X", "Y", "Z", });
-    internal_static_protobuf_Object_Color_descriptor =
-      internal_static_protobuf_Object_descriptor.getNestedTypes().get(4);
-    internal_static_protobuf_Object_Color_fieldAccessorTable = new
+    internal_static_protobuf_ProtoObject_Color_descriptor =
+      internal_static_protobuf_ProtoObject_descriptor.getNestedTypes().get(4);
+    internal_static_protobuf_ProtoObject_Color_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_protobuf_Object_Color_descriptor,
+        internal_static_protobuf_ProtoObject_Color_descriptor,
         new java.lang.String[] { "R", "G", "B", "A", });
   }
 
